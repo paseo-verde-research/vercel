@@ -290,8 +290,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .code-snippet-visual pre {
     margin: 0;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+    white-space: pre;
+    overflow-x: hidden;
 }
 .code-keyword { color: #569CD6; } /* Blue for keywords like public, class, void */
 .code-class { color: #4EC9B0; } /* Teal for class names */
