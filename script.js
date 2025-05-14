@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('main section'); // All sections in main
-    const contactForm = document.getElementById('contactForm');
-    const formMessageBox = document.getElementById('form-message-box');
 
 // --- Sticky Header with Background Change on Scroll ---
     function handleScroll() {
@@ -68,69 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-// --- Contact Form Submission (Static Site Simulation) ---
-    if (contactForm && formMessageBox) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Prevent actual form submission
-
-// Clear previous messages
-            formMessageBox.textContent = '';
-            formMessageBox.className = 'form-message-box'; // Reset classes
-
-// Get form data (optional for static simulation, but good practice)
-            const name = contactForm.querySelector('#name').value.trim();
-            const email = contactForm.querySelector('#email').value.trim();
-            const message = contactForm.querySelector('#message').value.trim();
-
-// Basic validation
-            if (!name || !email || !message) {
-                formMessageBox.textContent = 'Please fill in all required fields.';
-                formMessageBox.classList.add('error');
-                return;
-            }
-            if (!validateEmail(email)) {
-                formMessageBox.textContent = 'Please enter a valid email address.';
-                formMessageBox.classList.add('error');
-                return;
-            }
-
-// Simulate sending data (replace with actual AJAX call for a dynamic site)
-            formMessageBox.textContent = 'Sending your message...';
-            formMessageBox.classList.add('info'); // Optional: style for pending state
-
-            setTimeout(() => {
-// Simulate success
-                formMessageBox.textContent = 'Thank you! Your message has been "sent". We will contact you shortly.';
-                formMessageBox.className = 'form-message-box success'; // Reset and add success
-                contactForm.reset(); // Clear the form fields
-
-// For a real site, you'd use fetch() or XMLHttpRequest here.
-// Example:
-// fetch('YOUR_ENDPOINT_URL', {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({ name, email, message })
-// })
-// .then(response => response.json())
-// .then(data => {
-//     formMessageBox.textContent = 'Message sent successfully!';
-//     formMessageBox.className = 'form-message-box success';
-//     contactForm.reset();
-// })
-// .catch(error => {
-//     formMessageBox.textContent = 'An error occurred. Please try again later.';
-//     formMessageBox.className = 'form-message-box error';
-//     console.error('Form submission error:', error);
-// });
-            }, 1500); // Simulate network delay
-        });
-    }
-
-    function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
-    }
-
 // --- Set Current Year in Footer ---
     const currentYearSpan = document.getElementById('currentYear');
     if (currentYearSpan) {
@@ -187,5 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
         observer.observe(section);
     });
+
+    fetch('img/icons.svg')
+        .then(response => response.text())
+        .then(data => {
+            const div = document.createElement('div');
+            div.style.display = 'none';
+            div.innerHTML = data;
+            document.body.insertBefore(div, document.body.firstChild);
+        });
 
 });
