@@ -132,4 +132,5 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.insertBefore(div, document.body.firstChild);
         });
 
+    console.log("Welcome to PVRLabs! Java performance optimization is our specialty.");
 });

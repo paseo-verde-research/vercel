@@ -225,7 +225,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     padding-top: var(--header-height); /* Account for fixed header */
-    background: var(--bg-dark) url('[https://www.transparenttextures.com/patterns/carbon-fibre-v2.png](https://www.transparenttextures.com/patterns/carbon-fibre-v2.png)'); /* Subtle texture */
+    background: var(--bg-dark) url('https://www.transparenttextures.com/patterns/carbon-fibre-v2.png');
     position: relative;
     overflow: hidden;
 }
