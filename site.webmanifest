@@ -1,1 +1,22 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "PVRLabs - Java Performance Optimization Experts",
+  "short_name": "PVRLabs",
+  "description": "Expert consulting for optimizing and tuning your Java applications. PVRLabs specializes in deep-dive Java performance analysis, optimization, and JVM tuning.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#2ECC71",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait-primary",
+}
