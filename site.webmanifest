@@ -1,7 +1,7 @@
 {
   "name": "PVRLabs - Java Performance Optimization Experts",
   "short_name": "PVRLabs",
-  "description": "Expert consulting for optimizing and tuning your Java applications. PVRLabs specializes in deep-dive Java performance analysis, optimization, and JVM tuning.",
+  "description": "Expert consulting for optimizing and tuning your Java applications.",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#0A0A0A",
