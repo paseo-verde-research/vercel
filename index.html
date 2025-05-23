@@ -163,7 +163,8 @@
         <div class="container">
             <div class="about-content-wrapper">
                 <div class="about-image">
-                    <img src="img/speed_dark_bg.jpg" alt="PVRLabs Concept Art">
+                    <img src="img/speed_dark_bg.jpg" alt="PVRLabs Concept Art" width="900" height="900" loading="lazy"
+                         decoding="async">
                 </div>
                 <div class="about-text">
                     <h2 class="section-title-left">About <span class="highlight">PVRLabs</span></h2>
@@ -242,10 +243,14 @@
                     <p><span class="highlight">Email:</span> <a href="mailto:pvrlabs@duck.com">pvrlabs@duck.com</a></p>
                     <p><span class="highlight">Phone:</span> <a href="tel:+16506325755">(650) 632-5755</a></p>
                     <p><span class="highlight">Location:</span> San Diego, CA (Serving clients globally)</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="LinkedIn Profile"><svg><use href="#icon-linkedin" /></svg></a>
-                        <a href="#" aria-label="GitHub Profile"><svg><use href="#icon-github" /></svg></a>
-                    </div>
+                    <h3>Send us a Message</h3>
+                    <form action="https://formspree.io/f/mdkgvrlk" method="POST">
+                        <p><span class="highlight">Name:</span> <input type="text" name="name" required></p>
+                        <p><span class="highlight">Email:</span> <input type="email" name="email" required></p>
+                        <p><span class="highlight">Message:</span> <textarea name="message" rows="3"
+                                                                             required></textarea></p>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
                 </div>
             </div>
         </div>

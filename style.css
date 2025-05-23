@@ -534,20 +534,43 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-green);
 }
 
-.social-links {
-    margin-top: 2rem;
-}
-.social-links a {
-    margin-right: 15px;
+.contact-details form p {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
     color: var(--text-secondary);
-    transition: color 0.3s ease;
 }
-.social-links a:hover {
-    color: var(--primary-green);
+
+.contact-details form .highlight {
+    min-width: 130px; /* adjust this to align all fields */
+    display: inline-block;
+    font-weight: 500;
 }
-.social-links svg {
-    width: 28px;
-    height: 28px;
+
+.contact-details form input,
+.contact-details form textarea {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-light);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    min-width: 200px;
+}
+
+.contact-details form textarea {
+    resize: vertical;
+}
+
+.contact-details form button[type="submit"] {
+    margin-top: 1rem;
+    font-family: var(--font-display);
 }
 
 /* --- Footer Section --- */
