@@ -41,7 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.addEventListener('scroll', handleScroll);
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
     handleScroll(); // Initial call to set active link based on page load position (e.g. hash)
 
 
@@ -72,33 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentYearSpan.textContent = new Date().getFullYear();
     }
 
-// --- Smooth Scroll for All Anchor Links (within page) ---
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-// Check if the link is just a placeholder or for a different purpose
-            if (this.getAttribute('href') === '#' || this.getAttribute('href') === '') return;
-
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-
-            if (targetElement) {
-                let targetPosition = targetElement.offsetTop;
-// Adjust for fixed header height if the header is present and not part of the target
-                if (header && getComputedStyle(header).position === 'fixed') {
-                    targetPosition -= header.offsetHeight;
-                }
-
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
 // --- Simple Fade-in Animation for Sections on Scroll (Optional) ---
-    const animatedSections = document.querySelectorAll('.service-card, .timeline-item, .about-image, .about-text, .contact-form, .contact-details');
+    const animatedSections = document.querySelectorAll('.service-card, .timeline-item, .about-image, .about-text, .contact-details');
 
     const observerOptions = {
         root: null, // relative to document viewport
@@ -123,6 +107,23 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(section);
     });
 
+
+// --- Lazy-load Calendly widget script when contact section approaches viewport ---
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        const calendlyObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const script = document.createElement('script');
+                    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+                    script.async = true;
+                    document.body.appendChild(script);
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '200px' });
+        calendlyObserver.observe(contactSection);
+    }
 
     console.log("Welcome to PVRLabs! Java performance optimization is our specialty.");
 });
