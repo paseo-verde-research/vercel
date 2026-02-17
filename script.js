@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             ticking = true;
         }
-    });
+    }, { passive: true });
     handleScroll(); // Initial call to set active link based on page load position (e.g. hash)
 
 
