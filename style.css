@@ -536,6 +536,21 @@ h1, h2, h3, h4, h5, h6 {
 .contact-details a:hover {
     color: var(--primary-green);
 }
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.social-links svg {
+    width: 28px;
+    height: 28px;
+    transition: color 0.3s ease;
+}
 
 .contact-details form p {
     display: flex;
@@ -628,6 +643,9 @@ h1, h2, h3, h4, h5, h6 {
         padding-left: 0;
         margin-top: 2rem;
         text-align: center;
+    }
+    .social-links {
+        justify-content: center;
     }
     .contact-details form p {
         flex-direction: column;
