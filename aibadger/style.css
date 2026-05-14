@@ -12,7 +12,7 @@
     --border-color: #222222;
     --font-display: 'Orbitron', sans-serif;
     --font-body: 'Roboto Mono', monospace;
-    --container-width: 1100px;
+    --container-width: 1240px;
     --header-height: 70px;
 }
 
@@ -94,6 +94,11 @@ h1, h2, h3, h4 {
     height: 100%;
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
 .product-logo {
     display: flex;
     align-items: center;
@@ -105,23 +110,26 @@ h1, h2, h3, h4 {
     letter-spacing: 1px;
 }
 
-.badger-emoji {
-    font-size: 1.5rem;
+.brand-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1;
 }
 
-.header-attribution {
-    font-size: 0.75rem;
+.product-name {
+    display: block;
+}
+
+.product-by {
+    margin-top: 4px;
+    font-size: 0.66rem;
     font-family: var(--font-display);
-}
-
-.pvr-link {
     color: var(--text-secondary);
-    opacity: 0.6;
-}
-
-.pvr-link:hover {
-    opacity: 1;
-    color: var(--text-primary);
+    opacity: 0.8;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+    align-self: flex-end;
 }
 
 .logo-accent {
@@ -147,7 +155,7 @@ h1, h2, h3, h4 {
 
 /* --- Hero Section --- */
 .hero-section {
-    padding: 15px 0 25px 0;
+    padding: 12px 0 18px 0;
     min-height: auto;
     display: flex;
     align-items: center;
@@ -156,23 +164,24 @@ h1, h2, h3, h4 {
 
 .hero-grid {
     display: grid;
-    grid-template-columns: 2fr 1.5fr;
-    gap: 60px;
+    grid-template-columns: 1.75fr 1.25fr;
+    gap: 40px;
     align-items: center;
 }
 
 .hero-title {
     font-size: 3rem;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     line-height: 1.1;
     letter-spacing: -1px;
+    max-width: 700px;
 }
 
 .hero-subtitle {
     font-size: 1.05rem;
     color: var(--text-secondary);
-    margin-bottom: 25px;
-    max-width: 500px;
+    margin-bottom: 18px;
+    max-width: 650px;
     font-weight: 400;
 }
 
@@ -180,7 +189,7 @@ h1, h2, h3, h4 {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 30px;
+    margin-bottom: 22px;
     background: rgba(46, 204, 113, 0.05);
     padding: 10px 18px;
     border-radius: 4px;
@@ -301,14 +310,14 @@ h1, h2, h3, h4 {
 }
 
 .terminal-body {
-    padding: 20px 25px;
+    padding: 12px 25px 20px;
     font-family: var(--font-body);
 }
 
 .terminal-header-content {
     display: flex;
     gap: 25px;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .terminal-ascii-badger pre {
@@ -390,7 +399,7 @@ h1, h2, h3, h4 {
 
 /* --- Why Bar Section --- */
 .why-bar-section {
-    padding: 10px 0;
+    padding: 8px 0;
 }
 
 .why-bar {
@@ -475,7 +484,7 @@ h1, h2, h3, h4 {
 
 /* --- Workflow Section --- */
 .workflow-section {
-    padding: 20px 0;
+    padding: 14px 0;
 }
 
 .workflow-grid {
@@ -497,7 +506,7 @@ h1, h2, h3, h4 {
 
 /* --- Features Grid Section --- */
 .features-grid-section {
-    padding: 20px 0;
+    padding: 14px 0;
 }
 
 .features-grid {
@@ -530,15 +539,16 @@ h1, h2, h3, h4 {
 /* --- Hero Section Fixes --- */
 .hero-tagline {
     font-size: 1.1rem;
-    margin-bottom: 30px;
+    margin-bottom: 22px;
     font-family: var(--font-body);
+    max-width: 650px;
 }
 
 .hero-subtitle {
     font-size: 1.1rem;
     margin-bottom: 15px;
     color: var(--text-secondary);
-    max-width: 600px;
+    max-width: 650px;
 }
 
 /* --- Responsive --- */
@@ -572,7 +582,7 @@ h1, h2, h3, h4 {
 
 /* --- Footer --- */
 #footer {
-    padding: 40px 0;
+    padding: 28px 0;
     border-top: 1px solid var(--border-color);
     text-align: center;
 }
@@ -581,4 +591,17 @@ h1, h2, h3, h4 {
     color: var(--text-secondary);
     font-size: 0.75rem;
     margin-bottom: 8px;
+}
+
+.footer-brand {
+    font-family: var(--font-display);
+    letter-spacing: 0.8px;
+}
+
+.footer-brand-pvr {
+    color: var(--text-primary);
+}
+
+.footer-brand:hover {
+    opacity: 0.9;
 }
