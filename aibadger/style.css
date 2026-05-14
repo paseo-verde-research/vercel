@@ -8,7 +8,7 @@
     --bg-medium: #121212;
     --bg-light: #1A1A1A;
     --text-primary: #F0F0F0;
-    --text-secondary: #BBBBBB;
+    --text-secondary: #D0D0D0;
     --border-color: #222222;
     --font-display: 'Orbitron', sans-serif;
     --font-body: 'Roboto Mono', monospace;
@@ -146,8 +146,8 @@ h1, h2, h3, h4 {
 
 .hero-grid {
     display: grid;
-    grid-template-columns: 1.75fr 1.25fr;
-    gap: 40px;
+    grid-template-columns: 1.95fr 1.05fr;
+    gap: 30px;
     align-items: center;
 }
 
@@ -220,7 +220,7 @@ h1, h2, h3, h4 {
     color: var(--bg-dark);
 }
 
-.btn-primary:hover, .btn-github:hover {
+.btn-primary:hover {
     background: var(--terminal-green);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 255, 65, 0.2);
@@ -252,28 +252,30 @@ h1, h2, h3, h4 {
 }
 
 .terminal-window {
-    background: #000;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+    background: #1A1A1A;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-    font-size: 0.9rem;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.75);
+    font-size: 0.95rem;
     width: 100%;
-    max-width: 640px;
-    margin: 20px 0;
+    max-width: 560px;
+    margin: 12px 0;
 }
 
 .terminal-header {
-    background: #0A0A0A;
-    padding: 12px 20px;
+    background: #2B2B2B;
+    min-height: 34px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .terminal-dots {
     display: flex;
-    gap: 8px;
+    gap: 9px;
 }
 
 .terminal-dots span {
@@ -283,29 +285,43 @@ h1, h2, h3, h4 {
     background: #222;
 }
 
+.terminal-dots span:nth-child(1) {
+    background: #F56B61;
+}
+
+.terminal-dots span:nth-child(2) {
+    background: #F8C24E;
+}
+
+.terminal-dots span:nth-child(3) {
+    background: #56C267;
+}
+
 .terminal-title {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    flex-grow: 1;
+    color: #D2D2D2;
+    font-size: 0.9rem;
+    flex: 1;
     text-align: center;
     font-family: var(--font-body);
+    letter-spacing: 0.04em;
 }
 
 .terminal-body {
-    padding: 12px 25px 20px;
+    background: #1F1F1F;
+    padding: 6px 14px 6px;
     font-family: var(--font-body);
 }
 
 .terminal-header-content {
     display: flex;
-    gap: 25px;
-    align-items: center;
+    gap: 22px;
+    align-items: flex-start;
 }
 
 .terminal-ascii-badger pre {
     color: #FFFFFF;
-    font-size: 0.85rem;
-    line-height: 1.2;
+    font-size: 0.84rem;
+    line-height: 1.1;
     margin: 0;
 }
 
@@ -314,7 +330,7 @@ h1, h2, h3, h4 {
 }
 
 .terminal-title-row {
-    font-size: 1rem;
+    font-size: 0.96rem;
     margin-bottom: 6px;
     color: #FFFFFF;
     white-space: nowrap;
@@ -322,13 +338,13 @@ h1, h2, h3, h4 {
 
 .terminal-subtitle {
     color: #BBBBBB;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     margin-bottom: 6px;
 }
 
 .terminal-pipeline {
     color: #AAAAAA;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     white-space: nowrap;
 }
 
@@ -341,21 +357,21 @@ h1, h2, h3, h4 {
 
 .terminal-divider {
     border: none;
-    border-top: 1px solid #333;
-    margin: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    margin: 14px 0;
 }
 
 .terminal-main-content p {
     margin-bottom: 10px;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: #EEEEEE;
 }
 
 .terminal-input-row {
     display: flex;
     gap: 12px;
-    margin-top: 20px;
-    font-size: 0.9rem;
+    margin-top: 18px;
+    font-size: 0.88rem;
 }
 
 .terminal-input-row.empty {
@@ -367,7 +383,7 @@ h1, h2, h3, h4 {
 }
 
 .input-line {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
     padding: 0 10px;
     color: #FFFFFF;
     flex: 1;
@@ -425,7 +441,7 @@ h1, h2, h3, h4 {
 
 .why-content {
     font-size: 1rem;
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
 
 /* --- Workflow & Features Shared Card Style --- */
@@ -458,9 +474,9 @@ h1, h2, h3, h4 {
     color: var(--primary-green);
 }
 
-.workflow-text p, .feature-content p {
+.why-content, .workflow-text p, .feature-content p {
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: #D8D8D8;
     line-height: 1.4;
 }
 
@@ -506,6 +522,13 @@ h1, h2, h3, h4 {
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-primary);
+}
+
+.btn-github:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--primary-green);
+    color: var(--text-primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
 }
 
 .btn-demo {
@@ -571,7 +594,7 @@ h1, h2, h3, h4 {
 
 #footer p {
     color: var(--text-secondary);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     margin-bottom: 8px;
 }
 
