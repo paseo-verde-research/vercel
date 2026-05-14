@@ -110,26 +110,8 @@ h1, h2, h3, h4 {
     letter-spacing: 1px;
 }
 
-.brand-copy {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    line-height: 1;
-}
-
 .product-name {
     display: block;
-}
-
-.product-by {
-    margin-top: 4px;
-    font-size: 0.66rem;
-    font-family: var(--font-display);
-    color: var(--text-secondary);
-    opacity: 0.8;
-    letter-spacing: 0.7px;
-    white-space: nowrap;
-    align-self: flex-end;
 }
 
 .logo-accent {
