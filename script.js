@@ -49,10 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         navLinks.forEach(link => {
-            link.classList.remove('active');
-// Check if the link's href matches the current section ID
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
-                link.classList.add('active');
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                link.classList.remove('active');
+                if (href === `#${currentSectionId}`) {
+                    link.classList.add('active');
+                }
             }
         });
     }
