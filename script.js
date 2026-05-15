@@ -4,30 +4,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('header');
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = Array.from(document.querySelectorAll('.nav-link'));
     const sections = document.querySelectorAll('main section'); // All sections in main
+    const sectionIds = new Set(Array.from(sections, section => section.id).filter(Boolean));
+    const sectionNavLinks = navLinks.filter(link => {
+        const href = link.getAttribute('href');
+        return href && href.startsWith('#') && sectionIds.has(href.slice(1));
+    });
+    const hasScrollSpy = Boolean(header && sectionNavLinks.length && sections.length);
 
     let sectionPositions = [];
+    let activeSectionId = '';
+    let resizeTicking = false;
 
     // --- Cache Section Positions to avoid layout thrashing ---
     function updateSectionPositions() {
+        if (!hasScrollSpy) {
+            return;
+        }
+
+        const headerOffset = header.offsetHeight + 60;
         sectionPositions = Array.from(sections).map(section => {
             return {
                 id: section.getAttribute('id'),
-                top: section.offsetTop - header.offsetHeight - 60, // Adjusted for header and small offset
-                bottom: section.offsetTop + section.offsetHeight - header.offsetHeight - 60
+                top: section.offsetTop - headerOffset, // Adjusted for header and small offset
+                bottom: section.offsetTop + section.offsetHeight - headerOffset
             };
         });
     }
 
 // --- Sticky Header with Background Change on Scroll ---
     function handleScroll() {
+        if (!header) {
+            return;
+        }
+
         const scrollY = window.scrollY;
 
         if (scrollY > 50) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
+        }
+
+        if (!hasScrollSpy) {
+            return;
         }
 
 // --- Active Link Highlighting on Scroll ---
@@ -47,15 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSectionId = sectionPositions[0].id;
         }
 
+        if (currentSectionId === activeSectionId) {
+            return;
+        }
 
-        navLinks.forEach(link => {
+        activeSectionId = currentSectionId;
+        sectionNavLinks.forEach(link => {
             const href = link.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                link.classList.remove('active');
-                if (href === `#${currentSectionId}`) {
-                    link.classList.add('active');
-                }
-            }
+            link.classList.toggle('active', href === `#${currentSectionId}`);
         });
     }
 
@@ -74,10 +94,23 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSectionPositions();
     handleScroll(); 
 
-    window.addEventListener('resize', () => {
-        updateSectionPositions();
-        handleScroll();
-    }, { passive: true });
+    if (hasScrollSpy) {
+        window.addEventListener('load', () => {
+            updateSectionPositions();
+            handleScroll();
+        }, { once: true });
+
+        window.addEventListener('resize', () => {
+            if (!resizeTicking) {
+                window.requestAnimationFrame(() => {
+                    updateSectionPositions();
+                    handleScroll();
+                    resizeTicking = false;
+                });
+                resizeTicking = true;
+            }
+        }, { passive: true });
+    }
 
 
 // --- Hamburger Menu Toggle ---
