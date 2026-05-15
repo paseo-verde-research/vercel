@@ -7,9 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('main section'); // All sections in main
 
+    let sectionPositions = [];
+
+    // --- Cache Section Positions to avoid layout thrashing ---
+    function updateSectionPositions() {
+        sectionPositions = Array.from(sections).map(section => {
+            return {
+                id: section.getAttribute('id'),
+                top: section.offsetTop - header.offsetHeight - 60, // Adjusted for header and small offset
+                bottom: section.offsetTop + section.offsetHeight - header.offsetHeight - 60
+            };
+        });
+    }
+
 // --- Sticky Header with Background Change on Scroll ---
     function handleScroll() {
-        if (window.scrollY > 50) {
+        const scrollY = window.scrollY;
+
+        if (scrollY > 50) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
@@ -17,18 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Active Link Highlighting on Scroll ---
         let currentSectionId = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - header.offsetHeight - 50; // Adjusted for header and small offset
-// Check if section is in viewport
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + section.offsetHeight) {
-                currentSectionId = section.getAttribute('id');
+        
+        for (let i = 0; i < sectionPositions.length; i++) {
+            const pos = sectionPositions[i];
+            if (scrollY >= pos.top && scrollY < pos.bottom) {
+                currentSectionId = pos.id;
+                break;
             }
-        });
+        }
 
 // If no section is actively in view (e.g., at the very top or bottom beyond sections)
 // default to hero or the first section if applicable.
-        if (!currentSectionId && window.scrollY < sections[0].offsetTop) {
-            currentSectionId = sections[0].getAttribute('id');
+        if (!currentSectionId && sectionPositions.length > 0 && scrollY < sectionPositions[0].top) {
+            currentSectionId = sectionPositions[0].id;
         }
 
 
@@ -51,7 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
             ticking = true;
         }
     }, { passive: true });
-    handleScroll(); // Initial call to set active link based on page load position (e.g. hash)
+
+    // Update positions on load and resize
+    updateSectionPositions();
+    handleScroll(); 
+
+    window.addEventListener('resize', () => {
+        updateSectionPositions();
+        handleScroll();
+    }, { passive: true });
 
 
 // --- Hamburger Menu Toggle ---
