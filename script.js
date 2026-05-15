@@ -59,8 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
+            const isExpanded = navMenu.classList.contains('active');
+            hamburger.setAttribute('aria-expanded', String(isExpanded));
+            hamburger.setAttribute('aria-label', isExpanded ? 'Close navigation menu' : 'Open navigation menu');
 // Optional: Prevent body scroll when mobile menu is open
-            document.body.classList.toggle('no-scroll', navMenu.classList.contains('active'));
+            document.body.classList.toggle('no-scroll', isExpanded);
         });
     }
 
@@ -70,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (hamburger && navMenu && hamburger.classList.contains('active')) {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.setAttribute('aria-label', 'Open navigation menu');
                 document.body.classList.remove('no-scroll');
             }
         });

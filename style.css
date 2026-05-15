@@ -205,8 +205,11 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .hamburger {
+    background: transparent;
+    border: 0;
     display: none; /* Hidden on desktop */
     cursor: pointer;
+    padding: 4px;
 }
 
 .hamburger .bar {
@@ -767,5 +770,20 @@ h1, h2, h3, h4, h5, h6 {
     }
     .service-grid {
         grid-template-columns: 1fr; /* Single column on small mobile */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
     }
 }

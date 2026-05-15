@@ -46,8 +46,6 @@
             "url": "https://pvrlabs.xyz/",
             "logo": "https://pvrlabs.xyz/img/pvrlabs_alpha_bg.png",
             "description": "PVR Labs specializes in Java performance optimization, providing expert consulting services to enhance application efficiency and performance.",
-            "telephone": "+1 858 283-3597",
-            "email": "pvrlabs@duck.com",
             "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "San Diego",
@@ -158,18 +156,18 @@
     <nav class="navbar">
         <div class="container">
             <a href="#hero" class="logo">PVR<span class="logo-accent">Labs</span></a>
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="primary-navigation">
                 <li><a href="#hero" class="nav-link">Home</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#process" class="nav-link">Our Process</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="hamburger">
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
-            </div>
+            </button>
         </div>
     </nav>
 </header>
@@ -267,15 +265,12 @@
                 </div>
                 <div class="about-text">
                     <h2 class="section-title-left">About <span class="highlight">PVR Labs</span></h2>
-                    <p><strong>PVR Labs</strong> is a boutique
-                        consulting firm specializing in Java performance optimization and JVM
-                        tuning. Founded and led by a former Google engineer, PVR Labs combines deep
-                        Java expertise with a passion for maximizing the performance of modern Java
-                        applications.</p>
-                    <p>At PVR Labs, we believe performance is a core
-                        feature - not an afterthought. We help businesses optimize Java applications
-                        to run faster, more scalable, and highly responsive, delivering excellent
-                        user experiences while reducing infrastructure and operational costs.</p>
+                    <p><strong>PVR Labs</strong> is a boutique consulting firm specializing in Java performance
+                        optimization and JVM tuning. Founded and led by a former Google engineer, PVR Labs combines
+                        deep Java expertise with a passion for maximizing the performance of modern Java applications.</p>
+                    <p>Located in the San Diego area and serving clients globally, we help businesses optimize Java
+                        applications to run faster, scale more effectively, and reduce infrastructure and operational
+                        costs.</p>
 
                     <ul class="about-values">
                         <li><span class="highlight">></span> Deep Expertise</li>
@@ -341,10 +336,7 @@
             <div class="calendly-inline-widget" data-url="https://calendly.com/paseoverderesearch/30min?background_color=1a1a1a&text_color=2ecc71&primary_color=cee9da&hide_gdpr_banner=1"></div>
             <div class="contact-wrapper">
                 <div class="contact-details">
-                    <h3>Direct Contact</h3>
-                    <p><span class="highlight">Email:</span> <a href="mailto:pvrlabs@duck.com">pvrlabs@duck.com</a></p>
-                    <p><span class="highlight">Phone:</span> <a href="tel:+18582833597">(858) 283-3597</a></p>
-                    <p><span class="highlight">Location:</span> San Diego, CA (Serving clients globally)</p>
+                    <h3>Connect</h3>
                     <div class="social-links">
                         <a href="https://www.linkedin.com/company/pvrlabs" aria-label="LinkedIn Profile">
                             <svg>
@@ -359,8 +351,8 @@
                     </div>
                     <h3>Send us a Message</h3>
                     <form action="https://formspree.io/f/mdkgvrlk" method="POST">
-                        <p><label for="contact-name" class="highlight">Name:</label> <input type="text" id="contact-name" name="name" required></p>
-                        <p><label for="contact-email" class="highlight">Email:</label> <input type="email" id="contact-email" name="email" required></p>
+                        <p><label for="contact-name" class="highlight">Name:</label> <input type="text" id="contact-name" name="name" autocomplete="name" required></p>
+                        <p><label for="contact-email" class="highlight">Email:</label> <input type="email" id="contact-email" name="email" autocomplete="email" required></p>
                         <p><label for="contact-message" class="highlight">Message:</label> <textarea id="contact-message" name="message" rows="3"
                                                                              required></textarea></p>
                         <button type="submit" class="btn btn-primary">Send Message</button>
@@ -389,7 +381,7 @@ https://pvrlabs.xyz/ -->
 <script src="https://www.statcounter.com/counter/counter.js" async></script>
 <noscript>
     <div class="statcounter"><a title="Web Analytics"
-                                href="https://statcounter.com/" target="_blank"><img
+                                href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img
             class="statcounter"
             src="https://c.statcounter.com/13137699/0/28f9c550/1/"
             alt="Web Analytics"
@@ -398,4 +390,3 @@ https://pvrlabs.xyz/ -->
 <!-- End of Statcounter Code -->
 </body> <!-- v0.1.1 -->
 </html>
-
