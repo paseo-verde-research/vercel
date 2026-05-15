@@ -100,22 +100,10 @@ h1, h2, h3, h4 {
 }
 
 .product-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     font-family: var(--font-display);
-    font-size: 1.3rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--text-primary);
-    letter-spacing: 1px;
-}
-
-.product-name {
-    display: block;
-}
-
-.logo-accent {
-    color: var(--primary-green);
 }
 
 .nav-menu {
@@ -125,14 +113,52 @@ h1, h2, h3, h4 {
 }
 
 .nav-link {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: var(--text-primary);
+    padding: 8px 0;
+    position: relative;
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    font-size: 1rem;
+    text-transform: none;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-green);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
 }
 
 .nav-link:hover {
     color: var(--primary-green);
+}
+
+.hamburger {
+    background: transparent;
+    border: 0;
+    display: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.hamburger .bar {
+    display: block;
+    width: 28px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--primary-green);
+    transition: all 0.3s ease-in-out;
+    border-radius: 2px;
 }
 
 /* --- Hero Section --- */
@@ -141,7 +167,27 @@ h1, h2, h3, h4 {
     min-height: auto;
     display: flex;
     align-items: center;
-    background: radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.05) 0%, transparent 50%);
+    background: var(--bg-dark) url('../img/carbon-fibre-v2.png');
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before { /* Green glow effect matching main site */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.08) 0%, rgba(46, 204, 113, 0) 80%);
+    animation: pulseGlow 10s infinite ease-in-out;
+    will-change: transform, opacity;
+    z-index: 0;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
 }
 
 .hero-grid {
@@ -149,6 +195,8 @@ h1, h2, h3, h4 {
     grid-template-columns: 1.95fr 1.05fr;
     gap: 30px;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-title {
@@ -165,6 +213,13 @@ h1, h2, h3, h4 {
     margin-bottom: 18px;
     max-width: 650px;
     font-weight: 400;
+}
+
+.hero-tagline {
+    font-size: 1.1rem;
+    margin-bottom: 22px;
+    font-family: var(--font-body);
+    max-width: 650px;
 }
 
 .workflow-strip {
@@ -541,21 +596,6 @@ h1, h2, h3, h4 {
     color: var(--bg-dark);
 }
 
-/* --- Hero Section Fixes --- */
-.hero-tagline {
-    font-size: 1.1rem;
-    margin-bottom: 22px;
-    font-family: var(--font-body);
-    max-width: 650px;
-}
-
-.hero-subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    color: var(--text-secondary);
-    max-width: 650px;
-}
-
 /* --- Responsive --- */
 @media (max-width: 992px) {
     .features-grid {
@@ -572,6 +612,48 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        flex-direction: column;
+        background-color: var(--bg-medium);
+        width: 100%;
+        height: calc(100vh - var(--header-height));
+        text-align: center;
+        transition: left 0.3s ease-in-out;
+        padding-top: 2rem;
+        gap: 0;
+        overflow-y: auto;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-menu li {
+        margin: 1.5rem 0;
+    }
+
+    .nav-link {
+        font-size: 1.2rem;
+    }
+
+    .hamburger {
+        display: block;
+        z-index: 1001;
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
     .why-bar {
         flex-direction: column;
         align-items: flex-start;
