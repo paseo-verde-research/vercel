@@ -23,7 +23,7 @@
         }
         .install-header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
         .install-header h1 {
             font-size: 2.8rem;
@@ -32,74 +32,87 @@
         .install-header p {
             color: var(--text-secondary);
             font-size: 1.05rem;
-            max-width: 500px;
+            max-width: 800px;
             margin: 0 auto;
         }
-        .install-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            max-width: 1240px;
+        
+        /* New Tab Layout */
+        .tabs-container {
+            max-width: 800px;
             margin: 0 auto;
-        }
-        .method-card {
-            background: rgba(10, 10, 10, 0.5);
+            background: rgba(10, 10, 10, 0.4);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 32px;
-            transition: border-color 0.3s ease;
+            overflow: hidden;
         }
-        .method-card:hover {
-            border-color: var(--primary-green);
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 20px;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.02);
         }
-        .method-card h2 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-        .code-block {
-            background: #1A1A1A;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 18px 20px;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            line-height: 1.7;
-            color: var(--terminal-green);
-            word-break: break-word;
-            overflow-x: auto;
-            position: relative;
-            cursor: pointer;
-        }
-        .code-block .prompt {
+        .tab-btn {
+            background: none;
+            border: none;
             color: #666;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            padding: 20px 0;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
         }
-        .code-block .cont {
-            display: block;
-            padding-left: 1.2em;
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+        .tab-btn.active {
+            color: var(--text-primary);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text-primary);
+        }
+        .command-box {
+            padding: 35px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .command-text {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+        }
+        .command-text::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
         }
         .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 5px;
-            padding: 5px 7px;
-            line-height: 1;
+            background: transparent;
+            border: none;
+            color: #666;
             cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease;
+            padding: 5px;
+            transition: color 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
         .copy-btn:hover {
-            background: rgba(255,255,255,0.12);
+            color: var(--primary-green);
         }
         .copy-btn.copied {
-            border-color: var(--primary-green);
-        }
-        .copy-btn svg {
-            display: block;
+            color: var(--primary-green);
         }
         .copy-btn .check {
             display: none;
@@ -110,12 +123,16 @@
         .copy-btn.copied .check {
             display: block;
         }
+
         @media (max-width: 768px) {
-            .install-grid {
-                grid-template-columns: 1fr;
-            }
             .install-header h1 {
                 font-size: 2rem;
+            }
+            .command-text {
+                font-size: 0.95rem;
+            }
+            .tabs-header {
+                gap: 20px;
             }
         }
     </style>
@@ -150,30 +167,28 @@
         <div class="container">
             <div class="install-header">
                 <h1>Install <span class="highlight">AI Badger</span></h1>
-                <p>The CLI that keeps your code local and works with any AI chat.</p>
+                <p>Get started with the local-first CLI for AI code context.</p>
             </div>
-            <div class="install-grid">
-                <div class="method-card">
-                    <h2>Homebrew</h2>
-                    <div class="code-block" data-copy="brew tap pvrlabs/aibadger&#10;brew install pvrlabs/aibadger/badger">
-                        <span class="prompt">$</span> brew tap pvrlabs/aibadger<br>
-                        <span class="prompt">$</span> brew install pvrlabs/aibadger/badger
-                        <button class="copy-btn">
-                            <svg class="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                            <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </button>
-                    </div>
+
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-method="curl">curl</button>
+                    <button class="tab-btn" data-method="brew">brew</button>
                 </div>
-                <div class="method-card">
-                    <h2>curl</h2>
-                    <div class="code-block" data-copy="curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh">
-                        <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/<br>
-                        <span class="cont">PVRLabs/aibadger/main/install.sh</span> | sh
-                        <button class="copy-btn">
-                            <svg class="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                            <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </button>
-                    </div>
+                <div class="command-box">
+                    <code class="command-text" id="command-text">curl -fsSL
+                        https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh</code>
+                    <button class="copy-btn" id="copy-btn">
+                        <svg class="copy" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        <svg class="check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -189,17 +204,30 @@
 <script src="/script.js"></script>
 
 <script>
-document.querySelectorAll('.code-block[data-copy]').forEach(block => {
-    const btn = block.querySelector('.copy-btn');
-    const copy = () => {
-        navigator.clipboard.writeText(block.dataset.copy).then(() => {
-            btn.classList.add('copied');
-            setTimeout(() => btn.classList.remove('copied'), 2000);
-        });
+    const tabs = document.querySelectorAll('.tab-btn');
+    const commandText = document.getElementById('command-text');
+    const copyBtn = document.getElementById('copy-btn');
+
+    const commands = {
+        curl: "curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh",
+        brew: "brew tap pvrlabs/aibadger && brew install badger"
     };
-    btn.addEventListener('click', e => { e.stopPropagation(); copy(); });
-    block.addEventListener('click', copy);
-});
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const method = tab.dataset.method;
+            commandText.textContent = commands[method];
+        });
+    });
+
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(commandText.textContent).then(() => {
+            copyBtn.classList.add('copied');
+            setTimeout(() => copyBtn.classList.remove('copied'), 2000);
+        });
+    });
 </script>
 
 </body>
