@@ -38,18 +38,20 @@
         
         /* New Tab Layout */
         .tabs-container {
-            max-width: 800px;
+            width: min(800px, calc(100vw - 40px));
             margin: 0 auto;
             background: rgba(10, 10, 10, 0.4);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
+            box-sizing: border-box;
         }
         .tabs-header {
             display: flex;
+            justify-content: flex-start;
             border-bottom: 1px solid var(--border-color);
             padding: 0 20px;
-            gap: 30px;
+            gap: 18px;
             background: rgba(255, 255, 255, 0.02);
         }
         .tab-btn {
@@ -58,10 +60,12 @@
             color: #666;
             font-family: var(--font-body);
             font-size: 0.95rem;
-            padding: 20px 0;
+            padding: 20px 2px;
             cursor: pointer;
             position: relative;
             transition: color 0.3s ease;
+            width: auto;
+            min-width: 0;
         }
         .tab-btn:hover {
             color: var(--text-primary);
@@ -80,16 +84,19 @@
         }
         .command-box {
             padding: 35px 30px;
-            display: flex;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
             align-items: center;
-            justify-content: space-between;
             gap: 20px;
+            height: 156px;
         }
         .command-text {
             font-family: var(--font-body);
             font-size: 1.1rem;
             color: var(--text-primary);
-            white-space: nowrap;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            min-width: 0;
             overflow-x: auto;
             scrollbar-width: none; /* Firefox */
         }
@@ -131,8 +138,9 @@
             .command-text {
                 font-size: 0.95rem;
             }
-            .tabs-header {
-                gap: 20px;
+            .command-box {
+                height: 180px;
+                padding: 28px 20px;
             }
         }
     </style>
@@ -176,8 +184,7 @@
                     <button class="tab-btn" data-method="brew">brew</button>
                 </div>
                 <div class="command-box">
-                    <code class="command-text" id="command-text">curl -fsSL
-                        https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh</code>
+                    <code class="command-text" id="command-text">curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh</code>
                     <button class="copy-btn" id="copy-btn">
                         <svg class="copy" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -202,6 +209,38 @@
 </footer>
 
 <script src="/script.js?v=20260515"></script>
+<script>
+    (() => {
+        const commands = {
+            curl: 'curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh',
+            brew: 'brew tap pvrlabs/aibadger\nbrew install pvrlabs/aibadger/badger'
+        };
+        const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+        const commandText = document.getElementById('command-text');
+        const copyButton = document.getElementById('copy-btn');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const method = tab.dataset.method;
+                if (!commands[method] || !commandText) {
+                    return;
+                }
+                tabs.forEach(item => item.classList.toggle('active', item === tab));
+                commandText.textContent = commands[method];
+                copyButton?.classList.remove('copied');
+            });
+        });
+
+        copyButton?.addEventListener('click', async () => {
+            if (!commandText) {
+                return;
+            }
+            await navigator.clipboard.writeText(commandText.textContent.trim());
+            copyButton.classList.add('copied');
+            window.setTimeout(() => copyButton.classList.remove('copied'), 1500);
+        });
+    })();
+</script>
 <!-- Default Statcounter code for PVR Labs
 https://pvrlabs.xyz/ -->
 <script>
