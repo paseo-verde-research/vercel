@@ -14,36 +14,109 @@
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
-        .install-container {
-            padding: 100px 0;
-            text-align: center;
+        .install-section {
+            padding: 80px 0;
             min-height: calc(100vh - 160px);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
         }
-        .install-title {
-            font-size: 3rem;
-            margin-bottom: 20px;
+        .install-header {
+            text-align: center;
+            margin-bottom: 50px;
         }
-        .install-card {
+        .install-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+        }
+        .install-header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .install-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+        .method-card {
             background: rgba(10, 10, 10, 0.5);
             border: 1px solid var(--border-color);
-            padding: 40px;
             border-radius: 12px;
-            max-width: 600px;
-            width: 100%;
+            padding: 32px;
+            transition: border-color 0.3s ease;
         }
-        .command-box {
-            background: #1A1A1A;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-            font-family: var(--font-body);
-            color: var(--terminal-green);
+        .method-card:hover {
+            border-color: var(--primary-green);
+        }
+        .method-card h2 {
             font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .code-block {
+            background: #1A1A1A;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 18px 20px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--terminal-green);
+            word-break: break-word;
+            overflow-x: auto;
+            position: relative;
+            cursor: pointer;
+        }
+        .code-block .prompt {
+            color: #666;
+        }
+        .code-block .cont {
+            display: block;
+            padding-left: 1.2em;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 5px;
+            padding: 5px 7px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.12);
+        }
+        .copy-btn.copied {
+            border-color: var(--primary-green);
+        }
+        .copy-btn svg {
+            display: block;
+        }
+        .copy-btn .check {
+            display: none;
+        }
+        .copy-btn.copied .copy {
+            display: none;
+        }
+        .copy-btn.copied .check {
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .install-grid {
+                grid-template-columns: 1fr;
+            }
+            .install-header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
@@ -59,9 +132,9 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="/aibadger/" class="nav-link">Home</a></li>
+                <li><a href="/aibadger/install.html" class="nav-link active">Install</a></li>
                 <li><a href="/aibadger/demo.html" class="nav-link">Demo</a></li>
                 <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
-                <li><a href="/#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -72,21 +145,39 @@
     </nav>
 </header>
 
-<main class="container">
-    <div class="install-container">
-        <div class="install-card">
-            <h1 class="install-title">Ready to <span class="highlight">Badger?</span></h1>
-            <p>Install the CLI to start extracting context from your local projects.</p>
-            
-            <div class="command-box">
-                curl -sSL https://aibadger.io/install.sh | sh
+<main>
+    <section class="install-section">
+        <div class="container">
+            <div class="install-header">
+                <h1>Install <span class="highlight">AI Badger</span></h1>
+                <p>The CLI that keeps your code local and works with any AI chat.</p>
             </div>
-            
-            <p style="font-size: 0.9rem; color: var(--text-secondary);">
-                Supports macOS, Linux, and Windows (via WSL).
-            </p>
+            <div class="install-grid">
+                <div class="method-card">
+                    <h2>Homebrew</h2>
+                    <div class="code-block" data-copy="brew tap pvrlabs/aibadger&#10;brew install pvrlabs/aibadger/badger">
+                        <span class="prompt">$</span> brew tap pvrlabs/aibadger<br>
+                        <span class="prompt">$</span> brew install pvrlabs/aibadger/badger
+                        <button class="copy-btn">
+                            <svg class="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="method-card">
+                    <h2>curl</h2>
+                    <div class="code-block" data-copy="curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh">
+                        <span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/<br>
+                        <span class="cont">PVRLabs/aibadger/main/install.sh</span> | sh
+                        <button class="copy-btn">
+                            <svg class="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 </main>
 
 <footer id="footer">
@@ -96,6 +187,20 @@
 </footer>
 
 <script src="/script.js"></script>
+
+<script>
+document.querySelectorAll('.code-block[data-copy]').forEach(block => {
+    const btn = block.querySelector('.copy-btn');
+    const copy = () => {
+        navigator.clipboard.writeText(block.dataset.copy).then(() => {
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 2000);
+        });
+    };
+    btn.addEventListener('click', e => { e.stopPropagation(); copy(); });
+    block.addEventListener('click', copy);
+});
+</script>
 
 </body>
 </html>
