@@ -202,33 +202,22 @@
 </footer>
 
 <script src="/script.js"></script>
-
+<!-- Default Statcounter code for PVR Labs
+https://pvrlabs.xyz/ -->
 <script>
-    const tabs = document.querySelectorAll('.tab-btn');
-    const commandText = document.getElementById('command-text');
-    const copyBtn = document.getElementById('copy-btn');
-
-    const commands = {
-        curl: "curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh",
-        brew: "brew tap pvrlabs/aibadger && brew install badger"
-    };
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            const method = tab.dataset.method;
-            commandText.textContent = commands[method];
-        });
-    });
-
-    copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(commandText.textContent).then(() => {
-            copyBtn.classList.add('copied');
-            setTimeout(() => copyBtn.classList.remove('copied'), 2000);
-        });
-    });
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
 </script>
-
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics"
+                                href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img
+            class="statcounter"
+            src="https://c.statcounter.com/13137699/0/28f9c550/1/"
+            alt="Web Analytics"
+            referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
 </body>
 </html>
