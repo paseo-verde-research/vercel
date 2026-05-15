@@ -4,65 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Badger - Interactive Demo</title>
+    <meta name="description" content="See AI Badger in action. A step-by-step interactive walkthrough of the local-first code context workflow.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <style>
-        .demo-container {
-            padding: 100px 0;
-            text-align: center;
-        }
-        .demo-window {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #000;
-            border: 1px solid var(--primary-green);
-            border-radius: 8px;
-            height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--terminal-green);
-            font-family: var(--font-body);
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: var(--text-secondary);
-        }
-    </style>
+    <link rel="stylesheet" href="demo-ui.css">
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
-    <header id="header">
-        <nav class="navbar">
-            <div class="container">
-                <a href="/aibadger" class="logo">AI<span class="logo-accent">Badger</span></a>
-                <ul class="nav-menu">
-                    <li><a href="/aibadger" class="nav-link">Home</a></li>
-                    <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
 
-    <main class="container">
-        <div class="demo-container">
-            <h1>Interactive Demo</h1>
-            <p>The AI Badger demo is currently under development.</p>
-            
-            <div class="demo-window">
-                [ Interactive Walkthrough Placeholder ]
-            </div>
-            
-            <a href="/aibadger" class="back-link">&larr; Back to Landing Page</a>
-        </div>
-    </main>
-
-    <footer id="footer">
+<header id="header">
+    <nav class="navbar">
         <div class="container">
-            <p>&copy; 2026 PVR Labs. All Rights Reserved.</p>
+            <div class="header-left">
+                <a href="/aibadger/" class="product-logo">
+                    AI <span class="highlight">Badger</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/aibadger/" class="nav-link">Home</a></li>
+                <li><a href="/aibadger/demo.html" class="nav-link active">Demo</a></li>
+                <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </div>
-    </footer>
+    </nav>
+</header>
+
+<main>
+    <section class="demo-desktop" aria-label="AIBADGER workflow demo">
+        <h1 class="sr-only">AIBADGER demo</h1>
+        <div class="window-container">
+            <section id="terminal" class="window terminal active" aria-label="AIBADGER terminal window">
+                <div class="window-header">
+                    <div class="traffic-lights" aria-hidden="true">
+                        <span class="red"></span>
+                        <span class="yellow"></span>
+                        <span class="green"></span>
+                    </div>
+                    <div class="window-title">AIBADGER</div>
+                </div>
+                <div class="window-body">
+                    <div id="terminal-content" class="content"></div>
+                    <div class="cursor-line">
+                        <span id="terminal-cursor-prefix"></span>
+                        <span id="terminal-input"></span>
+                        <span class="cursor"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="browser" class="window browser" aria-label="AI chat browser window">
+                <div class="window-header">
+                    <div class="traffic-lights" aria-hidden="true">
+                        <span class="red"></span>
+                        <span class="yellow"></span>
+                        <span class="green"></span>
+                    </div>
+                    <div class="window-title">AI Chat - Browser Window</div>
+                </div>
+                <div class="window-body">
+                    <div class="browser-address-bar">
+                        <div class="address-input">https://ai-chat.internal</div>
+                    </div>
+                    <div id="browser-content" class="content">
+                        <div class="chat-header">AI Chat</div>
+                        <div id="chat-messages"></div>
+                        <div class="chat-input-area">
+                            <span id="browser-input" data-placeholder="Ask anything"></span>
+                            <span class="cursor"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="demo-footer-controls">
+            <nav class="demo-controls" aria-label="Demo playback controls">
+                <button id="prev-btn" type="button">Back</button>
+                <button id="play-pause-btn" type="button">Pause</button>
+                <button id="next-btn" type="button">Next</button>
+                <div class="step-indicator">Step <span id="current-step">1</span>/9</div>
+            </nav>
+
+            <div class="demo-cta">
+                <p>Ready to use AI Badger? <a href="install.html" class="highlight">Install now!</a></p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="footer-brand-pvr">PVR</span><span class="logo-accent">Labs</span></a> · 2026</p>
+    </div>
+</footer>
+
+<script src="/script.js"></script>
+<script src="demo-script.js"></script>
+
 </body>
 </html>

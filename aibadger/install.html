@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Badger - Install</title>
+    <meta name="description" content="Install AI Badger on your machine. Local-first code context for any AI chat.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .install-container {
+            padding: 100px 0;
+            text-align: center;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .install-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .install-card {
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .command-box {
+            background: #1A1A1A;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            font-family: var(--font-body);
+            color: var(--terminal-green);
+            font-size: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <div class="header-left">
+                <a href="/aibadger/" class="product-logo">
+                    AI <span class="highlight">Badger</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/aibadger/" class="nav-link">Home</a></li>
+                <li><a href="/aibadger/demo.html" class="nav-link">Demo</a></li>
+                <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <div class="install-container">
+        <div class="install-card">
+            <h1 class="install-title">Ready to <span class="highlight">Badger?</span></h1>
+            <p>Install the CLI to start extracting context from your local projects.</p>
+            
+            <div class="command-box">
+                curl -sSL https://aibadger.io/install.sh | sh
+            </div>
+            
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Supports macOS, Linux, and Windows (via WSL).
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="footer-brand-pvr">PVR</span><span class="logo-accent">Labs</span></a> · 2026</p>
+    </div>
+</footer>
+
+<script src="/script.js"></script>
+
+</body>
+</html>
