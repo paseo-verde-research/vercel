@@ -163,7 +163,9 @@ h1, h2, h3, h4 {
 }
 
 /* --- Hero Section --- */
-.hero-section {
+.hero-section,
+.install-section,
+.demo-desktop {
     padding: 12px 0 18px 0;
     min-height: auto;
     display: flex;
