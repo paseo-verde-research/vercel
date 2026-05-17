@@ -53,7 +53,6 @@
             action: async (runId) => {
                 await wait(TIMING.initialBlink, runId);
                 showHint(elements.terminalInput, "Enter your coding task; Badger will use this to build initial project context.");
-                await wait(TIMING.longPause, runId);
                 await typeText(elements.terminalInput, " Fix all bugs, make no misskates", runId);
                 await wait(600, runId);
                 await backspace(elements.terminalInput, 6, runId);
