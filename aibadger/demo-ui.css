@@ -458,7 +458,8 @@
 
     .window {
         width: 100%;
-        height: min(45vh, 400px);
+        height: 320px;
+        flex: none;
         transform: scale(1) !important;
         margin: 0;
     }
