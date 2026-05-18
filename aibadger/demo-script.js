@@ -33,12 +33,12 @@
     };
 
     function renderHeader(active) {
-        const headerRule = "────────────────────────────────────────────────────────";
+        const headerRule = "────────────────────────────────────────";
         const pipeline = ["Map", "Extract", "Apply"].map((s, i) => 
             i < active ? `<span class="success">✓</span> ${s}` : (i === active ? `[${s}]` : s)
         ).join(" → ");
         
-        return `${headerRule}\n /\\_/\\     🦡 AIBADGER\n( o.o )    Local-first code context for any AI chat\n > ^ <     Pipeline: ${pipeline}\n${headerRule}`;
+        return `${headerRule}\n /\\_/\\     🦡 AIBADGER\n( o.o )    Local-first code context\n > ^ <     Pipeline: ${pipeline}\n${headerRule}`;
     }
 
     const steps = [
@@ -260,9 +260,28 @@
         hint.className = 'feature-hint';
         hint.innerText = text;
         document.body.appendChild(hint);
+        
         const hRect = hint.getBoundingClientRect();
-        hint.style.left = `${rect.left + (rect.width / 2) - (hRect.width / 2)}px`;
-        hint.style.top = `${rect.top - hRect.height - 15}px`;
+        const padding = 20;
+        
+        let left = rect.left + (rect.width / 2) - (hRect.width / 2);
+        let top = rect.top - hRect.height - 15;
+        
+        // Keep within viewport horizontally
+        if (left < padding) left = padding;
+        if (left + hRect.width > window.innerWidth - padding) {
+            left = window.innerWidth - hRect.width - padding;
+        }
+        
+        // If too high, show below anchor
+        if (top < padding) {
+            top = rect.bottom + 15;
+            hint.classList.add('below');
+        }
+        
+        hint.style.left = `${left}px`;
+        hint.style.top = `${top + window.scrollY}px`;
+        
         setTimeout(() => hint.classList.add('visible'), 50);
         setTimeout(() => {
             hint.classList.remove('visible');
