@@ -52,7 +52,7 @@
         
         /* New Tab Layout */
         .tabs-container {
-            width: min(800px, calc(100vw - 40px));
+            width: min(920px, calc(100vw - 40px));
             margin: 0 auto;
             background: rgba(10, 10, 10, 0.4);
             border: 1px solid var(--border-color);
@@ -223,6 +223,7 @@
                 <div class="tabs-header">
                     <button class="tab-btn active" data-method="curl">curl</button>
                     <button class="tab-btn" data-method="brew">brew</button>
+                    <button class="tab-btn" data-method="pwsh">powershell</button>
                 </div>
                 <div class="command-box">
                     <code class="command-text" id="command-text">curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh</code>
@@ -238,6 +239,12 @@
                         </svg>
                     </button>
                 </div>
+                <p class="install-note" id="note-curl" style="text-align:center; font-size:0.8rem; opacity:0.6; margin: -5px 0 15px 0; line-height:1.5;">
+                    Installs to ~/.local/bin. Add it to your PATH if not already included.
+                </p>
+                <p class="install-note" id="note-pwsh" style="display:none; text-align:center; font-size:0.8rem; opacity:0.6; margin: -5px 0 15px 0; line-height:1.5;">
+                    Run in PowerShell 5.1+ on Windows. You may need to set your <a href="https://go.microsoft.com/fwlink/?LinkID=135170" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">execution policy</a> first.
+                </p>
             </div>
             <p style="text-align: center; margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">
                 AI Badger is 100% free, open-source, and auditable under the MIT License.
@@ -257,7 +264,8 @@
     (() => {
         const commands = {
             curl: 'curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh',
-            brew: 'brew tap pvrlabs/aibadger\nbrew install pvrlabs/aibadger/badger'
+            brew: 'brew tap pvrlabs/aibadger\nbrew install pvrlabs/aibadger/badger',
+            pwsh: 'irm https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.ps1 | iex'
         };
         const tabs = Array.from(document.querySelectorAll('.tab-btn'));
         const commandText = document.getElementById('command-text');
@@ -272,6 +280,10 @@
                 tabs.forEach(item => item.classList.toggle('active', item === tab));
                 commandText.textContent = commands[method];
                 copyButton?.classList.remove('copied');
+                ['curl', 'pwsh'].forEach(id => {
+                    const el = document.getElementById('note-' + id);
+                    if (el) el.style.display = id === method ? 'block' : 'none';
+                });
             });
         });
 
