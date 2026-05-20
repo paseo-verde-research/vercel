@@ -6,7 +6,7 @@
     --demo-header-bg: rgba(255, 255, 255, 0.1);
     --demo-text-color: #e0e0e0;
     --demo-accent-color: #2ECC71;
-    --chat-accent: #007aff;
+    --chat-accent: var(--demo-accent-color);
     --window-height: 500px;
 }
 
@@ -31,13 +31,13 @@
     height: 100%;
     background: radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.08) 0%, rgba(46, 204, 113, 0) 80%);
     animation: pulseGlow 10s infinite ease-in-out;
-    will-change: transform, opacity;
+    will-change: opacity;
     z-index: 0;
 }
 
 @keyframes pulseGlow {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.7; }
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.4; }
 }
 
 .sr-only {
@@ -82,8 +82,7 @@
 
 .window-header {
     height: 38px;
-    background: var(--demo-header-bg);
-    backdrop-filter: blur(10px);
+    background: rgba(40, 40, 40, 0.9);
     display: flex;
     align-items: center;
     padding: 0 15px;
@@ -246,9 +245,9 @@
 }
 
 .user-message {
-    background: #e3f2fd;
+    background: #e8f5e9;
     align-self: flex-start;
-    border: 1px solid #bbdefb;
+    border: 1px solid #c8e6c9;
 }
 
 .ai-message {
@@ -335,13 +334,12 @@
 }
 
 .demo-controls {
-    background: rgba(0,0,0,0.7);
+    background: rgba(10, 10, 10, 0.95);
     padding: 8px 18px;
     border-radius: 30px;
     display: flex;
     align-items: center;
     gap: 12px;
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.05);
 }
 
