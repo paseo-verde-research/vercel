@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles - PVR Labs Engineering Insights</title>
+    <meta name="description" content="Engineering insights on AI coding workflows, token cost optimization, local code context, and secure air-gapped development from the team behind AI Badger.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/">
+    <meta property="og:title" content="Articles - PVR Labs Engineering Insights">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Engineering insights on AI coding workflows, token cost optimization, local code context, and secure development.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/pvrlabs_alpha_bg.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Articles - PVR Labs Engineering Insights">
+    <meta name="twitter:description" content="Engineering insights on AI coding workflows, token cost optimization, local code context, and secure development.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/pvrlabs_alpha_bg.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        .articles-hero {
+            padding: 120px 0 40px;
+            text-align: center;
+        }
+        .articles-hero h1 {
+            font-size: 2.8rem;
+        }
+        .articles-hero p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .articles-list {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0 80px;
+        }
+        .article-entry {
+            padding: 28px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .article-entry:last-of-type {
+            border-bottom: none;
+        }
+        .article-entry h2 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+        }
+        .article-entry h2 a {
+            color: var(--text-primary);
+        }
+        .article-entry h2 a:hover {
+            color: var(--primary-green);
+        }
+        .article-entry h2::before {
+            content: "> ";
+            color: var(--primary-green);
+            font-weight: 400;
+        }
+        .article-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        .article-entry p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+        .back-link:hover {
+            color: var(--dark-green);
+        }
+        @media (max-width: 768px) {
+            .articles-hero h1 { font-size: 2rem; }
+            .articles-hero { padding: 100px 0 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">PVR<span class="logo-accent">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/aibadger/" class="nav-link">AI Badger</a></li>
+                <li><a href="/articles/" class="nav-link active">Articles</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="articles-hero">
+        <div class="container">
+            <h1>Engineering <span class="highlight">Insights</span></h1>
+            <p>Practical deep-dives on AI-assisted coding workflows, token optimization, and local-first development tools.</p>
+        </div>
+    </section>
+
+    <section class="articles-list">
+        <div class="container">
+
+            <article class="article-entry">
+                <h2><a href="/articles/claude-code-token-savings.html">Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</a></h2>
+                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> — July 4, 2026</div>
+                <p>How autonomous CLI agents burn through API tokens on high-level design debates and refactoring reviews — and how to offload that work to flat-rate web chats using local project mapping.</p>
+            </article>
+
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="footer-brand-pvr">PVR</span><span class="logo-accent">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Articles on AI coding workflows and local-first development.</p>
+    </div>
+</footer>
+
+<script src="/script.js?v=20260515"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>
