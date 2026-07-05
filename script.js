@@ -189,5 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
         calendlyObserver.observe(contactSection);
     }
 
+// --- Active nav link based on current path (for cross-page nav links) ---
+    const articlesLink = document.querySelector('.nav-link[href="/articles/"]');
+    if (articlesLink) {
+        const path = window.location.pathname;
+        if (path === '/articles/' || path.startsWith('/articles/')) {
+            articlesLink.classList.add('active');
+        }
+    }
+
     console.log("Welcome to PVRLabs! Java performance optimization is our specialty.");
 });
