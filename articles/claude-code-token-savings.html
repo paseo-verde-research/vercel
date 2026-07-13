@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</title>
-    <meta name="description" content="Learn how autonomous CLI agents like Claude Code burn tokens on design debates and refactoring reviews — and how to offload that work to flat-rate web chats with local-first project mapping.">
+    <meta name="description" content="Learn how autonomous CLI agents like Claude Code burn tokens on design debates and refactoring reviews - and how to offload that work to flat-rate web chats with local-first project mapping.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/claude-code-token-savings.html">
 
@@ -13,7 +13,7 @@
     <meta property="og:url" content="https://pvrlabs.xyz/articles/claude-code-token-savings.html">
     <meta property="og:title" content="Bypassing the Claude Code 'Token Tax': Smart Code Reviews with Local Mapping">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="How autonomous CLI agents burn tokens on design debates — and how to offload that work to flat-rate web chats using local project mapping.">
+    <meta property="og:description" content="How autonomous CLI agents burn tokens on design debates - and how to offload that work to flat-rate web chats using local project mapping.">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/claude-code-token-savings-og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="675">
@@ -21,13 +21,13 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Bypassing the Claude Code 'Token Tax': Smart Code Reviews with Local Mapping">
-    <meta name="twitter:description" content="How autonomous CLI agents burn tokens on design debates — and how to offload that work to flat-rate web chats.">
+    <meta name="twitter:description" content="How autonomous CLI agents burn tokens on design debates - and how to offload that work to flat-rate web chats.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/claude-code-token-savings-og.jpg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap"></noscript>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -61,9 +61,9 @@
             margin-bottom: 1rem;
         }
         .article-page .article-body h3 {
-            font-family: var(--font-body);
+            font-family: var(--font-heading);
             font-size: 1.15rem;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--text-primary);
             margin-top: 2rem;
             margin-bottom: 0.75rem;
@@ -86,12 +86,13 @@
             padding: 40px 20px 16px;
             overflow-x: auto;
             margin-bottom: 1.5rem;
+            font-family: var(--font-mono);
             font-size: 0.9rem;
             line-height: 1.5;
             position: relative;
         }
         .article-page .article-body code {
-            font-family: var(--font-body);
+            font-family: var(--font-mono);
             font-size: 0.9em;
         }
         .article-page .article-body pre[data-lang]::before {
@@ -99,7 +100,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            font-family: var(--font-body);
+            font-family: var(--font-mono);
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -127,7 +128,7 @@
             margin: 40px 0;
         }
         .badger-pitch h3 {
-            font-family: var(--font-display);
+            font-family: var(--font-heading);
             margin-bottom: 10px;
         }
         .badger-pitch p {
@@ -169,7 +170,7 @@
 <header id="header">
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="logo">PVR<span class="logo-accent">Labs</span></a>
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/" class="nav-link">Home</a></li>
                 <li><a href="/aibadger/" class="nav-link">AI Badger</a></li>
@@ -189,7 +190,7 @@
         <a href="/articles/" class="back-link">&larr; Back to Articles</a>
 
         <h1>Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</h1>
-        <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> — July 6, 2026</div>
+        <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 6, 2026</div>
 
         <div class="article-body">
 
@@ -200,8 +201,8 @@
             <h2>Two Ways You Save Tokens</h2>
 
             <ol>
-                <li><strong>Dramatically more efficient usage</strong> — Badger eliminates noisy full-repo scans and recursive context loops. The AI receives clean, surgical context instead of everything.</li>
-                <li><strong>Leverage fixed-cost web chats</strong> — Most web interfaces run on flat-rate monthly subscriptions (like ChatGPT Plus or Claude Pro) or offer generous free daily tiers. By offloading heavy discussions to the web chat, you leverage a fixed-cost window and avoid burning through your metered API balances or rolling agent limits.</li>
+                <li><strong>Dramatically more efficient usage:</strong> Badger eliminates noisy full-repo scans and recursive context loops. The AI receives clean, surgical context instead of everything.</li>
+                <li><strong>Leverage fixed-cost web chats:</strong> Most web interfaces run on flat-rate monthly subscriptions (like ChatGPT Plus or Claude Pro) or offer generous free daily tiers. By offloading heavy discussions to the web chat, you leverage a fixed-cost window and avoid burning through your metered API balances or rolling agent limits.</li>
             </ol>
 
             <p>Even on platforms where limits are shared, Badger helps you stay efficient and avoid the faster-burning autonomous modes.</p>
@@ -236,7 +237,7 @@ PREFIX:src/components/TodoItem.tsx#return</code></pre>
 
             <h3>Step 4: Paste Focused Prompt 2</h3>
 
-            <p>Badger assembles clean context. Paste into your web chat — get high-quality review feedback without token waste.</p>
+            <p>Badger assembles clean context. Paste into your web chat - get high-quality review feedback without token waste.</p>
 
             <h3>Step 5: Apply Changes</h3>
 
@@ -264,11 +265,11 @@ PREFIX:src/components/TodoItem.tsx#return</code></pre>
             <h2>Why This Workflow Wins</h2>
 
             <ul>
-                <li><strong>Precision-first</strong> — Only requested files/spans are sent</li>
-                <li><strong>Fixed-cost advantage</strong> — Maximize value from subscriptions like ChatGPT Plus and Claude Pro</li>
-                <li><strong>Review-optimized</strong> — Focuses the AI on risks and correctness</li>
-                <li><strong>Privacy &amp; control</strong> — Fully local until you copy; explicit consent for writes</li>
-                <li><strong>Universal</strong> — Works with React, Go, Java, Node.js, Python, etc.</li>
+                <li><strong>Precision-first:</strong> Only requested files/spans are sent</li>
+                <li><strong>Fixed-cost advantage:</strong> Maximize value from subscriptions like ChatGPT Plus and Claude Pro</li>
+                <li><strong>Review-optimized:</strong> Focuses the AI on risks and correctness</li>
+                <li><strong>Privacy &amp; control:</strong> Fully local until you copy; explicit consent for writes</li>
+                <li><strong>Universal:</strong> Works with React, Go, Java, Node.js, Python, etc.</li>
             </ul>
 
             <h2>Install and Try It</h2>
@@ -302,7 +303,7 @@ brew install pvrlabs/aibadger/badger</code></pre>
 
 <footer id="footer">
     <div class="container">
-        <p>Built at <a href="/" class="footer-brand"><span class="footer-brand-pvr">PVR</span><span class="logo-accent">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
         <p>Articles on AI coding workflows and local-first development.</p>
     </div>
 </footer>

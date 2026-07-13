@@ -10,8 +10,10 @@
     --text-primary: #F0F0F0;
     --text-secondary: #D0D0D0;
     --border-color: #222222;
-    --font-display: 'Orbitron', sans-serif;
-    --font-body: 'Roboto Mono', monospace;
+    --font-logo: 'Orbitron', sans-serif;
+    --font-heading: 'Sora', sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
     --container-width: 1240px;
     --header-height: 70px;
 }
@@ -29,7 +31,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 body::after {
@@ -63,9 +65,10 @@ a:hover {
 }
 
 h1, h2, h3, h4 {
-    font-family: var(--font-display);
+    font-family: var(--font-heading);
     color: var(--primary-green);
     line-height: 1.2;
+    font-weight: 600;
 }
 
 .highlight {
@@ -99,7 +102,7 @@ h1, h2, h3, h4 {
 }
 
 .product-logo {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--text-primary);
@@ -237,7 +240,7 @@ h1, h2, h3, h4 {
 }
 
 .w-step {
-    font-family: var(--font-display);
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -262,15 +265,15 @@ h1, h2, h3, h4 {
 .btn {
     padding: 12px 24px;
     border-radius: 4px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.8px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .btn-primary, .btn-install {
@@ -360,14 +363,14 @@ h1, h2, h3, h4 {
     font-size: 0.9rem;
     flex: 1;
     text-align: center;
-    font-family: var(--font-body);
+    font-family: var(--font-mono);
     letter-spacing: 0.04em;
 }
 
 .terminal-body {
     background: #1F1F1F;
     padding: 6px 14px 6px;
-    font-family: var(--font-body);
+    font-family: var(--font-mono);
 }
 
 .terminal-header-content {
@@ -774,12 +777,18 @@ h1, h2, h3, h4 {
 }
 
 .footer-brand {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
     letter-spacing: 0.8px;
+    font-weight: 700;
 }
 
-.footer-brand-pvr {
+.logo-accent {
+    color: var(--primary-green);
+}
+
+.logo-labs {
     color: var(--text-primary);
+    margin-left: 0.1em; /* slight gap: PVR Labs */
 }
 
 .footer-brand:hover {
