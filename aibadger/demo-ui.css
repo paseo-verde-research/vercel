@@ -119,7 +119,7 @@
     flex: 1;
     padding: 18px;
     overflow-y: auto;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-mono);
 }
 
 /* Terminal Styles */

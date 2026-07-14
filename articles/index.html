@@ -23,8 +23,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400;700&display=swap"></noscript>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -36,7 +36,9 @@
             text-align: center;
         }
         .articles-hero h1 {
+            font-family: var(--font-logo);
             font-size: 2.8rem;
+            font-weight: 700;
         }
         .articles-hero p {
             color: var(--text-secondary);
@@ -56,7 +58,7 @@
             border-bottom: none;
         }
         .article-entry h2 {
-            font-family: var(--font-display);
+            font-family: var(--font-heading);
             font-size: 1.3rem;
             margin-bottom: 6px;
         }
@@ -101,7 +103,7 @@
 <header id="header">
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="logo">PVR<span class="logo-accent">Labs</span></a>
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/" class="nav-link">Home</a></li>
                 <li><a href="/articles/" class="nav-link active">Articles</a></li>
@@ -129,7 +131,7 @@
 
             <article class="article-entry">
                 <h2><a href="/articles/claude-code-token-savings.html">Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</a></h2>
-                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> — July 4, 2026</div>
+                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 4, 2026</div>
                 <p>Autonomous coding agents consume tokens rapidly during reviews by rescanning projects and pulling broad context. Learn how to map locally, extract precise snippets, and review efficiently in any web chat.</p>
             </article>
 
@@ -139,7 +141,7 @@
 
 <footer id="footer">
     <div class="container">
-        <p>Built at <a href="/" class="footer-brand"><span class="footer-brand-pvr">PVR</span><span class="logo-accent">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
         <p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p>
     </div>
 </footer>

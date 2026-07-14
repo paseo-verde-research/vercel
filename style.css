@@ -10,8 +10,10 @@
     --text-primary: #E0E0E0;  /* Light grey for primary text */
     --text-secondary: #A0A0A0;/* Medium grey for subtitles/secondary text */
     --border-color: #333333;  /* Border color for elements */
-    --font-display: 'Orbitron', sans-serif; /* For headings, logo */
-    --font-body: 'Roboto Mono', monospace;  /* For body text, code */
+    --font-logo: 'Orbitron', sans-serif;       /* Logos & product wordmarks */
+    --font-heading: 'Sora', sans-serif;        /* Section titles & headlines */
+    --font-body: 'Inter', system-ui, sans-serif; /* Body, nav, buttons, forms */
+    --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
     --container-width: 1240px;
     --header-height: 70px;
 }
@@ -33,7 +35,7 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-primary);
     line-height: 1.6;
-    font-weight: 300;
+    font-weight: 400;
     overflow-x: hidden; /* Prevent horizontal scroll */
     position: relative;
     text-rendering: optimizeLegibility;
@@ -55,9 +57,10 @@ body::after {
     z-index: -1;
 }
 
-.services-section, 
-.about-section, 
-.process-section, 
+.services-section,
+.about-section,
+.process-section,
+.aibadger-section,
 .contact-section {
     content-visibility: auto;
     contain-intrinsic-size: auto 500px;
@@ -80,11 +83,11 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
+    font-family: var(--font-heading);
     color: var(--primary-green);
     margin-bottom: 1rem;
     line-height: 1.3;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .highlight {
@@ -114,11 +117,11 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
     padding: 12px 28px;
     border-radius: 5px;
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-body);
+    font-weight: 600;
     font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
@@ -182,14 +185,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--text-primary);
 }
 
+/* PVR green, Labs white */
 .logo-accent {
     color: var(--primary-green);
+}
+
+.logo-labs {
+    color: var(--text-primary);
+    margin-left: 0.1em; /* slight gap: PVR Labs */
 }
 
 .nav-menu {
@@ -291,7 +300,9 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 55%;
 }
 
+/* Short top-level display titles only - not long H1s or section titles */
 .hero-title {
+    font-family: var(--font-logo);
     font-size: 3.2rem;
     font-weight: 700;
     margin-bottom: 1.2rem;
@@ -314,7 +325,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 25px;
-    font-family: var(--font-body);
+    font-family: var(--font-mono);
     font-size: 0.9rem;
     box-shadow: 0 10px 30px rgba(0, 255, 100, 0.1);
     backdrop-filter: blur(5px);
@@ -504,8 +515,8 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--font-heading);
+    font-weight: 600;
     font-size: 1.2rem;
     border: 3px solid var(--bg-medium); /* To make it pop from the line */
 }
@@ -527,10 +538,121 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+/* --- AI Badger Section --- */
+.aibadger-section {
+    padding: 60px 0;
+    background-color: var(--bg-dark);
+}
+
+.aibadger-section .section-title {
+    font-family: var(--font-logo);
+    font-weight: 700;
+}
+
+.aibadger-panel {
+    background-color: var(--bg-light);
+    padding: 2rem 2.25rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-green);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.aibadger-panel:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.aibadger-ascii {
+    font-family: var(--font-mono);
+    white-space: pre;
+    line-height: 1.15;
+    font-size: 1.1rem;
+    color: var(--primary-green);
+    margin: 0 0 1rem;
+}
+
+.aibadger-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.aibadger-lead {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.aibadger-description {
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.aibadger-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 1.75rem;
+    max-width: 420px;
+    text-align: left;
+}
+
+.aibadger-features li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.65rem;
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+}
+
+.aibadger-features li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
+.aibadger-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.aibadger-actions .btn {
+    margin-left: 0;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+}
+
+.aibadger-actions .btn-link {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.aibadger-actions .btn-link:hover {
+    color: var(--primary-green);
+}
+
+
 /* --- Contact Section --- */
 .contact-section {
     padding: 60px 0;
-    background-color: var(--bg-dark);
+    background-color: var(--bg-medium);
 }
 .calendly-inline-widget {
     min-width: 320px;
@@ -633,12 +755,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .footer-brand {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
     letter-spacing: 0.8px;
-}
-
-.footer-brand-pvr {
-    color: var(--text-primary);
+    font-weight: 700;
 }
 
 .footer-brand:hover {
@@ -712,6 +831,7 @@ h1, h2, h3, h4, h5, h6 {
     .services-section,
     .about-section,
     .process-section,
+    .aibadger-section,
     .contact-section {
         padding: 50px 0;
     }
@@ -810,6 +930,17 @@ h1, h2, h3, h4, h5, h6 {
     }
     .service-grid {
         grid-template-columns: 1fr; /* Single column on small mobile */
+    }
+    .aibadger-panel {
+        padding: 1.5rem 1.25rem;
+    }
+    .aibadger-actions {
+        flex-direction: column;
+    }
+    .aibadger-actions .btn {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
     }
 }
 
