@@ -309,11 +309,6 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.2;
 }
 
-.display-title {
-    font-family: var(--font-logo);
-    font-weight: 700;
-}
-
 .hero-subtitle {
     font-size: 1.15rem;
     color: var(--text-secondary);
