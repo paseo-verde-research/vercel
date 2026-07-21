@@ -30,6 +30,8 @@
 .campaign-workflow li { position: relative; counter-increment: workflow; padding: 5px 0 5px 29px; color: var(--text-secondary); font-size: .9rem; }
 .campaign-workflow li::before { content: counter(workflow); position: absolute; left: 0; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: #272727; color: var(--text-secondary); text-align: center; font: .68rem/18px var(--font-mono); }
 .compact-workflow li::before { color: #07110d; background: var(--primary-green); }
+.workflow-outcome { margin-top: 13px; padding: 9px 11px; border-radius: 5px; background: rgba(46,204,113,.12); color: var(--text-primary); font-size: .78rem; line-height: 1.45; }
+.workflow-outcome strong { color: var(--terminal-green); }
 .workflow-total { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); color: var(--text-primary); font: 600 .9rem var(--font-mono); }
 .workflow-total span { color: var(--text-secondary); font-weight: 400; }
 .workflow-note { margin-top: 12px; color: var(--text-secondary); font-size: .8rem; }
