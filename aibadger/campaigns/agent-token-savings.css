@@ -7,21 +7,22 @@
 .header-star-link:hover { border-color: var(--primary-green); color: var(--primary-green); }
 .campaign-hero { padding: 58px 0 46px; background: var(--bg-dark) url('../../img/carbon-fibre-v2.png'); position: relative; overflow: hidden; }
 .campaign-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 82% 25%, rgba(46,204,113,.16), transparent 36%); pointer-events: none; }
-.campaign-hero-grid, .evidence-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(290px, .65fr); align-items: center; gap: 58px; }
+.campaign-hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(290px, .65fr); align-items: center; gap: 58px; }
 .campaign-hero h1 { max-width: 760px; margin: 8px 0 18px; font-size: clamp(2.4rem, 5vw, 4.4rem); letter-spacing: -2px; }
 .campaign-lede { max-width: 680px; color: var(--text-secondary); font-size: 1.15rem; line-height: 1.6; }
 .campaign-lede strong { color: var(--text-primary); }
 .campaign-cta { margin-top: 25px; font-size: .92rem; }
 .trust-line { margin-top: 13px; color: var(--text-secondary); font-size: .82rem; }
 .trust-line span { color: var(--primary-green); padding: 0 4px; }
+.hero-experiment-link { display: inline-block; margin-top: 8px; font-size: .82rem; font-weight: 600; }
 .results-panel { border: 1px solid rgba(46,204,113,.35); border-radius: 12px; padding: 20px 24px; background: rgba(10,20,14,.82); box-shadow: 0 22px 60px rgba(0,0,0,.35); }
 .panel-kicker { margin-bottom: 9px; }
 .hero-metric { display: flex; align-items: baseline; gap: 13px; padding: 11px 0; border-top: 1px solid rgba(255,255,255,.09); }
-.hero-metric strong, .metric-row strong { font-family: var(--font-heading); color: var(--primary-green); font-size: 2rem; line-height: 1; }
+.hero-metric strong { font-family: var(--font-heading); color: var(--primary-green); font-size: 2rem; line-height: 1; }
 .hero-metric span { color: var(--text-secondary); font-size: .9rem; }
 .comparison-section { padding: 42px 0 34px; }
 .section-intro { margin-bottom: 18px; }
-.section-intro h2, .evidence-section h2, .final-cta h2 { margin-top: 4px; font-size: clamp(1.5rem, 2.4vw, 2.1rem); }
+.section-intro h2, .final-cta h2 { margin-top: 4px; font-size: clamp(1.5rem, 2.4vw, 2.1rem); }
 .workflow-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .campaign-workflow { border: 1px solid var(--border-color); border-radius: 10px; padding: 21px 24px; background: rgba(255,255,255,.018); }
 .compact-workflow { border-color: rgba(46,204,113,.43); background: rgba(46,204,113,.045); }
@@ -34,17 +35,9 @@
 .workflow-outcome strong { color: var(--terminal-green); }
 .workflow-total { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); color: var(--text-primary); font: 600 .9rem var(--font-mono); }
 .workflow-total span { color: var(--text-secondary); font-weight: 400; }
-.workflow-note { margin-top: 12px; color: var(--text-secondary); font-size: .8rem; }
-.evidence-section { padding: 30px 0 40px; border-top: 1px solid var(--border-color); background: rgba(255,255,255,.012); }
-.metric-row { display: flex; gap: 23px; margin-top: 18px; }
-.metric-row div { display: grid; gap: 3px; }
-.metric-row span { color: var(--text-secondary); font-size: .76rem; line-height: 1.25; max-width: 105px; }
-.secondary-metric { margin-top: 16px; color: var(--text-secondary); font-size: .78rem; }
-.secondary-metric span { color: #9d9d9d; }
-.evidence-copy { border-left: 2px solid var(--primary-green); padding-left: 20px; }
-.caveat { color: var(--text-primary); font-size: .9rem; line-height: 1.55; }
-.method-note { margin-top: 9px; color: var(--text-secondary); font-size: .78rem; line-height: 1.5; }
-.experiment-link { display: inline-block; margin-top: 15px; font-weight: 600; font-size: .9rem; }
+.comparison-caveats { margin-top: 14px; padding: 12px 15px; border-left: 2px solid var(--primary-green); background: rgba(46,204,113,.04); color: var(--text-secondary); font-size: .78rem; line-height: 1.5; }
+.comparison-caveats p + p { margin-top: 6px; }
+.comparison-caveats strong { color: var(--text-primary); }
 .final-cta { min-height: 142px; padding: 26px 0; border-top: 1px solid var(--border-color); }
 .final-cta h2 { color: var(--text-primary); }
 .final-cta p { margin-top: 5px; color: var(--text-secondary); font-size: .88rem; }
@@ -52,11 +45,10 @@
 
 @media (max-width: 760px) {
     .campaign-hero { padding: 42px 0 36px; }
-    .campaign-hero-grid, .evidence-grid { grid-template-columns: 1fr; gap: 28px; }
+    .campaign-hero-grid { grid-template-columns: 1fr; gap: 28px; }
     .campaign-hero h1 { letter-spacing: -1px; }
     .workflow-comparison { grid-template-columns: 1fr; }
-    .metric-row { gap: 16px; }
-    .hero-metric strong, .metric-row strong { font-size: 1.7rem; }
+    .hero-metric strong { font-size: 1.7rem; }
     .final-cta { padding: 30px 0; }
     .final-cta .container { align-items: flex-start; flex-direction: column; }
     .final-cta .campaign-cta { margin-top: 0; }

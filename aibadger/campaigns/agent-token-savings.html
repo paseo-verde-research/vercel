@@ -42,6 +42,7 @@
                     <p class="campaign-lede">AI Badger maps your repository locally so an external AI chat can produce a detailed implementation plan. In one experiment, that workflow used <strong>32% fewer active tokens</strong>, <strong>86% fewer reasoning tokens</strong>, and finished <strong>55% faster.</strong></p>
                     <a class="btn btn-primary campaign-cta" href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">Star AI Badger on GitHub <span aria-hidden="true">↗</span></a>
                     <p class="trust-line">Free and open source <span>·</span> Local-first <span>·</span> No API keys <span>·</span> No repository upload</p>
+                    <a href="https://github.com/PVRLabs/aibadger/blob/main/docs/articles/can-ai-badger-reduce-local-coding-agent-token-usage/index.md" class="hero-experiment-link" target="_blank" rel="noopener noreferrer">See the full one-run experiment <span aria-hidden="true">→</span></a>
                 </div>
                 <aside class="results-panel" aria-label="Experiment results">
                     <p class="panel-kicker">ONE DOGFOODING RUN</p>
@@ -83,28 +84,9 @@
                     <p class="workflow-total">38,356 <span>active tokens</span> · 94.4s</p>
                 </article>
             </div>
-            <p class="workflow-note">The detailed compact handoff is where the measured token savings occurred. AI Badger currently provides the local project context; it does not automatically generate the final implementation plan.</p>
-        </div>
-    </section>
-
-    <section class="evidence-section" aria-labelledby="evidence-title">
-        <div class="container">
-            <div class="evidence-grid">
-                <div>
-                    <p class="eyebrow">MEASURED CHANGE</p>
-                    <h2 id="evidence-title">Plan first. Execute with focus.</h2>
-                    <div class="metric-row">
-                        <div><strong>32%</strong><span>fewer active tokens</span></div>
-                        <div><strong>86%</strong><span>fewer reasoning tokens</span></div>
-                        <div><strong>55%</strong><span>faster</span></div>
-                    </div>
-                    <p class="secondary-metric">63.2% less total token movement <span>(including cache)</span></p>
-                </div>
-                <div class="evidence-copy">
-                    <p class="caveat"><strong>One app, one feature, and one run per workflow.</strong> Directional evidence, not guaranteed savings. External-chat usage was not included.</p>
-                    <p class="method-note">One local agent (OpenCode with DeepSeek V4 Flash) was used, but the resulting implementations differed. This compares execution efficiency—not equivalent final-code quality—and may not generalize to other repositories or tasks.</p>
-                    <a href="https://github.com/PVRLabs/aibadger/blob/main/docs/articles/can-ai-badger-reduce-local-coding-agent-token-usage/index.md" class="experiment-link" target="_blank" rel="noopener noreferrer">Read the full experiment <span aria-hidden="true">→</span></a>
-                </div>
+            <div class="comparison-caveats">
+                <p><strong>One app, one feature, and one run per workflow.</strong> The measurements cover OpenCode execution only; external-chat usage was not included. Directional evidence, not guaranteed savings.</p>
+                <p>The detailed compact handoff is where the measured token savings occurred. AI Badger currently provides the local project context; it does not automatically generate the final implementation plan. The resulting implementations differed, so this compares execution efficiency—not equivalent final-code quality.</p>
             </div>
         </div>
     </section>
