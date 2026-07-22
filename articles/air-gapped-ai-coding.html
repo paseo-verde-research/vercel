@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air-Gapped AI Coding for Proprietary Repositories</title>
+    <meta name="description" content="Use powerful AI coding assistants without giving them direct access to your proprietary codebase. A local-first approach creates a controlled, auditable boundary between your repo and the cloud.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/air-gapped-ai-coding.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/air-gapped-ai-coding.html">
+    <meta property="og:title" content="Air-Gapped AI Coding for Proprietary Repositories">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Keep proprietary repositories local while using AI chats through a controlled, reviewable workflow.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Air-Gapped AI Coding for Proprietary Repositories">
+    <meta name="twitter:description" content="Keep proprietary repositories local while using AI chats through a controlled, reviewable workflow.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        .article-page { max-width: 780px; margin: 0 auto; padding: 120px 20px 80px; }
+        .article-page h1 { font-size: 2.2rem; margin-bottom: 8px; }
+        .article-meta { font-size: .9rem; color: var(--text-secondary); margin-bottom: 32px; }
+        .article-body { font-size: 1.05rem; line-height: 1.8; color: var(--text-primary); }
+        .article-body p { margin-bottom: 1.5rem; }
+        .article-body h2 { font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+        .article-body h3 { font-family: var(--font-heading); font-size: 1.15rem; margin: 2rem 0 .75rem; }
+        .article-body ul, .article-body ol { margin: 0 0 1.5rem; padding-left: 1.5rem; }
+        .article-body li { margin-bottom: .5rem; }
+        .article-body pre { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 6px; padding: 40px 20px 16px; overflow-x: auto; margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: .9rem; line-height: 1.5; position: relative; }
+        .article-body pre[data-lang]::before { content: attr(data-lang); position: absolute; top: 0; left: 0; padding: 4px 14px; border-radius: 6px 0 6px 0; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); background: var(--bg-medium); color: var(--text-secondary); font-family: var(--font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+        .article-body code { font-family: var(--font-mono); font-size: .9em; }
+        .article-body p > code, .article-body li > code { padding: 2px 6px; border: 1px solid var(--border-color); border-radius: 3px; background: var(--bg-light); }
+        .badger-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 8px; padding: 24px 28px; margin: 40px 0; }
+        .badger-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { font-size: .85rem; padding: 8px 20px; }
+        .back-link { display: inline-block; margin-bottom: 40px; font-size: .9rem; }
+        @media (max-width: 768px) { .article-page { padding: 100px 16px 60px; } .article-page h1 { font-size: 1.6rem; } }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar"><div class="container">
+        <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+        <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+        <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+    </div></nav>
+</header>
+
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>Air-Gapped AI Coding: Keeping Proprietary Repositories Off the Cloud</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 21, 2026</div>
+
+    <div class="article-body">
+        <p>AI coding agents are powerful, but they often demand broad repository access. For enterprise developers, freelancers under NDA, and privacy-conscious engineers, that access is a non-starter.</p>
+        <p>The question isn’t whether AI can help. It’s whether you can use it <em>without</em> handing over unrestricted access to sensitive code, credentials, or customer data.</p>
+        <p>The answer is yes, <strong>if</strong> the architecture puts you in control.</p>
+
+        <h2>Recent Incidents Highlight the Risk</h2>
+        <p>Recent reports of repository uploads and prompt-injection vulnerabilities show why developers need visibility into exactly what leaves their machine. An agent’s stated file-access rules or a provider’s policy are not the same thing as a technical boundary around proprietary code.</p>
+
+        <h2>What “Air-Gapped AI Coding” Really Means</h2>
+        <p>True air-gapping, keeping both the model and codebase fully offline, is the gold standard but often impractical. In practice, three models exist:</p>
+        <ol>
+            <li><strong>Fully local AI:</strong> Everything stays on your hardware. Maximum privacy, but higher hardware demands and potentially weaker model performance.</li>
+            <li><strong>Local-first, selective disclosure:</strong> The repository stays local. A trusted local tool prepares limited, reviewable context that you manually paste into an approved cloud chat.</li>
+            <li><strong>Cloud-connected agents:</strong> Broad repository access with automation. Most convenient, with the largest trust boundary.</li>
+        </ol>
+        <p>For most proprietary work, <strong>local-first, selective disclosure</strong> offers the best balance: strong external reasoning without direct cloud access to your codebase.</p>
+
+        <h2>Privacy Policies Aren’t Technical Boundaries</h2>
+        <p>Provider policies matter, but they do not solve data minimization. Even enterprise-oriented tools can send more context than a task requires. The safer approach is to minimize disclosure before anything reaches the provider.</p>
+
+        <h2>The Secure Workflow: Map → Extract → Apply</h2>
+        <p>A strong local-first tool should keep three operations visible and controllable:</p>
+        <ul>
+            <li><strong>Map</strong> the repository structure, including languages, modules, and files, without sending source code.</li>
+            <li><strong>Extract</strong> only the specific files or spans the AI requests.</li>
+            <li><strong>Apply</strong> changes only after you review the write plan.</li>
+        </ul>
+        <p><a href="/aibadger/"><strong>AI Badger</strong></a> implements this model as a local CLI with no network calls, telemetry, or cloud dependency. It acts as a strict buffer between your repository and an AI chat such as ChatGPT, Claude, or Grok.</p>
+
+        <h3>A Simple Workflow</h3>
+        <pre data-lang="workflow"><code>1. Describe task → Badger generates a project map (no source code)
+   ↓ You review and copy it to chat
+2. AI requests specific context → Badger extracts → You review
+   ↓ You copy approved context to chat
+3. AI suggests changes → Badger shows a write plan → You confirm</code></pre>
+        <p>This creates explicit gates on both outbound disclosure and inbound modifications.</p>
+
+        <h2>The Clipboard Is Part of the Boundary</h2>
+        <p>Copy-paste feels less “agentic”, but that explicitness is the feature. Every transfer is deliberate. Endpoint security still matters, of course: clipboard managers and remote-access tools can observe content.</p>
+
+        <h2>When This Approach Wins</h2>
+        <ul>
+            <li>Enterprise teams allowed to use web chats but not repo-indexing extensions</li>
+            <li>Freelancers working under strict NDAs</li>
+            <li>Engineers handling credentials, unreleased features, or customer data</li>
+            <li>Teams using multiple AI providers without per-vendor integrations</li>
+        </ul>
+        <p>It trades some automation for visible control, which is ideal for architecture, debugging, reviews, and focused implementation.</p>
+
+        <h2>A Practical Conservative Process</h2>
+        <ol>
+            <li>Confirm the target AI service is approved.</li>
+            <li>Run Badger locally and review the project map.</li>
+            <li>Let the AI request only what it needs.</li>
+            <li>Review extracted source before sharing.</li>
+            <li>Review and confirm all proposed writes.</li>
+            <li>Run tests, linting, and secret scans before committing.</li>
+        </ol>
+
+        <h2>Conclusion</h2>
+        <p>Secure AI coding isn’t just about choosing the provider with the best policy. It’s about controlling the path between your repository and the model.</p>
+        <p>Keep the repo local. Expose only narrowly selected, human-reviewed context. Require confirmation on every write.</p>
+        <p><a href="/aibadger/">AI Badger</a> is built for this controlled-disclosure model: it keeps your proprietary code under your control while letting you use the cloud reasoning you choose.</p>
+    </div>
+
+    <div class="badger-pitch">
+        <p><strong>Try AI Badger on a non-sensitive repository.</strong> Run <code>badger</code> in your project root to start a controlled local-first workflow.</p>
+        <div class="article-actions"><a href="/aibadger/install.html" class="btn btn-primary">Install AI Badger →</a><a href="/aibadger/demo.html" class="btn btn-secondary">Try the interactive demo →</a><a href="https://github.com/PVRLabs/aibadger" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">View on GitHub →</a></div>
+    </div>
+</article></main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260515"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

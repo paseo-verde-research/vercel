@@ -155,15 +155,14 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- Header & Navigation --- */
 #header {
-    background-color: rgba(10, 10, 10, 0.85); /* Semi-transparent dark background */
-    backdrop-filter: blur(10px); /* Frosted glass effect */
+    background-color: var(--bg-medium);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
     height: var(--header-height);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
     border-bottom: 1px solid transparent; /* Initially transparent */
 }
 
@@ -366,12 +365,12 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     left: 50%;
     top: 8px;
-    transform: translateX(-50%);
+    transform: translate(-50%, 0);
     animation: scrollHint 2s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 @keyframes scrollHint {
-    0%, 100% { top: 8px; opacity: 1; }
-    50% { top: 20px; opacity: 0; }
+    0%, 100% { transform: translate(-50%, 0); opacity: 1; }
+    50% { transform: translate(-50%, 12px); opacity: 0; }
 }
 
 
@@ -392,7 +391,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--bg-light);
     padding: 30px;
     border-radius: 8px;
-    border-left: 4px solid var(--primary-green);
+    border: 1px solid var(--border-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
 }
@@ -558,7 +557,6 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1.75rem 1.75rem 1.5rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    border-left: 4px solid var(--primary-green);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     min-width: 0;
 }
