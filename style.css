@@ -561,7 +561,7 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 0;
 }
 
-.product-card:nth-child(3) {
+.product-card--scriptella {
     grid-column: 1 / -1;
     justify-self: center;
     max-width: calc(50% - 0.875rem);
@@ -879,6 +879,9 @@ h1, h2, h3, h4, h5, h6 {
     .products-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+    }
+    .product-card--scriptella {
+        max-width: none;
     }
     .product-visual--aibadger,
     .product-visual--statlite,
