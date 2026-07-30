@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Taught Maven to Be an Introvert | PVR Labs</title>
+    <meta name="description" content="How mvn-lite reduced successful Maven output by more than 99.7% while preserving exit status, actionable diagnostics, and complete failure logs for coding agents.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/introverted-maven.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/introverted-maven.html">
+    <meta property="og:title" content="I Taught Maven to Be an Introvert">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.">
+    <meta property="article:published_time" content="2026-07-30T15:45:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="I Taught Maven to Be an Introvert">
+    <meta name="twitter:description" content="A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        .article-page { max-width: 48.75rem; margin: 0 auto; padding: 120px 20px 80px; }
+        .article-page h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); margin-bottom: 8px; }
+        .article-subtitle { color: var(--text-secondary); font-size: 1.1rem; font-style: italic; line-height: 1.6; margin-bottom: 12px; }
+        .article-meta { font-size: .9rem; color: var(--text-secondary); margin-bottom: 32px; }
+        .article-body { font-size: 1.05rem; line-height: 1.65; color: var(--text-primary); }
+        .article-body p { margin-bottom: 1.2rem; }
+        .article-body h2 { font-size: 1.6rem; margin: 2.2rem 0 .85rem; }
+        .article-body ul, .article-body ol { margin: 0 0 1.05rem; padding-left: 1.5rem; }
+        .article-body p + ul, .article-body p + ol { margin-top: -.3rem; }
+        .article-body li { margin-bottom: .2rem; }
+        .article-body li:last-child { margin-bottom: 0; }
+        .article-body pre { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 6px; padding: 40px 20px 16px; overflow-x: auto; margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: .9rem; line-height: 1.5; position: relative; }
+        .article-body pre[data-lang]::before { content: attr(data-lang); position: absolute; top: 0; left: 0; padding: 4px 14px; border-radius: 6px 0 6px 0; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); background: var(--bg-medium); color: var(--text-secondary); font-family: var(--font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+        .article-body code { font-family: var(--font-mono); font-size: .9em; }
+        .article-body p > code, .article-body li > code { padding: 2px 6px; border: 1px solid var(--border-color); border-radius: 3px; background: var(--bg-light); }
+        .article-body blockquote { border-left: 4px solid var(--primary-green); margin: 1.2rem 0; padding: 4px 0 4px 20px; color: var(--text-secondary); }
+        .article-body blockquote p { margin-bottom: 0; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.2rem; }
+        .article-table { border-collapse: collapse; font-size: .92rem; min-width: 34rem; width: 100%; }
+        .article-table th, .article-table td { border: 1px solid var(--border-color); padding: 9px 10px; text-align: left; vertical-align: top; }
+        .article-table th { background: var(--bg-light); }
+        .article-table th:not(:first-child), .article-table td:not(:first-child) { text-align: right; }
+        .terminal-comparison { background: #111713; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 16px 36px rgba(0, 0, 0, .18); margin: 32px 0 40px; overflow: hidden; }
+        .terminal-bar { align-items: center; background: #1b241e; border-bottom: 1px solid #2a352d; display: flex; gap: 7px; min-height: 38px; padding: 0 14px; }
+        .terminal-dot { border-radius: 50%; height: 10px; width: 10px; }
+        .terminal-dot:nth-child(1) { background: #ff5f57; }
+        .terminal-dot:nth-child(2) { background: #febc2e; }
+        .terminal-dot:nth-child(3) { background: #28c840; }
+        .terminal-title { color: #8b9b90; font-family: var(--font-mono); font-size: .72rem; margin-left: 5px; }
+        .terminal-content { color: #d9e5dc; font-family: var(--font-mono); padding: 24px; }
+        .terminal-content p { margin-bottom: 10px; }
+        .terminal-content p:last-child { margin-bottom: 0; }
+        .terminal-label { color: #9aaba0; display: inline-block; width: 9rem; }
+        .terminal-track { color: #66766b; letter-spacing: -.15em; white-space: nowrap; }
+        .terminal-track--lite { color: var(--primary-green); letter-spacing: 0; }
+        .terminal-value { color: #fff; letter-spacing: normal; margin-left: 8px; white-space: nowrap; }
+        .terminal-result { border-top: 1px solid #2a352d; color: var(--primary-green); font-family: var(--font-heading); font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 600; margin-top: 20px; padding-top: 18px; text-align: center; }
+        .data-chart { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; margin: 28px 0 32px; padding: clamp(18px, 4vw, 28px); }
+        .data-chart h3 { font-family: var(--font-heading); font-size: clamp(1.05rem, 4vw, 1.3rem); line-height: 1.4; margin: 0 0 6px; }
+        .chart-subtitle { color: var(--text-secondary); font-size: .8rem; margin-bottom: 24px !important; }
+        .chart-row { display: grid; gap: 6px; margin-bottom: 18px; }
+        .chart-row:last-of-type { margin-bottom: 0; }
+        .chart-label { align-items: baseline; display: flex; font-size: .9rem; gap: 10px; justify-content: space-between; }
+        .chart-label strong { color: var(--text-primary); font-family: var(--font-mono); font-size: .86rem; white-space: nowrap; }
+        .chart-track { background: var(--bg-medium); border-radius: 999px; height: 22px; overflow: hidden; }
+        .chart-bar { background: #7c8980; border-radius: inherit; height: 100%; min-width: 4px; }
+        .chart-row--highlight .chart-bar { background: var(--primary-green); box-shadow: 0 0 16px rgba(57, 255, 20, .22); }
+        .chart-row--highlight .chart-label span, .chart-row--highlight .chart-label strong { color: var(--primary-green); }
+        .chart-callout { background: rgba(57, 255, 20, .08); border: 1px solid rgba(57, 255, 20, .28); border-radius: 6px; color: var(--primary-green); font-family: var(--font-heading); font-size: clamp(.95rem, 3vw, 1.1rem); font-weight: 600; margin: 24px 0 0 !important; padding: 12px 16px; text-align: center; }
+        .chart-iteration { align-items: center; color: var(--text-secondary); display: flex; font-size: .82rem; gap: 10px; margin: -4px 0 18px; padding-left: 12px; }
+        .chart-iteration::before { border-bottom: 1px solid var(--primary-green); border-left: 1px solid var(--primary-green); content: ""; height: 18px; width: 16px; }
+        .article-cta { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 8px; padding: 24px 28px; margin: 40px 0; }
+        .article-cta p { margin-bottom: 0; }
+        .article-cta-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .article-cta-actions .btn { align-items: center; display: inline-flex; font-size: .85rem; min-height: 44px; padding: 8px 20px; }
+        .article-cta-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-cta-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        .article-cta-actions .icon { margin-right: 4px; }
+        .back-link { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: 32px; font-size: .9rem; }
+        @media (max-width: 992px) { .article-page { padding-inline: 20px; } }
+        @media (max-width: 768px) { .article-page { padding: 100px 16px 60px; } .article-body h2 { font-size: 1.4rem; } }
+        @media (max-width: 480px) { .article-page { padding-inline: 14px; } .article-body { font-size: 1rem; } .article-body pre { padding-inline: 14px; } .article-cta { padding: 20px; } .terminal-content { font-size: .78rem; padding: 18px 14px; } .terminal-label { display: block; width: auto; } .terminal-value { margin-left: 5px; } }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>I Taught Maven to Be an Introvert</h1>
+    <p class="article-subtitle">How a small Bash wrapper reduced successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</p>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026</div>
+
+    <div class="article-body">
+        <p>Maven is excellent at building Java projects.</p>
+        <p>It is also extremely talkative.</p>
+        <p>That verbosity is usually harmless when a developer is reading a terminal. For a coding agent, however, several thousand bytes of routine build output can displace source code, instructions, and the actual failure from the model’s working context.</p>
+        <p>So I built <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer"><code>mvn-lite</code></a>: a small, deterministic Bash wrapper that keeps successful Maven runs to one line and extracts only bounded, actionable evidence from failures.</p>
+        <p>I call it <strong>Introverted Maven</strong>.</p>
+        <div class="terminal-comparison" role="img" aria-label="Successful build output comparison. Vanilla Maven produced 6,753 bytes. mvn-lite produced 16 bytes, a reduction of more than 99.7 percent.">
+            <div class="terminal-bar" aria-hidden="true"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-title">agent-visible output</span></div>
+            <div class="terminal-content">
+                <p><span class="terminal-label">Vanilla Maven</span><span class="terminal-track">████████████████████████████████</span><span class="terminal-value">6,753 bytes</span></p>
+                <p><span class="terminal-label">mvn-lite</span><span class="terminal-track terminal-track--lite">▏</span><span class="terminal-value">16 bytes</span></p>
+                <div class="terminal-result">More than 99.7% less output</div>
+            </div>
+        </div>
+        <p>In a real four-module Java application, the result was:</p>
+        <ul>
+            <li>successful output reduced from <strong>6,753 bytes to 16 bytes</strong></li>
+            <li>an invalid lifecycle failure reduced from <strong>2,730 bytes to 228 bytes</strong></li>
+            <li>Maven’s original exit status preserved</li>
+            <li>complete failure logs retained</li>
+            <li>no Maven command arguments echoed in compact failure output</li>
+        </ul>
+        <p>The complete methodology, measurements, checksums, intermediate runs, and adoption evidence are available in the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/PVR-LABS-FINANCIAL-ENGINE-APP.md" target="_blank" rel="noopener noreferrer">compatibility experiment report</a>.</p>
+        <p>The goal is not to replace Maven’s diagnostics.</p>
+        <p>The goal is to keep Maven from consuming an agent’s context unless those diagnostics are actually needed.</p>
+
+        <h2>The problem with ordinary Maven output</h2>
+        <p>A routine Maven test run can produce dozens or hundreds of lines covering routine details such as:</p>
+        <ul>
+            <li>reactor ordering</li>
+            <li>plugin execution</li>
+            <li>compiler phases</li>
+            <li>test totals</li>
+        </ul>
+        <p>Most of this is useful when investigating a build, but almost none is useful when it succeeds.</p>
+        <p>A coding agent usually needs to know only:</p>
+        <pre data-lang="text"><code>PASS · 4.240 s</code></pre>
+        <p>If the build fails, the agent needs a compact answer to a different question:</p>
+        <blockquote><p>What is the next actionable thing I should inspect or fix?</p></blockquote>
+        <p>For example:</p>
+        <pre data-lang="text"><code>FAIL
+Test: com.example.AccountServiceTest.createsAccount
+Cause: expected: &lt;ACTIVE&gt; but was: &lt;PENDING&gt;
+Log: .agent-logs/maven/maven-20260730-143210-12345.log</code></pre>
+        <p>The raw Maven output still matters. It simply does not need to occupy the main conversation by default.</p>
+
+        <h2>What <code>mvn-lite</code> does</h2>
+        <p>In compact mode, <code>mvn-lite</code>:</p>
+        <p>It invokes the project’s executable <code>./mvnw</code> with batch mode, transfer progress disabled, and color disabled, then:</p>
+        <ol>
+            <li>captures complete output locally;</li>
+            <li>preserves Maven’s exit status;</li>
+            <li>prints a one-line success or bounded failure summary;</li>
+            <li>retains failed logs and points to the complete log;</li>
+            <li>falls back to a bounded tail for unknown failures.</li>
+        </ol>
+        <p>Successful logs are deleted by default. Failed logs are retained.</p>
+        <p>A successful log can still be preserved explicitly with <code>--keep-log</code>, and ordinary Maven output remains available through <code>--full</code>.</p>
+        <p>It is deliberately small.</p>
+
+        <h2>High-value coverage over completeness</h2>
+        <p><code>mvn-lite</code> targets common local workflows: build, test, package, install, and verify. It recognizes high-value categories including compiler, test, dependency-resolution, failed-goal, and common Maven command errors.</p>
+        <p>The wrapper follows a Pareto-style principle:</p>
+        <blockquote><p>Handle the common local-development cases exceptionally well, and fall back predictably for everything else.</p></blockquote>
+        <p>Unknown output receives a bounded log tail rather than an invented interpretation, and the raw log remains authoritative.</p>
+
+        <h2>Testing it in a real application</h2>
+        <p>I tested <code>mvn-lite</code> in a real four-module Maven application. The selected module ran 102 unit tests using Maven 3.9.16 and GNU Bash 3.2 on macOS. The comparison covered vanilla Maven, the application’s former project-specific low-noise helper, and <code>mvn-lite</code>.</p>
+        <p>Bytes from stdout and stderr were the primary metric because they are exact and tokenizer-independent. I also estimated tokens using:</p>
+        <pre data-lang="text"><code>estimated tokens = ceil(output bytes / 4)</code></pre>
+        <p>That estimate is useful for relative comparison, but it is not an exact model-token or billing measurement.</p>
+
+        <h2>Successful build results</h2>
+        <p>The successful command selected one module and ran its tests:</p>
+        <pre data-lang="bash"><code>./mvnw -B -ntp -Dstyle.color=never -pl common test</code></pre>
+        <p>The former project-specific helper produced:</p>
+        <pre data-lang="text"><code>PASS common tests</code></pre>
+        <p><code>mvn-lite</code> produced:</p>
+        <pre data-lang="text"><code>PASS · 3.944 s</code></pre>
+        <p>The measured output was:</p>
+        <div class="table-scroll" role="region" aria-label="Successful Maven output comparison" tabindex="0">
+            <table class="article-table">
+                <thead><tr><th>Runner</th><th>Bytes</th><th>Lines</th><th>Estimated tokens</th></tr></thead>
+                <tbody>
+                    <tr><td>Vanilla Maven</td><td>6,753</td><td>90</td><td>~1,689</td></tr>
+                    <tr><td>Former project-specific helper</td><td>18</td><td>1</td><td>~5</td></tr>
+                    <tr><td><code>mvn-lite</code></td><td>16</td><td>1</td><td>~4</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Compared with vanilla Maven, <code>mvn-lite</code> reduced successful agent-visible output by more than <strong>99.7%</strong>.</p>
+        <p><code>mvn-lite</code> effectively matched the former project-specific helper. The two-byte difference is operationally meaningless.</p>
+
+        <h2>Failure results</h2>
+        <p>The initial failure experiment invoked an invalid Maven lifecycle phase:</p>
+        <pre data-lang="bash"><code>./mvnw definitely-not-a-maven-phase</code></pre>
+        <p>Vanilla Maven produced 2,730 bytes.</p>
+        <p>The former project-specific helper produced 1,393 bytes.</p>
+        <p>The first version of <code>mvn-lite</code> produced 873 bytes.</p>
+        <p>That was already smaller, but the compact output repeated Maven’s complete list of valid lifecycle phases. The actionable information was only:</p>
+        <pre data-lang="text"><code>Maven: Unknown lifecycle phase "definitely-not-a-maven-phase"</code></pre>
+        <p>I updated the parser to shorten recognized Maven command errors while preserving the complete original message in the raw log.</p>
+        <p>After that change:</p>
+        <div class="data-chart" role="img" aria-label="Invalid lifecycle failure output in bytes. Vanilla Maven: 2,730. Former project-specific helper: 1,393. Original mvn-lite: 873. Updated mvn-lite: 228. The parser improvement reduced mvn-lite output by 73.9 percent.">
+            <h3>Actionable failure output after parser improvement</h3>
+            <p class="chart-subtitle">Agent-visible UTF-8 bytes, stdout + stderr</p>
+            <div class="chart-row">
+                <div class="chart-label"><span>Vanilla Maven</span><strong>2,730</strong></div>
+                <div class="chart-track"><div class="chart-bar" style="width: 100%"></div></div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-label"><span>Former project-specific helper</span><strong>1,393</strong></div>
+                <div class="chart-track"><div class="chart-bar" style="width: 51.03%"></div></div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-label"><span>Original <code>mvn-lite</code></span><strong>873</strong></div>
+                <div class="chart-track"><div class="chart-bar" style="width: 31.98%"></div></div>
+            </div>
+            <div class="chart-iteration">Targeted parser improvement</div>
+            <div class="chart-row chart-row--highlight">
+                <div class="chart-label"><span>Updated <code>mvn-lite</code></span><strong>228</strong></div>
+                <div class="chart-track"><div class="chart-bar" style="width: 8.35%"></div></div>
+            </div>
+            <p class="chart-callout">73.9% less output than the original <code>mvn-lite</code></p>
+        </div>
+        <p>The updated wrapper reduced output by <strong>91.6%</strong> relative to vanilla Maven, <strong>83.6%</strong> relative to the former project-specific helper, and <strong>73.9%</strong> relative to the first <code>mvn-lite</code> implementation. It still preserved Maven’s exit status, the invalid phase, the complete-log location, and rerun guidance.</p>
+
+        <h2>Extracting the immediate cause</h2>
+        <p>Some Maven plugin failures include the useful cause on the same line as the failed goal:</p>
+        <pre data-lang="text"><code>Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test
+(default-test) on project app:
+Execution default-test failed:
+Unable to create temporary directory</code></pre>
+        <p>A useful compact summary needs both:</p>
+        <pre data-lang="text"><code>Goal: org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test)
+Cause: Unable to create temporary directory</code></pre>
+        <p><code>mvn-lite</code> extracts at most one immediate cause from bounded forms such as:</p>
+        <pre data-lang="text"><code>Execution ... failed: &lt;cause&gt;</code></pre>
+        <p>It does not reconstruct arbitrary exception chains or stack traces.</p>
+        <p>During the final application integration, a restricted workspace prevented Surefire from creating its normal <code>target/surefire</code> directory. The installed wrapper preserved exit status 1, retained the complete log, identified the Surefire goal, surfaced <code>Unable to create temporary directory</code>, and remained bounded.</p>
+        <p>The same build passed after normal filesystem permissions were restored.</p>
+
+        <h2 id="try-mvn-lite">Try <code>mvn-lite</code> in your project</h2>
+        <p>Vendor the script under <code>scripts/mvn-lite</code> so the exact wrapper version is reviewable and versioned with the application. Project-specific module names and test tiers remain the responsibility of the project’s own <code>scripts/build</code>.</p>
+        <p>From the root of a project that uses an executable <code>./mvnw</code>, download the latest <code>mvn-lite</code> version:</p>
+        <pre data-lang="bash"><code>mkdir -p scripts
+curl -fsSL \
+  https://raw.githubusercontent.com/ejboy/agent-scripts/main/scripts/mvn-lite \
+  -o scripts/mvn-lite
+chmod +x scripts/mvn-lite</code></pre>
+        <p>This downloads the latest version from the repository’s <code>main</code> branch. For a reproducible vendored copy, replace <code>main</code> with a release tag such as <code>v0.1.0</code> before committing the script.</p>
+        <p>Run your usual Maven goals through the wrapper:</p>
+        <pre data-lang="bash"><code>./scripts/mvn-lite test</code></pre>
+        <p>Arguments are passed through to Maven, so module-specific commands work too:</p>
+        <pre data-lang="bash"><code>./scripts/mvn-lite -pl common test</code></pre>
+        <p>To inspect ordinary Maven output, use the full-output escape hatch:</p>
+        <pre data-lang="bash"><code>./scripts/mvn-lite --full test</code></pre>
+        <p>Review the downloaded script before running it in a sensitive repository, then commit it with your project. The installed script in the experiment matched the <code>agent-scripts</code> 0.1.0 source byte for byte.</p>
+        <p>Wrapper-specific usage and the embedded version are available through:</p>
+        <pre data-lang="bash"><code>./scripts/mvn-lite --help-mvn-lite</code></pre>
+
+        <h2>Why not just use <code>mvn -q</code>?</h2>
+        <p><code>mvn -q</code> suppresses output before capture. A project-specific helper may invoke:</p>
+        <pre data-lang="bash"><code>./mvnw -q -B -ntp</code></pre>
+        <p><code>mvn-lite</code> privately captures normal non-quiet Maven output, then presents a compact summary. That gives it evidence for tests, compiler errors, dependencies, failed goals, and immediate causes while keeping agent-visible output small.</p>
+
+        <h2>Why not summarize the logs with an LLM?</h2>
+        <p><code>mvn-lite</code> deliberately uses deterministic local parsing rather than an LLM. It requires no API key, sends no logs elsewhere, and remains fast, reviewable, and usable in sensitive repositories.</p>
+        <p>When it cannot recognize a failure, it prints a bounded log tail and points to the complete log instead of making a probabilistic guess.</p>
+
+        <h2>Limitations</h2>
+        <p>This was a focused compatibility and adoption experiment: one real multi-module application, one successful module build, one synthetic lifecycle error, one real Surefire environmental failure, warm incremental state, and single measured runs.</p>
+        <p>This article summarizes the main findings. The <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/PVR-LABS-FINANCIAL-ENGINE-APP.md" target="_blank" rel="noopener noreferrer">complete experiment report</a> contains the full environment, controls, intermediate results, checksums, and supporting evidence.</p>
+        <p>The results do not establish that <code>mvn-lite</code> always saves a fixed percentage.</p>
+        <p>They do not establish diagnostic parity for every Maven plugin or failure category.</p>
+        <p>They do not show that Maven itself runs faster.</p>
+        <p>The claim is narrower:</p>
+        <blockquote><p>For the measured local-development scenarios, <code>mvn-lite</code> dramatically reduced agent-visible output while preserving the exit status, actionable failure evidence, and access to the complete raw log.</p></blockquote>
+
+        <h2>The broader lesson</h2>
+        <p>Coding agents change the economics of command-line output.</p>
+        <p>Traditional build tools assume that console output is cheap. A developer can scroll, search, collapse, or ignore it.</p>
+        <p>For an agent, output competes directly with source code, requirements, conversation history, repository context, and the actual diagnostic. A tool designed for agent workflows should:</p>
+        <ol>
+            <li>Make success extremely small.</li>
+            <li>Preserve exit status and actionable failure evidence.</li>
+            <li>Retain complete diagnostics outside the main context.</li>
+            <li>Bound unknown-output fallbacks and avoid echoing sensitive arguments.</li>
+            <li>Preserve an escape hatch to ordinary output.</li>
+        </ol>
+        <p>That is what <code>mvn-lite</code> is trying to do.</p>
+        <p>Maven still knows everything it knew before.</p>
+        <p>It has simply learned when not to say it.</p>
+
+        <div class="article-cta">
+            <p>Try <code>mvn-lite</code> with your existing Maven Wrapper. Real-world failure cases and feedback on the compact diagnostics are especially useful.</p>
+            <div class="article-cta-actions">
+                <a href="#try-mvn-lite" class="btn btn-primary">Try <code>mvn-lite</code> →</a>
+                <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer" class="btn btn-github">
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    ⭐ Star on GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</article></main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260515"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
