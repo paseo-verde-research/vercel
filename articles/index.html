@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Articles - PVR Labs Engineering Insights</title>
-    <meta name="description" content="Engineering insights on AI coding workflows, token cost optimization, local code context, and secure air-gapped development from the team behind AI Badger.">
+    <meta name="description" content="Practical engineering articles, release announcements, and project updates from PVR Labs, including AI Badger, StatLite, and Scriptella.">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/">
 
     <!-- Open Graph -->
@@ -12,13 +12,13 @@
     <meta property="og:url" content="https://pvrlabs.xyz/articles/">
     <meta property="og:title" content="Articles - PVR Labs Engineering Insights">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="Engineering insights on AI coding workflows, token cost optimization, local code context, and secure development.">
+    <meta property="og:description" content="Practical engineering articles, release announcements, and project updates from PVR Labs, including AI Badger, StatLite, and Scriptella.">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Articles - PVR Labs Engineering Insights">
-    <meta name="twitter:description" content="Engineering insights on AI coding workflows, token cost optimization, local code context, and secure development.">
+    <meta name="twitter:description" content="Practical engineering articles, release announcements, and project updates from PVR Labs, including AI Badger, StatLite, and Scriptella.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,6 +44,40 @@
             color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto;
+        }
+        .article-filters {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .article-filter {
+            min-height: 44px;
+            padding: 8px 0 7px;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--text-secondary);
+            font: inherit;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .article-filter:hover,
+        .article-filter.active {
+            color: var(--primary-green);
+        }
+        .article-filter.active {
+            border-bottom-color: var(--primary-green);
+        }
+        .article-filter:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: -2px;
+        }
+        .article-filter span {
+            color: inherit;
         }
         .articles-list {
             max-width: 800px;
@@ -73,6 +107,23 @@
             color: var(--primary-green);
             font-weight: 400;
         }
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 10px;
+            margin-bottom: 7px;
+            color: var(--primary-green);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+        .article-tags span + span::before {
+            content: "·";
+            margin-right: 10px;
+            color: var(--text-secondary);
+        }
         .article-meta {
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -95,6 +146,7 @@
         @media (max-width: 768px) {
             .articles-hero h1 { font-size: 2rem; }
             .articles-hero { padding: 100px 0 30px; }
+            .article-filters { gap: 0 16px; }
         }
     </style>
 </head>
@@ -122,34 +174,57 @@
     <section class="articles-hero">
         <div class="container">
             <h1>Engineering <span class="highlight">Insights</span></h1>
-            <p>Engineering deep-dives on AI, local-first development, and Java performance.</p>
+            <p>Practical notes, release announcements, and engineering deep-dives from the projects built at PVR Labs.</p>
         </div>
     </section>
+
+    <nav class="article-filters" aria-label="Filter articles by topic">
+        <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(4)</span></button>
+        <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span>(3)</span></button>
+        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(1)</span></button>
+        <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(2)</span></button>
+    </nav>
 
     <section class="articles-list">
         <div class="container">
 
-            <article class="article-entry">
+            <article class="article-entry" data-tags="engineering ai-badger">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>Engineering</span>
+                    <span>AI Badger</span>
+                </div>
                 <h2><a href="/articles/introverted-maven.html">I Taught Maven to Be an Introvert</a></h2>
-                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 30, 2026</div>
+                <div class="article-meta"><time datetime="2026-07-30">July 30, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>How a small Bash wrapper reduced successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</p>
             </article>
 
-            <article class="article-entry">
+            <article class="article-entry" data-tags="ai-badger security">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>AI Badger</span>
+                    <span>Security</span>
+                </div>
                 <h2><a href="/articles/air-gapped-ai-coding.html">Air-Gapped AI Coding: Keeping Proprietary Repositories Off the Cloud</a></h2>
-                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 21, 2026</div>
+                <div class="article-meta"><time datetime="2026-07-21">July 21, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Use AI coding assistants without granting them repository access: map locally, disclose only reviewed context, and confirm every proposed write.</p>
             </article>
 
-            <article class="article-entry">
+            <article class="article-entry" data-tags="statlite monitoring">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>StatLite</span>
+                    <span>Monitoring</span>
+                </div>
                 <h2><a href="/articles/lightweight-spring-boot-monitoring.html">Lightweight Spring Boot Monitoring Without Prometheus and Grafana</a></h2>
-                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 19, 2026</div>
+                <div class="article-meta"><time datetime="2026-07-19">July 19, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Turn Spring Boot Actuator data into a focused dashboard for a few applications on a VPS, without operating a full Prometheus and Grafana stack.</p>
             </article>
 
-            <article class="article-entry">
+            <article class="article-entry" data-tags="ai-badger engineering">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>AI Badger</span>
+                    <span>Engineering</span>
+                </div>
                 <h2><a href="/articles/claude-code-token-savings.html">Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</a></h2>
-                <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 4, 2026</div>
+                <div class="article-meta"><time datetime="2026-07-04">July 4, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Autonomous coding agents consume tokens rapidly during reviews by rescanning projects and pulling broad context. Learn how to map locally, extract precise snippets, and review efficiently in any web chat.</p>
             </article>
 
@@ -164,7 +239,7 @@
     </div>
 </footer>
 
-<script src="/script.js?v=20260515"></script>
+<script src="/script.js?v=20260730"></script>
 <!-- Default Statcounter code for PVR Labs -->
 <script>
     var sc_project = 13137699;

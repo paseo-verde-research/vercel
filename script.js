@@ -145,6 +145,28 @@ document.addEventListener('DOMContentLoaded', () => {
         currentYearSpan.textContent = new Date().getFullYear();
     }
 
+    // --- Article Topic Filters ---
+    const articleFilters = Array.from(document.querySelectorAll('.article-filter'));
+    const articleEntries = Array.from(document.querySelectorAll('.article-entry'));
+    if (articleFilters.length && articleEntries.length) {
+        articleFilters.forEach(filterButton => {
+            filterButton.addEventListener('click', () => {
+                const selectedFilter = filterButton.dataset.filter;
+
+                articleFilters.forEach(button => {
+                    const isActive = button === filterButton;
+                    button.classList.toggle('active', isActive);
+                    button.setAttribute('aria-pressed', String(isActive));
+                });
+
+                articleEntries.forEach(article => {
+                    const tags = article.dataset.tags.split(/\s+/);
+                    article.hidden = selectedFilter !== 'all' && !tags.includes(selectedFilter);
+                });
+            });
+        });
+    }
+
 // --- Simple Fade-in Animation for Sections on Scroll (Optional) ---
     const animatedSections = document.querySelectorAll('.service-card, .timeline-item, .about-image, .about-text, .contact-details');
 
