@@ -126,17 +126,13 @@
                 <div class="terminal-result">More than 99.7% less output</div>
             </div>
         </div>
-        <p>In a real four-module Java application, the result was:</p>
-        <ul>
-            <li>successful output reduced from <strong>6,753 bytes to 16 bytes</strong></li>
-            <li>an invalid lifecycle failure reduced from <strong>2,730 bytes to 228 bytes</strong></li>
-            <li>Maven’s original exit status preserved</li>
-            <li>complete failure logs retained</li>
-            <li>no Maven command arguments echoed in compact failure output</li>
-        </ul>
+        <p>In a real four-module Java application, successful output fell from <strong>6,753 bytes to 16 bytes</strong>,
+            and an invalid lifecycle failure fell from <strong>2,730 bytes to 228 bytes</strong>. Maven’s exit status
+            was preserved, complete failure logs were retained, and Maven arguments were not echoed in compact failure
+            output.</p>
         <p>Full measurements and methodology are available in the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/PVR-LABS-FINANCIAL-ENGINE-APP.md" target="_blank" rel="noopener noreferrer">compatibility experiment report</a>.</p>
-        <p>The goal is not to replace Maven’s diagnostics.</p>
-        <p>The goal is to keep Maven from consuming an agent’s context unless those diagnostics are actually needed.</p>
+        <p>The goal is not to replace Maven’s diagnostics. It is to keep them from consuming an agent’s context unless
+            they are needed.</p>
 
         <h2>The problem with ordinary Maven output</h2>
         <p>A routine Maven test run can produce dozens or hundreds of lines covering routine details such as:</p>
@@ -173,30 +169,20 @@ Re-run with --full for complete live output.</code></pre>
             <li>retains failed logs and points to the complete log;</li>
             <li>falls back to a bounded tail for unknown failures.</li>
         </ol>
-        <p>Successful logs are deleted by default. Failed logs are retained.</p>
-        <p>A successful log can still be preserved explicitly with <code>--keep-log</code>, and ordinary Maven output remains available through <code>--full</code>.</p>
-        <p>It is deliberately small.</p>
-
-        <h2>High-value coverage over completeness</h2>
+        <p>Successful logs are deleted by default but can be preserved with <code>--keep-log</code>. Ordinary Maven
+            output remains available through <code>--full</code>.</p>
         <p><code>mvn-lite</code> targets common local workflows: build, test, package, install, and verify. It recognizes high-value categories including compiler, test, dependency-resolution, failed-goal, and common Maven command errors.</p>
-        <p>The wrapper follows a Pareto-style principle:</p>
-        <blockquote><p>Handle the common local-development cases exceptionally well, and fall back predictably for everything else.</p></blockquote>
         <p>Unknown output receives a bounded log tail rather than an invented interpretation, and the raw log remains authoritative.</p>
 
         <h2>Testing it in a real application</h2>
         <p>I tested <code>mvn-lite</code> in a real four-module Maven application. The selected module ran 102 unit tests using Maven 3.9.16 and the system-provided Bash 3.2 on macOS. The comparison covered vanilla Maven, the application’s former project-specific low-noise helper, and <code>mvn-lite</code>.</p>
-        <p>Bytes from stdout and stderr were the primary metric because they are exact and tokenizer-independent. I also estimated tokens using:</p>
-        <pre data-lang="text"><code>estimated tokens = ceil(output bytes / 4)</code></pre>
-        <p>That estimate is useful for relative comparison, but it is not an exact model-token or billing measurement.</p>
+        <p>Bytes from stdout and stderr were the primary metric because they are exact and tokenizer-independent.
+            Estimated tokens use <code>ceil(output bytes / 4)</code> for relative comparison, not as an exact
+            model-token or billing measurement.</p>
 
         <h2>Successful build results</h2>
-        <p>The successful command selected one module and ran its tests:</p>
+        <p>The successful run selected one module and ran its tests:</p>
         <pre data-lang="bash"><code>./mvnw -B -ntp -Dstyle.color=never -pl common test</code></pre>
-        <p>The former project-specific helper produced:</p>
-        <pre data-lang="text"><code>PASS common tests</code></pre>
-        <p><code>mvn-lite</code> produced:</p>
-        <pre data-lang="text"><code>PASS · 3.944 s</code></pre>
-        <p>The measured output was:</p>
         <div class="table-scroll" role="region" aria-label="Successful Maven output comparison" tabindex="0">
             <table class="article-table">
                 <thead><tr><th>Runner</th><th>Bytes</th><th>Lines</th><th>Estimated tokens</th></tr></thead>
@@ -207,20 +193,18 @@ Re-run with --full for complete live output.</code></pre>
                 </tbody>
             </table>
         </div>
-        <p>Compared with vanilla Maven, <code>mvn-lite</code> reduced successful agent-visible output by more than <strong>99.7%</strong>.</p>
-        <p><code>mvn-lite</code> effectively matched the former project-specific helper. The two-byte difference is operationally meaningless.</p>
+        <p><code>mvn-lite</code> produced <code>PASS · 3.944 s</code>, reducing successful agent-visible output by more
+            than <strong>99.7%</strong>. It effectively matched the former helper; the two-byte difference is
+            operationally meaningless.</p>
         <p>As an additional real-world check, I also ran <code>mvn-lite</code> against the <a href="https://scriptella.org/" target="_blank" rel="noopener noreferrer">Scriptella</a> reactor under JDK 17. The normal Maven run produced hundreds of lines, while <code>mvn-lite</code> completed with a single <code>PASS · 11.137 s</code> line. See the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/SCRIPTELLA-MVN-LITE-SMOKE-TEST.md" target="_blank" rel="noopener noreferrer">Scriptella smoke test</a>.</p>
 
         <h2>Failure results</h2>
         <p>The initial failure experiment invoked an invalid Maven lifecycle phase:</p>
         <pre data-lang="bash"><code>./mvnw definitely-not-a-maven-phase</code></pre>
-        <p>Vanilla Maven produced 2,730 bytes.</p>
-        <p>The former project-specific helper produced 1,393 bytes.</p>
-        <p>The first version of <code>mvn-lite</code> produced 873 bytes.</p>
-        <p>That was already smaller, but the compact output repeated Maven’s complete list of valid lifecycle phases. The actionable information was only:</p>
+        <p>The first <code>mvn-lite</code> version was smaller than vanilla Maven and the former helper, but it repeated
+            Maven’s complete list of valid lifecycle phases. The actionable information was only:</p>
         <pre data-lang="text"><code>Maven: Unknown lifecycle phase "definitely-not-a-maven-phase"</code></pre>
         <p>I updated the parser to shorten recognized Maven command errors while preserving the complete original message in the raw log.</p>
-        <p>After that change:</p>
         <div class="data-chart" role="img" aria-label="Invalid lifecycle failure output in bytes. Vanilla Maven: 2,730. Former project-specific helper: 1,393. Original mvn-lite: 873. Updated mvn-lite: 228. The parser improvement reduced mvn-lite output by 73.9 percent.">
             <h3>Actionable failure output after parser improvement</h3>
             <p class="chart-subtitle">Agent-visible UTF-8 bytes, stdout + stderr</p>
@@ -261,34 +245,28 @@ Cause: Unable to create temporary directory</code></pre>
         <p>The same build passed after normal filesystem permissions were restored.</p>
 
         <h2 id="try-mvn-lite">Try <code>mvn-lite</code> in your project</h2>
-        <p>Vendor <code>mvn-lite</code> at the project root so the exact wrapper version is reviewable and versioned with the application. This gives it the same project-entrypoint ergonomics as <code>./mvnw</code> and <code>./gradlew</code>. Project-specific module names and verification tiers can still remain in the project’s own <code>scripts/build</code>.</p>
         <p>To try the latest version:</p>
         <pre data-lang="bash"><code>curl -fsSL \
   https://raw.githubusercontent.com/ejboy/agent-scripts/main/scripts/mvn-lite \
   -o mvn-lite
 chmod +x mvn-lite</code></pre>
-        <p>Before committing it to a project, replace <code>main</code> with a release tag such as <code>v0.1.0</code> for a reproducible vendored copy.</p>
-        <p>Run your usual Maven goals through the wrapper:</p>
-        <pre data-lang="bash"><code>./mvn-lite test</code></pre>
-        <p>Projects that conventionally keep executables under <code>scripts/</code> may use <code>scripts/mvn-lite</code> instead; the wrapper always operates in the caller’s current working directory.</p>
-        <p>Arguments are passed through to Maven, so module-specific commands work too:</p>
-        <pre data-lang="bash"><code>./mvn-lite -pl common test</code></pre>
-        <p>To inspect ordinary Maven output, use the full-output escape hatch:</p>
-        <pre data-lang="bash"><code>./mvn-lite --full test</code></pre>
-        <p>Review the downloaded script before running it in a sensitive repository, then commit it with your project. The installed script in the experiment matched the <code>agent-scripts</code> 0.1.0 source byte for byte.</p>
-        <p>Wrapper-specific usage and the embedded version are available through:</p>
-        <pre data-lang="bash"><code>./mvn-lite --help-mvn-lite</code></pre>
+        <p>Review the script before running it in a sensitive repository. For a reproducible vendored copy, replace
+            <code>main</code> with a release tag such as <code>v0.1.0</code>.</p>
+        <p>Arguments pass through to Maven. Use <code>--full</code> when ordinary Maven output is needed:</p>
+        <pre data-lang="bash"><code>./mvn-lite test
+./mvn-lite -pl common test
+./mvn-lite --full test
+./mvn-lite --help-mvn-lite</code></pre>
 
         <h2>Why not summarize the logs with an LLM?</h2>
-        <p><code>mvn-lite</code> deliberately uses deterministic local parsing rather than an LLM. It requires no API key, sends no logs elsewhere, and remains fast, reviewable, and usable in sensitive repositories.</p>
-        <p>When it cannot recognize a failure, it prints a bounded log tail and points to the complete log instead of making a probabilistic guess.</p>
+        <p><code>mvn-lite</code> uses deterministic local parsing rather than an LLM. It requires no API key, sends no
+            logs elsewhere, and falls back to a bounded log tail instead of making a probabilistic guess.</p>
 
         <h2>Limitations</h2>
         <p>This was a focused compatibility and adoption experiment: one real multi-module application, one successful module build, one synthetic lifecycle error, one real Surefire environmental failure, warm incremental state, and single measured runs.</p>
         <p>This article summarizes the main findings. The <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/PVR-LABS-FINANCIAL-ENGINE-APP.md" target="_blank" rel="noopener noreferrer">complete experiment report</a> contains the full environment, controls, intermediate results, checksums, and supporting evidence.</p>
-        <p>The results do not establish that <code>mvn-lite</code> always saves a fixed percentage.</p>
-        <p>They do not establish diagnostic parity for every Maven plugin or failure category.</p>
-        <p>They do not show that Maven itself runs faster.</p>
+        <p>The results do not establish a fixed savings percentage, diagnostic parity for every Maven plugin or failure
+            category, or that Maven itself runs faster.</p>
         <p>The claim is narrower:</p>
         <blockquote><p>For the measured local-development scenarios, <code>mvn-lite</code> dramatically reduced agent-visible output while preserving the exit status, actionable failure evidence, and access to the complete raw log.</p></blockquote>
 
@@ -308,9 +286,9 @@ chmod +x mvn-lite</code></pre>
         <p>It has simply learned when not to say it.</p>
 
         <div class="article-cta">
-            <p>Try <code>mvn-lite</code> in an existing Maven project. Real-world failure cases and feedback on the compact diagnostics are especially useful.</p>
+            <p>Try <code>mvn-lite</code> in an existing Maven project. Real-world failure cases and feedback are
+                especially useful.</p>
             <div class="article-cta-actions">
-                <a href="#try-mvn-lite" class="btn btn-primary">Try <code>mvn-lite</code> →</a>
                 <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer" class="btn btn-github">
                     <svg class="icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     ⭐ Star on GitHub
