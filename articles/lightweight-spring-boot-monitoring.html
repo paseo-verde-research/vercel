@@ -47,7 +47,9 @@
         .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 8px; padding: 24px 28px; margin: 32px 0 40px; }
         .statlite-pitch p { margin-bottom: 0; }
         .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-        .article-actions .btn { font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
         .back-link { display: inline-block; margin-bottom: 40px; font-size: .9rem; }
         @media (max-width: 768px) { .article-page { padding: 100px 16px 60px; } .article-page h1 { font-size: 1.6rem; } .article-body table { display: block; overflow-x: auto; } }
     </style>
@@ -66,7 +68,7 @@
         <p>Running one Spring Boot application or a handful of them on a VPS still calls for basic operational visibility. You need to know whether an application is reachable, whether errors are rising, and whether it restarted. You may not need a complete monitoring platform to answer those questions.</p>
         <p>Spring Boot Actuator already exposes much of that information. StatLite turns it into a focused dashboard for health, requests, errors, latency, memory, uptime, and restarts. It runs as one Go binary and stores its history in SQLite.</p>
         <img class="article-hero-image" src="/img/statlite-dashboard.webp" width="800" height="457" loading="eager" decoding="async" alt="StatLite dashboard showing Spring Boot health, request activity, latency, memory, CPU, uptime, and restarts">
-        <div class="statlite-pitch"><p><strong>Monitor Spring Boot without operating a full monitoring stack.</strong></p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">View StatLite on GitHub</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Installation instructions</a></div></div>
+        <div class="statlite-pitch"><p><strong>Monitor Spring Boot without operating a full monitoring stack.</strong></p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Install StatLite</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
 
         <h2>Why the usual options can be more than you need</h2>
         <p>Actuator gives Spring Boot applications useful health and Micrometer metrics endpoints. They are excellent for integration, but repeatedly opening JSON endpoints is not a convenient everyday dashboard.</p>
@@ -121,7 +123,7 @@ targets:
         <p>If you are following the included demo, generate traffic in a second terminal from the StatLite repository root:</p>
         <pre data-lang="bash"><code>./examples/spring-actuator-demo/generate-traffic.sh</code></pre>
         <p>The script sends successful, database, and slow requests, plus <code>400</code>, <code>404</code>, and <code>500</code> responses to the demo application so the request and error charts have activity to show. Wait for the next StatLite poll after running it.</p>
-        <div class="statlite-pitch"><p><strong>See the dashboard updating?</strong> If StatLite fits your setup, star the repository to bookmark it and help more Spring Boot developers find it.</p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Star StatLite on GitHub</a></div></div>
+        <div class="statlite-pitch"><p><strong>See the dashboard updating?</strong> If StatLite fits your setup, star the repository to bookmark it and help more Spring Boot developers find it.</p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a></div></div>
 
         <h2>Why StatLite stays small</h2>
         <ul><li>A single Go binary</li><li>SQLite storage</li><li>No monitoring agent</li><li>No custom application instrumentation beyond Actuator</li><li>Suitable for systemd deployment</li><li>Multiple Spring Boot targets in one configuration</li></ul>
@@ -131,7 +133,7 @@ targets:
         <p>Use a broader observability platform when you need many services or hosts, long retention, advanced metric queries, alert routing, distributed tracing, centralized logs, or organization-wide dashboards.</p>
         <p>StatLite is not a replacement for enterprise observability. It is a focused option when the operational job is to monitor a few Spring Boot services without operating a full Prometheus and Grafana stack.</p>
 
-        <div class="statlite-pitch"><p><strong>Monitor your first Spring Boot application with StatLite.</strong></p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">View on GitHub</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Install StatLite</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Configuration documentation</a></div></div>
+        <div class="statlite-pitch"><p><strong>Monitor your first Spring Boot application with StatLite.</strong></p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Install StatLite</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Configuration documentation</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
     </div>
 </article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
