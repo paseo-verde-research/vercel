@@ -259,8 +259,9 @@ chmod +x mvn-lite</code></pre>
 ./mvn-lite --help-mvn-lite</code></pre>
 
         <h2>Why not summarize the logs with an LLM?</h2>
-        <p><code>mvn-lite</code> uses deterministic local parsing rather than an LLM. It requires no API key, sends no
-            logs elsewhere, and falls back to a bounded log tail instead of making a probabilistic guess.</p>
+        <p><code>mvn-lite</code> extracts the useful signal locally instead of spending agent tokens on an LLM summary
+            or sending repository logs outside the environment. It requires no API key and falls back to a bounded log
+            tail instead of making a probabilistic guess.</p>
 
         <h2>Limitations</h2>
         <p>This was a focused compatibility and adoption experiment: one real multi-module application, one successful module build, one synthetic lifecycle error, one real Surefire environmental failure, warm incremental state, and single measured runs.</p>
