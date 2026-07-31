@@ -70,14 +70,14 @@
 
         <h2>Why the usual options can be more than you need</h2>
         <p>Actuator gives Spring Boot applications useful health and Micrometer metrics endpoints. They are excellent for integration, but repeatedly opening JSON endpoints is not a convenient everyday dashboard.</p>
-        <p><a href="https://codecentric.github.io/spring-boot-admin/current/">Spring Boot Admin</a> adds broader application-administration features. Prometheus and Grafana are strong choices when you need a larger monitoring system, flexible queries, or shared dashboards across an estate.</p>
+        <p><a href="https://codecentric.github.io/spring-boot-admin/current/" target="_blank" rel="noopener noreferrer">Spring Boot Admin</a> provides rich application administration, but running a separate Spring Boot application for monitoring can be heavy on a small VPS. <strong>Prometheus and Grafana</strong> are strong choices when you need a larger monitoring system, flexible queries, or long-term retention across an estate.</p>
         <p>For a few services on one VPS, a narrower dashboard can be enough. StatLite reads the Actuator data you already have and shows the operational signals most useful during routine checks.</p>
 
         <h2>The questions a small deployment needs answered</h2>
         <ul><li>Is the application reachable and healthy?</li><li>Are errors increasing?</li><li>Are requests slowing down?</li><li>Is memory usage growing?</li><li>Did the application restart?</li><li>Are related services, such as a database, reachable?</li></ul>
 
         <h2>Quick comparison</h2>
-        <table><thead><tr><th>Tool</th><th>Operational complexity</th><th>Best fit</th></tr></thead><tbody><tr><td>Raw Actuator endpoints</td><td>Low</td><td>Occasional manual checks</td></tr><tr><td>Spring Boot Admin</td><td>Medium</td><td>Application administration and monitoring</td></tr><tr><td>Prometheus and Grafana</td><td>High</td><td>Larger deployments and advanced observability</td></tr><tr><td>StatLite</td><td>Very low</td><td>A few Spring Boot services on a small server</td></tr></tbody></table>
+        <table><thead><tr><th>Tool</th><th>Operational complexity</th><th>Best fit</th></tr></thead><tbody><tr><td>Raw Actuator endpoints</td><td>Low</td><td>Occasional manual checks</td></tr><tr><td>Spring Boot Admin</td><td>Medium (requires Java runtime &amp; memory)</td><td>Application administration and monitoring</td></tr><tr><td>Prometheus and Grafana</td><td>High</td><td>Larger deployments and advanced observability</td></tr><tr><td>StatLite</td><td>Very low (single Go binary + SQLite)</td><td>A few Spring Boot services on a small server</td></tr></tbody></table>
         <p>These tools can also coexist. Choosing StatLite for a focused dashboard today does not prevent adopting Prometheus and Grafana later if your requirements grow.</p>
 
         <h2>Set up StatLite in a few minutes</h2>
