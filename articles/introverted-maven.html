@@ -15,12 +15,15 @@
     <meta property="og:description" content="A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.">
     <meta property="article:published_time" content="2026-07-30T15:45:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
-    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/mvnlite_cover.webp">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:width" content="1731">
+    <meta property="og:image:height" content="909">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="I Taught Maven to Be an Introvert">
     <meta name="twitter:description" content="A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.">
-    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/mvnlite_cover.webp">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +37,7 @@
         .article-page h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); margin-bottom: 8px; }
         .article-subtitle { color: var(--text-secondary); font-size: 1.1rem; font-style: italic; line-height: 1.6; margin-bottom: 12px; }
         .article-meta { font-size: .9rem; color: var(--text-secondary); margin-bottom: 32px; }
+        .article-cover { display: block; width: 100%; height: auto; margin: 0 0 32px; border: 1px solid var(--border-color); border-radius: 8px; }
         .article-body { font-size: 1.05rem; line-height: 1.65; color: var(--text-primary); }
         .article-body p { margin-bottom: 1.2rem; }
         .article-body h2 { font-size: 1.6rem; margin: 2.2rem 0 .85rem; }
@@ -106,6 +110,7 @@
     <h1>I Taught Maven to Be an Introvert</h1>
     <p class="article-subtitle">How a small Bash wrapper reduced successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</p>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026</div>
+    <img class="article-cover" src="/articles/img/mvnlite_screen.webp" width="2350" height="962" loading="eager" decoding="async" alt="Side-by-side terminal comparison of verbose Maven output and a one-line mvn-lite PASS result">
 
     <div class="article-body">
         <p>Maven is excellent at building Java projects.</p>
@@ -129,7 +134,7 @@
             <li>complete failure logs retained</li>
             <li>no Maven command arguments echoed in compact failure output</li>
         </ul>
-        <p>The complete methodology, measurements, checksums, intermediate runs, and adoption evidence are available in the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/PVR-LABS-FINANCIAL-ENGINE-APP.md" target="_blank" rel="noopener noreferrer">compatibility experiment report</a>.</p>
+        <p>Full measurements and methodology are available in the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/PVR-LABS-FINANCIAL-ENGINE-APP.md" target="_blank" rel="noopener noreferrer">compatibility experiment report</a>.</p>
         <p>The goal is not to replace Maven’s diagnostics.</p>
         <p>The goal is to keep Maven from consuming an agent’s context unless those diagnostics are actually needed.</p>
 
@@ -146,16 +151,21 @@
         <pre data-lang="text"><code>PASS · 4.240 s</code></pre>
         <p>If the build fails, the agent needs a compact answer to a different question:</p>
         <blockquote><p>What is the next actionable thing I should inspect or fix?</p></blockquote>
-        <p>For example:</p>
+        <p>A compact test failure might look like:</p>
         <pre data-lang="text"><code>FAIL
-Test: com.example.AccountServiceTest.createsAccount
-Cause: expected: &lt;ACTIVE&gt; but was: &lt;PENDING&gt;
-Log: .agent-logs/maven/maven-20260730-143210-12345.log</code></pre>
+Failure summary:
+  Test: com.example.AppTest.shouldRejectInvalidInput
+  Exception: java.lang.AssertionError: expected 400
+
+Full Maven log:
+  /project/.agent-logs/maven/maven-20260730-100000-12345.log
+
+Re-run with --full for complete live output.</code></pre>
         <p>The raw Maven output still matters. It simply does not need to occupy the main conversation by default.</p>
+        <p>Maven’s <code>-q</code> option is too blunt for this use case: it suppresses output before the wrapper can inspect it. <code>mvn-lite</code> captures normal Maven output privately, so it can still surface failing tests, compiler errors, unresolved dependencies, failed goals, and immediate causes when a build fails.</p>
 
         <h2>What <code>mvn-lite</code> does</h2>
-        <p>In compact mode, <code>mvn-lite</code>:</p>
-        <p>It invokes the project’s executable <code>./mvnw</code> with batch mode, transfer progress disabled, and color disabled, then:</p>
+        <p>In compact mode, <code>mvn-lite</code> prefers the project’s executable <code>./mvnw</code>, then falls back to <code>mvn</code> from <code>PATH</code>. It adds batch mode and disables transfer progress and color when equivalent options were not already supplied, then:</p>
         <ol>
             <li>captures complete output locally;</li>
             <li>preserves Maven’s exit status;</li>
@@ -174,7 +184,7 @@ Log: .agent-logs/maven/maven-20260730-143210-12345.log</code></pre>
         <p>Unknown output receives a bounded log tail rather than an invented interpretation, and the raw log remains authoritative.</p>
 
         <h2>Testing it in a real application</h2>
-        <p>I tested <code>mvn-lite</code> in a real four-module Maven application. The selected module ran 102 unit tests using Maven 3.9.16 and GNU Bash 3.2 on macOS. The comparison covered vanilla Maven, the application’s former project-specific low-noise helper, and <code>mvn-lite</code>.</p>
+        <p>I tested <code>mvn-lite</code> in a real four-module Maven application. The selected module ran 102 unit tests using Maven 3.9.16 and the system-provided Bash 3.2 on macOS. The comparison covered vanilla Maven, the application’s former project-specific low-noise helper, and <code>mvn-lite</code>.</p>
         <p>Bytes from stdout and stderr were the primary metric because they are exact and tokenizer-independent. I also estimated tokens using:</p>
         <pre data-lang="text"><code>estimated tokens = ceil(output bytes / 4)</code></pre>
         <p>That estimate is useful for relative comparison, but it is not an exact model-token or billing measurement.</p>
@@ -199,6 +209,7 @@ Log: .agent-logs/maven/maven-20260730-143210-12345.log</code></pre>
         </div>
         <p>Compared with vanilla Maven, <code>mvn-lite</code> reduced successful agent-visible output by more than <strong>99.7%</strong>.</p>
         <p><code>mvn-lite</code> effectively matched the former project-specific helper. The two-byte difference is operationally meaningless.</p>
+        <p>As an additional real-world check, I also ran <code>mvn-lite</code> against the <a href="https://scriptella.org/" target="_blank" rel="noopener noreferrer">Scriptella</a> reactor under JDK 17. The normal Maven run produced hundreds of lines, while <code>mvn-lite</code> completed with a single <code>PASS · 11.137 s</code> line. See the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/SCRIPTELLA-MVN-LITE-SMOKE-TEST.md" target="_blank" rel="noopener noreferrer">Scriptella smoke test</a>.</p>
 
         <h2>Failure results</h2>
         <p>The initial failure experiment invoked an invalid Maven lifecycle phase:</p>
@@ -250,28 +261,23 @@ Cause: Unable to create temporary directory</code></pre>
         <p>The same build passed after normal filesystem permissions were restored.</p>
 
         <h2 id="try-mvn-lite">Try <code>mvn-lite</code> in your project</h2>
-        <p>Vendor the script under <code>scripts/mvn-lite</code> so the exact wrapper version is reviewable and versioned with the application. Project-specific module names and test tiers remain the responsibility of the project’s own <code>scripts/build</code>.</p>
-        <p>From the root of a project that uses an executable <code>./mvnw</code>, download the latest <code>mvn-lite</code> version:</p>
-        <pre data-lang="bash"><code>mkdir -p scripts
-curl -fsSL \
+        <p>Vendor <code>mvn-lite</code> at the project root so the exact wrapper version is reviewable and versioned with the application. This gives it the same project-entrypoint ergonomics as <code>./mvnw</code> and <code>./gradlew</code>. Project-specific module names and verification tiers can still remain in the project’s own <code>scripts/build</code>.</p>
+        <p>To try the latest version:</p>
+        <pre data-lang="bash"><code>curl -fsSL \
   https://raw.githubusercontent.com/ejboy/agent-scripts/main/scripts/mvn-lite \
-  -o scripts/mvn-lite
-chmod +x scripts/mvn-lite</code></pre>
-        <p>This downloads the latest version from the repository’s <code>main</code> branch. For a reproducible vendored copy, replace <code>main</code> with a release tag such as <code>v0.1.0</code> before committing the script.</p>
+  -o mvn-lite
+chmod +x mvn-lite</code></pre>
+        <p>Before committing it to a project, replace <code>main</code> with a release tag such as <code>v0.1.0</code> for a reproducible vendored copy.</p>
         <p>Run your usual Maven goals through the wrapper:</p>
-        <pre data-lang="bash"><code>./scripts/mvn-lite test</code></pre>
+        <pre data-lang="bash"><code>./mvn-lite test</code></pre>
+        <p>Projects that conventionally keep executables under <code>scripts/</code> may use <code>scripts/mvn-lite</code> instead; the wrapper always operates in the caller’s current working directory.</p>
         <p>Arguments are passed through to Maven, so module-specific commands work too:</p>
-        <pre data-lang="bash"><code>./scripts/mvn-lite -pl common test</code></pre>
+        <pre data-lang="bash"><code>./mvn-lite -pl common test</code></pre>
         <p>To inspect ordinary Maven output, use the full-output escape hatch:</p>
-        <pre data-lang="bash"><code>./scripts/mvn-lite --full test</code></pre>
+        <pre data-lang="bash"><code>./mvn-lite --full test</code></pre>
         <p>Review the downloaded script before running it in a sensitive repository, then commit it with your project. The installed script in the experiment matched the <code>agent-scripts</code> 0.1.0 source byte for byte.</p>
         <p>Wrapper-specific usage and the embedded version are available through:</p>
-        <pre data-lang="bash"><code>./scripts/mvn-lite --help-mvn-lite</code></pre>
-
-        <h2>Why not just use <code>mvn -q</code>?</h2>
-        <p><code>mvn -q</code> suppresses output before capture. A project-specific helper may invoke:</p>
-        <pre data-lang="bash"><code>./mvnw -q -B -ntp</code></pre>
-        <p><code>mvn-lite</code> privately captures normal non-quiet Maven output, then presents a compact summary. That gives it evidence for tests, compiler errors, dependencies, failed goals, and immediate causes while keeping agent-visible output small.</p>
+        <pre data-lang="bash"><code>./mvn-lite --help-mvn-lite</code></pre>
 
         <h2>Why not summarize the logs with an LLM?</h2>
         <p><code>mvn-lite</code> deliberately uses deterministic local parsing rather than an LLM. It requires no API key, sends no logs elsewhere, and remains fast, reviewable, and usable in sensitive repositories.</p>
@@ -302,7 +308,7 @@ chmod +x scripts/mvn-lite</code></pre>
         <p>It has simply learned when not to say it.</p>
 
         <div class="article-cta">
-            <p>Try <code>mvn-lite</code> with your existing Maven Wrapper. Real-world failure cases and feedback on the compact diagnostics are especially useful.</p>
+            <p>Try <code>mvn-lite</code> in an existing Maven project. Real-world failure cases and feedback on the compact diagnostics are especially useful.</p>
             <div class="article-cta-actions">
                 <a href="#try-mvn-lite" class="btn btn-primary">Try <code>mvn-lite</code> →</a>
                 <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer" class="btn btn-github">
@@ -315,7 +321,7 @@ chmod +x scripts/mvn-lite</code></pre>
 </article></main>
 
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
-<script src="/script.js?v=20260515"></script>
+<script src="/script.js?v=20260730"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
 <script src="https://www.statcounter.com/counter/counter.js" async></script>
 </body>
