@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>StatLite - Lightweight Spring Boot Monitoring</title>
+    <meta name="description" content="StatLite turns Spring Boot Actuator metrics into a lightweight self-hosted dashboard with local SQLite history. One Go binary, no Prometheus or Grafana required.">
+    <link rel="canonical" href="https://pvrlabs.xyz/statlite/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/statlite/">
+    <meta property="og:title" content="StatLite - Lightweight Spring Boot Monitoring">
+    <meta property="og:site_name" content="StatLite">
+    <meta property="og:description" content="Turn Spring Boot Actuator metrics into a lightweight self-hosted dashboard with local SQLite history.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StatLite - Lightweight Spring Boot Monitoring">
+    <meta name="twitter:description" content="Turn Spring Boot Actuator metrics into a lightweight self-hosted dashboard with local SQLite history.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "StatLite",
+      "applicationCategory": "DeveloperApplication",
+      "description": "A lightweight self-hosted dashboard for Spring Boot Actuator health and metrics.",
+      "url": "https://pvrlabs.xyz/statlite/",
+      "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+    <link rel="stylesheet" href="/statlite/style.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="container nav-inner">
+            <a href="/statlite/" class="product-logo"><span class="wordmark-accent">Stat</span><span>Lite</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/statlite/" class="nav-link active">Home</a></li>
+                <li><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="nav-link">Install</a></li>
+                <li><a href="/articles/lightweight-spring-boot-monitoring.html" class="nav-link">Spring Boot Guide</a></li>
+                <li><a href="https://github.com/PVRLabs/statlite" class="nav-link">GitHub</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="hero-section">
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                <div class="eyebrow"><span class="wordmark-accent">Stat</span>Lite</div>
+                <h1>Make Spring Boot Actuator usable.</h1>
+                <p class="hero-description">Turn Actuator health and metrics into a lightweight self-hosted dashboard with history, charts, restart detection, and local SQLite storage.</p>
+                <p class="proof-line">One Go binary. Local SQLite. No Prometheus or Grafana required.</p>
+                <div class="hero-actions">
+                    <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="button button-primary">Install StatLite</a>
+                    <a href="https://github.com/PVRLabs/statlite" class="button button-secondary">View on GitHub</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="dashboard-frame">
+                    <div class="frame-bar"><span></span><span></span><span></span><code>statlite</code></div>
+                    <img src="/img/statlite-dashboard.webp" width="800" height="457" alt="StatLite dashboard showing Spring Boot health, requests, latency, memory, CPU, uptime, and restarts" fetchpriority="high">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-section">
+        <div class="container why-inner"><h2>Why it exists</h2><p>Actuator exposes useful operational data, but raw JSON endpoints are not a practical everyday dashboard.</p></div>
+    </section>
+
+    <section class="section benefits-section">
+        <div class="container">
+            <div class="section-intro"><p class="eyebrow">A focused view of your applications</p><h2>Useful visibility, without the stack.</h2></div>
+            <div class="benefit-grid">
+                <article class="benefit-card">
+                    <div class="benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="m6 16 4-5 3 3 5-7"/><path d="M18 7h-4M18 7v4"/></svg></div>
+                    <h3>See what matters</h3><p>Health, traffic, errors, latency, memory, CPU, uptime, restarts, and poll status in one focused dashboard.</p>
+                </article>
+                <article class="benefit-card">
+                    <div class="benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5M8 17h3"/><path d="M16 2v4M8 2v2"/></svg></div>
+                    <h3>Keep it lightweight</h3><p>Run one Go binary and one local SQLite database alongside a small application or VPS deployment.</p>
+                </article>
+                <article class="benefit-card">
+                    <div class="benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+                    <h3>Keep it yours</h3><p>Self-hosted monitoring with local history and no external monitoring service required.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="try-section section">
+        <div class="container split-grid">
+            <div><p class="eyebrow">Quick start</p><h2>Try StatLite immediately.</h2><p>Open <code>http://127.0.0.1:9090</code>. The default container monitors StatLite itself, so you can explore the dashboard before configuring your application.</p><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="text-link">Read the installation documentation <span aria-hidden="true">&rarr;</span></a></div>
+            <div class="code-card"><div class="code-label">Terminal</div><pre><code>docker run --rm \
+  -p 127.0.0.1:9090:9090 \
+  ghcr.io/pvrlabs/statlite:latest</code></pre></div>
+        </div>
+    </section>
+
+    <section class="section spring-section">
+        <div class="container split-grid spring-grid">
+            <div><p class="eyebrow">The primary integration</p><h2>Built for small Spring Boot deployments.</h2><p>Actuator already exposes useful metrics, but repeatedly opening raw endpoints is inconvenient for routine operational work.</p><p>StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack.</p><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot monitoring guide</a></div>
+            <div class="code-card"><div class="code-label">statlite.yml</div><pre><code>targets:
+  - name: "my-app"
+    actuator_base_url: "http://localhost:8080/actuator"</code></pre></div>
+        </div>
+    </section>
+
+    <section class="section integrations-section">
+        <div class="container narrow-container"><p class="eyebrow">Supported integrations</p><h2>Small scope, clear fit.</h2><div class="integration-list"><div><h3>Spring Boot Actuator</h3><p>Primary integration for Spring Boot applications and their health and metrics endpoints.</p></div><div><h3>StatLite Metrics v1</h3><p>A fixed JSON profile for supported external applications and StatLite self-monitoring.</p></div><div><h3>StatLite self-monitoring</h3><p>Monitor host CPU, memory, and SQLite filesystem capacity alongside your applications.</p></div></div></div>
+    </section>
+
+    <section class="section scope-section">
+        <div class="container split-grid"><div><p class="eyebrow">Know the fit</p><h2>Intentionally small.</h2><p>StatLite is a good fit for one or a few applications, small VPS deployments, solo developers and small teams, and focused application and host metrics.</p></div><div class="scope-note"><h3>Use a broader observability platform when you need:</h3><ul><li>Large fleets or Kubernetes-first infrastructure</li><li>Arbitrary metrics and dashboards</li><li>Logs, traces, distributed storage, or complex alerting</li></ul></div></div>
+    </section>
+
+    <section class="final-cta"><div class="container"><p class="eyebrow">Ready when you are</p><h2>Run StatLite in a minute.</h2><div class="hero-actions"><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="button button-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite" class="button button-secondary">View on GitHub</a><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-text">Spring Boot guide</a></div></div></section>
+</main>
+
+<footer><div class="container"><p>Built at <a href="/"><span class="wordmark-accent">PVR</span> Labs</a> · <span id="currentYear"></span></p></div></footer>
+
+<script src="/script.js?v=20260515"></script>
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
