@@ -574,12 +574,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-wordmark {
+    display: block;
     font-family: var(--font-logo);
     font-weight: 700;
     font-size: 1.55rem;
     letter-spacing: 0.02em;
     margin: 0 0 1rem;
     line-height: 1.2;
+}
+
+.product-wordmark:hover {
+    color: inherit;
 }
 
 .product-wordmark-part--light {
@@ -603,11 +608,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-visual {
+    display: block;
     margin-bottom: 1.15rem;
     border-radius: 6px;
     overflow: hidden;
     background-color: var(--bg-medium);
     border: 1px solid var(--border-color);
+}
+
+.product-wordmark:focus-visible,
+.product-visual:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 4px;
 }
 
 .product-visual--aibadger,
