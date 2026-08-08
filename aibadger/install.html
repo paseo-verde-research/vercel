@@ -136,7 +136,9 @@
             border: none;
             color: #666;
             cursor: pointer;
-            padding: 5px;
+            width: 44px;
+            height: 44px;
+            padding: 10px;
             transition: color 0.2s ease;
             display: flex;
             align-items: center;
@@ -210,18 +212,18 @@
                     AI <span class="highlight">Badger</span>
                 </a>
             </div>
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/aibadger/" class="nav-link">Home</a></li>
                 <li><a href="/aibadger/install.html" class="nav-link active">Install</a></li>
                 <li><a href="/aibadger/demo.html" class="nav-link">Demo</a></li>
                 <li><a href="/articles/" class="nav-link">Articles</a></li>
                 <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
             </ul>
-            <div class="hamburger">
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
-            </div>
+            </button>
         </div>
     </nav>
 </header>
@@ -242,7 +244,7 @@
                 </div>
                 <div class="command-box">
                     <code class="command-text" id="command-text">curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh</code>
-                    <button class="copy-btn" id="copy-btn">
+                    <button class="copy-btn" id="copy-btn" type="button" aria-label="Copy installation command">
                         <svg class="copy" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2"/>
@@ -274,7 +276,7 @@
     </div>
 </footer>
 
-<script src="/script.js?v=20260515"></script>
+<script src="/script.js?v=20260808"></script>
 <script>
     (() => {
         const commands = {

@@ -3,7 +3,6 @@
     --demo-bg-color: #050505;
     --term-bg: rgba(30, 30, 30, 0.95);
     --browser-bg: #ffffff;
-    --demo-header-bg: rgba(255, 255, 255, 0.1);
     --demo-text-color: #e0e0e0;
     --demo-accent-color: #2ECC71;
     --chat-accent: var(--demo-accent-color);
@@ -30,14 +29,7 @@
     width: 100%;
     height: 100%;
     background: radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.08) 0%, rgba(46, 204, 113, 0) 80%);
-    animation: pulseGlow 10s infinite ease-in-out;
-    will-change: opacity;
     z-index: 0;
-}
-
-@keyframes pulseGlow {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 0.4; }
 }
 
 .sr-only {
@@ -264,7 +256,8 @@
     cursor: pointer;
     font-weight: 500;
     font-size: 12px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+                color 0.2s ease, transform 0.2s ease;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     margin-top: 5px;
 }
@@ -347,10 +340,11 @@
     background: transparent;
     border: 1px solid rgba(255,255,255,0.2);
     color: white;
-    padding: 4px 12px;
+    min-height: 44px;
+    padding: 8px 12px;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
     font-family: var(--font-body);
     font-size: 0.85rem;
 }
@@ -394,7 +388,7 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.4s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: none;
     z-index: 2000;
     text-align: center;
@@ -439,7 +433,7 @@
     margin: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
     .demo-desktop {
         flex-direction: column;
         height: auto;

@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return href && href.startsWith('#') && sectionIds.has(href.slice(1));
     });
     const hasScrollSpy = Boolean(header && sectionNavLinks.length && sections.length);
+    const hasHeaderScrollEffect = Boolean(header && getComputedStyle(header).position === 'fixed');
 
     let sectionPositions = [];
     let activeSectionId = '';
@@ -41,10 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const scrollY = window.scrollY;
 
-        if (scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (hasHeaderScrollEffect) {
+            header.classList.toggle('scrolled', scrollY > 50);
         }
 
         if (!hasScrollSpy) {
@@ -79,16 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                handleScroll();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }, { passive: true });
+    if (hasHeaderScrollEffect || hasScrollSpy) {
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
 
     // Update positions on load and resize
     updateSectionPositions();
@@ -170,28 +171,28 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Simple Fade-in Animation for Sections on Scroll (Optional) ---
     const animatedSections = document.querySelectorAll('.service-card, .timeline-item, .about-image, .about-text, .contact-details');
 
-    const observerOptions = {
-        root: null, // relative to document viewport
-        rootMargin: '0px',
-        threshold: 0.1 // 10% of the item is visible
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target); // Stop observing once animated
-            }
+    if (animatedSections.length) {
+        const observer = new IntersectionObserver((entries, sectionObserver) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    sectionObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
         });
-    }, observerOptions);
 
-    animatedSections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(20px)';
-        section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(section);
-    });
+        animatedSections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(section);
+        });
+    }
 
 
 // --- Lazy-load Calendly widget script when contact section approaches viewport ---
@@ -219,6 +220,4 @@ document.addEventListener('DOMContentLoaded', () => {
             articlesLink.classList.add('active');
         }
     }
-
-    console.log("Welcome to PVRLabs! Java performance optimization is our specialty.");
 });

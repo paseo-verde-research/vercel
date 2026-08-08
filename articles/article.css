@@ -1,0 +1,145 @@
+.article-page {
+    max-width: 48.75rem;
+    margin: 0 auto;
+    padding: 120px 20px 80px;
+}
+
+.article-page h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+}
+
+.article-meta {
+    margin-bottom: 32px;
+    color: var(--text-secondary);
+    font-size: .9rem;
+}
+
+.article-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 0 32px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.article-body {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.article-body p {
+    margin-bottom: 1.5rem;
+}
+
+.article-body h2 {
+    margin: 2.5rem 0 1rem;
+    font-size: 1.6rem;
+}
+
+.article-body h3 {
+    margin: 2rem 0 .75rem;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.article-body ul,
+.article-body ol {
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.article-body li {
+    margin-bottom: .5rem;
+}
+
+.article-body strong {
+    color: var(--text-primary);
+}
+
+.article-body pre {
+    position: relative;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    padding: 40px 20px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-light);
+    font-family: var(--font-mono);
+    font-size: .9rem;
+    line-height: 1.5;
+}
+
+.article-body pre[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 4px 14px;
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 6px 0 6px 0;
+    background: var(--bg-medium);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.article-body code {
+    font-family: var(--font-mono);
+    font-size: .9em;
+}
+
+.article-body p > code,
+.article-body li > code {
+    padding: 2px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: var(--bg-light);
+}
+
+.back-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-bottom: 40px;
+    font-size: .9rem;
+}
+
+@media (max-width: 992px) {
+    .article-page {
+        padding-inline: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .article-page {
+        padding: 100px 16px 60px;
+    }
+
+    .article-page h1 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .article-page {
+        padding-inline: 14px;
+    }
+
+    .article-body {
+        font-size: 1rem;
+    }
+
+    .article-body pre {
+        padding-inline: 14px;
+    }
+}

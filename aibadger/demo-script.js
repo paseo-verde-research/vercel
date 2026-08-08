@@ -43,8 +43,6 @@
 
     const steps = [
         {
-            name: "Step 1: User enters prompt",
-            target: 'terminal',
             setup: () => {
                 setTerminalScreen(`${renderHeader(0)}\n\nType a goal or paste a diff for review, then press Enter.\n`, "> ");
                 elements.browserContent.innerHTML = "";
@@ -64,8 +62,6 @@
             }
         },
         {
-            name: "Step 2: Copy Prompt 1",
-            target: 'terminal',
             setup: () => {
                 setTerminalScreen(`${renderHeader(0)}\n\nScan complete! Here's what Badger found:\n\n─────────────────────────────────────────────────\nProject:   demo-app\nStack:     Go + Node.js\nModules:   handler, service, server\nTotal:     28 source files\n─────────────────────────────────────────────────\n\nReady to copy Prompt 1: Topology to your clipboard.\nPrivacy: Structure only - no source code.\n\nCopy Prompt 1: Topology to clipboard? (y/N) `);
                 switchWindow('terminal');
@@ -80,8 +76,6 @@
             }
         },
         {
-            name: "Step 3: Paste Prompt 1 into AI Chat",
-            target: 'browser',
             setup: () => {
                 elements.browserContent.innerHTML = "";
                 elements.browserInput.textContent = "";
@@ -99,8 +93,6 @@
             }
         },
         {
-            name: "Step 4: AI Loading and Response",
-            target: 'browser',
             setup: () => switchWindow('browser'),
             action: async (runId) => {
                 const loadingMsg = addChatMessage('ai', "Loading");
@@ -114,8 +106,6 @@
             }
         },
         {
-            name: "Step 5: Paste extraction commands",
-            target: 'terminal',
             setup: () => {
                 setTerminalScreen(`${renderHeader(1)}\n\n<span class="success">✓</span>  Prompt 1: Topology copied. Paste it into any LLM chat interface, then paste extraction commands.\n\nPaste extraction commands from your AI chat.\n[text 0B] paste submits, Enter fallback\n\n    Paste FILE/PREFIX/NEAR commands here. `);
                 switchWindow('terminal');
@@ -128,8 +118,6 @@
             }
         },
         {
-            name: "Step 6: Prompt 2 Ready",
-            target: 'terminal',
             setup: () => {
                 setTerminalScreen(`${renderHeader(1)}\n\nReady to copy Prompt 2: Code Context to your clipboard.\n\n<span class="warning">⚠️</span>  This WILL include actual source code from:\n   • internal/handler/order.go\n   • internal/service/order.go\n\nCopy Prompt 2: Code Context to clipboard? (y/N) `);
                 switchWindow('terminal');
@@ -142,8 +130,6 @@
             }
         },
         {
-            name: "Step 7: AI Response for Prompt 2",
-            target: 'browser',
             setup: () => switchWindow('browser'),
             action: async (runId) => {
                 await wait(TIMING.shortPause, runId);
@@ -165,8 +151,6 @@
             }
         },
         {
-            name: "Step 8: Paste final response",
-            target: 'terminal',
             setup: () => {
                 setTerminalScreen(`${renderHeader(2)}\n\n<span class="success">✓</span>  Prompt 2: Code Context copied. Next: paste the final AI response.\n\nPaste the final AI response.\n[text 0B] paste submits, Enter fallback\n\n    Paste the final AI response here. `);
                 switchWindow('terminal');
@@ -179,8 +163,6 @@
             }
         },
         {
-            name: "Step 9: Confirm changes",
-            target: 'terminal',
             setup: () => {
                 setTerminalScreen(`${renderHeader(2)}\n\n<span class="success">✓</span>  Parsed 1 file update(s).\n\n<span class="warning">⚠️</span>  About to write changes to disk:\n\n    [write] internal/definitely_not_buggy.go\n\nApply these changes? (y/N) `);
                 switchWindow('terminal');

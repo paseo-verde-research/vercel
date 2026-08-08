@@ -25,21 +25,9 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
-        .article-page { max-width: 780px; margin: 0 auto; padding: 120px 20px 80px; }
-        .article-page h1 { font-size: 2.2rem; margin-bottom: 8px; }
-        .article-meta { font-size: .9rem; color: var(--text-secondary); margin-bottom: 32px; }
-        .article-body { font-size: 1.05rem; line-height: 1.8; color: var(--text-primary); }
-        .article-body p { margin-bottom: 1.5rem; }
-        .article-body h2 { font-size: 1.6rem; margin: 2.5rem 0 1rem; }
-        .article-body h3 { font-family: var(--font-heading); font-size: 1.15rem; margin: 2rem 0 .75rem; }
-        .article-body ul, .article-body ol { margin: 0 0 1.5rem; padding-left: 1.5rem; }
-        .article-body li { margin-bottom: .5rem; }
-        .article-body pre { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 6px; padding: 40px 20px 16px; overflow-x: auto; margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: .9rem; line-height: 1.5; position: relative; }
-        .article-body pre[data-lang]::before { content: attr(data-lang); position: absolute; top: 0; left: 0; padding: 4px 14px; border-radius: 6px 0 6px 0; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); background: var(--bg-medium); color: var(--text-secondary); font-family: var(--font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
-        .article-body code { font-family: var(--font-mono); font-size: .9em; }
-        .article-body p > code, .article-body li > code { padding: 2px 6px; border: 1px solid var(--border-color); border-radius: 3px; background: var(--bg-light); }
         .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
         .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
         .article-body th { background: var(--bg-light); }
@@ -50,8 +38,7 @@
         .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
         .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
         .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
-        .back-link { display: inline-block; margin-bottom: 40px; font-size: .9rem; }
-        @media (max-width: 768px) { .article-page { padding: 100px 16px 60px; } .article-page h1 { font-size: 1.6rem; } .article-body table { display: block; overflow-x: auto; } }
+        @media (max-width: 768px) { .article-body table { display: block; overflow-x: auto; } }
     </style>
 </head>
 <body>
@@ -137,7 +124,7 @@ targets:
     </div>
 </article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
-<script src="/script.js?v=20260515"></script>
+<script src="/script.js?v=20260808"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
 <script src="https://www.statcounter.com/counter/counter.js" async></script>
 </body>

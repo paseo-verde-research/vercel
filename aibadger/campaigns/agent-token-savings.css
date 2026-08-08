@@ -3,7 +3,7 @@
 .campaign-header .container, .final-cta .container { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .campaign-header .product-logo { font-size: 1.35rem; }
 .eyebrow, .workflow-label, .panel-kicker { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .14em; color: var(--terminal-green); }
-.header-star-link { color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 10px; font-size: .76rem; font-weight: 600; }
+.header-star-link { min-height: 44px; display: inline-flex; align-items: center; color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 10px; font-size: .76rem; font-weight: 600; }
 .header-star-link:hover { border-color: var(--primary-green); color: var(--primary-green); }
 .campaign-hero { padding: 58px 0 46px; background: var(--bg-dark) url('../../img/carbon-fibre-v2.png'); position: relative; overflow: hidden; }
 .campaign-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 82% 25%, rgba(46,204,113,.16), transparent 36%); pointer-events: none; }
@@ -43,7 +43,7 @@
 .final-cta p { margin-top: 5px; color: var(--text-secondary); font-size: .88rem; }
 .final-cta .campaign-cta { flex: 0 0 auto; margin: 0; }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
     .campaign-hero { padding: 42px 0 36px; }
     .campaign-hero-grid { grid-template-columns: 1fr; gap: 28px; }
     .campaign-hero h1 { letter-spacing: -1px; }
