@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Java Production Performance Engineering | PVR Labs</title>
+    <meta name="description" content="PVR Labs diagnoses latency, CPU, memory, GC, database, JDBC, transaction, and concurrency problems in production Java systems.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/">
+    <meta property="og:title" content="Java Production Performance Engineering | PVR Labs">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Cross-layer diagnosis for difficult production Java performance problems.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Java Production Performance Engineering | PVR Labs">
+    <meta name="twitter:description" content="Cross-layer diagnosis for difficult production Java performance problems.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .consulting-page {
+            padding-top: var(--header-height);
+        }
+        .consulting-intro {
+            padding: 80px 0 60px;
+            background: var(--bg-dark) url('/img/carbon-fibre-v2.png');
+        }
+        .consulting-copy {
+            max-width: 52rem;
+        }
+        .consulting-intro h1 {
+            font-family: var(--font-logo);
+            font-size: clamp(2.25rem, 5vw, 3.8rem);
+            line-height: 1.15;
+        }
+        .consulting-intro p,
+        .consulting-text p,
+        .case-story p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+        .consulting-intro p {
+            max-width: 44rem;
+            margin-bottom: 2rem;
+        }
+        .consulting-section {
+            padding: 60px 0;
+        }
+        .consulting-section:nth-child(odd) {
+            background: var(--bg-medium);
+        }
+        .consulting-section .container {
+            max-width: 62rem;
+        }
+        .consulting-section h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+        }
+        .diagnostic-list,
+        .layer-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem 2rem;
+            margin-top: 2rem;
+        }
+        .diagnostic-list li,
+        .layer-list li {
+            position: relative;
+            padding: 0.65rem 0 0.65rem 1.4rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .diagnostic-list li::before,
+        .layer-list li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+        }
+        .case-stories {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .case-story {
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .case-story h3 {
+            color: var(--text-primary);
+        }
+        .case-story p:last-child {
+            margin-bottom: 0;
+        }
+        .consulting-cta {
+            text-align: center;
+        }
+        .consulting-cta p {
+            max-width: 38rem;
+            margin: 0 auto 2rem;
+            color: var(--text-secondary);
+        }
+        @media (max-width: 768px) {
+            .consulting-intro {
+                padding: 55px 0 45px;
+            }
+            .diagnostic-list,
+            .layer-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .consulting-intro h1 {
+                font-size: 2rem;
+                overflow-wrap: anywhere;
+            }
+            .consulting-intro .btn,
+            .consulting-cta .btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="consulting-page">
+    <section class="consulting-intro">
+        <div class="container">
+            <div class="consulting-copy">
+                <h1>Java Production <span class="highlight">Performance Engineering</span></h1>
+                <p>We diagnose and fix difficult production performance problems across Java, JVM, JDBC, transactions, and databases. The work starts with evidence and ends with a root cause your team can verify.</p>
+                <a href="/#contact" class="btn btn-primary">Discuss a Production Problem</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="consulting-section">
+        <div class="container">
+            <h2>Problems We <span class="highlight">Diagnose</span></h2>
+            <ul class="diagnostic-list">
+                <li>Slow or unpredictable requests</li>
+                <li>High CPU and infrastructure cost</li>
+                <li>Memory growth, leaks, and excessive GC</li>
+                <li>JDBC, transaction, and database bottlenecks</li>
+                <li>Concurrency and shared-resource contention</li>
+                <li>Performance problems that resist reproduction</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="consulting-section consulting-text">
+        <div class="container">
+            <h2>Follow the Evidence <span class="highlight">Across Layers</span></h2>
+            <p>A symptom in one layer often begins somewhere else. A depleted JDBC pool may start with transaction scope or a database lock. GC pressure may start with application allocation or retention. High CPU may reflect contention, retries, or queue buildup rather than productive work.</p>
+            <p>We correlate evidence instead of tuning each component in isolation.</p>
+            <ul class="layer-list">
+                <li>Application code and framework behavior</li>
+                <li>JVM execution, allocation, memory, and GC</li>
+                <li>Threads, locks, queues, and concurrency</li>
+                <li>JDBC connections and transactions</li>
+                <li>PostgreSQL query execution and locking</li>
+                <li>MariaDB query execution and locking</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="consulting-section">
+        <div class="container">
+            <h2>Production Engineering <span class="highlight">Experience</span></h2>
+            <p class="section-subtitle" style="text-align:left;margin-left:0;">Here are some of the production performance problems we worked on at Google, Apple, and ServiceNow. Details have been anonymized and simplified.</p>
+            <div class="case-stories">
+                <article class="case-story">
+                    <h3>Connection Pool Starvation</h3>
+                    <p>Troubleshooting production slowdowns caused by exhausted connection pools and requests waiting for database connections.</p>
+                </article>
+                <article class="case-story">
+                    <h3>MariaDB History List Growth</h3>
+                    <p>Tracing history list length growth to an open transaction that prevented old row versions from being cleared.</p>
+                </article>
+                <article class="case-story">
+                    <h3>Production Deadlocks</h3>
+                    <p>Troubleshooting deadlocks in production by connecting thread and transaction behavior to the resources involved.</p>
+                </article>
+                <article class="case-story">
+                    <h3>Excessive Garbage Collection</h3>
+                    <p>Identifying performance bottlenecks caused by excessive GC, including memory leaks, wasteful logging, and unnecessary in-memory processing.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="consulting-section consulting-cta">
+        <div class="container">
+            <h2>Bring Us the <span class="highlight">Hard Problem</span></h2>
+            <p>Tell us what changed, what you have measured, and where the investigation is stuck.</p>
+            <a href="/#contact" class="btn btn-primary">Discuss the Problem</a>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260809"></script>
+</body>
+</html>

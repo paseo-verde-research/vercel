@@ -418,6 +418,18 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-secondary);
 }
 
+.services-more {
+    margin-top: 2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.services-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+}
+
 /* --- About Us Section --- */
 .about-section {
     padding: 60px 0;

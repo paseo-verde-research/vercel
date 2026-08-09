@@ -214,10 +214,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Active nav link based on current path (for cross-page nav links) ---
     const articlesLink = document.querySelector('.nav-link[href="/articles/"]');
-    if (articlesLink) {
+    const consultingLink = document.querySelector('.nav-link[href="/java-performance/"]');
+    if (articlesLink || consultingLink) {
         const path = window.location.pathname;
-        if (path === '/articles/' || path.startsWith('/articles/')) {
+        if (articlesLink && (path === '/articles/' || path.startsWith('/articles/'))) {
             articlesLink.classList.add('active');
+        }
+        if (consultingLink && path.startsWith('/java-performance/')) {
+            consultingLink.classList.add('active');
         }
     }
 });
