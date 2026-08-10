@@ -146,6 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
         currentYearSpan.textContent = new Date().getFullYear();
     }
 
+    // --- Prefill the contact form with a local triage summary ---
+    const contactMessage = document.getElementById('contact-message');
+    if (contactMessage) {
+        try {
+            const triageSummary = sessionStorage.getItem('pvrlabsTriageSummary');
+            if (triageSummary) {
+                contactMessage.value = triageSummary;
+                sessionStorage.removeItem('pvrlabsTriageSummary');
+            }
+        } catch (error) {
+            // Storage can be unavailable in private browsing contexts.
+        }
+    }
+
     // --- Article Topic Filters ---
     const articleFilters = Array.from(document.querySelectorAll('.article-filter'));
     const articleEntries = Array.from(document.querySelectorAll('.article-entry'));

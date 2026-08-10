@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Java Performance Triage | PVR Labs</title>
+    <meta name="description" content="A local-first Java performance triage wizard that helps identify useful evidence to collect next.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/triage.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/java-performance/triage.css">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+        </div>
+    </nav>
+</header>
+<main class="triage-page">
+    <div class="container">
+        <section class="triage-hero">
+            <div class="triage-eyebrow">Java performance engineering</div>
+            <h1>Java Performance <span class="highlight">Triage</span></h1>
+            <p>Answer a few focused questions to narrow the investigation and identify useful evidence to collect next. This is a triage aid, not a diagnosis.</p>
+        </section>
+        <section class="triage-shell" aria-live="polite">
+            <div class="progress-wrap"><div class="progress-meta"><span id="stepLabel">Step 1</span><span id="categoryLabel">Choose a symptom</span></div><div class="progress"><div id="progressBar"></div></div></div>
+            <div id="wizard"></div>
+        </section>
+    </div>
+</main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Java performance, systems engineering, and local-first developer tools.</p></div></footer>
+<script src="/script.js?v=20260809"></script>
+<script src="/java-performance/triage.js?v=20260809"></script>
+</body>
+</html>
