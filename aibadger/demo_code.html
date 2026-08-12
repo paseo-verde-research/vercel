@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Badger - One-paste code review demo</title>
-    <meta name="description" content="See AI Badger prepare your Git changes and relevant local context for a complete code review in one paste.">
-    <link rel="canonical" href="https://pvrlabs.xyz/aibadger/demo.html">
+    <title>AI Badger - Code workflow demo</title>
+    <meta name="description" content="See the AI Badger Code workflow map a project, extract focused source context, and apply changes.">
+    <link rel="canonical" href="https://pvrlabs.xyz/aibadger/demo_code.html">
 
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pvrlabs.xyz/aibadger/demo.html">
-    <meta property="og:title" content="AI Badger: Review your changes with one paste">
+    <meta property="og:url" content="https://pvrlabs.xyz/aibadger/demo_code.html">
+    <meta property="og:title" content="AI Badger: Code with focused codebase context">
     <meta property="og:site_name" content="AI Badger">
-    <meta property="og:description" content="Package your Git diff with relevant local context, then paste it into any AI chat for review.">
+    <meta property="og:description" content="Map a project, extract focused source context, and apply changes without uploading your repository.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI Badger: Review your changes with one paste">
-    <meta name="twitter:description" content="Package your Git diff with relevant local context, then paste it into any AI chat for review.">
+    <meta name="twitter:title" content="AI Badger: Code with focused codebase context">
+    <meta name="twitter:description" content="Map a project, extract focused source context, and apply changes without uploading your repository.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "AI Badger - One-paste code review demo",
+      "name": "AI Badger - Interactive Demo",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS, Linux, Windows",
-      "description": "See AI Badger package Git changes and relevant local context for review in any AI chat.",
-      "url": "https://pvrlabs.xyz/aibadger/demo.html",
+      "description": "See AI Badger in action. A step-by-step interactive walkthrough of the local-first code context workflow.",
+      "url": "https://pvrlabs.xyz/aibadger/demo_code.html",
       "license": "https://opensource.org/licenses/MIT"
     }
     </script>
@@ -35,17 +37,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="/aibadger/style.css">
     <link rel="stylesheet" href="/aibadger/demo-ui.css">
     <link rel="stylesheet" href="/aibadger/demo-modes.css">
+
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
+
 <header id="header">
     <nav class="navbar">
         <div class="container">
             <div class="header-left">
-                <a href="/aibadger/" class="product-logo">AI <span class="highlight">Badger</span></a>
+                <a href="/aibadger/" class="product-logo">
+                    AI <span class="highlight">Badger</span>
+                </a>
             </div>
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/aibadger/" class="nav-link">Home</a></li>
@@ -55,47 +62,60 @@
                 <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
             </ul>
             <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
-                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
         </div>
     </nav>
 </header>
 
 <main>
-    <section class="demo-desktop review-demo" aria-labelledby="review-demo-title">
+    <section class="demo-desktop review-demo code-demo" aria-labelledby="code-demo-title">
         <div class="review-demo-heading">
-            <p class="review-demo-eyebrow">Interactive demo</p>
-            <div class="demo-mode-switch" aria-label="Choose a demo mode">
-                <button type="button" data-demo-mode="review" aria-pressed="true">/review</button>
-                <button type="button" data-demo-mode="design" aria-pressed="false">/design</button>
-            </div>
-            <h1 id="review-demo-title">One-paste code review</h1>
-            <p id="demo-subtitle">Badger packages your Git diff with relevant local context, ready for any AI chat.</p>
+            <h1 id="code-demo-title">Code with focused codebase context</h1>
+            <p>Implement changes with focused source context without uploading your repository.</p>
         </div>
-
         <div class="window-container">
-            <section id="terminal" class="window terminal active" aria-label="AI Badger terminal window">
+            <section id="terminal" class="window terminal active" aria-label="AIBADGER terminal window">
                 <div class="window-header">
-                    <div class="traffic-lights" aria-hidden="true"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
-                    <div class="window-title">Terminal — demo-app</div>
+                    <div class="traffic-lights" aria-hidden="true">
+                        <span class="red"></span>
+                        <span class="yellow"></span>
+                        <span class="green"></span>
+                    </div>
+                    <div class="window-title">AIBADGER</div>
                 </div>
                 <div class="window-body">
                     <div id="terminal-content" class="content"></div>
-                    <div class="cursor-line"><span id="terminal-cursor-prefix"></span><span id="terminal-input"></span><span class="cursor"></span></div>
+                    <div class="cursor-line">
+                        <span id="terminal-cursor-prefix"></span>
+                        <span id="terminal-input"></span>
+                        <span class="cursor"></span>
+                    </div>
                 </div>
             </section>
 
             <section id="browser" class="window browser" aria-label="AI chat browser window">
                 <div class="window-header">
-                    <div class="traffic-lights" aria-hidden="true"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
-                    <div class="window-title">AI Chat — Browser</div>
+                    <div class="traffic-lights" aria-hidden="true">
+                        <span class="red"></span>
+                        <span class="yellow"></span>
+                        <span class="green"></span>
+                    </div>
+                    <div class="window-title">AI Chat - Browser Window</div>
                 </div>
                 <div class="window-body">
-                    <div class="browser-address-bar"><div class="address-input">https://your-choice-of-ai.chat</div></div>
+                    <div class="browser-address-bar">
+                        <div class="address-input">https://chatgpt-claude-gemini-or-other-ai.chat</div>
+                    </div>
                     <div id="browser-content" class="content">
-                        <div class="chat-header">New chat</div>
+                        <div class="chat-header">AI Chat</div>
                         <div id="chat-messages"></div>
-                        <div class="chat-input-area"><span class="cursor"></span><span id="browser-input" data-placeholder="Ask anything"></span></div>
+                        <div class="chat-input-area">
+                            <span class="cursor"></span>
+                            <span id="browser-input" data-placeholder="Ask anything"></span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -106,22 +126,24 @@
                 <button id="prev-btn" type="button">Back</button>
                 <button id="play-pause-btn" type="button">Pause</button>
                 <button id="next-btn" type="button">Next</button>
-                <div class="step-indicator">Step <span id="current-step">1</span>/<span id="step-total">4</span></div>
+                <div class="step-indicator">Step <span id="current-step">1</span>/9</div>
             </nav>
-            <div id="demo-note" class="review-demo-note">
-                <strong>Usually, one paste is all it takes.</strong> If the AI needs more source context, it can request specific files from Badger.
+
+            <div class="demo-cta">
+                <p><a href="demo.html" class="highlight">Explore Review and Design demos</a> · <a href="install.html" class="highlight">Install now!</a></p>
             </div>
-            <div class="demo-cta"><p><a href="install.html" class="highlight">Install AI Badger</a> · <a href="demo_code.html" class="highlight">See the /code workflow</a></p></div>
         </div>
     </section>
 </main>
 
 <footer id="footer">
-    <div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div>
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+    </div>
 </footer>
 
 <script src="/script.js?v=20260808"></script>
-<script src="/aibadger/demo-modes.js"></script>
+<script src="/aibadger/demo-script.js"></script>
 <!-- Default Statcounter code for PVR Labs
 https://pvrlabs.xyz/ -->
 <script>
