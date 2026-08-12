@@ -14,6 +14,7 @@
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.">
     <meta property="article:published_time" content="2026-07-30T15:45:00-07:00">
+    <meta property="article:modified_time" content="2026-08-12T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/mvnlite_cover.webp">
     <meta property="og:image:type" content="image/webp">
@@ -102,7 +103,7 @@
     <a href="/articles/" class="back-link">&larr; Back to Articles</a>
     <h1>I Taught Maven to Be an Introvert</h1>
     <p class="article-subtitle">How a small Bash wrapper reduced successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</p>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026</div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026 · Updated August 12, 2026</div>
     <img class="article-cover" src="/articles/img/mvnlite_screen.webp" width="2350" height="962" loading="eager" decoding="async" alt="Side-by-side terminal comparison of verbose Maven output and a one-line mvn-lite PASS result">
 
     <div class="article-body">
@@ -190,6 +191,7 @@ Re-run with --full for complete live output.</code></pre>
             than <strong>99.7%</strong>. It effectively matched the former helper; the two-byte difference is
             operationally meaningless.</p>
         <p>As an additional real-world check, I also ran <code>mvn-lite</code> against the <a href="https://scriptella.org/" target="_blank" rel="noopener noreferrer">Scriptella</a> reactor under JDK 17. The normal Maven run produced hundreds of lines, while <code>mvn-lite</code> completed with a single <code>PASS · 11.137 s</code> line. See the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/SCRIPTELLA-MVN-LITE-SMOKE-TEST.md" target="_blank" rel="noopener noreferrer">Scriptella smoke test</a>.</p>
+        <p>A later <code>mvn-lite</code> 0.2.0 check used a pinned Apache Commons CLI revision with system Maven instead of a Maven Wrapper. Its 985-test lifecycle compacted a 203-line, 15,079-byte Maven log to <code>PASS · 26.995 s</code>. An induced Surefire failure preserved the nonzero status and surfaced the failed goal and direct cause. See the <a href="https://github.com/ejboy/agent-scripts/blob/main/experiments/test/APACHE-COMMONS-CLI-MVN-LITE-SMOKE-TEST.md" target="_blank" rel="noopener noreferrer">Apache Commons CLI smoke test</a>.</p>
 
         <h2>Failure results</h2>
         <p>The initial failure experiment invoked an invalid Maven lifecycle phase:</p>
@@ -238,13 +240,13 @@ Cause: Unable to create temporary directory</code></pre>
         <p>The same build passed after normal filesystem permissions were restored.</p>
 
         <h2 id="try-mvn-lite">Try <code>mvn-lite</code> in your project</h2>
-        <p>To try the latest version:</p>
+        <p>To try the <code>v0.2.0</code> release used for this article update:</p>
         <pre data-lang="bash"><code>curl -fsSL \
-  https://raw.githubusercontent.com/ejboy/agent-scripts/main/scripts/mvn-lite \
+  https://raw.githubusercontent.com/ejboy/agent-scripts/v0.2.0/scripts/mvn-lite \
   -o mvn-lite
 chmod +x mvn-lite</code></pre>
-        <p>Review the script before running it in a sensitive repository. For a reproducible vendored copy, replace
-            <code>main</code> with a release tag such as <code>v0.1.0</code>.</p>
+        <p>Review the script before running it in a sensitive repository. The release tag keeps a vendored copy
+            reproducible. Check the <a href="https://github.com/ejboy/agent-scripts/tags" target="_blank" rel="noopener noreferrer">agent-scripts tags</a> for newer versions.</p>
         <p>Arguments pass through to Maven. Use <code>--full</code> when ordinary Maven output is needed:</p>
         <pre data-lang="bash"><code>./mvn-lite test
 ./mvn-lite -pl common test
