@@ -1,4 +1,6 @@
 .article-page {
+    width: 100%;
+    min-width: 0;
     max-width: 48.75rem;
     margin: 0 auto;
     padding: 120px 20px 80px;
@@ -7,6 +9,7 @@
 .article-page h1 {
     font-size: 2.2rem;
     margin-bottom: 8px;
+    overflow-wrap: break-word;
 }
 
 .article-meta {
@@ -24,7 +27,28 @@
     border-radius: 8px;
 }
 
+.article-body figure {
+    margin: 0 0 1.5rem;
+}
+
+.article-body figure img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.article-body figcaption {
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: .85rem;
+    line-height: 1.5;
+}
+
 .article-body {
+    min-width: 0;
     color: var(--text-primary);
     font-size: 1.05rem;
     line-height: 1.8;
@@ -114,6 +138,34 @@
     font-size: .9rem;
 }
 
+.badger-pitch {
+    margin: 40px 0;
+    padding: 24px 28px;
+    border-left: 4px solid var(--primary-green);
+    border-radius: 8px;
+    background: var(--bg-light);
+}
+
+.badger-pitch p {
+    margin-bottom: 0;
+}
+
+.article-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.article-actions .btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-left: 0;
+    padding: 8px 20px;
+    font-size: .85rem;
+}
+
 @media (max-width: 992px) {
     .article-page {
         padding-inline: 20px;
@@ -141,5 +193,18 @@
 
     .article-body pre {
         padding-inline: 14px;
+    }
+
+    .badger-pitch {
+        padding: 20px;
+    }
+
+    .article-actions {
+        flex-direction: column;
+    }
+
+    .article-actions .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
