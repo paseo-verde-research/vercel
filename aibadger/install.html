@@ -3,34 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Badger - Install</title>
-    <meta name="description" content="Install AI Badger on macOS, Linux, or Windows. Simple CLI installation via curl, brew, or PowerShell.">
+    <title>Get AI Badger</title>
+    <meta name="description" content="Use AI Badger from the command line or VS Code. Install the CLI for the full repository-aware context engine, or add the VS Code extension for editor-native file and Git-change workflows.">
     <link rel="canonical" href="https://pvrlabs.xyz/aibadger/install.html">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/aibadger/install.html">
-    <meta property="og:title" content="AI Badger: Local-First Code Context for any LLM">
+    <meta property="og:title" content="Get AI Badger">
     <meta property="og:site_name" content="AI Badger">
-    <meta property="og:description" content="Install AI Badger on macOS, Linux, or Windows. Simple CLI installation via curl, brew, or PowerShell.">
+    <meta property="og:description" content="Use AI Badger from the command line or VS Code. Install the CLI for the full repository-aware context engine, or add the VS Code extension for file and Git-change workflows.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI Badger: Local-First Code Context for any LLM">
-    <meta name="twitter:description" content="Install AI Badger on macOS, Linux, or Windows. Simple CLI installation via curl, brew, or PowerShell.">
+    <meta name="twitter:title" content="Get AI Badger">
+    <meta name="twitter:description" content="Use AI Badger from the command line or VS Code. Install the CLI for the full repository-aware context engine, or add the VS Code extension for file and Git-change workflows.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "AI Badger - Install",
+      "name": "AI Badger",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS, Linux, Windows",
-      "description": "Install AI Badger on your machine. Local-first code context for any AI chat.",
+      "description": "Use AI Badger from the command line or VS Code.",
       "url": "https://pvrlabs.xyz/aibadger/install.html",
-      "license": "https://opensource.org/licenses/MIT"
+      "license": "https://opensource.org/licenses/MIT",
+      "sameAs": "https://github.com/PVRLabs/aibadger",
+      "softwareAddOn": {
+        "@type": "SoftwareApplication",
+        "name": "AI Badger for VS Code",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "macOS, Linux, Windows",
+        "url": "https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger",
+        "sameAs": "https://github.com/PVRLabs/aibadger-vscode"
+      }
     }
     </script>
 
@@ -42,16 +51,11 @@
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
-        .install-section {
-            padding: 80px 0;
-            min-height: calc(100vh - 160px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
         .install-header {
             text-align: center;
-            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            padding: 36px 0 28px;
         }
         .install-header h1 {
             font-size: 2.8rem;
@@ -60,19 +64,21 @@
         .install-header p {
             color: var(--text-secondary);
             font-size: 1.05rem;
-            max-width: 800px;
+            max-width: min(800px, 100%);
             margin: 0 auto;
+            overflow-wrap: break-word;
         }
         
         /* New Tab Layout */
         .tabs-container {
-            width: min(920px, calc(100vw - 40px));
+            width: min(920px, 100%);
             margin: 0 auto;
             background: rgba(10, 10, 10, 0.4);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
             box-sizing: border-box;
+            min-width: 0;
         }
         .tabs-header {
             display: flex;
@@ -124,6 +130,8 @@
             color: var(--text-primary);
             line-height: 1.7;
             white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: break-word;
             min-width: 0;
             overflow-x: auto;
             scrollbar-width: none; /* Firefox */
@@ -214,7 +222,7 @@
             </div>
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/aibadger/" class="nav-link">Home</a></li>
-                <li><a href="/aibadger/install.html" class="nav-link active">Install</a></li>
+                <li><a href="/aibadger/install.html" class="nav-link active">Get AI Badger</a></li>
                 <li><a href="/aibadger/demo.html" class="nav-link">Demo</a></li>
                 <li><a href="/articles/" class="nav-link">Articles</a></li>
                 <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
@@ -229,14 +237,39 @@
 </header>
 
 <main>
-    <section class="install-section">
+    <section class="hero-section">
         <div class="container">
             <div class="install-header">
-                <h1>Install <span class="highlight">AI Badger</span></h1>
-                <p>Get started with the local-first CLI for AI code context.</p>
+                <h1>Get <span class="highlight">AI Badger</span></h1>
+                <p>Use AI Badger from the command line or VS Code. Install the CLI for the full repository-aware context engine, or add the VS Code extension for editor-native file and Git-change workflows.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="install-section">
+        <div class="container">
+            <div class="get-paths">
+                <article class="get-path">
+                    <p class="choose-kicker">Command line</p>
+                    <h2>Install the CLI</h2>
+                    <p>Repository-aware context from the command line. Map repository structure, create focused context for coding, design, and review, and power Deep Review in VS Code. Use curl, brew, or PowerShell below.</p>
+                    <div class="get-path-actions">
+                        <a href="#cli" class="btn btn-install">Install commands</a>
+                        <a href="https://github.com/PVRLabs/aibadger" class="btn btn-github" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </div>
+                </article>
+                <article class="get-path" id="vscode">
+                    <p class="choose-kicker">VS Code</p>
+                    <h2>Add the extension</h2>
+                    <p>Start immediately with file and Git-change workflows. Add the local Badger CLI when you need repository-aware Deep Review. Desktop VS Code only.</p>
+                    <div class="get-path-actions">
+                        <a href="https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger" class="btn btn-demo" target="_blank" rel="noopener noreferrer">Open Marketplace</a>
+                        <a href="https://github.com/PVRLabs/aibadger-vscode" class="btn btn-github" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </div>
+                </article>
             </div>
 
-            <div class="tabs-container">
+            <div class="tabs-container" id="cli">
                 <div class="tabs-header">
                     <button class="tab-btn active" data-method="curl">curl</button>
                     <button class="tab-btn" data-method="brew">brew</button>

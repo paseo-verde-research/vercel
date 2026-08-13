@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Badger - Local-first code context for any AI chat</title>
-    <meta name="description" content="AI Badger: Local-first code context for any AI chat. Map your project and extract focused context without uploading code.">
+    <title>AI Badger - Work with your local codebase using any AI</title>
+    <meta name="description" content="AI Badger prepares focused repository context locally so you can review or work with code in ChatGPT, Claude, Gemini, or any AI chat. Use it from the command line or VS Code. You control what gets shared.">
     <link rel="canonical" href="https://pvrlabs.xyz/aibadger/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/aibadger/">
-    <meta property="og:title" content="AI Badger: Local-First Code Context for any LLM">
+    <meta property="og:title" content="AI Badger: Work with your local codebase using any AI">
     <meta property="og:site_name" content="AI Badger">
-    <meta property="og:description" content="AI Badger: Local-first code context for any AI chat. Map your project and extract focused context without uploading code.">
+    <meta property="og:description" content="Prepare focused repository context locally for any AI chat. Use AI Badger from the command line or VS Code. You control what gets shared.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI Badger: Local-First Code Context for any LLM">
-    <meta name="twitter:description" content="AI Badger: Local-first code context for any AI chat. Map your project and extract focused context without uploading code.">
+    <meta name="twitter:title" content="AI Badger: Work with your local codebase using any AI">
+    <meta name="twitter:description" content="Prepare focused repository context locally for any AI chat. Use AI Badger from the command line or VS Code. You control what gets shared.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <script type="application/ld+json">
@@ -28,9 +28,18 @@
       "name": "AI Badger",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS, Linux, Windows",
-      "description": "Local-first code context for any AI chat.",
+      "description": "AI Badger prepares focused repository context locally for any AI chat. Use it from the command line or VS Code.",
       "url": "https://pvrlabs.xyz/aibadger/",
-      "license": "https://opensource.org/licenses/MIT"
+      "license": "https://opensource.org/licenses/MIT",
+      "sameAs": "https://github.com/PVRLabs/aibadger",
+      "softwareAddOn": {
+        "@type": "SoftwareApplication",
+        "name": "AI Badger for VS Code",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "macOS, Linux, Windows",
+        "url": "https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger",
+        "sameAs": "https://github.com/PVRLabs/aibadger-vscode"
+      }
     }
     </script>
 
@@ -54,7 +63,7 @@
             </div>
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/aibadger/" class="nav-link active">Home</a></li>
-                <li><a href="/aibadger/install.html" class="nav-link">Install</a></li>
+                <li><a href="/aibadger/install.html" class="nav-link">Get AI Badger</a></li>
                 <li><a href="/aibadger/demo.html" class="nav-link">Demo</a></li>
                 <li><a href="/articles/" class="nav-link">Articles</a></li>
                 <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
@@ -73,22 +82,19 @@
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-content">
-                    <h1 class="hero-title">Use any AI chat with your <span class="highlight">local codebase</span></h1>
-                    <p class="hero-subtitle">Local-first code context. No repo upload. No API keys. No cloud dependency. No vendor lock-in.</p>
-                    <p class="hero-tagline">Map your project. Extract focused context. <span class="highlight">Stay in control.</span></p>
+                    <h1 class="hero-title">Work with your <span class="highlight">local codebase</span> using any AI</h1>
+                    <p class="hero-subtitle">AI Badger prepares focused repository context locally for any AI chat. Use it from the command line, or from VS Code for file and Git-change workflows.</p>
+                    <p class="hero-tagline">No repository integration. No provider API keys. Context leaves only when you <span class="highlight">explicitly share it.</span></p>
                     
                     <div class="hero-btns">
-                        <a href="/aibadger/install.html" class="btn btn-install">Install</a>
-                        <a href="/aibadger/demo.html" class="btn btn-demo">
-                            <span class="btn-icon">>&nbsp;</span>Try the Demo
-                        </a>
-                        <a href="https://github.com/PVRLabs/aibadger" class="btn btn-github">
-                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                            View on GitHub
+                        <a href="/aibadger/install.html#cli" class="btn btn-install">Install CLI</a>
+                        <a href="https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger" class="btn btn-demo" target="_blank" rel="noopener noreferrer">VS Code Extension</a>
+                        <a href="/aibadger/demo.html" class="btn btn-github">
+                            <span class="btn-icon">>&nbsp;</span>See Review Demo
                         </a>
                     </div>
-                    <span style="display:block; text-align:center; margin-top:10px; font-size:0.85rem; opacity:0.7;">
-                        100% Free & Open Source under MIT License
+                    <span class="hero-license">
+                        Free and open source under the MIT License
                     </span>
                 </div>
                 
@@ -151,8 +157,47 @@
                 </div>
                 <div class="why-divider">|</div>
                 <div class="why-content">
-                    AI chats need context, but dumping a whole repository is noisy, risky, and hard to manage.
+                    AI chats need context, but dumping a whole repository is noisy, risky, and hard to manage. Badger never sends repository content to an AI provider on its own. You decide what to share and where to send it.
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="choose-section" id="choose" aria-labelledby="choose-title">
+        <div class="container">
+            <div class="section-heading">
+                <h2 id="choose-title">Use AI Badger where you work</h2>
+                <p>Use AI Badger from the command line or VS Code. The CLI provides the full repository-aware context engine, while VS Code brings file and Git-change workflows into the editor.</p>
+            </div>
+            <div class="choose-grid">
+                <article class="choose-card">
+                    <p class="choose-kicker">Command line</p>
+                    <h3>Repository-aware context from the command line</h3>
+                    <ul>
+                        <li>Maps repository structure locally</li>
+                        <li>Creates focused context for coding, design, and review</li>
+                        <li>Builds repository-aware review payloads and can retrieve more context when needed</li>
+                        <li>Powers Deep Review in the VS Code extension</li>
+                    </ul>
+                    <div class="choose-actions">
+                        <a href="/aibadger/install.html#cli" class="btn btn-install">Install CLI</a>
+                        <a href="https://github.com/PVRLabs/aibadger" class="btn btn-github" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </div>
+                </article>
+                <article class="choose-card">
+                    <p class="choose-kicker">VS Code</p>
+                    <h3>Files and Git changes from the editor</h3>
+                    <ul>
+                        <li>Copy selected files or Git changes from Explorer and Source Control</li>
+                        <li>Review one repository or the whole workspace</li>
+                        <li>File and Git-change workflows work without the CLI</li>
+                        <li>Add the local CLI when you need repository-aware Deep Review</li>
+                    </ul>
+                    <div class="choose-actions">
+                        <a href="https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger" class="btn btn-demo" target="_blank" rel="noopener noreferrer">Marketplace</a>
+                        <a href="https://github.com/PVRLabs/aibadger-vscode" class="btn btn-github" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
@@ -160,21 +205,21 @@
     <section class="demo-preview-section">
         <div class="container">
             <div class="section-heading">
-                <h2>See the workflow in action</h2>
-                <p>Map your project, extract focused context, and apply AI-suggested changes while staying in control.</p>
+                <h2>See a review in action</h2>
+                <p>Git changes become focused local context for a review in your AI chat. You choose the chat. You choose what gets shared.</p>
             </div>
 
             <a href="/aibadger/demo.html" class="demo-preview-link" aria-label="Open the interactive AI Badger demo">
                 <img
                     src="/img/aibadger-demo.gif"
-                    alt="AI Badger Map Extract Apply workflow demo"
+                    alt="AI Badger review demo: Git changes become focused context for an AI chat"
                     class="demo-preview-gif"
                     loading="lazy">
             </a>
 
             <div class="demo-preview-actions">
                 <a href="/aibadger/demo.html" class="btn btn-demo">
-                    <span class="btn-icon">&gt;&nbsp;</span>Open interactive demo
+                    <span class="btn-icon">&gt;&nbsp;</span>See review demo
                 </a>
             </div>
         </div>
@@ -182,14 +227,18 @@
 
     <section class="workflow-section">
         <div class="container">
+            <div class="section-heading">
+                <h2>How a review works</h2>
+                <p>AI Badger prepares the context locally. Your AI chat does the review.</p>
+            </div>
             <div class="workflow-grid">
                 <div class="workflow-card">
                     <div class="workflow-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
                     </div>
                     <div class="workflow-text">
-                        <h3>1. Map</h3>
-                        <p>Understand your codebase structure and relationships.</p>
+                        <h3>1. Git changes</h3>
+                        <p>Start from the diff you already have, on the command line or in VS Code.</p>
                     </div>
                 </div>
                 <div class="workflow-arrow-v">
@@ -200,8 +249,8 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M4 9h3M17 9h3M9 4v3M9 17v3"/></svg>
                     </div>
                     <div class="workflow-text">
-                        <h3>2. Extract</h3>
-                        <p>Pick only what's needed for your question.</p>
+                        <h3>2. Focused context</h3>
+                        <p>Badger prepares a bounded, repository-aware payload locally.</p>
                     </div>
                 </div>
                 <div class="workflow-arrow-v">
@@ -212,8 +261,8 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg>
                     </div>
                     <div class="workflow-text">
-                        <h3>3. Apply</h3>
-                        <p>Review the AI response and confirm what gets written back.</p>
+                        <h3>3. Review in your AI chat</h3>
+                        <p>You paste into ChatGPT, Claude, Gemini, or another chat of your choice.</p>
                     </div>
                 </div>
             </div>
@@ -229,7 +278,7 @@
                     </div>
                     <div class="feature-content">
                         <h4>Works with any AI chat</h4>
-                        <p>Use with ChatGPT, Claude, Gemini, or any AI chat.</p>
+                        <p>Use ChatGPT, Claude, Gemini, or another AI chat. No provider lock-in.</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -238,7 +287,7 @@
                     </div>
                     <div class="feature-content">
                         <h4>Local-first by design</h4>
-                        <p>Your code stays on your machine. Always.</p>
+                        <p>Your repository is processed locally. Context leaves only when you explicitly share it.</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -246,8 +295,8 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
                     </div>
                     <div class="feature-content">
-                        <h4>Precise context extraction</h4>
-                        <p>Smaller, relevant context means better answers.</p>
+                        <h4>Focused, bounded context</h4>
+                        <p>Send what the review needs, not a whole-repository dump.</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -255,8 +304,8 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
                     </div>
                     <div class="feature-content">
-                        <h4>You control what gets copied and written</h4>
-                        <p>No hidden actions. You stay in control.</p>
+                        <h4>You control what gets shared</h4>
+                        <p>Badger never sends repository content to an AI provider on its own. You copy context and choose where to send it.</p>
                     </div>
                 </div>
             </div>
