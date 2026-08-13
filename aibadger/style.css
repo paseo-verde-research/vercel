@@ -479,6 +479,10 @@ h1, h2, h3, h4 {
     margin: 0;
 }
 
+.terminal-ascii-badger pre span {
+    display: block;
+}
+
 .terminal-header-text {
     flex: 1;
 }
@@ -870,6 +874,10 @@ h1, h2, h3, h4 {
 
     .terminal-ascii-badger pre {
         font-size: 0.7rem;
+    }
+
+    .terminal-ascii-face {
+        padding-left: 1ch;
     }
 }
 
