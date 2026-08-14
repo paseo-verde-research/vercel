@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Badger - VS Code review demo</title>
+    <meta name="description" content="See AI Badger turn the Git changes in VS Code into a focused review request for any AI chat.">
+    <link rel="canonical" href="https://pvrlabs.xyz/aibadger/vscode-demo.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/aibadger/vscode-demo.html">
+    <meta property="og:title" content="AI Badger: Review Git changes from VS Code">
+    <meta property="og:site_name" content="AI Badger">
+    <meta property="og:description" content="Copy the current Git changes from VS Code, then review them in the AI chat you already use.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Badger: Review Git changes from VS Code">
+    <meta name="twitter:description" content="Copy the current Git changes from VS Code, then review them in the AI chat you already use.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/aibadger/style.css">
+    <link rel="stylesheet" href="/aibadger/demo-modes.css">
+    <link rel="stylesheet" href="/aibadger/vscode-demo.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <div class="header-left">
+                <a href="/aibadger/" class="product-logo">AI <span class="highlight">Badger</span></a>
+            </div>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/aibadger/" class="nav-link">Home</a></li>
+                <li><a href="/aibadger/install.html" class="nav-link">Get AI Badger</a></li>
+                <li><a href="/aibadger/demo.html" class="nav-link active">Demo</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="https://github.com/PVRLabs/aibadger" class="nav-link">GitHub</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="vscode-demo">
+    <section class="vscode-demo-hero" aria-labelledby="vscode-demo-title">
+        <div class="container">
+            <div class="vscode-demo-heading">
+                <div class="demo-mode-switch" aria-label="Choose a demo">
+                    <a href="/aibadger/demo.html?mode=review">/review</a>
+                    <a href="/aibadger/demo.html?mode=design">/design</a>
+                    <a href="/aibadger/vscode-demo.html" class="vscode-demo-tab" aria-current="page"><span aria-hidden="true"></span>VS Code</a>
+                </div>
+                <h1 id="vscode-demo-title">Review your current Git changes in one click</h1>
+                <p class="vscode-demo-lede">Prepare Git changes or selected files for any AI chat. This demo shows review with no CLI or automatic uploads.</p>
+            </div>
+
+            <div class="vscode-demo-shell">
+                <div class="vscode-demo-toolbar">
+                    <ol class="vscode-demo-progress" aria-label="Demo progress">
+                        <li class="active" data-progress="0"><span>1</span><span class="progress-label">Select changes</span></li>
+                        <li data-progress="1"><span>2</span><span class="progress-label">Copy request</span></li>
+                        <li data-progress="2"><span>3</span><span class="progress-label">Review</span></li>
+                    </ol>
+                    <button class="vscode-demo-restart" type="button" data-restart>Restart demo</button>
+                </div>
+
+                <div class="vscode-demo-stage" aria-live="polite">
+                    <section class="vscode-demo-step active" data-step="0" aria-labelledby="step-one-title">
+                        <div class="vscode-mock" aria-label="Simplified VS Code Source Control view">
+                            <div class="vscode-titlebar">aibadger | Visual Studio Code</div>
+                            <div class="vscode-workspace">
+                                <div class="vscode-activity" aria-hidden="true">
+                                    <span><svg viewBox="0 0 24 24"><path d="M7 3h9l4 4v14H7z"></path><path d="M16 3v5h4M4 7v14h3"></path></svg></span>
+                                    <span><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg></span>
+                                    <span class="selected"><svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.2 16 11M8 17.8 16 13"></path></svg></span>
+                                    <span><svg viewBox="0 0 24 24"><path d="m5 3 13 9-13 9z"></path><path d="M4 12H2m4-5L4 5m2 12-2 2"></path></svg></span>
+                                    <span><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg></span>
+                                </div>
+                                <div class="vscode-source-control">
+                                    <div class="vscode-panel-title"><span>Source Control</span><span>...</span></div>
+                                    <div class="vscode-repo-row">
+                                        <strong>⌄ aibadger</strong>
+                                        <button class="vscode-copy-icon" type="button" data-next="1" aria-label="AI Badger: Copy All Changes for Review">
+                                            <img src="/aibadger/img/copy.svg" alt="" aria-hidden="true">
+                                        </button>
+                                    </div>
+                                    <div class="vscode-changes-row"><span>⌄ Changes</span><span>2</span></div>
+                                    <div class="vscode-file"><span class="file-kind">JS</span><span>src/review.js</span><span>M</span></div>
+                                    <div class="vscode-file"><span class="file-kind">TS</span><span>src/extension.ts</span><span>M</span></div>
+                                </div>
+                                <div class="vscode-editor" aria-hidden="true">
+                                    <div class="vscode-tab">src/review.js</div>
+                                    <pre><span>@@ -42,7 +42,10 @@ buildReview</span>
+<span class="removed">- const files = selectedFiles;</span>
+<span class="added">+ const files = currentGitChanges;</span>
+<span class="added">+ const context = includeContext(files);</span>
+<span>  return buildPrompt(files, context);</span></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vscode-demo-copy">
+                            <p class="step-label">Step 1 | VS Code</p>
+                            <h2 id="step-one-title">Start with the change you already have</h2>
+                            <p>Your coding agent finished, and you are already looking at the diff. Use one action to package the current Git changes for review.</p>
+                            <ul class="vscode-demo-facts"><li>No CLI required</li><li>Local clipboard</li><li>Your AI chat</li></ul>
+                            <button class="btn btn-install" type="button" data-focus-copy>Copy All Changes for Review</button>
+                        </div>
+                    </section>
+
+                    <section class="vscode-demo-step provider-step" data-step="1" aria-labelledby="step-two-title" hidden>
+                        <div class="copied-card">
+                            <p class="step-label">Step 2 | VS Code</p>
+                            <h2 id="step-two-title"><span class="success-mark" aria-hidden="true">✓</span> Review request copied</h2>
+                            <p>AI Badger prepared a self-contained review request from the current Git changes. You decide where to paste it.</p>
+                            <p class="next-step-note">Next: open ChatGPT, Claude, Gemini, DeepSeek, or another AI chat, then paste the request.</p>
+                            <button class="btn btn-install" type="button" data-next="2">Paste into AI chat</button>
+                            <div class="payload-list">
+                                <h3>What was copied</h3>
+                                <ul>
+                                    <li>Current Git diff</li>
+                                    <li>Project-relative file paths</li>
+                                    <li>Focused review instructions</li>
+                                    <li>Eligible supporting file context</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ai-chat-browser" aria-label="AI chat choices in a browser">
+                            <div class="chat-browser-bar"><span class="browser-dots" aria-hidden="true">● ● ●</span><span>your-ai-chat.example</span></div>
+                            <div class="ai-chat-browser-body">
+                                <p class="step-label">Open your AI chat</p>
+                                <h3>Choose where to paste</h3>
+                                <div class="ai-chat-options">
+                                    <div><b>✦</b><span><strong>ChatGPT</strong><small>Recommended for planning and high-reasoning reviews</small></span></div>
+                                    <div><b>✳</b><span><strong>Claude</strong><small>Engineering-focused review feedback</small></span></div>
+                                    <div><b>✦</b><span><strong>Gemini</strong><small>Generous free tier for context-heavy reviews</small></span></div>
+                                    <div><b>◌</b><span><strong>DeepSeek</strong><small>Fast, free iteration in web chat</small></span></div>
+                                    <div><b>+</b><span><strong>Other AI chat</strong><small>Use any AI chat you trust</small></span></div>
+                                </div>
+                                <p>AI Badger does not choose a provider or send anything automatically.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="vscode-demo-step" data-step="2" aria-labelledby="step-three-title" hidden>
+                        <div class="chat-mock" aria-label="Simplified AI chat review">
+                            <div class="chat-browser-bar"><span class="browser-dots" aria-hidden="true">● ● ●</span><span>your-ai-chat.example</span></div>
+                            <div class="chat-content">
+                                <div class="chat-request"><strong>Review current changes</strong><small>Git diff and focused context</small></div>
+                                <div class="chat-response">
+                                    <h3>I found one issue worth fixing before commit.</h3>
+                                    <div class="review-finding"><strong>Potential regression in review handling</strong><p>The new path can include modified files from the whole change set, but this branch still assumes the earlier selected-file scope.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vscode-demo-copy">
+                            <p class="step-label">Step 3 | AI chat</p>
+                            <h2 id="step-three-title">That is it</h2>
+                            <p>AI Badger prepares the review request. Your AI chat does the review. You stay in control of what gets pasted and where.</p>
+                            <p>Need more context? Copy additional files from VS Code in one click, paste them into the same chat, and keep iterating.</p>
+                            <ul class="vscode-demo-facts"><li>One click from Source Control</li><li>No provider integration</li></ul>
+                            <a class="btn btn-install vscode-cta" href="https://marketplace.visualstudio.com/items?itemName=pvrlabs.ai-badger" target="_blank" rel="noopener noreferrer">Install VS Code extension</a>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="vscode-demo-footer">
+                    <p>Simplified interactive walkthrough. No repository is read by this demo.</p>
+                    <div>
+                        <a href="/articles/reviewing-ai-generated-code-vscode-aibadger.html">Read the VS Code review article</a>
+                    </div>
+                </div>
+            </div>
+            <p class="vscode-demo-note">This demo covers the CLI-free workflow. Repository-aware Deep Review uses the local AI Badger CLI.</p>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div>
+</footer>
+
+<script src="/script.js?v=20260808"></script>
+<script src="/aibadger/vscode-demo.js"></script>
+</body>
+</html>

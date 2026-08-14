@@ -139,11 +139,26 @@
 }
 
 .badger-pitch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
     margin: 40px 0;
     padding: 24px 28px;
     border-left: 4px solid var(--primary-green);
     border-radius: 8px;
     background: var(--bg-light);
+}
+
+.pitch-group + .pitch-group {
+    padding-left: 24px;
+    border-left: 1px solid var(--border-color);
+}
+
+.pitch-group h3 {
+    margin: 0 0 8px;
+    color: var(--primary-green);
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
 }
 
 .badger-pitch p {
@@ -166,6 +181,19 @@
     font-size: .85rem;
 }
 
+.article-actions .btn.vscode-cta::before {
+    content: "";
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: 0 0 auto;
+    margin-right: .45rem;
+    background: url("/aibadger/img/vscode.svg") center / contain no-repeat;
+}
+
+.article-actions .btn-primary.vscode-cta::before {
+    background-image: url("/aibadger/img/vscode-white.svg");
+}
+
 @media (max-width: 992px) {
     .article-page {
         padding-inline: 20px;
@@ -179,6 +207,17 @@
 
     .article-page h1 {
         font-size: 1.6rem;
+    }
+
+    .badger-pitch {
+        grid-template-columns: 1fr;
+    }
+
+    .pitch-group + .pitch-group {
+        padding-top: 20px;
+        padding-left: 0;
+        border-top: 1px solid var(--border-color);
+        border-left: 0;
     }
 }
 

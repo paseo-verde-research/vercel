@@ -299,6 +299,18 @@ h1, h2, h3, h4 {
     height: 18px;
 }
 
+.btn.vscode-cta::before {
+    content: "";
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: 0 0 auto;
+    background: url("/aibadger/img/vscode.svg") center / contain no-repeat;
+}
+
+.btn.btn-install.vscode-cta::before {
+    background-image: url("/aibadger/img/vscode-white.svg");
+}
+
 /* --- Terminal Window --- */
 .hero-visual {
     position: relative;
@@ -379,6 +391,8 @@ h1, h2, h3, h4 {
 }
 
 .get-path {
+    display: flex;
+    flex-direction: column;
     background: rgba(10, 10, 10, 0.3);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -403,6 +417,7 @@ h1, h2, h3, h4 {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    margin-top: auto;
 }
 
 .terminal-window {

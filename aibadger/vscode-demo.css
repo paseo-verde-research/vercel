@@ -1,0 +1,603 @@
+.vscode-demo {
+    --demo-panel: #121212;
+    --demo-panel-light: #191919;
+    --demo-border: #292929;
+    --demo-muted: #a8a8a8;
+}
+
+.vscode-demo-hero {
+    padding: 1rem 0 3rem;
+}
+
+.vscode-demo-heading {
+    display: flex;
+    width: min(75rem, 90%);
+    margin: 0 auto;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.step-label {
+    color: var(--primary-green);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.vscode-demo-hero h1 {
+    margin-top: 0.2rem;
+    color: #fff;
+    font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+}
+
+.vscode-demo-lede {
+    max-width: 46rem;
+    margin-top: 0.2rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.vscode-demo-shell {
+    max-width: 70rem;
+    margin: 1.25rem auto 0;
+    overflow: hidden;
+    border: 1px solid var(--demo-border);
+    border-radius: 0.9rem;
+    background: var(--demo-panel);
+}
+
+.vscode-demo-toolbar,
+.vscode-demo-footer {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--demo-border);
+}
+
+.vscode-demo-toolbar {
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.55rem 1rem;
+}
+
+.vscode-demo-progress {
+    display: flex;
+    gap: 0.75rem;
+    list-style: none;
+}
+
+.vscode-demo-progress li {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    color: #777;
+    font-size: 0.78rem;
+}
+
+.vscode-demo-progress li > span:first-child {
+    display: grid;
+    width: 1.55rem;
+    height: 1.55rem;
+    place-items: center;
+    border: 1px solid #444;
+    border-radius: 50%;
+}
+
+.vscode-demo-progress li.active {
+    color: var(--text-primary);
+}
+
+.vscode-demo-progress li.active > span:first-child {
+    border-color: var(--primary-green);
+    background: var(--primary-green);
+    color: #061009;
+}
+
+.vscode-demo-restart {
+    min-width: 44px;
+    min-height: 36px;
+    margin-left: auto;
+    padding: 0 0.5rem;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    cursor: pointer;
+}
+
+@media (pointer: coarse) {
+    .vscode-demo-restart {
+        min-height: 44px;
+    }
+}
+
+.vscode-demo-restart:hover {
+    color: var(--primary-green);
+}
+
+.vscode-demo-stage,
+.vscode-demo-step {
+    min-height: 30rem;
+}
+
+.vscode-demo-stage:has(.provider-step.active) {
+    min-height: 0;
+}
+
+.vscode-demo-step {
+    grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 0.65fr);
+}
+
+.vscode-demo-step.provider-step {
+    min-height: 0;
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+}
+
+.vscode-demo-step[data-step="2"] {
+    grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.8fr);
+}
+
+.vscode-demo-step.active {
+    display: grid;
+    animation: demo-fade 160ms ease-out;
+}
+
+@keyframes demo-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.vscode-demo-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-left: 1px solid var(--demo-border);
+    background: var(--demo-panel-light);
+}
+
+.vscode-demo-step[data-step="2"] .vscode-demo-copy {
+    justify-content: flex-start;
+}
+
+.vscode-demo-copy h2,
+.copied-card h2 {
+    margin-top: 0.7rem;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+.vscode-demo-copy > p:not(.step-label),
+.copied-card > p:not(.step-label) {
+    margin-top: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.vscode-demo-copy .btn,
+.copied-card .btn {
+    align-self: flex-start;
+    min-height: 44px;
+    margin-top: 1.5rem;
+}
+
+.vscode-demo-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    list-style: none;
+}
+
+.vscode-demo-facts li {
+    padding: 0.35rem 0.55rem;
+    border: 1px solid var(--demo-border);
+    border-radius: 0.35rem;
+    color: #c8c8c8;
+    font-size: 0.75rem;
+}
+
+.vscode-mock {
+    min-width: 0;
+    background: #1e1e1e;
+    color: #ccc;
+    font-size: 0.75rem;
+}
+
+.vscode-titlebar {
+    display: grid;
+    height: 2.35rem;
+    place-items: center;
+    border-bottom: 1px solid #2b2b2b;
+    background: #181818;
+    color: #aaa;
+}
+
+.vscode-workspace {
+    display: grid;
+    min-height: 27.65rem;
+    grid-template-columns: 2.8rem minmax(13rem, 42%) minmax(0, 1fr);
+}
+
+.vscode-activity {
+    border-right: 1px solid #292929;
+    background: #181818;
+}
+
+.vscode-activity span {
+    display: block;
+    width: 2.8rem;
+    height: 2.8rem;
+    padding: 0.75rem;
+    border-left: 2px solid transparent;
+}
+
+.vscode-activity span.selected {
+    border-left-color: var(--primary-green);
+}
+
+.vscode-activity svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: #888;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+}
+
+.vscode-activity span.selected svg {
+    stroke: #eee;
+}
+
+.vscode-source-control {
+    border-right: 1px solid #303030;
+    background: #202020;
+}
+
+.vscode-panel-title,
+.vscode-repo-row,
+.vscode-changes-row,
+.vscode-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.6rem;
+    padding: 0 0.7rem;
+}
+
+.vscode-panel-title {
+    font-size: 0.68rem;
+}
+
+.vscode-repo-row {
+    position: relative;
+}
+
+.vscode-copy-icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border: 1px solid #4e8c58;
+    border-radius: 0.35rem;
+    background: rgba(46, 204, 113, 0.12);
+    color: var(--primary-green);
+    cursor: pointer;
+}
+
+.vscode-copy-icon::after {
+    content: "AI Badger: Copy All Changes for Review";
+    position: absolute;
+    top: 3.4rem;
+    right: 0.5rem;
+    z-index: 2;
+    width: max-content;
+    max-width: 12rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #555;
+    border-radius: 0.25rem;
+    background: #292929;
+    color: #eee;
+    font-size: 0.68rem;
+}
+
+.vscode-copy-icon img {
+    width: 1.2rem;
+}
+
+.vscode-copy-icon.attention {
+    animation: copy-attention 900ms ease-out;
+}
+
+.vscode-copy-icon.attention img {
+    animation: copy-icon-nudge 900ms ease-out;
+}
+
+@keyframes copy-attention {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    25%, 75% { box-shadow: 0 0 0 7px rgba(46, 204, 113, 0.3); }
+}
+
+@keyframes copy-icon-nudge {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    75% { transform: translateX(-1px); }
+}
+
+.vscode-changes-row {
+    border-top: 1px solid #303030;
+    color: #bbb;
+}
+
+.vscode-file {
+    display: grid;
+    min-height: 2rem;
+    grid-template-columns: 1.4rem minmax(0, 1fr) auto;
+    gap: 0.35rem;
+    color: #ccc;
+}
+
+.file-kind {
+    color: #e6cf78;
+    font-size: 0.62rem;
+}
+
+.vscode-editor {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.vscode-tab {
+    width: fit-content;
+    padding: 0.7rem 0.9rem;
+    border-right: 1px solid #303030;
+    background: #1e1e1e;
+}
+
+.vscode-editor pre {
+    margin: 1.25rem;
+    color: #aaa;
+    font-family: var(--font-mono);
+    line-height: 1.8;
+}
+
+.vscode-editor pre span {
+    display: block;
+    padding: 0 0.25rem;
+}
+
+.vscode-editor .added { background: rgba(35, 134, 54, 0.22); color: #b8e7c0; }
+.vscode-editor .removed { background: rgba(248, 81, 73, 0.16); color: #f0b1ad; }
+
+.copied-card {
+    width: min(38rem, calc(100% - 2rem));
+    margin: auto;
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    border: 1px solid var(--demo-border);
+    border-radius: 0.75rem;
+    background: var(--demo-panel-light);
+}
+
+.success-mark { color: var(--primary-green); }
+
+.payload-list {
+    margin-top: 1.4rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--demo-border);
+    border-radius: 0.5rem;
+    background: #101010;
+}
+
+.payload-list h3 {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.payload-list ul { margin-top: 0.5rem; list-style: none; }
+.payload-list li { padding: 0.45rem 0; color: var(--text-secondary); }
+.payload-list li + li { border-top: 1px solid #242424; }
+.payload-list li::before { content: "✓"; margin-right: 0.6rem; color: var(--primary-green); }
+
+.next-step-note {
+    margin-top: 1.1rem;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+}
+
+.next-step-note + .btn {
+    margin-top: 0.8rem;
+}
+
+.ai-chat-browser {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 0.6rem;
+    background: #e8ecf0;
+    color: #242424;
+}
+
+.ai-chat-browser-body {
+    min-height: 32.65rem;
+    padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.provider-step .ai-chat-browser-body {
+    min-height: 0;
+}
+
+.ai-chat-browser-body h3 {
+    margin-top: 0.65rem;
+    color: #242424;
+    font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+.ai-chat-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-top: 1.4rem;
+}
+
+.ai-chat-options > div {
+    display: flex;
+    min-height: 44px;
+    gap: 0.7rem;
+    align-items: center;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid #dedede;
+    border-radius: 0.45rem;
+    background: #fff;
+    color: #3c4148;
+    font-size: 0.9rem;
+}
+
+.ai-chat-options > div > b {
+    display: grid;
+    width: 1.7rem;
+    height: 1.7rem;
+    place-items: center;
+    border-radius: 0.35rem;
+    background: #eceef0;
+    color: #59616b;
+}
+
+.ai-chat-options > div > span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+}
+
+.ai-chat-options small {
+    color: #777;
+    font-size: 0.72rem;
+}
+.ai-chat-browser-body > p:last-child {
+    margin-top: 1.4rem;
+    color: #6d737b;
+    font-size: 0.82rem;
+}
+
+.chat-mock {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 0.6rem;
+    background: #e8ecf0;
+    color: #242424;
+}
+
+.chat-browser-bar {
+    display: grid;
+    min-height: 2.8rem;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    padding: 0 1rem;
+    border-bottom: 1px solid #ddd;
+    background: #d4dae0;
+    color: #30353b;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.browser-dots { color: #bbb; text-align: left; }
+
+.chat-browser-bar > span:not(.browser-dots) {
+    color: #1f2933;
+    font-weight: 700;
+}
+
+.chat-content {
+    width: min(38rem, calc(100% - 2rem));
+    margin: auto;
+    padding: 2.5rem 0;
+}
+
+.chat-request {
+    width: fit-content;
+    max-width: 85%;
+    margin-left: auto;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.8rem 0.8rem 0.2rem 0.8rem;
+    background: #fff;
+}
+
+.chat-request small { display: block; margin-top: 0.2rem; color: #777; }
+.chat-response { margin-top: 2rem; }
+.chat-response h3 { color: #242424; font-size: 1.15rem; }
+
+.vscode-demo-step.reveal-result .chat-request,
+.vscode-demo-step.reveal-result .chat-response {
+    opacity: 0;
+    transform: translateY(0.35rem);
+}
+
+.vscode-demo-step.reveal-result .chat-request {
+    animation: chat-request-in 220ms ease-out forwards;
+}
+
+.vscode-demo-step.result-visible .chat-response {
+    animation: chat-result-in 260ms ease-out forwards;
+}
+
+@keyframes chat-request-in {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chat-result-in {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.review-finding {
+    margin-top: 0.8rem;
+    padding: 1rem;
+    border-left: 3px solid #b64f4f;
+    border-radius: 0.35rem;
+    background: #fff;
+}
+
+.review-finding strong { color: #9b3636; }
+.review-finding p { margin-top: 0.45rem; color: #555; }
+
+.vscode-demo-footer {
+    border-top: 1px solid var(--demo-border);
+    border-bottom: 0;
+    color: #888;
+    font-size: 0.78rem;
+}
+
+.vscode-demo-footer div { display: flex; gap: 1rem; }
+.vscode-demo-note { margin-top: 0.8rem; color: #888; font-size: 0.78rem; }
+
+@media (max-width: 992px) {
+    .vscode-demo-step { grid-template-columns: 1fr; }
+    .vscode-demo-step.provider-step { grid-template-columns: 1fr; }
+    .vscode-demo-step[data-step="2"] { grid-template-columns: 1fr; }
+    .vscode-demo-copy { border-top: 1px solid var(--demo-border); border-left: 0; }
+    .vscode-demo-stage, .vscode-demo-step { min-height: 0; }
+}
+
+@media (max-width: 768px) {
+    .progress-label { display: none; }
+    .vscode-workspace { grid-template-columns: 2.8rem minmax(12rem, 42%) minmax(0, 1fr); }
+    .vscode-demo-footer { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+    .vscode-demo-hero { padding: 1rem 0 2.5rem; }
+    .vscode-demo-shell { margin-right: -0.5rem; margin-left: -0.5rem; }
+    .vscode-demo-toolbar { padding: 0.6rem 0.75rem; }
+    .vscode-workspace { min-height: 25rem; grid-template-columns: 2.8rem minmax(0, 1fr); }
+    .vscode-editor { display: none; }
+    .vscode-demo-copy { padding: 1.5rem; }
+    .vscode-demo-copy .btn, .copied-card .btn { width: 100%; justify-content: center; }
+    .vscode-demo-footer div { flex-direction: column; gap: 0.5rem; }
+    .chat-content { padding: 1.5rem 0; }
+    .ai-chat-options { grid-template-columns: 1fr; }
+}
