@@ -63,17 +63,18 @@
         <p>Most importantly, this workflow runs entirely inside the VS Code extension. <strong>You do not need the Badger CLI for a normal review.</strong></p>
 
         <h2>Why not just copy the Git diff?</h2>
-        <p>You can. For a small change, manually copying a diff into an AI chat may be perfectly adequate.</p>
+        <p>You can. For a small change, manually copying a diff into an AI chat may be enough.</p>
         <p>The friction starts when this becomes a regular workflow. You need to make sure the complete change is represented, preserve understandable file paths, provide enough surrounding context, handle larger changes, and give the model clear instructions about what kind of review you want.</p>
         <p>AI Badger turns that into one action from the place where I am already looking at the change.</p>
         <p>The result is still just text on the clipboard. There is no hidden AI service behind the extension and no API key to configure.</p>
         <p>VS Code remains my review environment. The AI chat remains where I discuss the review.</p>
 
-        <h2>Review the findings against the diff</h2>
+        <h2>Review the findings against the code, not only the diff</h2>
         <p>After copying the review request, I paste it into an AI chat and let another model inspect the change.</p>
         <figure><img src="/articles/img/reviewing-ai-generated-code-vscode-aibadger/02-ai-review-result.webp" loading="lazy" decoding="async" alt="AI chat showing a concrete issue found in the copied change"><figcaption>Review: Paste the copied review request into the browser AI.</figcaption></figure>
         <p>I do not treat this as a replacement for reading the diff.</p>
-        <p>The AI review is another pair of eyes. It can point me toward a suspicious interaction, edge case, regression, or missing test, and I can immediately go back to the corresponding code in VS Code to decide whether the finding is real.</p>
+        <p>I also do not assume that the diff alone is enough to validate every finding. A diff shows what changed, but the behavior of that change may depend on unchanged code elsewhere in the file, a caller in another file, a shared interface, configuration, tests, or a repository convention.</p>
+        <p>The AI review is another pair of eyes. It can point me toward a suspicious interaction, edge case, regression, or missing test. I then go back to the corresponding code in VS Code, follow the relevant context beyond the changed lines when necessary, and decide whether the finding is real.</p>
         <p>This is especially useful with agent-generated changes because the reviewer is separate from the agent that produced the implementation.</p>
         <p>The coding agent has already made its choices. The review conversation starts from the resulting change set.</p>
 
@@ -85,19 +86,20 @@
         <p><strong>AI Badger: Copy File for AI</strong></p>
         <p>or:</p>
         <p><strong>AI Badger: Copy Selected Files for AI</strong></p>
+        <figure><img src="/articles/img/reviewing-ai-generated-code-vscode-aibadger/08-copy-file-for-ai.webp" loading="lazy" decoding="async" alt="VS Code Explorer context menu showing AI Badger Copy File for AI for changeset.go"><figcaption>Add a known supporting file directly from the Explorer.</figcaption></figure>
         <p>The selected files are copied with their project-relative paths, and I can paste them into the same review conversation.</p>
         <p>This is useful because review is rarely perfectly linear. You start with the diff, investigate something, add a file, ask another question, and continue.</p>
         <p>The same Copy for AI commands are also useful for broader design and architecture discussions where there may not be a Git change involved at all. That is a different workflow and something I plan to cover separately.</p>
 
         <h2>Where a diff-based review starts to break down</h2>
-        <p>For many changes, the Git diff plus an occasional supporting file is enough.</p>
-        <p>But some reviews depend on code that did <strong>not</strong> change.</p>
+        <p>For many changes, the Git diff plus bounded full-file context or an occasional supporting file is enough.</p>
+        <p>But a pure diff is often not enough. Some reviews depend on code that did <strong>not</strong> change, including code outside the changed files.</p>
         <p>The reviewer may see something suspicious but be unable to confirm it without understanding an unchanged caller, a default value, a shared helper, or another repository-level assumption.</p>
         <p>At that point I have two choices. I can start looking for those files manually. Or I can let the reviewer ask for the evidence it needs.</p>
         <p>That is where <strong>Deep Review</strong> comes in.</p>
 
-        <h2>Advanced: Deep Review for complex changes</h2>
-        <p>Deep Review is optional, but it is where I reach for a stronger reasoning model. With repository context beyond the immediate diff, it can catch issues a change-only review may miss.</p>
+        <h2>Deep Review for complex changes</h2>
+        <p>Deep Review is optional, but it is where I reach for a stronger reasoning model. By giving the reviewer a way to request additional repository context beyond the initial review package, it can investigate issues that the supplied changes and file context alone may not resolve.</p>
         <p>Deep Review starts from the same Source Control view, but it uses the local AI Badger CLI to prepare a repository-aware review.</p>
         <figure><img src="/articles/img/reviewing-ai-generated-code-vscode-aibadger/03-deep-review-panel.webp" loading="lazy" decoding="async" alt="AI Badger Deep Review panel in VS Code with Source Control visible"><figcaption>Deep Review: optional review guidance and Copy Review Prompt.</figcaption></figure>
         <p>The guidance is optional. I can add something specific I want the reviewer to focus on, or simply copy the generated review prompt.</p>
@@ -106,15 +108,16 @@
         <pre data-lang="bash"><code>brew install pvrlabs/tap/badger
 badger --version</code></pre>
         <p>The VS Code extension and Badger CLI are separate on purpose. The extension owns the editor workflow. The CLI owns repository scanning and context generation.</p>
-        <p>Neither sends the repository to PVR Labs.</p>
+        <p>Both are open source and local-first. Neither sends the repository to PVR Labs.</p>
 
         <h2>The important part: let the reviewer ask for evidence</h2>
         <p>The main advantage of Deep Review is not simply that it can create a larger initial prompt.</p>
         <p>It is that the review can become <strong>iterative</strong>.</p>
+        <p>The second copy-and-paste step is not always needed. If the reviewer has enough context, it can return its findings immediately. I continue the review in VS Code only when the reviewer asks for additional evidence.</p>
         <p>In the example shown here, the initial Deep Review prompt was pasted into the AI chat. Instead of immediately returning final findings, the reviewer asked to inspect one additional file:</p>
         <pre data-lang="request"><code>FILE:internal/defaults/constants.go</code></pre>
         <figure><img src="/articles/img/reviewing-ai-generated-code-vscode-aibadger/04-deep-review-selector-request.webp" loading="lazy" decoding="async" alt="AI reviewer requesting one additional repository file"><figcaption>Deep Review: the AI requests a FILE selector instead of guessing without enough context.</figcaption></figure>
-        <p>That is exactly the situation Deep Review is designed for. The AI has seen the diff and repository topology. It now has a concrete question that requires evidence from an unchanged file.</p>
+        <p>That is exactly the situation Deep Review is designed for. The AI has seen the enhanced diff and repository topology. It now has a concrete question that requires evidence from an unchanged file.</p>
         <p>I copy that selector response back into the Deep Review panel.</p>
         <figure><img src="/articles/img/reviewing-ai-generated-code-vscode-aibadger/05-deep-review-continue-review.webp" loading="lazy" decoding="async" alt="Deep Review panel with a requested FILE selector ready for Continue Review"><figcaption>Deep Review: paste the selector response and choose Continue Review.</figcaption></figure>
         <p>VS Code passes the request to the local Badger CLI, which retrieves the supplemental repository context. The original diff does not need to be sent again.</p>
