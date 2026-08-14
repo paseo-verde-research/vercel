@@ -71,6 +71,7 @@
 
         <h2>Review the findings against the code, not only the diff</h2>
         <p>After copying the review request, I paste it into an AI chat and let another model inspect the change.</p>
+        <p>For harder reviews, I prefer using a different model from the one that generated the implementation. For example, if a coding agent produced the change, I may review it with a high-reasoning model such as GPT-5.6 Sol on High. The point is not the specific model. It is getting an independent second opinion with different failure modes.</p>
         <figure><img src="/articles/img/reviewing-ai-generated-code-vscode-aibadger/02-ai-review-result.webp" loading="lazy" decoding="async" alt="AI chat showing a concrete issue found in the copied change"><figcaption>Review: Paste the copied review request into the browser AI.</figcaption></figure>
         <p>I do not treat this as a replacement for reading the diff.</p>
         <p>I also do not assume that the diff alone is enough to validate every finding. A diff shows what changed, but the behavior of that change may depend on unchanged code elsewhere in the file, a caller in another file, a shared interface, configuration, tests, or a repository convention.</p>
