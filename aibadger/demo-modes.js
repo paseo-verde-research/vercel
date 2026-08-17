@@ -42,22 +42,21 @@
         },
         {
             setup: function () {
-                setTerminal('🦡 AIBADGER  ·  Review\n────────────────────────────────────────\n\n<span class="success">✓</span> Git changes collected\n<span class="success">✓</span> Relevant source context added\n<span class="success">✓</span> Review instructions prepared\n\n<span class="review-summary">2 changed files · 46 diff lines · 3 supporting files</span>\n\nThe review payload is ready. It includes the authoritative diff and bounded local context.\n\nCopy review prompt to clipboard? (y/N) ');
+                setTerminal('🦡 AIBADGER  ·  Review\n────────────────────────────────────────\n\n<span class="success">✓</span> Git changes collected\n<span class="success">✓</span> Relevant source context added\n<span class="success">✓</span> Review instructions prepared\n\n<span class="review-summary">2 changed files · 46 diff lines · 3 supporting files</span>\n\nThe review payload is ready. It includes the authoritative diff and bounded local context.\n\nCopy review context to clipboard? (y/N) ');
                 switchWindow('terminal');
             },
             action: async function (runId) {
                 await wait(900, runId);
                 await typeText(elements.terminalInput, 'y', runId);
                 await wait(700, runId);
-                elements.terminalContent.innerHTML += '\n\n<span class="success">✓ Review prompt copied</span>';
+                elements.terminalContent.innerHTML += '\n\n<span class="success">✓ Review context copied</span>';
                 await wait(1000, runId);
                 nextStep();
             }
         },
         {
             setup: function () {
-                elements.browserContent.innerHTML = '';
-                elements.browserInput.textContent = '';
+                resetBrowserChat();
                 switchWindow('browser');
             },
             action: async function (runId) {
@@ -74,13 +73,77 @@
         },
         {
             setup: function () {
+                resetBrowserChat();
+                addInitialReviewPayload();
                 switchWindow('browser');
-                if (!elements.browserContent.children.length) {
-                    addMessage('user', '<span class="pasted-block"><strong>AI Badger review payload</strong><br>Review instructions · authoritative Git diff · relevant source context<br>2 changed files · 3 supporting files</span>');
-                }
             },
             action: async function (runId) {
                 const loading = addMessage('ai', 'Reviewing changes…');
+                await wait(1300, runId);
+                loading.innerHTML = 'I need one more file to confirm this finding:<br><br>' +
+                    '<span class="finding-location">FILE:internal/service/order.go</span>';
+                scrollBrowser();
+                await wait(1200, runId);
+                nextStep();
+            }
+        },
+        {
+            setup: function () {
+                setTerminal('🦡 AIBADGER  ·  Review\n────────────────────────────────────────\n\n<span class="success">✓</span> Prompt 1: Topology + Git diff copied. Paste it into any AI chat. If the AI requests additional context, paste only its FILE:, PREFIX:, or NEAR: selectors here. Final findings require no continuation.\n\nOptional review continuation. Paste selectors only if the AI requested additional context; final findings require no continuation.\n<span id="review-selector-size" class="review-summary">[text 0B] paste submits, Enter fallback</span>\n', '    1 ');
+                elements.terminalInput.innerHTML = '<span class="review-summary">Optional: paste FILE/PREFIX/NEAR selectors here.</span>';
+                switchWindow('terminal');
+            },
+            action: async function (runId) {
+                await wait(900, runId);
+                elements.terminalInput.textContent = 'FILE:internal/service/order.go';
+                document.getElementById('review-selector-size').textContent = '[text 30B] paste submits, Enter fallback';
+                await wait(2000, runId);
+                nextStep();
+            }
+        },
+        {
+            setup: function () {
+                setTerminal('🦡 AIBADGER  ·  Review\n────────────────────────────────────────\n\nCode context ready. Review the file list before copying Prompt 2: Code Context.\n\nReady to copy Prompt 2: Code Context to your clipboard.\n\n<span class="warning">⚠️  This WILL include the actual source code from:</span>\n  - internal/service/order.go\n\nCopy Prompt 2: Code Context to clipboard (payload: 18KB)? (y/N) ');
+                switchWindow('terminal');
+            },
+            action: async function (runId) {
+                await wait(900, runId);
+                await typeText(elements.terminalInput, 'y', runId);
+                await wait(700, runId);
+                elements.terminalContent.innerHTML += '\n\n<span class="success">✓ Prompt 2: Code Context copied</span>';
+                await wait(1000, runId);
+                nextStep();
+            }
+        },
+        {
+            setup: function () {
+                resetBrowserChat();
+                addInitialReviewPayload();
+                addFollowupRequest();
+                switchWindow('browser');
+            },
+            action: async function (runId) {
+                await wait(700, runId);
+                elements.browserInput.innerHTML = '<span class="pasted-block">Prompt 2: Code Context</span>';
+                elements.browserInput.closest('.chat-input-area').classList.add('flash');
+                await wait(600, runId);
+                elements.browserInput.closest('.chat-input-area').classList.remove('flash');
+                addMessage('user', '<span class="pasted-block"><strong>Prompt 2: Code Context</strong><br>1 requested file · original diff not resent</span>');
+                elements.browserInput.textContent = '';
+                await wait(900, runId);
+                nextStep();
+            }
+        },
+        {
+            setup: function () {
+                resetBrowserChat();
+                addInitialReviewPayload();
+                addFollowupRequest();
+                addFollowupContext();
+                switchWindow('browser');
+            },
+            action: async function (runId) {
+                const loading = addMessage('ai', 'Finishing the review with the requested file…');
                 await wait(1300, runId);
                 loading.innerHTML = '<span class="finding-title">P1 · Validation can be bypassed for amended orders</span><br>' +
                     '<span class="finding-location">internal/service/order.go:84</span><br><br>' +
@@ -187,8 +250,8 @@
 
     const modes = {
         review: {
-            title: 'One-paste code review',
-            subtitle: 'Badger packages your Git diff with relevant local context, ready for any AI chat.',
+            title: 'Focused code review',
+            subtitle: 'Badger packages your Git changes, then adds only the source context your AI chat requests.',
             note: '<strong>Usually, one paste is all it takes.</strong> If the AI needs more source context, it can request specific files from Badger.',
             steps: reviewSteps
         },
@@ -217,6 +280,23 @@
         elements.browserContent.appendChild(message);
         scrollBrowser();
         return message;
+    }
+
+    function resetBrowserChat() {
+        elements.browserContent.innerHTML = '';
+        elements.browserInput.textContent = '';
+    }
+
+    function addInitialReviewPayload() {
+        addMessage('user', '<span class="pasted-block"><strong>AI Badger review payload</strong><br>Review instructions · authoritative Git diff · relevant source context<br>2 changed files · 3 supporting files</span>');
+    }
+
+    function addFollowupRequest() {
+        addMessage('ai', 'I need one more file to confirm this finding:<br><br><span class="finding-location">FILE:internal/service/order.go</span>');
+    }
+
+    function addFollowupContext() {
+        addMessage('user', '<span class="pasted-block"><strong>Prompt 2: Code Context</strong><br>1 requested file · original diff not resent</span>');
     }
 
     function scrollBrowser() {

@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Badger - One-paste code review demo</title>
-    <meta name="description" content="See AI Badger prepare your Git changes and relevant local context for a complete code review in one paste.">
+    <title>AI Badger - Focused code review demo</title>
+    <meta name="description" content="See AI Badger prepare your Git changes and add only the source context an AI requests for a focused code review.">
     <link rel="canonical" href="https://pvrlabs.xyz/aibadger/demo.html">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/aibadger/demo.html">
-    <meta property="og:title" content="AI Badger: Review your changes with one paste">
+    <meta property="og:title" content="AI Badger: Focused code review with on-demand context">
     <meta property="og:site_name" content="AI Badger">
-    <meta property="og:description" content="Package your Git diff with relevant local context, then paste it into any AI chat for review.">
+    <meta property="og:description" content="Package your Git changes for review, then add only the source context your AI chat requests.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI Badger: Review your changes with one paste">
-    <meta name="twitter:description" content="Package your Git diff with relevant local context, then paste it into any AI chat for review.">
+    <meta name="twitter:title" content="AI Badger: Focused code review with on-demand context">
+    <meta name="twitter:description" content="Package your Git changes for review, then add only the source context your AI chat requests.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/aibadger_hero.jpg">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "AI Badger - One-paste code review demo",
+      "name": "AI Badger - Focused code review demo",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS, Linux, Windows",
-      "description": "See AI Badger package Git changes and relevant local context for review in any AI chat.",
+      "description": "See AI Badger package Git changes and add only requested local context for review in any AI chat.",
       "url": "https://pvrlabs.xyz/aibadger/demo.html",
       "license": "https://opensource.org/licenses/MIT"
     }
@@ -70,8 +70,8 @@
                 <button type="button" data-demo-mode="design" aria-pressed="false">/design</button>
                 <a href="/aibadger/vscode-demo.html" class="vscode-demo-tab"><span aria-hidden="true"></span>VS Code</a>
             </div>
-            <h1 id="review-demo-title">One-paste code review</h1>
-            <p id="demo-subtitle">Badger packages your Git diff with relevant local context, ready for any AI chat.</p>
+            <h1 id="review-demo-title">Focused code review</h1>
+            <p id="demo-subtitle">Badger packages your Git changes, then adds only the source context your AI chat requests.</p>
         </div>
 
         <div class="window-container">
@@ -107,7 +107,7 @@
                 <button id="prev-btn" type="button">Back</button>
                 <button id="play-pause-btn" type="button">Pause</button>
                 <button id="next-btn" type="button">Next</button>
-                <div class="step-indicator">Step <span id="current-step">1</span>/<span id="step-total">4</span></div>
+                <div class="step-indicator">Step <span id="current-step">1</span>/<span id="step-total">8</span></div>
             </nav>
             <div id="demo-note" class="review-demo-note">
                 <strong>Usually, one paste is all it takes.</strong> If the AI needs more source context, it can request specific files from Badger.
