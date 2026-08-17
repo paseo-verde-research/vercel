@@ -1,9 +1,9 @@
-.triage-page { padding: calc(var(--header-height) + 3.5rem) 0 5rem; }
-.triage-hero { max-width: 52rem; margin-bottom: 2rem; }
-.triage-eyebrow { color: var(--primary-green); font-size: .82rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .75rem; }
-.triage-hero h1 { font-size: clamp(2.25rem, 6vw, 4.2rem); }
-.triage-hero p { max-width: 44rem; color: var(--text-secondary); font-size: 1.08rem; }
-.triage-shell { max-width: 62rem; margin: 0 auto; border: 1px solid var(--border-color); background: rgba(20,20,20,.94); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.28); }
+.triage-page { padding-bottom: 5rem; }
+.triage-hero { background: var(--bg-dark) url('/img/carbon-fibre-v2.png'); padding: calc(var(--header-height) + 1.25rem) 0 2.5rem; text-align: center; }
+.triage-hero h1 { font-family: var(--font-logo); font-size: 2.8rem; font-weight: 700; }
+.triage-hero p { max-width: 37.5rem; margin: 0 auto; color: var(--text-secondary); }
+.triage-content { padding: 1.25rem 0 0; }
+.triage-shell { max-width: 50rem; margin: 0 auto; border: 1px solid var(--border-color); background: rgba(20,20,20,.94); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.28); }
 .progress-wrap { padding: 1.1rem 1.4rem 0; }
 .progress-meta { display: flex; justify-content: space-between; gap: 1rem; color: var(--text-secondary); font-size: .84rem; margin-bottom: .5rem; }
 .progress { height: 4px; background: #272727; border-radius: 999px; overflow: hidden; }
@@ -33,18 +33,17 @@
 .result-card ul { padding-left: 1.2rem; }
 .result-card li + li { margin-top: .4rem; }
 .result-caution { border-left: 3px solid #E6B85C; }
-.summary { width: 100%; min-height: 9.7rem; resize: vertical; padding: .85rem; border: 1px solid var(--border-color); border-radius: 7px; background: #0f0f0f; color: var(--text-primary); font: .9rem/1.5 var(--font-mono); }
+.summary { width: 100%; min-height: 11rem; resize: vertical; padding: .85rem; border: 1px solid var(--border-color); border-radius: 7px; background: #0f0f0f; color: var(--text-primary); font: .9rem/1.5 var(--font-mono); }
 .fineprint, .inline-note { color: var(--text-secondary); font-size: .84rem; }
 .fineprint { margin-top: 1.1rem; }
 .inline-note { margin-top: .75rem; }
 @media (max-width: 768px) {
-    .triage-page { padding-top: calc(var(--header-height) + 2.5rem); }
+    .triage-hero { padding: 6.25rem 0 1.875rem; }
     .choices { grid-template-columns: 1fr; }
     .screen { padding: 1.6rem 1.1rem; }
     .progress-wrap { padding-left: 1.1rem; padding-right: 1.1rem; }
 }
 @media (max-width: 480px) {
-    .triage-page { padding-top: calc(var(--header-height) + 1.75rem); }
     .triage-hero h1 { font-size: 2rem; overflow-wrap: anywhere; }
     .triage-controls .triage-btn, .triage-actions .triage-btn { width: 100%; }
 }

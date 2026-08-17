@@ -13,7 +13,7 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" href="/java-performance/triage.css">
+    <link rel="stylesheet" href="/java-performance/triage.css?v=20260817">
 </head>
 <body>
 <header id="header">
@@ -33,20 +33,23 @@
     </nav>
 </header>
 <main class="triage-page">
-    <div class="container">
-        <section class="triage-hero">
-            <div class="triage-eyebrow">Java performance engineering</div>
+    <section class="triage-hero">
+        <div class="container">
             <h1>Java Performance <span class="highlight">Triage</span></h1>
             <p>Answer a few focused questions to narrow the investigation and identify useful evidence to collect next. This is a triage aid, not a diagnosis.</p>
-        </section>
-        <section class="triage-shell" aria-live="polite">
-            <div class="progress-wrap"><div class="progress-meta"><span id="stepLabel">Step 1</span><span id="categoryLabel">Choose a symptom</span></div><div class="progress"><div id="progressBar"></div></div></div>
-            <div id="wizard"></div>
-        </section>
-    </div>
+        </div>
+    </section>
+    <section class="triage-content">
+        <div class="container">
+            <section class="triage-shell" aria-live="polite">
+                <div class="progress-wrap"><div class="progress-meta"><span id="stepLabel">Step 1</span><span id="categoryLabel">Choose a symptom</span></div><div class="progress"><div id="progressBar"></div></div></div>
+                <div id="wizard"></div>
+            </section>
+        </div>
+    </section>
 </main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Java performance, systems engineering, and local-first developer tools.</p></div></footer>
 <script src="/script.js?v=20260809"></script>
-<script src="/java-performance/triage.js?v=20260809"></script>
+<script src="/java-performance/triage.js?v=20260817"></script>
 </body>
 </html>
