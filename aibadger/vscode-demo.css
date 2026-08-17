@@ -317,6 +317,10 @@
     animation: copy-icon-nudge 900ms ease-out;
 }
 
+.vscode-copy-icon.simulated-click {
+    animation: copy-simulated-click 420ms ease-out;
+}
+
 @keyframes copy-attention {
     0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
     25%, 75% { box-shadow: 0 0 0 7px rgba(46, 204, 113, 0.3); }
@@ -327,6 +331,12 @@
     25% { transform: translateX(-2px); }
     50% { transform: translateX(2px); }
     75% { transform: translateX(-1px); }
+}
+
+@keyframes copy-simulated-click {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); transform: scale(1); }
+    25% { box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.35); transform: scale(0.92); }
+    55% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0.18); transform: scale(1.04); }
 }
 
 .vscode-changes-row {

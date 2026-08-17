@@ -3,6 +3,8 @@
     const progress = Array.from(document.querySelectorAll('[data-progress]'));
     const copyButton = document.querySelector('.vscode-copy-icon');
     let revealTimer;
+    let copyHintClicks = 0;
+    let copyTransitionTimer;
 
     function hintCopyButton() {
         if (!copyButton) {
@@ -12,8 +14,33 @@
         requestAnimationFrame(() => copyButton.classList.add('attention'));
     }
 
+    function showCopyButtonClick() {
+        if (!copyButton) {
+            return;
+        }
+        window.clearTimeout(copyTransitionTimer);
+        copyButton.classList.remove('attention', 'simulated-click');
+        requestAnimationFrame(() => {
+            copyButton.classList.add('simulated-click');
+            copyTransitionTimer = window.setTimeout(() => showStep(1), 420);
+        });
+    }
+
+    function focusCopyButton() {
+        copyHintClicks += 1;
+        copyButton.focus({ preventScroll: true });
+
+        if (copyHintClicks >= 3) {
+            showCopyButtonClick();
+            return;
+        }
+
+        hintCopyButton();
+    }
+
     function showStep(index) {
         window.clearTimeout(revealTimer);
+        window.clearTimeout(copyTransitionTimer);
         steps.forEach((step, stepIndex) => {
             const active = stepIndex === index;
             step.hidden = !active;
@@ -47,10 +74,10 @@
         if (next) {
             showStep(Number(next.dataset.next));
         } else if (focusCopy && copyButton) {
-            copyButton.classList.remove('attention');
-            copyButton.focus({ preventScroll: true });
-            requestAnimationFrame(() => copyButton.classList.add('attention'));
+            focusCopyButton();
         } else if (restart) {
+            copyHintClicks = 0;
+            copyButton?.classList.remove('attention', 'simulated-click');
             showStep(0);
             hintCopyButton();
         }
