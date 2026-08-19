@@ -70,6 +70,7 @@ p { margin: 0 0 1rem; }
 .try-section { padding-block: clamp(2.5rem, 5vw, 4rem); background: var(--panel); border-block: 1px solid var(--line); }
 .quick-start-grid, .integration-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .quick-start-copy { max-width: 560px; }
+.quick-start-copy code { color: var(--text); }
 .quick-start-copy p, .integration-copy p, .capability-card p, .integration-list p, .scope-section p { color: var(--muted); }
 .text-link { display: inline-block; margin-top: .5rem; font-weight: 600; }
 .code-card { min-width: 0; background: #070908; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
