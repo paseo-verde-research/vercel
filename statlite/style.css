@@ -21,8 +21,7 @@ h1 { color: var(--green); font-size: clamp(2.25rem, 4vw, 3rem); letter-spacing: 
 h2 { color: var(--text); font-size: clamp(1.8rem, 3.5vw, 2.65rem); letter-spacing: -.045em; }
 h3 { color: var(--text); font-size: 1.05rem; }
 p { margin: 0 0 1rem; }
-.wordmark-accent, .logo-accent, .eyebrow, .benefit-icon { color: var(--green); }
-.eyebrow { font: 600 .74rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; margin-bottom: .9rem; }
+.wordmark-accent, .logo-accent, .benefit-icon { color: var(--green); }
 
 #header { height: var(--header); position: sticky; top: 0; z-index: 10; background: rgba(5, 5, 5, .95); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
 .navbar, .navbar .container { height: 100%; }
@@ -65,8 +64,8 @@ p { margin: 0 0 1rem; }
 .why-divider { color: var(--line); font-weight: 300; }
 .why-content { color: var(--muted); font-size: 1rem; }
 
-.section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
-.section-intro { max-width: 650px; margin-bottom: 1.8rem; }
+.section { padding: clamp(2.75rem, 4vw, 4rem) 0; }
+.section-intro { max-width: 52rem; margin-bottom: 1.8rem; }
 .try-section { padding-block: clamp(2.5rem, 5vw, 4rem); background: var(--panel); border-block: 1px solid var(--line); }
 .quick-start-grid, .integration-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .quick-start-copy { max-width: 560px; }
