@@ -90,18 +90,10 @@
 
     <section class="try-section section">
         <div class="container quick-start-grid">
-            <div class="quick-start-copy"><p class="eyebrow">Quick start</p><h2>From application URL to dashboard.</h2><p>Give StatLite your application's base URL. It checks the supported integration paths and prints the target YAML to copy into <code>statlite.yaml</code>.</p><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#discover-a-target-with-inspect" class="text-link">Read the configuration documentation <span aria-hidden="true">&rarr;</span></a></div>
-            <div class="code-card"><div class="code-label">Terminal</div><pre><code>$ statlite inspect http://localhost:8080
-Detected: Spring Boot Actuator
-
-Suggested target:
-
-targets:
-    - name: app
-      type: spring
-      actuator_base_url: http://localhost:8080/actuator
-
-$ statlite</code></pre></div>
+            <div class="quick-start-copy"><p class="eyebrow">Quick start</p><h2>Try StatLite now.</h2><p>Open <code>http://127.0.0.1:9090</code>. StatLite monitors itself out of the box, so you can explore the dashboard before configuring your application.</p><a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="text-link">Read the installation documentation <span aria-hidden="true">&rarr;</span></a></div>
+            <div class="code-card"><div class="code-label">Terminal</div><pre><code>docker run --rm \
+  -p 127.0.0.1:9090:9090 \
+  ghcr.io/pvrlabs/statlite:latest</code></pre></div>
         </div>
     </section>
 
