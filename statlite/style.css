@@ -16,9 +16,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter,
 .container { width: min(100% - 40px, var(--container)); margin-inline: auto; }
 a { color: var(--green); text-decoration: none; }
 a:hover { color: #75E6A3; }
-h1, h2, h3 { font-family: Sora, sans-serif; line-height: 1.18; margin: 0 0 1rem; }
-h1 { color: var(--green); font-size: clamp(2.25rem, 4vw, 3rem); letter-spacing: -1px; line-height: 1.1; max-width: 700px; }
-h2 { color: var(--text); font-size: clamp(1.8rem, 3.5vw, 2.65rem); letter-spacing: -.045em; }
+h1, h2, h3 { font-family: Sora, sans-serif; font-weight: 600; line-height: 1.18; margin: 0 0 1rem; }
+h1 { color: var(--green); font-size: clamp(2rem, 3.7vw, 2.75rem); letter-spacing: -1px; line-height: 1.1; max-width: 700px; }
+h2 { color: var(--green); font-size: clamp(1.55rem, 3vw, 2.2rem); letter-spacing: -.045em; }
 h3 { color: var(--text); font-size: 1.05rem; }
 p { margin: 0 0 1rem; }
 .wordmark-accent, .logo-accent, .benefit-icon { color: var(--green); }
@@ -39,7 +39,7 @@ p { margin: 0 0 1rem; }
 .hero-section { padding: 12px 0 18px; position: relative; overflow: clip; background: var(--bg) url('../img/carbon-fibre-v2.png'); }
 .hero-section::after { content: ''; position: absolute; width: 40rem; height: 40rem; right: -16rem; top: -10rem; background: radial-gradient(circle, rgba(46, 204, 113, .12), transparent 68%); pointer-events: none; }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
-.hero-copy, .hero-visual { position: relative; z-index: 1; }
+.hero-copy, .hero-visual { position: relative; z-index: 1; min-width: 0; }
 .hero-description { max-width: 600px; color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.15rem); }
 .proof-line { color: var(--text); font-weight: 600; margin-top: 1.2rem; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin-top: 1.5rem; }
@@ -49,7 +49,7 @@ p { margin: 0 0 1rem; }
 .button-github { background: transparent; border-color: var(--line); color: var(--text); }
 .button-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--green); color: var(--text); transform: translateY(-2px); }
 .button-icon { width: 18px; height: 18px; }
-.dashboard-frame { background: var(--panel); border: 1px solid rgba(46, 204, 113, .35); border-radius: 9px; padding: .55rem; box-shadow: 0 24px 80px rgba(0, 0, 0, .45); }
+.dashboard-frame { width: 100%; min-width: 0; background: var(--panel); border: 1px solid rgba(46, 204, 113, .35); border-radius: 9px; padding: .55rem; box-shadow: 0 24px 80px rgba(0, 0, 0, .45); }
 .frame-bar { display: flex; gap: .35rem; align-items: center; padding: .25rem .45rem .55rem; color: var(--muted); font: .7rem var(--mono); }
 .frame-bar span { width: 8px; height: 8px; border-radius: 50%; background: #5D665F; }
 .frame-bar span:first-child { background: var(--green); }
@@ -66,7 +66,8 @@ p { margin: 0 0 1rem; }
 
 .section { padding: clamp(2.75rem, 4vw, 4rem) 0; }
 .section-intro { max-width: 52rem; margin-bottom: 1.8rem; }
-.try-section { padding-block: clamp(2.5rem, 5vw, 4rem); background: var(--panel); border-block: 1px solid var(--line); }
+.section-heading { margin-inline: auto; text-align: center; }
+.try-section { padding-block: clamp(2.5rem, 5vw, 4rem); background: transparent; border-block: 1px solid var(--line); }
 .quick-start-grid, .integration-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .quick-start-copy { max-width: 560px; }
 .quick-start-copy code { color: var(--text); }
@@ -79,9 +80,11 @@ p { margin: 0 0 1rem; }
 .capability-card { display: flex; align-items: flex-start; gap: 1rem; min-width: 0; padding: 1.25rem; background: rgba(10, 10, 10, .3); border: 1px solid var(--line); border-radius: 8px; transition: border-color .2s ease, background .2s ease; }
 .capability-card:hover { border-color: var(--green); background: rgba(46, 204, 113, .05); }
 .capability-card h3 { margin: .1rem 0 .35rem; }
+.capability-card h3, .integration-list h3 { color: var(--green); }
 .benefit-icon { width: 30px; height: 30px; flex: 0 0 auto; }
 .benefit-icon svg { display: block; width: 100%; height: 100%; }
 .integrations-section { background: rgba(16, 20, 18, .55); }
+.integrations-section .integration-grid { align-items: start; }
 .integration-copy { max-width: 530px; }
 .integration-copy .button { margin-top: .5rem; }
 .integration-details { min-width: 0; }
