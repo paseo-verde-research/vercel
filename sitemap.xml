@@ -23,7 +23,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/statlite/</loc>
-    <lastmod>2026-08-07</lastmod>
+    <lastmod>2026-08-20</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/aibadger/install.html</loc>
@@ -43,7 +43,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-08-14</lastmod>
+    <lastmod>2026-08-20</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-512mb-vps.html</loc>
+    <lastmod>2026-08-20</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/reviewing-ai-generated-code-vscode-aibadger.html</loc>
@@ -55,7 +59,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/lightweight-spring-boot-monitoring.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <lastmod>2026-08-20</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/introverted-maven.html</loc>
+    <lastmod>2026-08-12</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/claude-code-token-savings.html</loc>

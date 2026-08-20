@@ -151,6 +151,7 @@
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/" class="nav-link">Home</a></li>
                 <li><a href="/articles/" class="nav-link active">Articles</a></li>
+                <li><a href="/statlite/" class="nav-link">StatLite</a></li>
                 <li><a href="/aibadger/" class="nav-link">AI Badger</a></li>
             </ul>
             <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
@@ -171,14 +172,24 @@
     </section>
 
     <nav class="article-filters" aria-label="Filter articles by topic">
-            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(5)</span></button>
+            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(6)</span></button>
             <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span>(3)</span></button>
-        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(1)</span></button>
-        <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(3)</span></button>
+        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(2)</span></button>
+        <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(4)</span></button>
     </nav>
 
     <section class="articles-list">
         <div class="container">
+
+            <article class="article-entry" data-tags="statlite engineering">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>StatLite</span>
+                    <span>Engineering</span>
+                </div>
+                <h2><a href="/articles/spring-boot-512mb-vps.html">Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits</a></h2>
+                <div class="article-meta"><time datetime="2026-08-20">August 20, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
+                <p>A Spring Boot 3.5 app with JPA, Tomcat, and Actuator ran on 512 MB plus a small swapfile. The monitor stayed around 12 MiB.</p>
+            </article>
 
             <article class="article-entry" data-tags="ai-badger engineering">
                 <div class="article-tags" aria-label="Article topics">

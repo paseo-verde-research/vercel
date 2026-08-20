@@ -111,7 +111,7 @@
 
     <section class="section integrations-section">
         <div class="container integration-grid">
-            <div class="integration-copy"><h2>Built for Spring Boot, usable beyond it</h2><p>Actuator already exposes useful metrics. StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack.</p><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a></div>
+            <div class="integration-copy"><h2>Built for Spring Boot, usable beyond it</h2><p>Actuator already exposes useful metrics. StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack.</p><div class="hero-actions"><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a><a href="/articles/spring-boot-512mb-vps.html" class="button button-github">512 MB VPS experiment</a></div></div>
             <div class="integration-details"><div class="integration-list"><div><h3>Spring Boot Actuator</h3><p>Health and metrics endpoints for Spring Boot applications.</p></div><div><h3>StatLite Metrics v1</h3><p>A fixed JSON profile for supported external applications.</p></div><div><h3>Self-monitoring</h3><p>StatLite monitors its own host and SQLite filesystem capacity.</p></div></div><div class="code-card"><div class="code-label">statlite.yml</div><pre><code>targets:
   - name: "my-app"
     actuator_base_url: "http://localhost:8080/actuator"</code></pre></div></div>

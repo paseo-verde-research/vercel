@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits | PVR Labs</title>
+    <meta name="description" content="A Spring Boot 3.5 app with JPA, H2, Tomcat, and Actuator ran on 512 MB RAM plus a small swapfile. StatLite stayed around 12 MiB and kept polling.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-512mb-vps.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-512mb-vps.html">
+    <meta property="og:title" content="Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A Spring Boot 3.5 app with JPA, H2, Tomcat, and Actuator ran on 512 MB RAM plus a small swapfile. StatLite stayed around 12 MiB and kept polling.">
+    <meta property="article:published_time" content="2026-08-20T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-512mb-vps-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot on a 512 MB VPS: how lightweight monitoring still fits">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits">
+    <meta name="twitter:description" content="A Spring Boot 3.5 app with JPA, H2, Tomcat, and Actuator ran on 512 MB RAM plus a small swapfile. StatLite stayed around 12 MiB and kept polling.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-512mb-vps-og.jpg">
+    <meta name="twitter:image:alt" content="Spring Boot on a 512 MB VPS: how lightweight monitoring still fits">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; min-width: 40rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-table tr.success td { background: rgba(46, 204, 113, .08); }
+        .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 8px; padding: 24px 28px; margin: 32px 0 40px; }
+        .statlite-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        @media (max-width: 768px) {
+            .article-body table { font-size: .85rem; }
+            .statlite-pitch { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .article-actions { flex-direction: column; }
+            .article-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 20, 2026</div>
+    <div class="article-body">
+        <p>I wanted a straight answer for a cheap VPS: can a representative Spring Boot app live on 512 MB, and is there room left for something that actually watches it?</p>
+        <p>The result: 256 MB was too tight for this application. At 512 MB RAM plus a 256 MB swapfile, Spring Boot and StatLite completed the hour with zero restarts. StatLite ended at about 12 MiB RSS.</p>
+        <p>Spring Boot is not tiny. I did not try to make it tiny. The interesting part was the other process. In the successful run, <a href="/statlite/">StatLite</a> ended around 12 MiB RSS while continuously polling both targets. In the separate no-swap test, Spring was OOM-killed and restarted while StatLite stayed up.</p>
+        <p>The setup that completed a clean hour was <strong>512 MB RAM plus a 256 MB swapfile</strong>, with this JVM profile:</p>
+        <pre data-lang="text"><code>-Xms16m -Xmx64m -Xss256k -XX:+UseSerialGC</code></pre>
+        <p><code>-Xmx64m</code> is not a 64 MB process. At the end of that hour Spring RSS was about 167 MiB. The heap series in the dashboard sat around 40 to 50 MB. Both are true. They measure different things.</p>
+
+        <h2>What I ran</h2>
+        <p>Star Pulse is a Java 21 / Spring Boot 3.5.5 service with JPA, Hibernate, file-backed H2, embedded Tomcat, Actuator, a scheduler, and outbound HTTP to GitHub. It tracks star counts for a few repositories. I could have skipped Hibernate. Then I would have been measuring a different app.</p>
+        <p>The guest was Ubuntu 24.04, 1 vCPU, 5 GB disk. Spring and StatLite ran as separate systemd units on loopback. The 512 MB VM showed about 452 MiB of usable RAM. StatLite polled Spring and itself every 30 seconds.</p>
+        <figure>
+            <img src="/articles/img/spring-boot-512mb-vps/star-pulse-dashboard.webp" width="1280" height="900" loading="lazy" decoding="async" alt="Star Pulse dashboard on the 512 MB VM, showing GitHub star counts for three repositories and a seven-day growth chart">
+            <figcaption>Star Pulse on the 512 MB VM. This shot is from the same guest after the timed run, not from the original 60-minute window.</figcaption>
+        </figure>
+        <p>Once both services had settled, I watched them for 60 minutes and sent 72 bounded HTTP requests, 12 to each of six Spring and StatLite endpoints. If Spring or StatLite was OOM-killed, crashed, restarted, or never became usable, I did not call the run clean. Sitting at high memory use was allowed. That is the point of a small machine.</p>
+        <p>I tried five configurations:</p>
+        <div class="table-scroll">
+            <table class="article-table article-table--compact">
+                <thead>
+                    <tr>
+                        <th>Configuration</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>256 MB, no swap</td>
+                        <td>OOM/restart loop, operationally unusable</td>
+                    </tr>
+                    <tr>
+                        <td>256 MB + 256 MB swap</td>
+                        <td>Completed hour, but Spring OOM-restarted once and swap stayed effectively full</td>
+                    </tr>
+                    <tr>
+                        <td>256 MB + 256 MB swap, aggressive JVM limits</td>
+                        <td>Failed startup with Metaspace allocation error</td>
+                    </tr>
+                    <tr>
+                        <td>512 MB, no swap</td>
+                        <td>Completed hour, but Spring OOM-restarted once</td>
+                    </tr>
+                    <tr class="success">
+                        <td>512 MB + 256 MB swap</td>
+                        <td>Clean 60-minute run, zero restarts</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>512 MB without swap was close</h2>
+        <p>On 512 MB with no swap, the hour finished. All 72 requests returned 200. Spring still got OOM-killed in the first three minutes of the 60-minute observation window. The JVM had already been running before that window started. It restarted and then behaved. StatLite never restarted. Final RSS was 270,284 KiB for Spring and 5,300 KiB for StatLite.</p>
+        <p>That is a machine you can babysit. It is not one I would leave alone and call done.</p>
+
+        <h2>512 MB plus a small swapfile</h2>
+        <p>I kept the same app and the same JVM flags, and added a 256 MB swapfile (about 255 MiB usable). Spring reached health in 14 seconds. For the next hour:</p>
+        <ul>
+            <li>Spring restarts: 0</li>
+            <li>StatLite restarts: 0</li>
+            <li>72 of 72 HTTP checks returned 200</li>
+            <li>final Spring RSS: about 167 MiB (167,420 KiB)</li>
+            <li>final StatLite RSS: about 12 MiB (12,556 KiB)</li>
+            <li>swap used: about 160 MiB</li>
+            <li>RAM still available: about 140 MiB</li>
+            <li>240 StatLite polls, 120 per target, 2,640 metric samples</li>
+        </ul>
+        <p>Checkpoints from that run. Restart counts are Spring first, then StatLite.</p>
+        <div class="table-scroll">
+            <table class="article-table">
+                <thead>
+                    <tr>
+                        <th>Checkpoint</th>
+                        <th>RAM available</th>
+                        <th>Swap used</th>
+                        <th>Spring RSS</th>
+                        <th>StatLite RSS</th>
+                        <th>Restarts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Start</td>
+                        <td>81 MiB</td>
+                        <td>37 MiB</td>
+                        <td>244,024 KiB</td>
+                        <td>13,128 KiB</td>
+                        <td>0 / 0</td>
+                    </tr>
+                    <tr>
+                        <td>+90 seconds</td>
+                        <td>109 MiB</td>
+                        <td>97 MiB</td>
+                        <td>202,532 KiB</td>
+                        <td>13,588 KiB</td>
+                        <td>0 / 0</td>
+                    </tr>
+                    <tr>
+                        <td>+3 minutes, after traffic</td>
+                        <td>106 MiB</td>
+                        <td>140 MiB</td>
+                        <td>211,944 KiB</td>
+                        <td>10,044 KiB</td>
+                        <td>0 / 0</td>
+                    </tr>
+                    <tr class="success">
+                        <td>+60 minutes</td>
+                        <td>140 MiB</td>
+                        <td>160 MiB</td>
+                        <td>167,420 KiB</td>
+                        <td>12,556 KiB</td>
+                        <td>0 / 0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>H2 stayed at 44 KiB. StatLite's SQLite file grew from 548 KiB at the start of the observation to 736 KiB at the end, with seven-day retention. The JVM used SerialGC and a 256k thread stack, but those settings did not make the process the size of the heap. Metaspace, thread stacks, direct memory, and mapped files sit outside <code>-Xmx</code>. If you size the VPS from the heap flag alone, that is usually why the OOM killer shows up.</p>
+
+        <h2>The monitor did not go down with Spring</h2>
+        <p>When Spring was OOM-killed on the no-swap 512 MB run, StatLite stayed up and kept polling. Health, restarts, and memory were still on the dashboard. On a box this small I want that process separate. If it dies with Spring, it cannot tell you Spring just died.</p>
+        <figure>
+            <img src="/articles/img/spring-boot-512mb-vps/statlite-star-pulse-1h.webp" width="1280" height="900" loading="lazy" decoding="async" alt="StatLite one-hour view of star-pulse on the 512 MB VM, showing UP health, zero poll failures, request and error charts, and JVM runtime memory around 40 to 50 MB">
+            <figcaption>StatLite watching star-pulse on the same 512 MB VM, one-hour view. Health is UP. Poll failures are zero. The runtime memory series is heap, not RSS. Later live view, not a frame from the timed hour.</figcaption>
+        </figure>
+        <p>Spring Boot is not a 12 MiB service. Watching it does not have to mean standing up Prometheus and Grafana next to it.</p>
+        <div class="statlite-pitch">
+            <p>If a dashboard that small is useful on a box like this, star StatLite so other Spring Boot people can find it.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+                <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="btn btn-github" target="_blank" rel="noopener noreferrer">Install</a>
+            </div>
+        </div>
+        <p>I left the box running after the hour. About 13 hours later both units were still active, still returning 200, still being polled. Swap was still in use. That is not a second timed run. It is just what it looked like the next day.</p>
+
+        <h2>Don't copy this blindly</h2>
+        <p>This is one app. Give it a remote Postgres, more schedulers, or a heavier set of starters and 512 MB may not be enough. I also would not size a fleet from one timed hour.</p>
+        <p>The smaller RAM rows above were a stretch test. I would not run this stack there. Checkpoints and method notes are in the public experiment repo.</p>
+
+        <h2>Source</h2>
+        <p>The method, the demo, and the numbers are in the public experiment repo. I left out private logs, credentials, and host paths.</p>
+        <div class="statlite-pitch">
+            <p>Star Pulse is in the experiment tree. StatLite is the dashboard in the screenshots: one Go binary, SQLite on disk, Actuator in, charts out.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" class="btn btn-github" target="_blank" rel="noopener noreferrer">Public experiment</a>
+                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory/springboot-stars" class="btn btn-github" target="_blank" rel="noopener noreferrer">Star Pulse source</a>
+            </div>
+        </div>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260808"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
