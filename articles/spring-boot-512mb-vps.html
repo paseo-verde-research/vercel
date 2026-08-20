@@ -69,7 +69,7 @@
     <div class="article-body">
         <p>I wanted a straight answer for a cheap VPS: can a representative Spring Boot app live on 512 MB, and is there room left for something that actually watches it?</p>
         <p>The result: 256 MB was too tight for this application. At 512 MB RAM plus a 256 MB swapfile, Spring Boot and StatLite completed the hour with zero restarts. StatLite ended at about 12 MiB RSS.</p>
-        <p>Spring Boot is not tiny. I did not try to make it tiny. The interesting part was the other process. In the successful run, <a href="/statlite/">StatLite</a> ended around 12 MiB RSS while continuously polling both targets. In the separate no-swap test, Spring was OOM-killed and restarted while StatLite stayed up.</p>
+        <p>Spring Boot is not tiny. I did not try to make it tiny. The interesting result was that the monitor remained useful under memory pressure. In the successful run, <a href="/statlite/">StatLite</a> ended around 12 MiB RSS while continuously polling both targets. In the separate no-swap test, Spring was OOM-killed and restarted while StatLite stayed up.</p>
         <p>The setup that completed a clean hour was <strong>512 MB RAM plus a 256 MB swapfile</strong>, with this JVM profile:</p>
         <pre data-lang="text"><code>-Xms16m -Xmx64m -Xss256k -XX:+UseSerialGC</code></pre>
         <p><code>-Xmx64m</code> is not a 64 MB process. At the end of that hour Spring RSS was about 167 MiB. The heap series in the dashboard sat around 40 to 50 MB. Both are true. They measure different things.</p>
@@ -190,6 +190,8 @@
             <figcaption>StatLite watching star-pulse on the same 512 MB VM, one-hour view. Health is UP. Poll failures are zero. The runtime memory series is heap, not RSS. Later live view, not a frame from the timed hour.</figcaption>
         </figure>
         <p>Spring Boot is not a 12 MiB service. Watching it does not have to mean standing up Prometheus and Grafana next to it.</p>
+        <p><a href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Grafana's installation guidance</a> lists 512 MB as the minimum recommended memory for the dashboard server itself, before adding a metrics backend such as Prometheus. That does not mean Grafana continuously consumes 512 MB RSS, but it shows why a conventional monitoring stack is an awkward fit when the entire VM has 512 MB.</p>
+        <p>Hosted tools such as New Relic or Datadog move storage and visualization elsewhere and are reasonable alternatives. StatLite makes a different tradeoff: Actuator metrics, collection, local SQLite history, and the dashboard stay on the machine, with no telemetry service required.</p>
         <div class="statlite-pitch">
             <p>If a dashboard that small is useful on a box like this, star StatLite so other Spring Boot people can find it.</p>
             <div class="article-actions">
