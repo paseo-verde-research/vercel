@@ -200,7 +200,7 @@
         <p>I left the box running after the hour. About 13 hours later both units were still active, still returning 200, still being polled. Swap was still in use. That is not a second timed run. It is just what it looked like the next day.</p>
 
         <h2>Don't copy this blindly</h2>
-        <p>This is one app. Give it a remote Postgres, more schedulers, or a heavier set of starters and 512 MB may not be enough. I also would not size a fleet from one timed hour.</p>
+        <p>This is one app. Replacing embedded H2 with a database process such as MariaDB or Postgres on the same VPS will increase total memory pressure because that process needs its own memory. A separately hosted or managed database can move that pressure off this VM, but adds network and connection-pool considerations. More schedulers, larger pools, heavier starters, or a busier workload can also push local memory higher. I also would not size a fleet from one timed hour.</p>
         <p>The smaller RAM rows above were a stretch test. I would not run this stack there. Checkpoints and method notes are in the public experiment repo.</p>
 
         <h2>Source</h2>
