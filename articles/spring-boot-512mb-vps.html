@@ -65,11 +65,10 @@
 <main><article class="article-page">
     <a href="/articles/" class="back-link">&larr; Back to Articles</a>
     <h1>Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 20, 2026</div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 20, 2026 · Updated August 25, 2026</div>
     <div class="article-body">
         <p>I wanted a straight answer for a cheap VPS: can a representative Spring Boot app live on 512 MB, and is there room left for something that actually watches it?</p>
         <p>The result: 256 MB was too tight for this application. At 512 MB RAM plus a 256 MB swapfile, Spring Boot and StatLite completed the hour with zero restarts. StatLite ended at about 12 MiB RSS.</p>
-        <p>Since this run, I also found a way to complete a controlled hour on a nominal 256 MiB Alpine VPS with JDK 25, an 80 MiB heap, compact object headers, and 512 MiB of swap. That is a useful technical stretch result, not a replacement for the 512 MB recommendation: the smaller guest ended with 184 MiB of swap in use and recorded a long Hikari scheduling delay. <a href="/articles/spring-boot-256mb-jdk25.html">Read the JDK 25 / 256 MiB follow-up</a>.</p>
         <p>Spring Boot is not tiny. I did not try to make it tiny. The interesting result was that the monitor remained useful under memory pressure. In the successful run, <a href="/statlite/">StatLite</a> ended around 12 MiB RSS while continuously polling both targets. In the separate no-swap test, Spring was OOM-killed and restarted while StatLite stayed up.</p>
         <p>The setup that completed a clean hour was <strong>512 MB RAM plus a 256 MB swapfile</strong>, with this JVM profile:</p>
         <pre data-lang="text"><code>-Xms16m -Xmx64m -Xss256k -XX:+UseSerialGC</code></pre>
@@ -205,6 +204,7 @@
         <h2>Don't copy this blindly</h2>
         <p>This is one app. Replacing embedded H2 with a database process such as MariaDB or Postgres on the same VPS will increase total memory pressure because that process needs its own memory. A separately hosted or managed database can move that pressure off this VM, but adds network and connection-pool considerations. More schedulers, larger pools, heavier starters, or a busier workload can also push local memory higher. I also would not size a fleet from one timed hour.</p>
         <p>The smaller RAM rows above were a stretch test. I would not run this stack there. Checkpoints and method notes are in the public experiment repo.</p>
+        <p>A later follow-up completed a controlled hour on a nominal 256 MiB Alpine VPS with JDK 25 and 512 MiB of swap. It is a useful technical stretch result, not a replacement for the 512 MB recommendation. <a href="/articles/spring-boot-256mb-jdk25.html">Read the JDK 25 / 256 MiB follow-up</a>.</p>
 
         <h2>Source</h2>
         <p>The method, the demo, and the numbers are in the public experiment repo. I left out private logs, credentials, and host paths.</p>
