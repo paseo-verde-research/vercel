@@ -43,11 +43,15 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-25</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-512mb-vps.html</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-08-25</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html</loc>
+    <lastmod>2026-08-25</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/reviewing-ai-generated-code-vscode-aibadger.html</loc>

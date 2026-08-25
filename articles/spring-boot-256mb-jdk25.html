@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers | PVR Labs</title>
+    <meta name="description" content="JDK 25, an 80 MiB heap, compact object headers, and 512 MiB swap got a Spring Boot hour to finish on a nominal 256 MiB Alpine VPS. I would still start at 512 MB.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html">
+    <meta property="og:title" content="Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="JDK 25, an 80 MiB heap, compact object headers, and 512 MiB swap got a Spring Boot hour to finish on a nominal 256 MiB Alpine VPS. I would still start at 512 MB.">
+    <meta property="article:published_time" content="2026-08-25T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-256mb-jdk25-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot on a 256 MB VPS with JDK 25, compact headers, and swap">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers">
+    <meta name="twitter:description" content="JDK 25, an 80 MiB heap, compact object headers, and 512 MiB swap got a Spring Boot hour to finish on a nominal 256 MiB Alpine VPS. I would still start at 512 MB.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-256mb-jdk25-og.jpg">
+    <meta name="twitter:image:alt" content="Spring Boot on a 256 MB VPS with JDK 25, compact headers, and swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; min-width: 40rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-table tr.success td { background: rgba(46, 204, 113, .08); }
+        .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 8px; padding: 24px 28px; margin: 32px 0 40px; }
+        .statlite-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        @media (max-width: 768px) {
+            .article-body table { font-size: .85rem; }
+            .statlite-pitch { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .article-actions { flex-direction: column; }
+            .article-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 25, 2026</div>
+    <div class="article-body">
+        <p>I wanted to know whether a representative Spring Boot application could share a nominal 256 MiB VPS with a small monitoring service. I started with Alpine Linux and JDK 21. That baseline was too tight for this workload: the application started, but severe GC and paging pressure eventually made it stop responding.</p>
+        <p>A separate follow-up changed the runtime to JDK 25, raised the heap ceiling to 80 MiB, limited compilation to C1, capped the code cache at 32 MiB, and enabled compact object headers. That configuration completed the full one-hour Spring Boot plus StatLite observation.</p>
+        <p>JDK 25 got the hour to finish. For a real deployment, I would still start at 512 MB RAM with a modest swapfile.</p>
+
+        <h2>What I was trying to run</h2>
+        <p>Star Pulse uses Spring Boot 3.5.5, Spring MVC, embedded Tomcat, JPA, Hibernate, file-backed H2, Actuator, scheduled GitHub polling, and outbound HTTP. StatLite monitored the Spring application and itself.</p>
+        <p>The test used Alpine Linux 3.24.1 on one vCPU. The TierHive VPS was sold as a nominal 256 MiB plan, but the guest exposed about 216.9 MiB. A 512 MiB swapfile was enabled before the runtime and services were started. TierHive was part of the test methodology only; signup and free credits covered the experiment, and this result is not an endorsement or a provider-wide claim.</p>
+        <p>The public <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" target="_blank" rel="noopener noreferrer">experiment snapshot</a> contains the demo application, the Alpine deployment kit, exact runtime identities, and a curated result summary. The full execution diary and raw checkpoints remain private.</p>
+
+        <h2>Why the JDK 21 run was not good enough</h2>
+        <p>The preserved combined JDK 21 result used a 64 MiB heap. That was too aggressive for this workload. It produced severe GC pressure, long pauses, heavy paging, and periods where Spring stopped responding.</p>
+        <p>An 80 MiB JDK 21 reading was observed live, but no standalone result was preserved. I am not treating it as a traceable JDK 21 comparison point. The documented JDK 21/64 MiB run did not achieve a clean one-hour Spring plus StatLite observation.</p>
+        <blockquote>On a machine this small, making the Java heap smaller can make the whole system worse.</blockquote>
+        <p>The 64 MiB result is an unsuccessful tuning step. I did not build a large JVM tuning matrix. The next follow-up was the JDK 25 configuration.</p>
+
+        <h2>The JDK 25 configuration</h2>
+        <p>The final Spring command used:</p>
+        <pre data-lang="text"><code>-Xms16m
+-Xmx80m
+-Xss256k
+-XX:+UseSerialGC
+-XX:TieredStopAtLevel=1
+-XX:ReservedCodeCacheSize=32m
+-XX:+UseCompactObjectHeaders</code></pre>
+        <p><code>-XX:+UseCompactObjectHeaders</code> is a JDK 25 product flag that shrinks 64-bit object headers from 96 bits to 64. I turned it on for this run. I did not measure that flag in isolation.</p>
+
+        <h2>What changed</h2>
+        <p>The traceable startup comparison is not perfectly like-for-like. The earlier documented Alpine JDK 21 run used a 64 MiB heap; the final JDK 25 run used 80 MiB, C1-only compilation, a 32 MiB code-cache ceiling, and compact object headers.</p>
+        <div class="table-scroll">
+            <table class="article-table article-table--compact">
+                <thead><tr><th></th><th>JDK 21 documented follow-up</th><th>JDK 25 final run</th></tr></thead>
+                <tbody>
+                    <tr><td>Heap ceiling</td><td>64 MiB</td><td>80 MiB</td></tr>
+                    <tr><td>C1 / 32 MiB code cache</td><td>yes</td><td>yes</td></tr>
+                    <tr><td>Compact object headers</td><td>no</td><td>yes</td></tr>
+                    <tr><td>Spring startup</td><td>163.156s</td><td>73.405s</td></tr>
+                    <tr><td>Combined one-hour run</td><td>not achieved</td><td>completed</td></tr>
+                    <tr><td>Final Spring RSS</td><td>n/a</td><td>~86 MiB</td></tr>
+                    <tr><td>Final StatLite RSS</td><td>n/a</td><td>~10 MiB</td></tr>
+                    <tr><td>Final combined RSS</td><td>n/a</td><td>~96 MiB</td></tr>
+                    <tr><td>Final swap</td><td>n/a</td><td>184 MiB</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h2>The one-hour result</h2>
+        <p>The JDK 25 configuration completed the full one-hour combined observation with both services still running:</p>
+        <ul>
+            <li>no OOM kills;</li>
+            <li>no service restarts;</li>
+            <li>all 72 bounded HTTP requests returned HTTP 200;</li>
+            <li>StatLite polling continued for both targets;</li>
+            <li>Spring’s scheduled GitHub polling continued after one early EOF/retry event;</li>
+            <li>final Spring RSS: 87,616 KiB;</li>
+            <li>final StatLite RSS: 10,196 KiB;</li>
+            <li>final combined RSS: 97,820 KiB; and</li>
+            <li>final swap use: 184 MiB of 511 MiB.</li>
+        </ul>
+        <figure>
+            <img src="/articles/img/spring-boot-256mb-jdk25/statlite-live-after-hour.webp" width="1280" height="1000" loading="lazy" decoding="async" alt="StatLite later view of the Alpine Spring Boot target showing health UP, database UP, zero poll failures, request and error charts, and runtime heap and CPU charts">
+            <figcaption>StatLite reopened after the timed observation from a copy of the VPS SQLite history. The 1h charts are pinned to the actual August 24, 2026 14:01–15:01 PDT observation interval; the current cards were refreshed by a local replay of the target. This is a later live view of the dashboard, not a frame from the original 60-minute window.</figcaption>
+        </figure>
+        <p>Hikari also logged “Thread starvation or clock leap detected” with a housekeeper delay of about 2 minutes 13 seconds. I do not know whether paging, JVM pressure, scheduling, or a clock event caused it.</p>
+        <p>StatLite stayed around 10 MiB at the final checkpoint and kept polling both targets.</p>
+
+        <h2>What I did not isolate</h2>
+        <p>I did not isolate every JDK 25 change, and I have no separate heap-savings number for compact object headers. The comparison is JDK 21 versus JDK 25, with a different heap ceiling and several constrained-runtime settings.</p>
+
+        <h2>Does this mean I recommend 256 MB?</h2>
+        <p>No. The hour finished, but the guest ended with 184 MiB of swap in use and an unresolved Hikari housekeeper delay of about two minutes. I would still start a real deployment at 512 MB RAM with a modest swapfile.</p>
+
+        <h2>Source</h2>
+        <p>The method, demo, deployment kit, and selected evidence are in the public experiment snapshot. It includes the precise Alpine package, Java, and StatLite identities used for the preserved run.</p>
+        <div class="statlite-pitch">
+            <p>Star Pulse is the functioning Spring Boot application in the experiment. StatLite is the small monitoring process beside it: Actuator in, SQLite history on disk, charts out.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Public experiment</a>
+                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory/alpine-256mb" class="btn btn-github" target="_blank" rel="noopener noreferrer">Alpine kit</a>
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ StatLite on GitHub</a>
+            </div>
+        </div>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260808"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
