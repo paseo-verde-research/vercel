@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers | PVR Labs</title>
-    <meta name="description" content="JDK 25, an 80 MiB heap, compact object headers, and 512 MiB swap got a Spring Boot hour to finish on a nominal 256 MiB Alpine VPS. I would still start at 512 MB.">
+    <title>Spring Boot on 256 MB: JDK 25 Compact Headers Tested | PVR Labs</title>
+    <meta name="description" content="Can Spring Boot run on 256 MB? A JDK 25 Alpine test with compact object headers, an 80 MiB heap, and 512 MiB swap completed one hour. Verdict: use 512 MB RAM plus modest swap.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html">
-    <meta property="og:title" content="Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers">
+    <meta property="og:title" content="Spring Boot on 256 MB: JDK 25 Compact Headers Tested">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="JDK 25, an 80 MiB heap, compact object headers, and 512 MiB swap got a Spring Boot hour to finish on a nominal 256 MiB Alpine VPS. I would still start at 512 MB.">
+    <meta property="og:description" content="Can Spring Boot run on 256 MB? A JDK 25 Alpine test with compact object headers, an 80 MiB heap, and 512 MiB swap completed one hour. Verdict: use 512 MB RAM plus modest swap.">
     <meta property="article:published_time" content="2026-08-25T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-256mb-jdk25-og.jpg">
@@ -20,8 +20,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Spring Boot on a 256 MB VPS with JDK 25, compact headers, and swap">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers">
-    <meta name="twitter:description" content="JDK 25, an 80 MiB heap, compact object headers, and 512 MiB swap got a Spring Boot hour to finish on a nominal 256 MiB Alpine VPS. I would still start at 512 MB.">
+    <meta name="twitter:title" content="Spring Boot on 256 MB: JDK 25 Compact Headers Tested">
+    <meta name="twitter:description" content="Can Spring Boot run on 256 MB? A JDK 25 Alpine test with compact object headers, an 80 MiB heap, and 512 MiB swap completed one hour. Verdict: use 512 MB RAM plus modest swap.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-256mb-jdk25-og.jpg">
     <meta name="twitter:image:alt" content="Spring Boot on a 256 MB VPS with JDK 25, compact headers, and swap">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,12 +64,11 @@
 </div></nav></header>
 <main><article class="article-page">
     <a href="/articles/" class="back-link">&larr; Back to Articles</a>
-    <h1>Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 25, 2026</div>
+    <h1>Spring Boot on a 256 MB VPS: JDK 25 Compact Headers Put to the Test</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-08-25">August 25, 2026</time></div>
     <div class="article-body">
-        <p>I wanted to know whether a representative Spring Boot application could share a nominal 256 MiB VPS with a small monitoring service. I started with Alpine Linux and JDK 21. That baseline was too tight for this workload: the application started, but severe GC and paging pressure eventually made it stop responding.</p>
-        <p>A separate follow-up changed the runtime to JDK 25, raised the heap ceiling to 80 MiB, limited compilation to C1, capped the code cache at 32 MiB, and enabled compact object headers. That configuration completed the full one-hour Spring Boot plus StatLite observation.</p>
-        <p>JDK 25 got the hour to finish. For a real deployment, I would still start at 512 MB RAM with a modest swapfile.</p>
+        <p>I wanted to know whether a representative Spring Boot application could share a nominal 256 MiB VPS with a small monitoring service. I started with Alpine Linux and JDK 21. That baseline was too tight: severe GC and paging pressure eventually made Spring stop responding.</p>
+        <p>A separate follow-up changed the runtime to JDK 25, raised the heap ceiling to 80 MiB, limited compilation to C1, capped the code cache at 32 MiB, and enabled compact object headers. That configuration completed the full one-hour observation.</p>
 
         <h2>What I was trying to run</h2>
         <p>Star Pulse uses Spring Boot 3.5.5, Spring MVC, embedded Tomcat, JPA, Hibernate, file-backed H2, Actuator, scheduled GitHub polling, and outbound HTTP. StatLite monitored the Spring application and itself.</p>
@@ -126,8 +125,14 @@
         </ul>
         <figure>
             <img src="/articles/img/spring-boot-256mb-jdk25/statlite-live-after-hour.webp" width="1280" height="1000" loading="lazy" decoding="async" alt="StatLite later view of the Alpine Spring Boot target showing health UP, database UP, zero poll failures, request and error charts, and runtime heap and CPU charts">
-            <figcaption>StatLite reopened after the timed observation from a copy of the VPS SQLite history. The 1h charts are pinned to the actual August 24, 2026 14:01–15:01 PDT observation interval; the current cards were refreshed by a local replay of the target. This is a later live view of the dashboard, not a frame from the original 60-minute window.</figcaption>
+            <figcaption>StatLite reopened after the timed observation from a copy of the VPS SQLite history. The 1h charts represent the actual August 24, 2026 14:01–15:01 PDT observation interval; the current cards were refreshed by a local replay of the target. This is a later live view of the dashboard, not a frame from the original 60-minute window.</figcaption>
         </figure>
+        <div class="statlite-pitch">
+            <p><strong>Want this visibility on a small VPS?</strong> <a href="/statlite/">StatLite</a> is the lightweight monitor used beside Star Pulse here. It turns Spring Boot Actuator into local history and charts for health, requests, errors, latency, memory, CPU, uptime, and restarts. Star it to bookmark the project and help other Spring Boot developers find it.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+            </div>
+        </div>
         <p>Hikari also logged “Thread starvation or clock leap detected” with a housekeeper delay of about 2 minutes 13 seconds. I do not know whether paging, JVM pressure, scheduling, or a clock event caused it.</p>
         <p>StatLite stayed around 10 MiB at the final checkpoint and kept polling both targets.</p>
 
@@ -139,13 +144,9 @@
 
         <h2>Source</h2>
         <p>The method, demo, deployment kit, and selected evidence are in the public experiment snapshot. It includes the precise Alpine package, Java, and StatLite identities used for the preserved run.</p>
-        <div class="statlite-pitch">
-            <p>Star Pulse is the functioning Spring Boot application in the experiment. StatLite is the small monitoring process beside it: Actuator in, SQLite history on disk, charts out.</p>
-            <div class="article-actions">
-                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Public experiment</a>
-                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory/alpine-256mb" class="btn btn-github" target="_blank" rel="noopener noreferrer">Alpine kit</a>
-                <a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ StatLite on GitHub</a>
-            </div>
+        <div class="article-actions">
+            <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+            <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" class="btn btn-github" target="_blank" rel="noopener noreferrer">Public experiment</a>
         </div>
     </div>
 </article></main>
