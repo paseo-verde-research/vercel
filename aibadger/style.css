@@ -351,40 +351,11 @@ h1, h2, h3, h4 {
     flex: 0 0 auto;
 }
 
-.skills-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    min-height: 30px;
-    padding: 3px 9px;
-    border: 1px solid var(--primary-green);
-    border-radius: 4px;
-    color: var(--primary-green);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    line-height: 1;
-    text-transform: uppercase;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.skills-cta:hover .skills-chip {
-    background: rgba(46, 204, 113, 0.1);
-    border-color: var(--terminal-green);
-    color: var(--terminal-green);
-}
-
-.skills-logo {
-    width: 0;
-    height: 0;
-    border-right: 6px solid transparent;
-    border-bottom: 11px solid currentColor;
-    border-left: 6px solid transparent;
-}
-
-.skills-count {
-    padding-left: 7px;
-    border-left: 1px solid rgba(46, 204, 113, 0.45);
+.skills-badge {
+    display: block;
+    width: 120px;
+    height: 24px;
+    object-fit: contain;
 }
 
 .choose-grid {
