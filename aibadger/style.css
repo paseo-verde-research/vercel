@@ -763,6 +763,36 @@ h1, h2, h3, h4 {
     height: 24px;
 }
 
+/* --- GitHub Star CTA --- */
+.star-section {
+    padding: 18px 0 14px;
+}
+
+.star-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 18px 22px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(46, 204, 113, 0.04);
+}
+
+.star-cta p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.star-cta strong {
+    color: var(--text-primary);
+}
+
+.star-cta .btn {
+    flex: 0 0 auto;
+}
+
 /* --- Features Grid Section --- */
 .features-grid-section {
     padding: 14px 0;
@@ -814,7 +844,8 @@ h1, h2, h3, h4 {
 
 @media (max-width: 768px) {
     .skills-mention,
-    .skills-install-mention {
+    .skills-install-mention,
+    .star-cta {
         flex-direction: column;
         text-align: center;
     }
