@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</title>
-    <meta name="description" content="Learn how autonomous CLI agents like Claude Code burn tokens on design debates and refactoring reviews - and how to offload that work to flat-rate web chats with local-first project mapping.">
+    <meta name="description" content="Learn how local-first project mapping can reduce context and usage when reviewing code with Claude Code, ChatGPT, Codex, or another AI chat.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/claude-code-token-savings.html">
 
@@ -13,7 +13,7 @@
     <meta property="og:url" content="https://pvrlabs.xyz/articles/claude-code-token-savings.html">
     <meta property="og:title" content="Bypassing the Claude Code 'Token Tax': Smart Code Reviews with Local Mapping">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="How autonomous CLI agents burn tokens on design debates - and how to offload that work to flat-rate web chats using local project mapping.">
+    <meta property="og:description" content="How local-first project mapping can reduce context and usage during code reviews in the AI chat of your choice.">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/claude-code-token-savings-og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="675">
@@ -21,7 +21,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Bypassing the Claude Code 'Token Tax': Smart Code Reviews with Local Mapping">
-    <meta name="twitter:description" content="How autonomous CLI agents burn tokens on design debates - and how to offload that work to flat-rate web chats.">
+    <meta name="twitter:description" content="How local-first project mapping can reduce context and usage during code reviews in the AI chat of your choice.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/claude-code-token-savings-og.jpg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,24 +62,45 @@
             font-size: 0.85rem;
             padding: 8px 20px;
         }
-        .badger-pitch-actions .btn-github {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-        .badger-pitch-actions .btn-github:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--primary-green);
-            color: var(--text-primary);
-        }
         .badger-pitch {
             display: block;
+        }
+        .github-cta {
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--primary-green);
+            border-radius: 6px;
+            background: var(--bg-light);
+            margin: 32px 0 40px;
+            padding: 16px 20px;
+        }
+        .github-cta p {
+            margin-bottom: 12px;
+        }
+        .github-cta-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .github-cta-actions .btn {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 0;
+            padding: 7px 18px;
+            font-size: 0.82rem;
         }
         @media (max-width: 480px) {
             .badger-pitch-actions {
                 flex-direction: column;
             }
             .badger-pitch-actions .btn {
+                width: 100%;
+            }
+            .github-cta-actions {
+                flex-direction: column;
+            }
+            .github-cta-actions .btn {
                 width: 100%;
             }
         }
@@ -110,22 +131,26 @@
         <a href="/articles/" class="back-link">&larr; Back to Articles</a>
 
         <h1>Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</h1>
-        <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 6, 2026</div>
+        <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 6, 2026 · Updated August 26, 2026</div>
 
         <div class="article-body">
 
-            <p>Autonomous coding agents are powerful, but they often come with a steep <strong>token tax</strong>. Tools like Claude Code can rapidly consume your usage limits during reviews by rescanning projects, pulling broad context, and running background operations.</p>
+            <p>Autonomous coding agents are powerful, but they can carry a steep <strong>token tax</strong>. Tools like Claude Code may use more of your allowance when a review requires repeated file reads, broad context, tool calls, or a long-running conversation.</p>
 
-            <p><strong>AI Badger</strong> offers a better way: map your codebase locally, extract only the precise snippets needed, and conduct thoughtful reviews inside your favorite web chat.</p>
+            <p>By <strong>“token tax”</strong>, I mean the extra context, repeated file reads, and tool overhead of an autonomous coding-agent workflow, not Claude’s account-level usage limits. AI Badger helps reduce that overhead; it does not bypass provider quotas.</p>
 
-            <h2>Two Ways You Save Tokens</h2>
+            <p><strong>AI Badger</strong> can reduce that overhead: map your codebase locally, provide the diff and bounded relevant context, then request only the additional snippets needed in your favorite AI chat.</p>
 
-            <ol>
-                <li><strong>Dramatically more efficient usage:</strong> Badger eliminates noisy full-repo scans and recursive context loops. The AI receives clean, surgical context instead of everything.</li>
-                <li><strong>Leverage fixed-cost web chats:</strong> Most web interfaces run on flat-rate monthly subscriptions (like ChatGPT Plus or Claude Pro) or offer generous free daily tiers. By offloading heavy discussions to the web chat, you leverage a fixed-cost window and avoid burning through your metered API balances or rolling agent limits.</li>
-            </ol>
+            <h2>How AI Badger Reduces Overhead</h2>
 
-            <p>Even on platforms where limits are shared, Badger helps you stay efficient and avoid the faster-burning autonomous modes.</p>
+            <p><strong>Reduce unnecessary context:</strong> Badger keeps the project map, Git diff, and selected code separate, so the AI can receive focused context instead of an uncontrolled full-repository scan. The savings depend on the repository and task.</p>
+
+            <div class="github-cta">
+                <p>AI Badger is open source. If this workflow looks useful, <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener">star it on GitHub</a>.</p>
+                <div class="github-cta-actions">
+                    <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener" class="btn btn-secondary">⭐ Star AI Badger on GitHub</a>
+                </div>
+            </div>
 
             <h2>Best Code Reviews with <code>badger review</code></h2>
 
@@ -136,32 +161,32 @@
             <pre data-lang="bash"><code>cd my-react-app
 badger review</code></pre>
 
-            <p>Badger pre-loads your git diff with a default prompt. Edit it before submitting:</p>
+            <p>Badger loads the current Git review context as a removable attachment and gives you an editable review instruction. Add a focus such as security, regression risk, or test coverage before submitting:</p>
 
             <pre data-lang="text"><code>Review the following change for concrete bugs, edge cases, maintainability issues, and
 unintended behavior changes. Focus on issues I should fix before committing.</code></pre>
 
-            <h3>Step 2: Copy Prompt 1 (Compact Map)</h3>
+            <h3>Step 2: Copy the Initial Review Prompt</h3>
 
-            <p>Badger outputs a lightweight project topology (structure, key files, your diff summary). Paste into <strong>Claude Web</strong>, <strong>ChatGPT</strong>, <strong>DeepSeek</strong>, or any other chat.</p>
+            <p>Badger prepares a prompt containing the authoritative Git diff, compact project topology, file-status information, and bounded supporting context when it fits. It is more than a map, and it does not automatically include your entire repository. Copy it into <strong>Claude Web</strong>, <strong>ChatGPT</strong>, <strong>DeepSeek</strong>, or another chat that accepts pasted text.</p>
 
-            <h3>Step 3: Targeted Extraction</h3>
+            <h3>Step 3: Read Findings or Request More Context</h3>
 
-            <p>The AI replies with precise selectors:</p>
+            <p>The AI should report findings immediately when the supplied diff and context are sufficient. There is no mandatory second prompt. If it needs unchanged context, it can reply with precise selectors such as:</p>
 
             <pre data-lang="text"><code>FILE:src/App.tsx
 NEAR:src/App.tsx#function handleSubmit
 PREFIX:src/components/TodoItem.tsx#return</code></pre>
 
-            <p>Paste them back into Badger. It extracts <strong>only</strong> the relevant code.</p>
+            <p>Paste selector-only lines back into Badger. It extracts <strong>only</strong> the requested current files or spans without repeating the initial diff.</p>
 
-            <h3>Step 4: Paste Focused Prompt 2</h3>
+            <h3>Step 4: Send Optional Supplemental Context</h3>
 
-            <p>Badger assembles clean context. Paste into your web chat - get high-quality review feedback without token waste.</p>
+            <p>Badger assembles a supplemental prompt. Paste it into the same conversation so the AI can continue the review with the additional context. This second exchange is optional, not part of every review.</p>
 
-            <h3>Step 5: Apply Changes</h3>
+            <h3>Step 5: Act on the Findings</h3>
 
-            <p>Paste the AI's suggestions back into Badger. Review the write plan and apply fixes with confidence.</p>
+            <p>Use the findings to make and test the fix. If you want Badger to apply a response, bring back explicit file blocks in a write-capable workflow, review the proposed write preview, and confirm it. Ordinary review prose is not automatically a write plan.</p>
 
             <h2>Trivial React Example</h2>
 
@@ -172,21 +197,22 @@ PREFIX:src/components/TodoItem.tsx#return</code></pre>
 
             <p><strong>Why this matters (even for non-React devs):</strong> When rendering lists in React, each item should have a unique <code>key</code>. Without it, the UI can behave strangely when items are added or removed. A good code review also flags small performance and accessibility improvements.</p>
 
-            <p>Badger + web chat quickly flags:</p>
+            <p>Badger + web chat can flag:</p>
 
             <ul>
                 <li>Missing <code>key</code> prop</li>
-                <li>Opportunities for <code>React.memo</code> or <code>useCallback</code></li>
+                <li>Context-dependent performance options, such as <code>React.memo</code> or <code>useCallback</code> when profiling justifies them</li>
                 <li>Accessibility improvements</li>
             </ul>
 
-            <p>All while using far fewer tokens than a full autonomous agent.</p>
+            <p>Depending on the repository and task, this can use fewer input tokens than asking a fully autonomous agent to rediscover the same context. It is an efficiency technique, not a guaranteed savings percentage.</p>
 
             <h2>Why This Workflow Wins</h2>
 
             <ul>
-                <li><strong>Precision-first:</strong> Only requested files/spans are sent</li>
-                <li><strong>Fixed-cost advantage:</strong> Maximize value from subscriptions like ChatGPT Plus and Claude Pro</li>
+                <li><strong>Precision-first:</strong> The review starts with the diff and bounded relevant context; follow-up context is requested explicitly</li>
+                <li><strong>Lower usage:</strong> Reduce repeated discovery and unnecessary context, with savings that vary by task</li>
+                <li><strong>Provider flexibility:</strong> Use any chat that accepts the handoff</li>
                 <li><strong>Review-optimized:</strong> Focuses the AI on risks and correctness</li>
                 <li><strong>Privacy &amp; control:</strong> Fully local until you copy; explicit consent for writes</li>
                 <li><strong>Universal:</strong> Works with React, Go, Java, Node.js, Python, etc.</li>
@@ -194,28 +220,28 @@ PREFIX:src/components/TodoItem.tsx#return</code></pre>
 
             <h2>Install and Try It</h2>
 
-            <pre data-lang="bash"><code>brew tap pvrlabs/aibadger
-brew install pvrlabs/aibadger/badger</code></pre>
+            <pre data-lang="bash"><code>brew install pvrlabs/tap/badger</code></pre>
 
             <p>Or:</p>
 
             <pre data-lang="bash"><code>curl -fsSL https://raw.githubusercontent.com/PVRLabs/aibadger/main/install.sh | sh</code></pre>
 
-            <p>Run <code>badger review</code> in any repo with changes.</p>
+            <p>If you find it useful, a <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener">GitHub star</a> helps other developers discover the project.</p>
+
+            <p>Run <code>badger review</code> from a Git repository with changes.</p>
 
             <p>Full documentation: <a href="https://github.com/PVRLabs/aibadger/blob/main/docs/usage.md">docs/usage.md</a></p>
 
         </div>
 
         <div class="badger-pitch">
-            <p><strong>Stop overpaying for noisy context.</strong> Use AI Badger to map locally and review efficiently in the web chat of your choice.</p>
+            <p><strong>Useful workflow? Help AI Badger grow.</strong><br>AI Badger is open source. If you would like to see it continue improving, give the project a star on GitHub.</p>
             <div class="badger-pitch-actions">
-                <a href="/aibadger/demo.html" class="btn btn-primary">Try the Interactive Demo →</a>
-                <a href="/aibadger/" class="btn btn-secondary">Learn More →</a>
-                <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener" class="btn btn-github">
+                <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener" class="btn btn-primary">
                     <svg class="icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style="vertical-align:middle;margin-right:4px;"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    ⭐ Star on GitHub
+                    ⭐ Star AI Badger on GitHub
                 </a>
+                <a href="/aibadger/demo.html" class="btn btn-secondary">Try the Interactive Demo →</a>
             </div>
         </div>
     </article>
