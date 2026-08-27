@@ -123,14 +123,10 @@
         <h2>512 MB plus a small swapfile</h2>
         <p>I kept the same app and the same JVM flags, and added a 256 MB swapfile (about 255 MiB usable). Spring reached health in 14 seconds. For the next hour:</p>
         <ul>
-            <li>Spring restarts: 0</li>
-            <li>StatLite restarts: 0</li>
-            <li>72 of 72 HTTP checks returned 200</li>
-            <li>final Spring RSS: about 167 MiB (167,420 KiB)</li>
-            <li>final StatLite RSS: about 12 MiB (12,556 KiB)</li>
-            <li>swap used: about 160 MiB</li>
-            <li>RAM still available: about 140 MiB</li>
-            <li>240 StatLite polls, 120 per target, 2,640 metric samples</li>
+            <li>0 restarts; 72/72 HTTP checks returned 200</li>
+            <li>final RSS: ~167 MiB Spring + ~12 MiB StatLite</li>
+            <li>~160 MiB swap used, ~140 MiB RAM still available</li>
+            <li>240 StatLite polls across both targets</li>
         </ul>
         <p>Checkpoints from that run. Restart counts are Spring first, then StatLite.</p>
         <div class="table-scroll">
@@ -189,9 +185,6 @@
             <img src="/articles/img/spring-boot-512mb-vps/statlite-star-pulse-1h.webp" width="1280" height="900" loading="lazy" decoding="async" alt="StatLite one-hour view of star-pulse on the 512 MB VM, showing UP health, zero poll failures, request and error charts, and JVM runtime memory around 40 to 50 MB">
             <figcaption>StatLite watching star-pulse on the same 512 MB VM, one-hour view. Health is UP. Poll failures are zero. The runtime memory series is heap, not RSS. Later live view, not a frame from the timed hour.</figcaption>
         </figure>
-        <p>Spring Boot is not a 12 MiB service. Watching it does not have to mean standing up Prometheus and Grafana next to it.</p>
-        <p><a href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Grafana's installation guidance</a> lists 512 MB as the minimum recommended memory for the dashboard server itself, before adding a metrics backend such as Prometheus. That does not mean Grafana continuously consumes 512 MB RSS, but it shows why a conventional monitoring stack is an awkward fit when the entire VM has 512 MB.</p>
-        <p>Hosted tools such as New Relic or Datadog move storage and visualization elsewhere and are reasonable alternatives. StatLite makes a different tradeoff: Actuator metrics, collection, local SQLite history, and the dashboard stay on the machine, with no telemetry service required.</p>
         <div class="statlite-pitch">
             <p>If a dashboard that small is useful on a box like this, star StatLite so other Spring Boot people can find it.</p>
             <div class="article-actions">
@@ -199,6 +192,9 @@
                 <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="btn btn-github" target="_blank" rel="noopener noreferrer">Install</a>
             </div>
         </div>
+        <p>Spring Boot is not a 12 MiB service. Watching it does not have to mean standing up Prometheus and Grafana next to it.</p>
+        <p><a href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Grafana's installation guidance</a> lists 512 MB as the minimum recommended memory for the dashboard server itself, before adding a metrics backend such as Prometheus. That does not mean Grafana continuously consumes 512 MB RSS, but it shows why a conventional monitoring stack is an awkward fit when the entire VM has 512 MB.</p>
+        <p>Hosted tools such as New Relic or Datadog move storage and visualization elsewhere and are reasonable alternatives. StatLite makes a different tradeoff: Actuator metrics, collection, local SQLite history, and the dashboard stay on the machine, with no telemetry service required.</p>
         <p>I left the box running after the hour. About 13 hours later both units were still active, still returning 200, still being polled. Swap was still in use. That is not a second timed run. It is just what it looked like the next day.</p>
 
         <h2>Don't copy this blindly</h2>
