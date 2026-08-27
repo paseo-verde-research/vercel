@@ -48,7 +48,10 @@ p { margin: 0 0 1rem; }
 .button-primary:hover { background: #75E6A3; color: #071009; }
 .button-github { background: transparent; border-color: var(--line); color: var(--text); }
 .button-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--green); color: var(--text); transform: translateY(-2px); }
-.button-icon { width: 18px; height: 18px; }
+.star-cta { display: flex; align-items: center; justify-content: center; gap: 1.25rem; padding: 1.125rem 1.375rem; border: 1px solid var(--line); border-radius: 8px; background: rgba(46, 204, 113, .04); }
+.star-cta p { color: var(--muted); font-size: .9rem; line-height: 1.45; }
+.star-cta strong { color: var(--text); }
+.star-cta .button { flex: 0 0 auto; }
 .dashboard-frame { width: 100%; min-width: 0; background: var(--panel); border: 1px solid rgba(46, 204, 113, .35); border-radius: 9px; padding: .55rem; box-shadow: 0 24px 80px rgba(0, 0, 0, .45); }
 .frame-bar { display: flex; gap: .35rem; align-items: center; padding: .25rem .45rem .55rem; color: var(--muted); font: .7rem var(--mono); }
 .frame-bar span { width: 8px; height: 8px; border-radius: 50%; background: #5D665F; }
@@ -125,6 +128,7 @@ p { margin: 0 0 1rem; }
     .dashboard-frame { max-width: 720px; margin-inline: auto; }
     .why-bar { flex-direction: column; align-items: flex-start; }
     .why-divider { display: none; }
+    .star-cta { flex-direction: column; text-align: center; }
 }
 
 @media (max-width: 480px) {
