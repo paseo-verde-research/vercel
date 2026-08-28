@@ -51,7 +51,7 @@
         <p>If you already have useful context in that session, you can hand it off instead of reconstructing everything somewhere else.</p>
 
         <h2>Handoff the session</h2>
-        <p>Inside the coding-agent session, use the lightweight <code>handoff</code> skill to hand the current work off to <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">AI Badger</a>.</p>
+        <p>Inside the coding-agent session, use the lightweight <code><a href="https://skills.sh/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">handoff</a></code> skill to hand the current work off to <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">AI Badger</a>.</p>
         <pre data-lang="text"><code>Hand this session off to Badger.</code></pre>
         <p>The skill writes a compact summary of the useful session state: the goal, important decisions, constraints, completed work, verification, and what still needs attention.</p>
         <p>Then open another terminal in the same project and run:</p>
@@ -71,7 +71,6 @@ browser AI chat</code></pre>
         <p>The skill and the CLI are separate installs. The skill carries conversation state. Badger collects current repository context itself:</p>
         <pre data-lang="bash"><code>brew install pvrlabs/tap/badger
 badger skills install</code></pre>
-        <p>If this workflow is useful, a <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">GitHub star</a> bookmarks the repo and helps other developers find it.</p>
 
         <h2>Quota is just one reason to hand off</h2>
         <p>I didn't build handoff specifically for running out of quota.</p>
@@ -98,17 +97,18 @@ badger skills install</code></pre>
 
     <div class="badger-pitch">
         <div class="pitch-group">
-            <h3>Continue in any AI chat</h3>
-            <p>Hand off conversation state from a coding agent, then let Badger collect current repository context locally.</p>
+            <h3>Set up the workflow</h3>
+            <p>Install the CLI, then run <code>badger skills install</code> to add the skills to your coding agent.</p>
             <div class="article-actions">
-                <a href="/aibadger/install.html#cli" class="btn btn-primary">Install AI Badger →</a>
-                <a href="/aibadger/demo.html" class="btn btn-secondary">Try the CLI demo →</a>
+                <a href="/aibadger/install.html#cli" class="btn btn-primary">Install AI Badger CLI →</a>
+                <a href="https://skills.sh/PVRLabs/aibadger" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Browse agent skills →</a>
             </div>
         </div>
         <div class="pitch-group">
-            <h3>Open source on GitHub</h3>
-            <p>The CLI, the handoff skill, and the docs live in the same repo.</p>
+            <h3>Explore AI Badger</h3>
+            <p>Try the workflow, browse the source, or bookmark the project for later.</p>
             <div class="article-actions">
+                <a href="/aibadger/demo.html" class="btn btn-secondary">Try the CLI demo →</a>
                 <a href="https://github.com/PVRLabs/aibadger" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a>
             </div>
         </div>
