@@ -70,6 +70,27 @@ p { margin: 0 0 1rem; }
 .section { padding: clamp(2.75rem, 4vw, 4rem) 0; }
 .section-intro { max-width: 52rem; margin-bottom: 1.8rem; }
 .section-heading { margin-inline: auto; text-align: center; }
+.install-section { border-bottom: 1px solid var(--line); }
+.install-section .section-heading { max-width: 46rem; }
+.install-section .section-heading p { color: var(--muted); }
+.install-tabs { width: min(100%, 58rem); min-width: 0; margin: 2rem auto 0; overflow: hidden; background: rgba(10, 10, 10, .4); border: 1px solid var(--line); border-radius: 8px; }
+.install-tabs-header { display: flex; gap: 1.25rem; padding-inline: 1.25rem; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, .02); }
+.install-tab { min-width: 44px; min-height: 48px; padding: .75rem .15rem; position: relative; border: 0; background: transparent; color: var(--muted); font: 600 .9rem Inter, system-ui, sans-serif; cursor: pointer; }
+.install-tab:hover, .install-tab:focus-visible, .install-tab.active { color: var(--text); }
+.install-tab:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+.install-tab.active::after { content: ''; position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--green); }
+.install-command { min-width: 0; display: flex; align-items: center; gap: 1rem; padding: 1.2rem; }
+.install-command code { width: 0; min-width: 0; flex: 1; overflow-x: auto; color: #BCECCB; font: clamp(.75rem, 1.5vw, .9rem)/1.7 var(--mono); white-space: nowrap; scrollbar-width: thin; }
+.copy-button { width: 44px; height: 44px; flex: 0 0 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
+.copy-button:hover, .copy-button:focus-visible, .copy-button.copied { color: var(--green); background: rgba(46, 204, 113, .08); }
+.copy-button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.copy-button .check-icon { display: none; }
+.copy-button.copied .copy-icon { display: none; }
+.copy-button.copied .check-icon { display: block; }
+.install-note { margin: 0; padding: 0 1.2rem 1.2rem; color: var(--muted); font-size: .8rem; text-align: center; }
+.install-note code { color: var(--text); }
+.install-footer { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.5rem; }
+.install-footer .text-link { margin-top: 0; }
 .try-section { padding-block: clamp(2.5rem, 5vw, 4rem); background: transparent; border-block: 1px solid var(--line); }
 .quick-start-grid, .integration-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .quick-start-copy { max-width: 560px; }
@@ -139,5 +160,8 @@ p { margin: 0 0 1rem; }
     .hero-description { font-size: 1rem; }
     .capability-grid { grid-template-columns: 1fr; }
     .integration-list > div { grid-template-columns: 1fr; gap: .25rem; }
+    .install-tabs-header { padding-inline: 1rem; }
+    .install-command { gap: .5rem; padding: 1rem; }
+    .install-command code { font-size: .7rem; }
     .code-card pre { padding: 1rem; font-size: .7rem; }
 }

@@ -46,7 +46,7 @@
             </div>
             <ul class="nav-menu" id="primary-navigation">
                 <li><a href="/statlite/" class="nav-link active">Home</a></li>
-                <li><a href="https://github.com/PVRLabs/statlite#install" class="nav-link">Install</a></li>
+                <li><a href="#install" class="nav-link">Install</a></li>
                 <li><a href="/articles/lightweight-spring-boot-monitoring.html" class="nav-link">Spring Boot Guide</a></li>
                 <li><a href="https://github.com/PVRLabs/statlite" class="nav-link">GitHub</a></li>
             </ul>
@@ -65,7 +65,7 @@
                 <p class="hero-description">Turn Spring Boot Actuator into a self-hosted dashboard with history, charts, restart detection, and local SQLite storage. Monitor small services and other applications through StatLite Metrics v1.</p>
                 <p class="proof-line">One Go binary. About 15 MiB idle. No external monitoring services.</p>
                 <div class="hero-actions">
-                    <a href="https://github.com/PVRLabs/statlite#install" class="button button-primary">Install StatLite</a>
+                    <a href="#install" class="button button-primary">Install StatLite</a>
                     <a href="https://github.com/PVRLabs/statlite" class="button button-github"><span aria-hidden="true">☆</span>Star on GitHub</a>
                 </div>
             </div>
@@ -90,10 +90,37 @@
 
     <section class="try-section section">
         <div class="container quick-start-grid">
-            <div class="quick-start-copy"><h2>Run StatLite locally</h2><p>Open <code>http://127.0.0.1:9090</code>. StatLite monitors itself out of the box, so you can explore the dashboard before configuring your application.</p><a href="https://github.com/PVRLabs/statlite#install" class="text-link">View installation options <span aria-hidden="true">&rarr;</span></a></div>
+            <div class="quick-start-copy"><h2>Run StatLite locally</h2><p>Open <code>http://127.0.0.1:9090</code>. StatLite monitors itself out of the box, so you can explore the dashboard before configuring your application.</p><a href="#install" class="text-link">View installation options <span aria-hidden="true">&rarr;</span></a></div>
             <div class="code-card"><div class="code-label">Terminal</div><pre><code>docker run --rm \
   -p 127.0.0.1:9090:9090 \
   ghcr.io/pvrlabs/statlite:latest</code></pre></div>
+        </div>
+    </section>
+
+    <section class="section install-section" id="install" aria-labelledby="install-title">
+        <div class="container">
+            <div class="section-heading">
+                <h2 id="install-title">Install StatLite</h2>
+                <p>Install the latest release on macOS or Linux with the command that fits your workflow.</p>
+            </div>
+            <div class="install-tabs">
+                <div class="install-tabs-header" role="tablist" aria-label="Installation method">
+                    <button class="install-tab active" id="install-tab-curl" type="button" role="tab" aria-selected="true" aria-controls="install-command-panel" data-method="curl">curl</button>
+                    <button class="install-tab" id="install-tab-brew" type="button" role="tab" aria-selected="false" aria-controls="install-command-panel" data-method="brew" tabindex="-1">Homebrew</button>
+                </div>
+                <div class="install-command" id="install-command-panel" role="tabpanel" aria-labelledby="install-tab-curl">
+                    <code id="install-command">curl -fsSL https://raw.githubusercontent.com/PVRLabs/statlite/main/install.sh | sh</code>
+                    <button class="copy-button" id="install-copy" type="button" aria-label="Copy curl installation command">
+                        <svg class="copy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                </div>
+                <p class="install-note" id="install-note">Installs to <code>~/.local/bin</code>. Add it to your PATH if it is not already included.</p>
+            </div>
+            <div class="install-footer">
+                <a href="https://github.com/PVRLabs/statlite" class="button button-github"><span aria-hidden="true">☆</span>Star on GitHub</a>
+                <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="text-link">See advanced installation options <span aria-hidden="true">&rarr;</span></a>
+            </div>
         </div>
     </section>
 
@@ -136,6 +163,81 @@
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div></footer>
 
 <script src="/script.js?v=20260808"></script>
+<script>
+    (() => {
+        const methods = {
+            curl: {
+                command: 'curl -fsSL https://raw.githubusercontent.com/PVRLabs/statlite/main/install.sh | sh',
+                notePrefix: 'Installs to ',
+                noteCode: '~/.local/bin',
+                noteSuffix: '. Add it to your PATH if it is not already included.'
+            },
+            brew: {
+                command: 'brew install pvrlabs/tap/statlite',
+                notePrefix: 'Installs the latest StatLite release from the PVRLabs Homebrew tap.',
+                noteCode: '',
+                noteSuffix: ''
+            }
+        };
+        const tabs = Array.from(document.querySelectorAll('.install-tab'));
+        const panel = document.getElementById('install-command-panel');
+        const command = document.getElementById('install-command');
+        const note = document.getElementById('install-note');
+        const copyButton = document.getElementById('install-copy');
+        let copyTimer;
+
+        function selectMethod(tab) {
+            const method = methods[tab.dataset.method];
+            if (!method || !panel || !command || !note || !copyButton) return;
+
+            tabs.forEach(item => {
+                const selected = item === tab;
+                item.classList.toggle('active', selected);
+                item.setAttribute('aria-selected', String(selected));
+                item.tabIndex = selected ? 0 : -1;
+            });
+            panel.setAttribute('aria-labelledby', tab.id);
+            command.textContent = method.command;
+            note.replaceChildren(method.notePrefix);
+            if (method.noteCode) {
+                const noteCode = document.createElement('code');
+                noteCode.textContent = method.noteCode;
+                note.append(noteCode);
+            }
+            note.append(method.noteSuffix);
+            copyButton.classList.remove('copied');
+            copyButton.setAttribute('aria-label', `Copy ${tab.textContent.trim()} installation command`);
+        }
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => selectMethod(tab));
+            tab.addEventListener('keydown', event => {
+                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+                event.preventDefault();
+                const offset = event.key === 'ArrowRight' ? 1 : -1;
+                const nextTab = tabs[(index + offset + tabs.length) % tabs.length];
+                selectMethod(nextTab);
+                nextTab.focus();
+            });
+        });
+
+        copyButton?.addEventListener('click', async () => {
+            window.clearTimeout(copyTimer);
+            try {
+                await navigator.clipboard.writeText(command.textContent.trim());
+                copyButton.classList.add('copied');
+                copyButton.setAttribute('aria-label', 'Installation command copied');
+                copyTimer = window.setTimeout(() => {
+                    copyButton.classList.remove('copied');
+                    const activeTab = tabs.find(tab => tab.classList.contains('active'));
+                    copyButton.setAttribute('aria-label', `Copy ${activeTab.textContent.trim()} installation command`);
+                }, 1500);
+            } catch (error) {
+                copyButton.setAttribute('aria-label', 'Unable to copy installation command');
+            }
+        });
+    })();
+</script>
 <script>
     var sc_project = 13137699;
     var sc_invisible = 1;
