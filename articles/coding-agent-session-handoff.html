@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your coding-agent quota is at 99%. Now what?</title>
+    <meta name="description" content="When a coding-agent session hits its allowance or a natural checkpoint, hand the conversation state to AI Badger and continue in any browser AI chat.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/coding-agent-session-handoff.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/coding-agent-session-handoff.html">
+    <meta property="og:title" content="Your coding-agent quota is at 99%. Now what?">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="When a coding-agent session hits its allowance or a natural checkpoint, hand the conversation state to AI Badger and continue in any browser AI chat.">
+    <meta property="article:published_time" content="2026-08-28">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/coding-agent-session-handoff.webp">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:width" content="2048">
+    <meta property="og:image:height" content="1152">
+    <meta property="og:image:alt" content="Coding agent at 99% usage handing off to a web chat through AI Badger">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Your coding-agent quota is at 99%. Now what?">
+    <meta name="twitter:description" content="When a coding-agent session hits its allowance or a natural checkpoint, hand the conversation state to AI Badger and continue in any browser AI chat.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/coding-agent-session-handoff.webp">
+    <meta name="twitter:image:alt" content="Coding agent at 99% usage handing off to a web chat through AI Badger">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260828-workflow">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>Your coding-agent quota is at 99%. Now what?</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 28, 2026</div>
+    <img class="article-cover" src="/articles/img/coding-agent-session-handoff.webp" width="2048" height="1152" loading="eager" decoding="async" alt="Coding agent at 99% usage handing off to a web chat through AI Badger">
+
+    <div class="article-body">
+        <p>Your coding agent has already explored the repository, made some changes, and understands the task. Then you notice the five-hour allowance is at 99%.</p>
+        <p>The session doesn't necessarily have to stop.</p>
+        <p>If you already have useful context in that session, you can hand it off instead of reconstructing everything somewhere else.</p>
+
+        <h2>Handoff the session</h2>
+        <p>Inside the coding-agent session, use the lightweight <code>handoff</code> skill to hand the current work off to <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">AI Badger</a>.</p>
+        <pre data-lang="text"><code>Hand this session off to Badger.</code></pre>
+        <p>The skill writes a compact summary of the useful session state: the goal, important decisions, constraints, completed work, verification, and what still needs attention.</p>
+        <p>Then open another terminal in the same project and run:</p>
+        <pre data-lang="bash"><code>badger continue</code></pre>
+        <p>Badger picks up that session state, collects the relevant repository context locally, and prepares a continuation prompt.</p>
+        <p>Copy it into ChatGPT, Claude, or another AI chat and continue the conversation there.</p>
+        <p>That's it.</p>
+        <pre data-lang="workflow"><code>coding agent
+    ↓
+  handoff
+    ↓
+badger continue
+    ↓
+browser AI chat</code></pre>
+        <p>You don't have to explain the project again, manually collect a bunch of files, or reconstruct what was already decided.</p>
+        <p>And you don't need the remaining 1% of the coding-agent allowance just to keep discussing the task.</p>
+        <p>The skill and the CLI are separate installs. The skill carries conversation state. Badger collects current repository context itself:</p>
+        <pre data-lang="bash"><code>brew install pvrlabs/tap/badger
+badger skills install</code></pre>
+        <p>If this workflow is useful, a <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">GitHub star</a> bookmarks the repo and helps other developers find it.</p>
+
+        <h2>Quota is just one reason to hand off</h2>
+        <p>I didn't build handoff specifically for running out of quota.</p>
+        <p>I built it because sometimes a coding-agent session reaches a point where continuing in that same terminal session doesn't make much sense anymore.</p>
+        <p>Maybe the implementation has reached a natural checkpoint and you want to brainstorm what to do next.</p>
+        <p>Maybe you want to step away from editing and review the approach.</p>
+        <p>Maybe the session has become large enough that compaction is coming and you'd rather move the useful context into a fresh conversation.</p>
+        <p>Or maybe the five-hour allowance is at 99%.</p>
+        <p>In all of those cases, the work can continue even though the current session probably shouldn't.</p>
+        <p>The useful part is that the handoff skill doesn't try to package the repository itself. It carries the conversation state. When you run <code>badger continue</code>, Badger independently collects the current repository context locally.</p>
+        <p>That means you can move into a browser AI chat with both sides of the problem: what the session has been discussing and enough current project context to continue meaningfully.</p>
+        <p>The destination can also be a different model. The prompt can go into ChatGPT, Claude, Gemini, DeepSeek, Grok, or another AI chat.</p>
+
+        <h2>The session can end before the work does</h2>
+        <p>A 99% quota makes the transition very obvious.</p>
+        <p>But quota isn't really the important part.</p>
+        <p>Sometimes you've simply reached the end of what makes sense to do in the current coding-agent session. You want to brainstorm, review, get a fresh context, use another model, or continue somewhere that is better suited to the next phase.</p>
+        <p>The annoying part has always been carrying enough context with you.</p>
+        <p>That's what I use handoff for.</p>
+        <p><strong>The session can end without starting the task over.</strong></p>
+        <p>There is a broader workflow behind this idea: separating reasoning from execution, using web AI for deeper discussion and coding agents when you actually need repository tools and edits.</p>
+        <p>I'll cover that separately.</p>
+    </div>
+
+    <div class="badger-pitch">
+        <div class="pitch-group">
+            <h3>Continue in any AI chat</h3>
+            <p>Hand off conversation state from a coding agent, then let Badger collect current repository context locally.</p>
+            <div class="article-actions">
+                <a href="/aibadger/install.html#cli" class="btn btn-primary">Install AI Badger →</a>
+                <a href="/aibadger/demo.html" class="btn btn-secondary">Try the CLI demo →</a>
+            </div>
+        </div>
+        <div class="pitch-group">
+            <h3>Open source on GitHub</h3>
+            <p>The CLI, the handoff skill, and the docs live in the same repo.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/aibadger" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a>
+            </div>
+        </div>
+    </div>
+</article></main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260828-workflow"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

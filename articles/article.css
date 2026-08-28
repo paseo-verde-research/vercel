@@ -117,6 +117,54 @@
     text-transform: uppercase;
 }
 
+.article-body pre.has-copy-button {
+    padding-top: 52px;
+}
+
+.code-copy-button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.code-copy-button:hover,
+.code-copy-button:focus-visible {
+    background: var(--bg-medium);
+    color: var(--primary-green);
+}
+
+.code-copy-button:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: -2px;
+}
+
+.code-copy-button .check-icon {
+    display: none;
+}
+
+.code-copy-button.copied {
+    color: var(--primary-green);
+}
+
+.code-copy-button.copied .copy-icon {
+    display: none;
+}
+
+.code-copy-button.copied .check-icon {
+    display: block;
+}
+
 .article-body code {
     font-family: var(--font-mono);
     font-size: .9em;
@@ -128,6 +176,57 @@
     border: 1px solid var(--border-color);
     border-radius: 3px;
     background: var(--bg-light);
+}
+
+.article-body .code-token-brand {
+    color: var(--primary-green);
+}
+
+.article-body .code-token-comment {
+    color: #7d8c83;
+    font-style: italic;
+}
+
+.article-body .code-token-string {
+    color: #d8c988;
+}
+
+.article-body .code-token-variable,
+.article-body .code-token-option {
+    color: #8fc7df;
+}
+
+.article-body .code-token-keyword,
+.article-body .code-token-operator {
+    color: #c6a0dc;
+}
+
+.article-body .code-token-key {
+    color: #8fc7df;
+}
+
+.article-body .code-token-literal {
+    color: #c6a0dc;
+}
+
+.article-body .code-token-number {
+    color: #e5aa73;
+}
+
+.article-body .code-token-punctuation {
+    color: var(--text-secondary);
+}
+
+.article-body pre[data-lang="workflow"] {
+    line-height: 1.8;
+}
+
+.article-body .code-token-workflow-arrow {
+    color: var(--primary-green);
+}
+
+.article-body .code-token-workflow-step {
+    color: #8fc7df;
 }
 
 .back-link {

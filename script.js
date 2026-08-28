@@ -182,6 +182,212 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Lightweight syntax highlighting for article shell examples.
+    // Add lowercase entries here to promote more product or command names.
+    const articleCodeHighlightTokens = new Set([
+        'ai badger',
+        'badger',
+        'pvrlabs',
+        'statlite'
+    ]);
+    const bashKeywords = new Set([
+        'case', 'do', 'done', 'elif', 'else', 'esac', 'export', 'fi', 'for',
+        'function', 'if', 'in', 'local', 'readonly', 'then', 'until', 'while'
+    ]);
+    const bashTokenPattern = /#[^\n]*|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|\$\{[^}\n]+\}|\$[A-Za-z_][A-Za-z0-9_]*|--?[A-Za-z0-9][A-Za-z0-9._-]*|&&|\|\||[|;]|[A-Za-z_][A-Za-z0-9_-]*/g;
+
+    function bashTokenClass(token) {
+        const normalizedToken = token.toLowerCase();
+
+        if (articleCodeHighlightTokens.has(normalizedToken)) {
+            return 'code-token-brand';
+        }
+        if (token.startsWith('#')) {
+            return 'code-token-comment';
+        }
+        if (token.startsWith("'") || token.startsWith('"')) {
+            return 'code-token-string';
+        }
+        if (token.startsWith('$')) {
+            return 'code-token-variable';
+        }
+        if (token.startsWith('-')) {
+            return 'code-token-option';
+        }
+        if (token === '&&' || token === '||' || token === '|' || token === ';') {
+            return 'code-token-operator';
+        }
+        if (bashKeywords.has(normalizedToken)) {
+            return 'code-token-keyword';
+        }
+        return '';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="bash"] > code').forEach(codeBlock => {
+        const source = codeBlock.textContent;
+        const highlightedCode = document.createDocumentFragment();
+        let sourceIndex = 0;
+
+        for (const match of source.matchAll(bashTokenPattern)) {
+            const token = match[0];
+            const tokenIndex = match.index;
+
+            if (tokenIndex > sourceIndex) {
+                highlightedCode.append(source.slice(sourceIndex, tokenIndex));
+            }
+
+            const tokenClass = bashTokenClass(token);
+            if (tokenClass) {
+                const tokenElement = document.createElement('span');
+                tokenElement.className = tokenClass;
+                tokenElement.textContent = token;
+                if (tokenClass === 'code-token-brand') {
+                    tokenElement.dataset.highlight = token.toLowerCase();
+                }
+                highlightedCode.append(tokenElement);
+            } else {
+                highlightedCode.append(token);
+            }
+
+            sourceIndex = tokenIndex + token.length;
+        }
+
+        highlightedCode.append(source.slice(sourceIndex));
+        codeBlock.replaceChildren(highlightedCode);
+    });
+
+    const yamlTokenPattern = /#[^\n]*|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|\b(?:true|false|null)\b|\b\d+(?:\.\d+)?\b|^[ \t]*-(?=\s)|[A-Za-z_][A-Za-z0-9_-]*(?=\s*:)|:/gim;
+
+    function yamlTokenClass(token) {
+        if (token.startsWith('#')) {
+            return 'code-token-comment';
+        }
+        if (token.startsWith("'") || token.startsWith('"')) {
+            return 'code-token-string';
+        }
+        if (/^(?:true|false|null)$/i.test(token)) {
+            return 'code-token-literal';
+        }
+        if (/^\d+(?:\.\d+)?$/.test(token)) {
+            return 'code-token-number';
+        }
+        if (token === ':' || token.trim() === '-') {
+            return 'code-token-punctuation';
+        }
+        return 'code-token-key';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="yaml"] > code').forEach(codeBlock => {
+        const source = codeBlock.textContent;
+        const highlightedCode = document.createDocumentFragment();
+        let sourceIndex = 0;
+
+        for (const match of source.matchAll(yamlTokenPattern)) {
+            const token = match[0];
+            const tokenIndex = match.index;
+
+            if (tokenIndex > sourceIndex) {
+                highlightedCode.append(source.slice(sourceIndex, tokenIndex));
+            }
+
+            const tokenElement = document.createElement('span');
+            tokenElement.className = yamlTokenClass(token);
+            tokenElement.textContent = token;
+            highlightedCode.append(tokenElement);
+            sourceIndex = tokenIndex + token.length;
+        }
+
+        highlightedCode.append(source.slice(sourceIndex));
+        codeBlock.replaceChildren(highlightedCode);
+    });
+
+    const workflowTokenPattern = /AI\s+Badger|[↓→]|\b\d+\.(?=\s)|[A-Za-z_][A-Za-z0-9_-]*/g;
+
+    document.querySelectorAll('.article-body pre[data-lang="workflow"] > code').forEach(codeBlock => {
+        const source = codeBlock.textContent;
+        const highlightedCode = document.createDocumentFragment();
+        let sourceIndex = 0;
+
+        for (const match of source.matchAll(workflowTokenPattern)) {
+            const token = match[0];
+            const tokenIndex = match.index;
+            const normalizedToken = token.toLowerCase();
+            let tokenClass = '';
+
+            if (token === '↓' || token === '→') {
+                tokenClass = 'code-token-workflow-arrow';
+            } else if (/^\d+\.$/.test(token)) {
+                tokenClass = 'code-token-workflow-step';
+            } else if (articleCodeHighlightTokens.has(normalizedToken)) {
+                tokenClass = 'code-token-brand';
+            }
+
+            if (!tokenClass) {
+                continue;
+            }
+            if (tokenIndex > sourceIndex) {
+                highlightedCode.append(source.slice(sourceIndex, tokenIndex));
+            }
+
+            const tokenElement = document.createElement('span');
+            tokenElement.className = tokenClass;
+            tokenElement.textContent = token;
+            if (tokenClass === 'code-token-brand') {
+                tokenElement.dataset.highlight = normalizedToken;
+            }
+            highlightedCode.append(tokenElement);
+            sourceIndex = tokenIndex + token.length;
+        }
+
+        highlightedCode.append(source.slice(sourceIndex));
+        codeBlock.replaceChildren(highlightedCode);
+    });
+
+    document.querySelectorAll('.article-body pre[data-lang]:not([data-no-copy])').forEach(codeContainer => {
+        if (codeContainer.dataset.lang.toLowerCase() === 'workflow') {
+            return;
+        }
+
+        const codeBlock = codeContainer.querySelector(':scope > code');
+        if (!codeBlock) {
+            return;
+        }
+
+        const copyButton = document.createElement('button');
+        copyButton.type = 'button';
+        copyButton.className = 'code-copy-button';
+        copyButton.setAttribute('aria-label', `Copy ${codeContainer.dataset.lang} example`);
+        copyButton.innerHTML = `
+            <svg class="copy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>`;
+
+        let copyStatusTimer;
+        copyButton.addEventListener('click', async () => {
+            window.clearTimeout(copyStatusTimer);
+
+            try {
+                await navigator.clipboard.writeText(codeBlock.textContent);
+                copyButton.classList.add('copied');
+                copyButton.setAttribute('aria-label', 'Copied');
+            } catch (error) {
+                copyButton.setAttribute('aria-label', 'Copy failed');
+            }
+
+            copyStatusTimer = window.setTimeout(() => {
+                copyButton.classList.remove('copied');
+                copyButton.setAttribute('aria-label', `Copy ${codeContainer.dataset.lang} example`);
+            }, 1800);
+        });
+
+        codeContainer.classList.add('has-copy-button');
+        codeContainer.append(copyButton);
+    });
+
 // --- Simple Fade-in Animation for Sections on Scroll (Optional) ---
     const animatedSections = document.querySelectorAll('.service-card, .timeline-item, .about-image, .about-text, .contact-details');
 
