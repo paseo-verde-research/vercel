@@ -1,6 +1,86 @@
 // script.js
 
 document.addEventListener('DOMContentLoaded', () => {
+    const starCountCacheLifetime = 60 * 60 * 1000;
+
+    function readCachedStarCount(repository) {
+        try {
+            const cached = JSON.parse(localStorage.getItem(`github-stars:${repository}`) || 'null');
+            if (cached && Number.isInteger(cached.count) && Date.now() - cached.savedAt < starCountCacheLifetime) {
+                return cached.count;
+            }
+        } catch (error) {
+            // Storage may be unavailable or contain invalid data. Fetch a fresh count.
+        }
+        return null;
+    }
+
+    function cacheStarCount(repository, count) {
+        try {
+            localStorage.setItem(`github-stars:${repository}`, JSON.stringify({ count, savedAt: Date.now() }));
+        } catch (error) {
+            // The count can still be shown when storage is unavailable.
+        }
+    }
+
+    function showStarCount(button, count) {
+        const countElement = button.querySelector('.github-star-count');
+        if (!countElement) {
+            return;
+        }
+
+        const baseLabel = button.dataset.starLabel || button.textContent.replace(/\s+/g, ' ').trim();
+        button.dataset.starLabel = baseLabel;
+        countElement.textContent = new Intl.NumberFormat().format(count);
+        countElement.hidden = false;
+        button.setAttribute('aria-label', `${baseLabel}, ${count} GitHub stars`);
+    }
+
+    async function loadGitHubStars(button) {
+        const repository = button.dataset.repository;
+        if (!repository) {
+            return;
+        }
+
+        const cachedCount = readCachedStarCount(repository);
+        if (cachedCount !== null) {
+            document.querySelectorAll(`.github-star[data-repository="${repository}"]`).forEach(starButton => {
+                showStarCount(starButton, cachedCount);
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://api.github.com/repos/${repository}/stargazers/count`);
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+            if (!Number.isInteger(data.count)) {
+                return;
+            }
+
+            cacheStarCount(repository, data.count);
+            document.querySelectorAll(`.github-star[data-repository="${repository}"]`).forEach(starButton => {
+                showStarCount(starButton, data.count);
+            });
+        } catch (error) {
+            // Keep the original GitHub link usable when the API is unavailable.
+        }
+    }
+
+    const githubStarButtons = Array.from(document.querySelectorAll('.github-star'));
+    const loadedRepositories = new Set();
+    githubStarButtons.forEach(button => {
+        const repository = button.dataset.repository;
+        if (!repository || loadedRepositories.has(repository)) {
+            return;
+        }
+        loadedRepositories.add(repository);
+        loadGitHubStars(button);
+    });
+
     const header = document.getElementById('header');
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');

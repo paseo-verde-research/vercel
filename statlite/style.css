@@ -52,6 +52,7 @@ p { margin: 0 0 1rem; }
 .star-cta p { color: var(--muted); font-size: .9rem; line-height: 1.45; }
 .star-cta strong { color: var(--text); }
 .star-cta .button { flex: 0 0 auto; }
+.github-star-count { padding-left: .65rem; margin-left: .1rem; border-left: 1px solid currentColor; font-variant-numeric: tabular-nums; }
 .dashboard-frame { width: 100%; min-width: 0; background: var(--panel); border: 1px solid rgba(46, 204, 113, .35); border-radius: 9px; padding: .55rem; box-shadow: 0 24px 80px rgba(0, 0, 0, .45); }
 .frame-bar { display: flex; gap: .35rem; align-items: center; padding: .25rem .45rem .55rem; color: var(--muted); font: .7rem var(--mono); }
 .frame-bar span { width: 8px; height: 8px; border-radius: 50%; background: #5D665F; }
@@ -91,6 +92,7 @@ p { margin: 0 0 1rem; }
 .install-note code { color: var(--text); }
 .install-footer { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.5rem; }
 .install-footer .text-link { margin-top: 0; }
+.install-trust-note { max-width: 42rem; margin: 1rem auto 0; color: var(--muted); font-size: .85rem; text-align: center; }
 .try-section { padding-block: clamp(2.5rem, 5vw, 4rem); background: transparent; border-block: 1px solid var(--line); }
 .quick-start-grid, .integration-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .quick-start-copy { max-width: 560px; }
