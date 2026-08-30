@@ -113,6 +113,7 @@
 }
 
 .review-demo-note {
+    width: calc(100% - 32px);
     max-width: 700px;
     padding: 0 20px;
     color: #b8b8b8;
@@ -157,9 +158,19 @@
     .review-demo-heading {
         width: 94%;
     }
+
+    .review-demo-note {
+        width: 100%;
+        max-width: 23rem;
+    }
 }
 
 @media (max-width: 480px) {
+    .review-demo-note {
+        width: 100%;
+        max-width: 23rem;
+    }
+
     .review-demo {
         padding-top: 20px;
     }

@@ -421,6 +421,9 @@
     font-family: var(--font-body);
     font-size: 0.95rem;
     color: var(--text-secondary);
+    width: calc(100% - 32px);
+    max-width: calc(100% - 32px);
+    text-align: center;
 }
 
 .demo-cta .highlight {
@@ -431,6 +434,11 @@
 
 .demo-cta p {
     margin: 0;
+    overflow-wrap: anywhere;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 8px;
 }
 
 @media (max-width: 992px) {
@@ -468,6 +476,11 @@
         margin-top: 30px;
         padding-bottom: 40px;
     }
+
+    .demo-cta {
+        width: 100%;
+        max-width: 23rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -504,6 +517,8 @@
     }
 
     .demo-cta {
+        width: 100%;
+        max-width: 23rem;
         font-size: 0.85rem;
         padding: 0 20px;
         text-align: center;

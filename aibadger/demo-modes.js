@@ -252,7 +252,7 @@
         review: {
             title: 'Focused code review',
             subtitle: 'Badger packages your Git changes, then adds only the source context your AI chat requests.',
-            note: '<strong>Usually, one paste is all it takes.</strong> If the AI needs more source context, it can request specific files from Badger.',
+            note: '<strong>One paste is usually enough.</strong> If more context is needed, Badger can provide specific files.',
             steps: reviewSteps
         },
         design: {

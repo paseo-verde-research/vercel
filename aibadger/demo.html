@@ -36,8 +36,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/aibadger/style.css">
-    <link rel="stylesheet" href="/aibadger/demo-ui.css">
-    <link rel="stylesheet" href="/aibadger/demo-modes.css">
+    <link rel="stylesheet" href="/aibadger/demo-ui.css?v=20260829-3">
+    <link rel="stylesheet" href="/aibadger/demo-modes.css?v=20260829-3">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -110,9 +110,11 @@
                 <div class="step-indicator">Step <span id="current-step">1</span>/<span id="step-total">8</span></div>
             </nav>
             <div id="demo-note" class="review-demo-note">
-                <strong>Usually, one paste is all it takes.</strong> If the AI needs more source context, it can request specific files from Badger.
+                <strong>One paste is usually enough.</strong> If more context is needed, Badger can provide specific files.
             </div>
-            <div class="demo-cta"><p><a href="install.html" class="highlight">Get AI Badger</a> · <a href="demo_code.html" class="highlight">See the /code workflow</a></p></div>
+            <div class="demo-cta">
+                <p><a href="install.html" class="highlight">Get AI Badger</a><span aria-hidden="true">·</span><a href="demo_code.html" class="highlight">See the /code workflow</a><span aria-hidden="true">·</span><a href="https://github.com/PVRLabs/aibadger" class="highlight" target="_blank" rel="noopener noreferrer">☆ Star on GitHub</a></p>
+            </div>
         </div>
     </section>
 </main>
@@ -122,7 +124,7 @@
 </footer>
 
 <script src="/script.js?v=20260808"></script>
-<script src="/aibadger/demo-modes.js"></script>
+<script src="/aibadger/demo-modes.js?v=20260829"></script>
 <!-- Default Statcounter code for PVR Labs
 https://pvrlabs.xyz/ -->
 <script>
