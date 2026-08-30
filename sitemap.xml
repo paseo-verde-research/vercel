@@ -47,7 +47,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-08-30</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/coding-agent-test-output.html</loc>
+    <lastmod>2026-08-30</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/coding-agent-session-handoff.html</loc>
@@ -75,7 +79,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/introverted-maven.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-30</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/claude-code-token-savings.html</loc>

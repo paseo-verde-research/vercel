@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Coding Agent Doesn’t Need 1,476 Lines of Test Output | PVR Labs</title>
+    <meta name="description" content="A successful test run produced 1,476 lines. The coding agent needed roughly one. Why routine success should be cheap and failures should be informative.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/coding-agent-test-output.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/coding-agent-test-output.html">
+    <meta property="og:title" content="Your Coding Agent Doesn’t Need 1,476 Lines of Test Output">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A successful test run produced 1,476 lines. The coding agent needed roughly one.">
+    <meta property="article:published_time" content="2026-08-30T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/coding-agent-test-output.webp">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:width" content="2048">
+    <meta property="og:image:height" content="1080">
+    <meta property="og:image:alt" content="1,476 lines of test output reduced to one line saying tests passed">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Your Coding Agent Doesn’t Need 1,476 Lines of Test Output">
+    <meta name="twitter:description" content="A successful test run produced 1,476 lines. The coding agent needed roughly one.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/coding-agent-test-output.webp">
+    <meta name="twitter:image:alt" content="1,476 lines of test output reduced to one line saying tests passed">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260830">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.65rem, 5vw, 2.35rem); }
+        .article-subtitle { color: var(--text-secondary); font-size: 1.1rem; font-style: italic; line-height: 1.6; margin-bottom: 12px; }
+        .article-body ul { margin: -.3rem 0 1.2rem; padding-left: 1.5rem; }
+        .article-body li { margin-bottom: .25rem; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin: 1.5rem 0; }
+        .article-table { border-collapse: collapse; font-size: .9rem; min-width: 43rem; width: 100%; }
+        .article-table th, .article-table td { border: 1px solid var(--border-color); padding: 10px 12px; text-align: left; vertical-align: top; }
+        .article-table th { background: var(--bg-light); }
+        .article-table th:not(:first-child), .article-table td:not(:first-child) { text-align: right; }
+        .result-callout { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; margin: 1.5rem 0; padding: 20px 24px; }
+        .result-callout p { margin: 0; }
+        .result-callout code { color: var(--primary-green); font-size: 1.15rem; }
+        .agent-scripts-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; padding: 24px 28px; margin: 32px 0 40px; }
+        .agent-scripts-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        .agent-scripts-pitch--compact .article-actions { flex-wrap: nowrap; }
+        .agent-scripts-pitch--compact .article-actions .btn { padding-inline: 14px; white-space: nowrap; }
+        @media (max-width: 768px) { .article-table { font-size: .82rem; } }
+        @media (max-width: 768px) { .agent-scripts-pitch { padding: 20px; } }
+        @media (max-width: 480px) { .result-callout { padding: 18px; } .article-actions { flex-direction: column; } .article-actions .btn { width: 100%; } .agent-scripts-pitch--compact .article-actions { flex-direction: row; } .agent-scripts-pitch--compact .article-actions .btn { flex: 1 1 auto; padding-inline: 10px; width: auto; } }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>Your Coding Agent Doesn’t Need 1,476 Lines of Test Output</h1>
+    <p class="article-subtitle">A successful test run produced 1,476 lines. The agent needed roughly one.</p>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 30, 2026</div>
+    <img class="article-cover" src="/articles/img/coding-agent-test-output.webp" width="2048" height="1080" loading="eager" decoding="async" alt="1,476 lines of test output reduced to one line saying tests passed">
+
+    <div class="article-body">
+        <p>I ran a perfectly successful test suite and watched it dump 1,476 lines into my coding-agent session. Nothing was wrong. There was nothing to diagnose. The useful information was basically one bit: the tests passed.</p>
+        <p>That run, a real Tape test suite, produced 136,262 bytes across those 1,476 lines. All of it was correct output; almost none of it was necessary.</p>
+        <p>The outcome the agent actually needed to act on was simply:</p>
+        <div class="result-callout"><p><code>✓ tests passed</code></p></div>
+        <p>So why are we giving coding agents terminal output designed for human eyes?</p>
+
+        <h2>Two kinds of output</h2>
+        <p>It’s tempting to file this under “tokens are expensive” and move on. That’s not quite the argument.</p>
+        <p>Terminal output from build and test tools tends to mix two different kinds of information.</p>
+        <p>First, there is information needed for the next decision:</p>
+        <ul>
+            <li>Did it build?</li>
+            <li>Did the tests pass?</li>
+            <li>If not, what failed?</li>
+            <li>Where did it fail?</li>
+            <li>What’s the likely cause?</li>
+        </ul>
+        <p>Then there is output generated because a tool assumes a human is watching:</p>
+        <ul>
+            <li>Lifecycle banners</li>
+            <li>Progress messages</li>
+            <li>Successful plugin execution</li>
+            <li>Repeated module headings</li>
+            <li>Package-by-package confirmations</li>
+            <li>Formatting intended to make a long terminal session readable</li>
+        </ul>
+        <p>A developer watching a terminal skims past most of this without much cost. Human eyes are good at ignoring repetition.</p>
+        <p>A coding agent doesn’t get the same free visual filtering. Whatever lands in the session becomes context the system may have to retain, attend to, summarize, or eventually compact.</p>
+        <p>The goal here is not to minimize output, but to retain the minimum sufficient output for the next action.</p>
+
+        <h2>The numbers</h2>
+        <p>To test this, I built small wrappers in <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer">agent-scripts</a> around a few common build and test tools: <code>mvn-lite</code>, <code>npm-lite</code>, and <code>go-lite</code>.</p>
+        <p>They collapse routine successful runs and keep failures diagnostic-oriented. When a supported run fails, complete raw output is retained separately.</p>
+        <p>Here’s what that looked like across a handful of real projects:</p>
+        <div class="table-scroll" role="region" aria-label="Normal and compact build output comparison" tabindex="0">
+            <table class="article-table">
+                <thead><tr><th>Workflow</th><th>Normal output</th><th>Compact output</th><th>Reduction</th></tr></thead>
+                <tbody>
+                    <tr><td>Tape tests</td><td>136,262 B / 1,476 lines</td><td>12 B / 1 line</td><td>99.99%</td></tr>
+                    <tr><td>Scriptella Maven reactor</td><td>66,812 B / 928 lines</td><td>17 B / 1 line</td><td>99.97%</td></tr>
+                    <tr><td>Spring Maven build</td><td>5,564 B / 70 lines</td><td>16 B / 1 line</td><td>99.71%</td></tr>
+                    <tr><td>Apache Commons CLI Maven</td><td>15,079 B / 203 lines</td><td>17 B / 1 line</td><td>99.89%</td></tr>
+                    <tr><td>Vitest</td><td>2,260 B / 43 lines</td><td>25 B / 1 line</td><td>98.89%</td></tr>
+                    <tr><td>Jest</td><td>2,491 B / 68 lines</td><td>24 B / 1 line</td><td>99.04%</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="agent-scripts-pitch agent-scripts-pitch--compact">
+            <p><strong>Give your coding agent quieter tools.</strong> Install <code>mvn-lite</code>, <code>npm-lite</code>, and <code>go-lite</code> from agent-scripts. The optional Agent Skill is installed separately and teaches supported agents when to use them.</p>
+            <div class="article-actions">
+                <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer" class="btn btn-primary">⭐ Star on GitHub</a>
+                <a href="https://github.com/ejboy/agent-scripts#installation" target="_blank" rel="noopener noreferrer" class="btn btn-github">Install tools</a>
+            </div>
+        </div>
+        <p>The Tape result is the most extreme: 136,262 bytes across 1,476 lines became <code>✓ tests passed</code>, a byte reduction of 99.99%.</p>
+        <p>The Maven example was almost as striking. A successful multi-module reactor build produced 928 lines and nearly 67 KB of output. Almost none of those 928 lines helped the agent decide what to do next. The important result was that the build passed.</p>
+        <p>I explored the Maven side in more detail in <a href="/articles/introverted-maven.html">I Taught Maven to Be an Introvert</a>, including how <code>mvn-lite</code> preserves exit status, extracts actionable failures, and retains complete raw logs.</p>
+        <p>These wrappers do not make Maven, npm, or Go faster. The underlying command still does the same work and takes whatever time it takes.</p>
+        <blockquote><p>This is an interface optimization, not a build-performance optimization.</p></blockquote>
+
+        <h2>Success and failure are different problems</h2>
+        <p>If a build succeeds exactly as expected, there is usually very little to reason about. A result like this may be enough:</p>
+        <pre data-lang="text"><code>✓ 153 tests passed</code></pre>
+        <p>The agent can move on.</p>
+        <p>Failure is different. A useful failure result should tell the agent enough to decide what to inspect or change next. That means preserving things such as:</p>
+        <ul>
+            <li>The real process exit status</li>
+            <li>The failing test, package, goal, or module</li>
+            <li>Useful nearby diagnostics</li>
+            <li>The location of the complete raw log</li>
+            <li>A way to revert to ordinary full output</li>
+        </ul>
+        <p>The rule I ended up with is simple: <strong>Success should be cheap. Failure should be informative.</strong></p>
+        <p>The wrappers therefore treat failure as a separate path rather than simply applying the same aggressive compression.</p>
+        <p>Interestingly, compact failure output is not always smaller than the original. Some naturally short Vitest or Jest failures can become slightly larger after adding diagnostic framing and a pointer to the retained full log.</p>
+        <p>And that’s fine. If the objective were simply “minimize bytes,” that would be a failure. But the actual objective is to make the next action as obvious as possible, and sometimes a few extra bytes are exactly what that needs.</p>
+
+        <h2>Successful doesn’t always mean uninteresting</h2>
+        <p>There is an obvious limitation to this approach. Exit status is useful, but it is not a perfect definition of “nothing worth seeing.”</p>
+        <p>A build can succeed while printing a deprecation warning. A test suite can finish successfully after retrying a flaky test. A command can return zero while still printing something the developer would have wanted to notice.</p>
+        <p>The current wrappers don’t pretend to solve that generally. For some supported workflows, they trust the underlying command’s exit status. That means warnings from a successful run can be hidden.</p>
+        <p>This is a real tradeoff. The more aggressively a wrapper tries to classify every warning and unusual message, the closer it gets to becoming a full parser for Maven, npm, Vitest, Jest, Go, and every tool invoked underneath them.</p>
+        <p>The hard part is not truncating output. It is deciding what can safely be collapsed. My preference so far has been to keep the wrappers small and explicit about that limitation instead of inventing a generic warning detector that looks smarter than it is.</p>
+
+        <h2>What happens to those 1,476 lines afterward?</h2>
+        <p>Coding agents carry state across a session. Depending on the agent and harness, previous tool output may remain directly available, be summarized, compacted, truncated, or otherwise continue influencing later turns.</p>
+        <p>I cannot responsibly claim that 136 KB of output costs another 136 KB on every future turn. Different systems manage context differently, and I don’t have a clean cross-agent benchmark demonstrating that multiplier.</p>
+        <p>But the weaker claim is still something: once irrelevant output enters a coding session, it becomes context that the system has to somehow manage.</p>
+        <p>If 1,476 lines contain almost no information useful after a successful test run, keeping them out of the session in the first place seems better than relying on later compaction to clean them up.</p>
+
+        <h2>Small wrappers, not replacement build systems</h2>
+        <p>I put these tools into an open-source project called <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer">agent-scripts</a>.</p>
+        <p>The main wrappers are:</p>
+        <ul>
+            <li><code>mvn-lite</code></li>
+            <li><code>npm-lite</code></li>
+            <li><code>go-lite</code></li>
+        </ul>
+        <p>They are very specifically meant to be small. <code>mvn-lite</code> is not a replacement for Maven. <code>npm-lite</code> is not another Node build system. <code>go-lite</code> is not a new Go test runner.</p>
+        <p>They run the normal underlying tools and change the amount and shape of output the coding agent consumes. That is the whole idea.</p>
+
+        <h2 id="install-lite-tools">Teaching agents the new contract</h2>
+        <p>The wrappers only help if the coding agent knows they exist.</p>
+        <p>Command installation and skill installation are separate. First <a href="https://github.com/ejboy/agent-scripts#installation" target="_blank" rel="noopener noreferrer">install the command-line tools</a> and make them available on <code>PATH</code>.</p>
+        <p>Then add the optional <a href="https://github.com/ejboy/agent-scripts/tree/main/skills/lite-tools" target="_blank" rel="noopener noreferrer"><code>lite-tools</code> Agent Skill</a>. It explicitly teaches supported agents to prefer <code>mvn-lite</code>, <code>npm-lite</code>, and <code>go-lite</code> for routine build and test workflows, while keeping full output available when needed:</p>
+        <pre data-lang="bash"><code>npx skills add ejboy/agent-scripts --global --skill lite-tools</code></pre>
+
+        <h2>Maybe agents need different tool contracts</h2>
+        <p>Most coding-agent environments today still look roughly like this:</p>
+        <pre data-lang="workflow"><code>developer tool → human-oriented stdout → coding agent</code></pre>
+        <p>We inserted an AI into an interface that was designed for a person. That works surprisingly well, but it doesn’t mean the interface is ideal.</p>
+        <p>Humans and agents have different constraints:</p>
+        <ul>
+            <li><strong>For humans:</strong> rich, progressive, visually scannable, and verbose when useful.</li>
+            <li><strong>For agents:</strong> bounded, predictable, decision-oriented, cheap on routine success, and detailed on failure.</li>
+        </ul>
+        <p>That suggests developer tools may eventually benefit from different presentation contracts.</p>
+        <p>That doesn’t mean every compiler, test runner, and package manager needs an <code>--ai</code> flag. Thin wrappers may be enough. Structured output may be enough. Sometimes simply changing defaults for a known agent workflow may be enough.</p>
+        <p>But I think the question is worth asking more broadly:</p>
+        <blockquote><p>What should a developer tool output when the consumer is no longer a human reading a terminal?</p></blockquote>
+        <p>The wrappers are small. The Agent Skill is small. The point is the contract behind them: routine success should be cheap, failures should be informative, and agents should know when to use the quieter interface.</p>
+        <p><strong>Developer tools designed for human terminals are not necessarily good interfaces for agents with context windows instead of eyes.</strong></p>
+
+        <div class="agent-scripts-pitch">
+            <p><strong>Give your coding agent quieter tools.</strong> Try the compact wrappers, inspect the source, or read the narrower <a href="/articles/introverted-maven.html">Maven case study</a>. If agent-scripts saves useful context in your workflow, star the project so others can find it.</p>
+            <div class="article-actions">
+                <a href="https://github.com/ejboy/agent-scripts" target="_blank" rel="noopener noreferrer" class="btn btn-primary">⭐ Star agent-scripts on GitHub</a>
+                <a href="/articles/introverted-maven.html" class="btn btn-github">Read the Maven case study →</a>
+            </div>
+        </div>
+    </div>
+</article></main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260830"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

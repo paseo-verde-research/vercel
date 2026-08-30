@@ -14,7 +14,7 @@
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.">
     <meta property="article:published_time" content="2026-07-30T15:45:00-07:00">
-    <meta property="article:modified_time" content="2026-08-12T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-08-30T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/mvnlite_cover.webp">
     <meta property="og:image:type" content="image/webp">
@@ -31,7 +31,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/articles/article.css?v=20260828">
+    <link rel="stylesheet" href="/articles/article.css?v=20260830">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <style>
@@ -103,7 +103,7 @@
     <a href="/articles/" class="back-link">&larr; Back to Articles</a>
     <h1>I Taught Maven to Be an Introvert</h1>
     <p class="article-subtitle">How a small Bash wrapper reduced successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</p>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026 · Updated August 12, 2026</div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026 · Updated August 30, 2026</div>
     <img class="article-cover" src="/articles/img/mvnlite_screen.webp" width="2350" height="962" loading="eager" decoding="async" alt="Side-by-side terminal comparison of verbose Maven output and a one-line mvn-lite PASS result">
 
     <div class="article-body">
@@ -240,18 +240,19 @@ Cause: Unable to create temporary directory</code></pre>
         <p>The same build passed after normal filesystem permissions were restored.</p>
 
         <h2 id="try-mvn-lite">Try <code>mvn-lite</code> in your project</h2>
-        <p>To try the <code>v0.2.0</code> release used for this article update:</p>
-        <pre data-lang="bash"><code>curl -fsSL \
-  https://raw.githubusercontent.com/ejboy/agent-scripts/v0.2.0/scripts/mvn-lite \
-  -o mvn-lite
-chmod +x mvn-lite</code></pre>
-        <p>Review the script before running it in a sensitive repository. The release tag keeps a vendored copy
-            reproducible. Check the <a href="https://github.com/ejboy/agent-scripts/tags" target="_blank" rel="noopener noreferrer">agent-scripts tags</a> for newer versions.</p>
+        <p>You can install <code>mvn-lite</code> as a standalone script or install the complete agent-scripts toolkit. The toolkit is lightweight and is the simplest way to make <code>mvn-lite</code> and the other core commands available from <code>PATH</code>:</p>
+        <pre data-lang="bash"><code>curl -fsSL https://raw.githubusercontent.com/ejboy/agent-scripts/main/install.sh | bash</code></pre>
+        <p>Review the <a href="https://github.com/ejboy/agent-scripts/blob/main/install.sh" target="_blank" rel="noopener noreferrer">installer source</a> before running it in a sensitive environment. See the <a href="https://github.com/ejboy/agent-scripts#installation" target="_blank" rel="noopener noreferrer">installation guide</a> for PATH setup and manual installation options.</p>
         <p>Arguments pass through to Maven. Use <code>--full</code> when ordinary Maven output is needed:</p>
-        <pre data-lang="bash"><code>./mvn-lite test
-./mvn-lite -pl common test
-./mvn-lite --full test
-./mvn-lite --help-mvn-lite</code></pre>
+        <pre data-lang="bash"><code>mvn-lite test
+mvn-lite -pl common test
+mvn-lite --full test
+mvn-lite --help-mvn-lite</code></pre>
+
+        <h2>Teaching your coding agent to use it</h2>
+        <p>The <a href="https://github.com/ejboy/agent-scripts/tree/main/skills/lite-tools" target="_blank" rel="noopener noreferrer"><code>lite-tools</code> Agent Skill</a> works best with the complete agent-scripts toolkit installed. It teaches supported coding agents when to use <code>mvn-lite</code>, <code>npm-lite</code>, and <code>go-lite</code> for routine build and test workflows.</p>
+        <pre data-lang="bash"><code>npx skills add ejboy/agent-scripts --global --skill lite-tools</code></pre>
+        <p>Command installation and Agent Skill installation are separate. Install agent-scripts first, then add the skill if you want your coding agent to discover and prefer the quieter commands automatically.</p>
 
         <h2>Why not summarize the logs with an LLM?</h2>
         <p><code>mvn-lite</code> extracts the useful signal locally instead of spending agent tokens on an LLM summary
@@ -268,6 +269,7 @@ chmod +x mvn-lite</code></pre>
 
         <h2>The broader lesson</h2>
         <p>Coding agents change the economics of command-line output.</p>
+        <p>This Maven experiment became part of a broader question about <a href="/articles/coding-agent-test-output.html">how build and test tools should communicate with coding agents</a>. Across Tape, Maven, Vitest, and Jest, the same principle held: routine success should be cheap, while failure should preserve enough evidence for the next action.</p>
         <p>Traditional build tools assume that console output is cheap. A developer can scroll, search, collapse, or ignore it.</p>
         <p>For an agent, output competes directly with source code, requirements, conversation history, repository context, and the actual diagnostic. A tool designed for agent workflows should:</p>
         <ol>
@@ -289,6 +291,7 @@ chmod +x mvn-lite</code></pre>
                     <svg class="icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     ⭐ Star on GitHub
                 </a>
+                <a href="https://github.com/ejboy/agent-scripts/tree/main/skills/lite-tools" target="_blank" rel="noopener noreferrer" class="btn btn-github">Agent Skill</a>
             </div>
         </div>
     </div>
