@@ -139,10 +139,30 @@
     <section class="section integrations-section">
         <div class="container integration-grid">
             <div class="integration-copy"><h2>Built for Spring Boot, usable beyond it</h2><p>Actuator already exposes useful metrics. StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack. Quarkus is supported too; see the <a href="/articles/spring-boot-vs-quarkus-512mb.html">side-by-side 512 MB run</a>.</p><div class="hero-actions"><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a><a href="/articles/spring-boot-512mb-vps.html" class="button button-github">512 MB VPS experiment</a></div></div>
-            <div class="integration-details"><div class="integration-list"><div><h3>Spring Boot Actuator</h3><p>Health and metrics endpoints for Spring Boot applications.</p></div><div><h3>Quarkus</h3><p>Micrometer Prometheus/OpenMetrics metrics, with optional SmallRye Health.</p></div><div><h3>StatLite Metrics v1</h3><p>A fixed JSON profile for supported external applications.</p></div><div><h3>Self-monitoring</h3><p>StatLite monitors its own host and SQLite filesystem capacity.</p></div></div><div class="code-card"><div class="code-label">statlite.yml</div><pre><code>targets:
+            <div class="integration-details">
+                <div class="integration-list">
+                    <div>
+                        <h3><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#spring-boot-actuator">Spring Boot Actuator</a></h3>
+                        <p>Health and metrics endpoints for Spring Boot applications.</p>
+                    </div>
+                    <div>
+                        <h3><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#quarkus-micrometer-metrics">Quarkus</a></h3>
+                        <p>Micrometer Prometheus/OpenMetrics metrics, with optional SmallRye Health.</p>
+                    </div>
+                    <div>
+                        <h3><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#statlite-metrics-v1">StatLite Metrics v1</a></h3>
+                        <p>A fixed JSON profile for supported external applications.</p>
+                    </div>
+                    <div>
+                        <h3><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#statlite-self-monitoring">Self-monitoring</a></h3>
+                        <p>StatLite monitors its own host and SQLite filesystem capacity.</p>
+                    </div>
+                </div>
+                <div class="code-card"><div class="code-label">statlite.yml</div><pre><code>targets:
   - name: "my-app"
     type: "spring"
-    url: "http://localhost:8080/actuator"</code></pre></div></div>
+    url: "http://localhost:8080/actuator"</code></pre></div>
+            </div>
         </div>
     </section>
 

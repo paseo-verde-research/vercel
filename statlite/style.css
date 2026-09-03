@@ -118,6 +118,7 @@ p { margin: 0 0 1rem; }
 .integration-list > div { display: grid; grid-template-columns: minmax(11rem, .8fr) 1.2fr; gap: 1.5rem; padding: .9rem 0; border-bottom: 1px solid var(--line); }
 .integration-list h3 { margin: 0; }
 .integration-list p { margin: 0; }
+.integration-list h3 a { min-height: 44px; display: inline-flex; align-items: center; }
 .scope-section .container { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .scope-section { border-bottom: 1px solid var(--line); }
 .scope-note { padding: 1.25rem 1.5rem; background: var(--panel); border-left: 3px solid var(--green); }
