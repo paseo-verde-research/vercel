@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot vs Quarkus on a 512 MB VPS | PVR Labs</title>
+    <meta name="description" content="Spring Boot and Quarkus ran the same Star Pulse workload on a 512 MB VPS with JDK 25. Quarkus started larger, then had a smaller resident set, while RSS hid swap.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html">
+    <meta property="og:title" content="Spring Boot vs Quarkus on a 512 MB VPS">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Spring Boot and Quarkus ran the same Star Pulse workload on a 512 MB VPS with JDK 25. Quarkus started larger, then had a smaller resident set, while RSS hid swap.">
+    <meta property="article:published_time" content="2026-09-02T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-vs-quarkus-512mb-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot vs Quarkus on a 512 MB VPS">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot vs Quarkus on a 512 MB VPS">
+    <meta name="twitter:description" content="Spring Boot and Quarkus ran the same Star Pulse workload on a 512 MB VPS with JDK 25. Quarkus started larger, then had a smaller resident set, while RSS hid swap.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-vs-quarkus-512mb-og.jpg">
+    <meta name="twitter:image:alt" content="Spring Boot vs Quarkus on a 512 MB VPS">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260902">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; min-width: 40rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-body blockquote {
+            margin: 0 0 1.5rem;
+            padding: 16px 20px;
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 8px 8px 0;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+        }
+        .screenshot-gallery { margin: 0 0 1.5rem; }
+        .screenshot-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .screenshot-tab {
+            display: inline-flex;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            font: inherit;
+            font-size: .9rem;
+            cursor: pointer;
+        }
+        .screenshot-tab:hover,
+        .screenshot-tab:focus-visible {
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+        .screenshot-tab:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 2px;
+        }
+        .screenshot-tab[aria-selected="true"] {
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+        .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; padding: 24px 28px; margin: 32px 0 40px; }
+        .statlite-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        @media (max-width: 768px) {
+            .article-body table { font-size: .85rem; }
+            .statlite-pitch { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .screenshot-tab { flex: 1 1 100%; }
+            .article-actions { flex-direction: column; }
+            .article-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <h1>Spring Boot vs Quarkus on a 512 MB VPS</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-02">September 2, 2026</time></div>
+    <div class="article-body">
+        <p>I have been testing the Quarkus support we just added in <a href="/statlite/">StatLite</a> 0.4.0, a lightweight self-hosted metrics dashboard. StatLite already monitors Spring Boot applications, so I put equivalent Spring Boot and Quarkus applications side by side to exercise both integrations and see how they behaved on a genuinely small server.</p>
+        <p>The setup was intentionally demanding: both apps got one Star Pulse workload, one JDK 25 build, one <code>Xmx80m</code> profile, and one 512 MiB VM with 256 MiB of swap. One StatLite process monitored both applications and the host.</p>
+        <p>The short version is not that one framework simply uses more memory everywhere. Quarkus started larger in this workload, then developed a smaller resident working set and a smaller JVM heap under sustained pressure. RSS alone was misleading, because Linux was paging Quarkus more aggressively. In a later follow-up, the machine eventually ran out of memory and swap, and Spring was selected as the OOM victim.</p>
+        <blockquote>
+            <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" target="_blank" rel="noopener noreferrer">published experiment record</a> contains the exact JVM flags and versions, selected RSS/PSS/VmSwap measurements, selected checkpoints, kernel/OOM evidence, restart chronology, methodology, and limitations. Full archives, databases, and private metadata are omitted.</p>
+        </blockquote>
+
+        <h2>Three observations</h2>
+        <p>The numbers below come from three separate observations on that VM. They stay separate on purpose.</p>
+        <div class="table-scroll">
+            <table class="article-table article-table--compact">
+                <thead>
+                    <tr>
+                        <th>Observation</th>
+                        <th>What it answers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Health-enabled hour, Sep 1, 2026</td>
+                        <td>Controlled comparison. Both stayed up, zero restarts.</td>
+                    </tr>
+                    <tr>
+                        <td>Memory-residency follow-up</td>
+                        <td>Why RSS moved, including swap.</td>
+                    </tr>
+                    <tr>
+                        <td>Sep 2, 2026 observation</td>
+                        <td>Operational failure. Not enough headroom; Spring was OOM-killed.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>The setup</h2>
+        <p>Both applications served the same Star Pulse workload. Every five minutes they fetched star, fork, and watcher counts for the same three GitHub repositories and stored the results in H2.</p>
+        <div class="table-scroll">
+            <table class="article-table article-table--compact">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Spring Boot</th>
+                        <th>Quarkus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Framework</td>
+                        <td>Spring Boot 3.5.5</td>
+                        <td>Quarkus 3.39.1</td>
+                    </tr>
+                    <tr>
+                        <td>Runtime</td>
+                        <td>JDK 25.0.4</td>
+                        <td>JDK 25.0.4</td>
+                    </tr>
+                    <tr>
+                        <td>Heap limit</td>
+                        <td><code>-Xmx80m</code></td>
+                        <td><code>-Xmx80m</code></td>
+                    </tr>
+                    <tr>
+                        <td>Database</td>
+                        <td>H2</td>
+                        <td>H2</td>
+                    </tr>
+                    <tr>
+                        <td>Metrics</td>
+                        <td>Actuator Prometheus</td>
+                        <td>Prometheus/OpenMetrics</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>The VM was Ubuntu 24.04 with one vCPU. The guest exposed 452 MiB of RAM, with 256 MiB of persistent swap. Both JVMs also used the same 16 MiB initial heap, 256 KiB thread stacks, Serial GC, tiered compilation stopped at level 1, a 32 MiB reserved code cache, and compact object headers:</p>
+        <pre data-lang="text"><code>-Xms16m
+-Xmx80m
+-Xss256k
+-XX:+UseSerialGC
+-XX:TieredStopAtLevel=1
+-XX:ReservedCodeCacheSize=32m
+-XX:+UseCompactObjectHeaders</code></pre>
+        <p>This is a JVM-mode comparison, not a native-image comparison. It is also independent of the earlier single-application <a href="/articles/spring-boot-512mb-vps.html">512 MB</a> and <a href="/articles/spring-boot-256mb-jdk25.html">256 MB JDK 25</a> runs.</p>
+
+        <h2>Quarkus started larger</h2>
+        <p>At the settled checkpoint in the memory-residency follow-up, Spring Boot was about 112 MiB RSS and Quarkus was about 145 MiB. That was the first surprise: the framework commonly associated with small deployments had the larger resident process at startup.</p>
+        <p>Startup memory and resident memory after sustained pressure are different measurements. The rest of the hour is where the picture changed.</p>
+
+        <h2>The relationship reversed under pressure</h2>
+        <p>The supporting memory-residency follow-up recorded the same processes at the settled checkpoint and after an hour:</p>
+        <div class="table-scroll">
+            <table class="article-table">
+                <thead>
+                    <tr>
+                        <th>Framework</th>
+                        <th>Settled RSS</th>
+                        <th>60-minute RSS</th>
+                        <th>60-minute JVM heap used</th>
+                        <th>60-minute swap residency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Spring Boot</td>
+                        <td class="num">~112 MiB</td>
+                        <td class="num">~154 MiB</td>
+                        <td class="num">~50.3 MB</td>
+                        <td class="num">~66 MiB</td>
+                    </tr>
+                    <tr>
+                        <td>Quarkus</td>
+                        <td class="num">~145 MiB</td>
+                        <td class="num">~83 MiB</td>
+                        <td class="num">~33.1 MB</td>
+                        <td class="num">~91 MiB</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Quarkus RSS fell substantially, but its heap did not fall with it. Heap grew from about 28.0 MB to 33.1 MB while swapped memory grew from about 29 MiB to 91 MiB. Linux paging therefore explains an important part of the apparent RSS advantage.</p>
+        <p>Even with that qualification, Quarkus had the smaller heap and the smaller resident working set at the relevant comparison point. Spring moved in the opposite direction, with a larger later RSS and heap in this workload.</p>
+        <p>This is a workload-specific observation on an extremely constrained VM. It is not a claim that Quarkus always uses 83 MiB or that Spring Boot always uses 154 MiB.</p>
+        <p>The health-enabled hour finished with zero restarts and the opposite RSS ranking: about 61 MiB for Spring and 156 MiB for Quarkus. That is why the two runs stay separate. RSS alone is not a stable ranking on this machine.</p>
+
+        <h2>The 512 MB limit</h2>
+        <p>The VM first exhausted its tight memory and swap margin during later Ubuntu package maintenance. Spring was OOM-killed, and the package restart handling also restarted the application services. That demonstrated how little headroom the machine had for routine operating-system work.</p>
+        <p>The stronger result came afterward. Once the obvious package-maintenance pressure had cleared, Spring and Quarkus were started again with the same JDK 25 and <code>Xmx80m</code> configuration. A fresh one-hour observation began. About 41 minutes later, swap was again effectively exhausted and the kernel OOM-killed Spring. Spring restarted automatically. Quarkus and StatLite did not restart, and the final health checks were successful.</p>
+        <p>The later OOM was not caused by the active <code>apt</code> transaction seen earlier. It also should not be read as proof that no other operating-system activity contributed to the final memory state. The defensible conclusion is that 512 MiB of RAM and 256 MiB of swap did not provide enough overall headroom to guarantee reliable survival of both JVM applications for an hour.</p>
+
+        <h2>StatLite stayed small and kept watching</h2>
+        <p>StatLite remained a small part of the system, at roughly 10 to 15 MiB RSS in the relevant checkpoints. It continued monitoring through the Spring restart, recorded the temporary health failure, and observed recovery. Quarkus and StatLite stayed available while Spring was being restarted.</p>
+        <p>The application workload also encountered unauthenticated GitHub rate limits. Those upstream 403 responses are documented in the experiment record. They affected application polling, but they were not StatLite or framework crashes.</p>
+        <p>The 24-hour views below are context through the morning maintenance window, not the timed comparison. Runtime memory MB is JVM heap, not RSS. The current cards come from a later local replay.</p>
+
+        <div class="screenshot-gallery" data-gallery>
+            <div class="screenshot-tabs" role="tablist" aria-label="StatLite 24-hour views">
+                <button type="button" class="screenshot-tab" role="tab" id="tab-spring" aria-controls="panel-spring" aria-selected="true" tabindex="0">Spring Boot 24h</button>
+                <button type="button" class="screenshot-tab" role="tab" id="tab-quarkus" aria-controls="panel-quarkus" aria-selected="false" tabindex="-1">Quarkus 24h</button>
+                <button type="button" class="screenshot-tab" role="tab" id="tab-host" aria-controls="panel-host" aria-selected="false" tabindex="-1">Host 24h</button>
+            </div>
+            <div id="panel-spring" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-spring">
+                <figure>
+                    <img src="/articles/img/spring-boot-vs-quarkus-512mb/spring.webp?v=20260902" width="1920" height="1143" loading="eager" decoding="async" alt="StatLite 24-hour Spring Boot dashboard for spring-stars, showing health UP, request activity around 20 requests, and JVM heap oscillating near 40 to 50 MB">
+                    <figcaption>Spring Boot 24h view. Current cards were refreshed by a later local replay of the preserved database; do not read the Started/Restart stamps as the timed-run result.</figcaption>
+                </figure>
+            </div>
+            <div id="panel-quarkus" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-quarkus" hidden>
+                <figure>
+                    <img src="/articles/img/spring-boot-vs-quarkus-512mb/quarkus.webp?v=20260902" width="1920" height="1140" loading="lazy" decoding="async" alt="StatLite 24-hour Quarkus dashboard for quarkus-stars, showing health UP, sparse request spikes, and JVM heap around 20 to 30 MB">
+                    <figcaption>Quarkus 24h view. Runtime memory is heap, not RSS. The Restart card is from local replay and is not used as evidence here.</figcaption>
+                </figure>
+            </div>
+            <div id="panel-host" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-host" hidden>
+                <figure>
+                    <img src="/articles/img/spring-boot-vs-quarkus-512mb/host.webp?v=20260902" width="1920" height="1085" loading="lazy" decoding="async" alt="StatLite host resources over 24 hours, with RAM used near the 0.45 GB guest total and a large morning CPU spike">
+                    <figcaption>StatLite host view. RAM sits near the 452 MiB guest total. The morning CPU spike is the Ubuntu package-maintenance window.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="statlite-pitch">
+            <p>StatLite combines lightweight application monitoring with basic host visibility in one small self-hosted binary. If this looks useful for your servers, star it on GitHub. You can also try it with Spring Boot or Quarkus in a few minutes.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+                <a href="https://github.com/PVRLabs/statlite#try-it" class="btn btn-github" target="_blank" rel="noopener noreferrer">Try StatLite</a>
+            </div>
+        </div>
+
+        <h2>Takeaways</h2>
+        <ul>
+            <li>Quarkus started with higher RSS, so startup memory alone gave a misleading picture.</li>
+            <li>Under sustained memory pressure in this workload, Quarkus developed a smaller resident working set and smaller heap than Spring Boot.</li>
+            <li>The 512 MiB RAM / 256 MiB swap configuration was too tight for reliable operation of both JVMs. Spring was eventually OOM-killed in a subsequent observation after package-maintenance pressure had cleared.</li>
+            <li>StatLite remained small and continued monitoring through the failures.</li>
+        </ul>
+        <p>This is useful evidence about behavior under extreme memory pressure, not a clean definitive framework-memory benchmark. At this level of pressure, Linux paging and OOM behavior become part of the result. A higher-headroom follow-up on a less constrained VM would reduce those side effects and provide a cleaner comparison of the frameworks themselves. That is a future experiment, not a result reported here.</p>
+
+        <h2>Evidence and reproducibility</h2>
+        <p>The method, JVM flags, selected checkpoints, and kernel evidence are in the public experiment record. Full archives, databases, and private metadata are omitted. Star Pulse for both frameworks is included in that tree. StatLite is the monitoring dashboard shown in the screenshots: a single Go binary using SQLite, with Spring Boot Actuator and Quarkus metrics collectors.</p>
+        <div class="statlite-pitch">
+            <p>Watching two JVMs on a box this small is exactly the kind of job StatLite is for.</p>
+            <div class="article-actions">
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+                <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" class="btn btn-github" target="_blank" rel="noopener noreferrer">Public experiment</a>
+            </div>
+        </div>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260902"></script>
+<script>
+    (function () {
+        const gallery = document.querySelector("[data-gallery]");
+        if (!gallery) {
+            return;
+        }
+        const tabs = Array.from(gallery.querySelectorAll('[role="tab"]'));
+        const panels = Array.from(gallery.querySelectorAll('[role="tabpanel"]'));
+
+        function selectTab(index) {
+            tabs.forEach((tab, i) => {
+                const selected = i === index;
+                tab.setAttribute("aria-selected", String(selected));
+                tab.tabIndex = selected ? 0 : -1;
+                panels[i].hidden = !selected;
+            });
+        }
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener("click", () => selectTab(index));
+            tab.addEventListener("keydown", (event) => {
+                if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+                    return;
+                }
+                event.preventDefault();
+                const offset = event.key === "ArrowRight" ? 1 : -1;
+                const nextIndex = (index + offset + tabs.length) % tabs.length;
+                selectTab(nextIndex);
+                tabs[nextIndex].focus();
+            });
+        });
+    })();
+</script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

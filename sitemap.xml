@@ -7,7 +7,7 @@
 
   <url>
     <loc>https://pvrlabs.xyz/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-09-03</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/</loc>
@@ -23,7 +23,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/statlite/</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-09-03</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/aibadger/install.html</loc>
@@ -47,7 +47,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-08-30</lastmod>
+    <lastmod>2026-09-02</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html</loc>
+    <lastmod>2026-09-02</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/coding-agent-test-output.html</loc>
@@ -75,7 +79,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/lightweight-spring-boot-monitoring.html</loc>
-    <lastmod>2026-08-20</lastmod>
+    <lastmod>2026-09-03</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/introverted-maven.html</loc>

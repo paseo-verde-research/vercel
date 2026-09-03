@@ -201,6 +201,7 @@
         <p>This is one app. Replacing embedded H2 with a database process such as MariaDB or Postgres on the same VPS will increase total memory pressure because that process needs its own memory. A separately hosted or managed database can move that pressure off this VM, but adds network and connection-pool considerations. More schedulers, larger pools, heavier starters, or a busier workload can also push local memory higher. I also would not size a fleet from one timed hour.</p>
         <p>The smaller RAM rows above were a stretch test. I would not run this stack there. Checkpoints and method notes are in the public experiment repo.</p>
         <p>A later follow-up completed a controlled hour on a nominal 256 MiB Alpine VPS with JDK 25 and 512 MiB of swap. It is a useful technical stretch result, not a replacement for the 512 MB recommendation. <a href="/articles/spring-boot-256mb-jdk25.html">Read the JDK 25 / 256 MiB follow-up</a>.</p>
+        <p>A separate side-by-side run then put Spring Boot and Quarkus on the same 512 MB VM with the JDK 25 profile. Two <code>Xmx80m</code> JVMs left too little headroom. <a href="/articles/spring-boot-vs-quarkus-512mb.html">Read the Spring Boot vs Quarkus comparison</a>.</p>
 
         <h2>Source</h2>
         <p>The method, demo, and measurements are in the public experiment repo. Star Pulse is included in the experiment tree. StatLite is the monitoring dashboard shown in the screenshots: a single Go binary using SQLite and Spring Boot Actuator.</p>

@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A0A0A">
     <title>StatLite - Lightweight Spring Boot Monitoring</title>
-    <meta name="description" content="StatLite turns Spring Boot Actuator metrics into a lightweight self-hosted dashboard with local SQLite history. Other applications can use the fixed StatLite Metrics v1 profile.">
+    <meta name="description" content="StatLite turns Spring Boot Actuator metrics into a lightweight self-hosted dashboard with local SQLite history. Quarkus and other applications are also supported.">
     <link rel="canonical" href="https://pvrlabs.xyz/statlite/">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/statlite/">
     <meta property="og:title" content="StatLite - Lightweight Spring Boot Monitoring">
     <meta property="og:site_name" content="StatLite">
-    <meta property="og:description" content="Lightweight, self-hosted Spring Boot monitoring with local SQLite history and a fixed metrics profile for other applications.">
+    <meta property="og:description" content="Lightweight, self-hosted Spring Boot monitoring with local SQLite history. Quarkus and other applications are also supported.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="StatLite - Lightweight Spring Boot Monitoring">
-    <meta name="twitter:description" content="Lightweight, self-hosted Spring Boot monitoring with local SQLite history and a fixed metrics profile for other applications.">
+    <meta name="twitter:description" content="Lightweight, self-hosted Spring Boot monitoring with local SQLite history. Quarkus and other applications are also supported.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
 
     <script type="application/ld+json">
@@ -25,7 +25,7 @@
       "@type": "SoftwareApplication",
       "name": "StatLite",
       "applicationCategory": "DeveloperApplication",
-      "description": "A lightweight self-hosted dashboard for Spring Boot Actuator and applications exposing the StatLite Metrics v1 profile.",
+      "description": "A lightweight self-hosted dashboard for Spring Boot Actuator, with support for Quarkus and applications exposing the StatLite Metrics v1 profile.",
       "url": "https://pvrlabs.xyz/statlite/",
       "license": "https://opensource.org/licenses/MIT"
     }
@@ -62,7 +62,7 @@
         <div class="container hero-grid">
             <div class="hero-copy">
                 <h1>Lightweight monitoring for Spring Boot</h1>
-                <p class="hero-description">Turn Spring Boot Actuator into a self-hosted dashboard with history, charts, restart detection, and local SQLite storage. Monitor small services and other applications through StatLite Metrics v1.</p>
+                <p class="hero-description">Turn Spring Boot Actuator into a self-hosted dashboard with history, charts, restart detection, and local SQLite storage. Quarkus and other applications can use the same dashboard.</p>
                 <p class="proof-line">One Go binary. About 15 MiB idle. No external monitoring services.</p>
                 <div class="hero-actions">
                     <a href="#install" class="button button-primary">Install StatLite</a>
@@ -138,10 +138,11 @@
 
     <section class="section integrations-section">
         <div class="container integration-grid">
-            <div class="integration-copy"><h2>Built for Spring Boot, usable beyond it</h2><p>Actuator already exposes useful metrics. StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack.</p><div class="hero-actions"><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a><a href="/articles/spring-boot-512mb-vps.html" class="button button-github">512 MB VPS experiment</a></div></div>
-            <div class="integration-details"><div class="integration-list"><div><h3>Spring Boot Actuator</h3><p>Health and metrics endpoints for Spring Boot applications.</p></div><div><h3>StatLite Metrics v1</h3><p>A fixed JSON profile for supported external applications.</p></div><div><h3>Self-monitoring</h3><p>StatLite monitors its own host and SQLite filesystem capacity.</p></div></div><div class="code-card"><div class="code-label">statlite.yml</div><pre><code>targets:
+            <div class="integration-copy"><h2>Built for Spring Boot, usable beyond it</h2><p>Actuator already exposes useful metrics. StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack. Quarkus is supported too; see the <a href="/articles/spring-boot-vs-quarkus-512mb.html">side-by-side 512 MB run</a>.</p><div class="hero-actions"><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a><a href="/articles/spring-boot-512mb-vps.html" class="button button-github">512 MB VPS experiment</a></div></div>
+            <div class="integration-details"><div class="integration-list"><div><h3>Spring Boot Actuator</h3><p>Health and metrics endpoints for Spring Boot applications.</p></div><div><h3>Quarkus</h3><p>Micrometer Prometheus/OpenMetrics metrics, with optional SmallRye Health.</p></div><div><h3>StatLite Metrics v1</h3><p>A fixed JSON profile for supported external applications.</p></div><div><h3>Self-monitoring</h3><p>StatLite monitors its own host and SQLite filesystem capacity.</p></div></div><div class="code-card"><div class="code-label">statlite.yml</div><pre><code>targets:
   - name: "my-app"
-    actuator_base_url: "http://localhost:8080/actuator"</code></pre></div></div>
+    type: "spring"
+    url: "http://localhost:8080/actuator"</code></pre></div></div>
         </div>
     </section>
 

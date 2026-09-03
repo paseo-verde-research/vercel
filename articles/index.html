@@ -172,14 +172,24 @@
     </section>
 
     <nav class="article-filters" aria-label="Filter articles by topic">
-            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(9)</span></button>
+            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(10)</span></button>
             <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span>(4)</span></button>
-        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(3)</span></button>
-        <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(7)</span></button>
+        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(4)</span></button>
+        <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(8)</span></button>
     </nav>
 
     <section class="articles-list">
         <div class="container">
+
+            <article class="article-entry" data-tags="statlite engineering">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>StatLite</span>
+                    <span>Engineering</span>
+                </div>
+                <h2><a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a></h2>
+                <div class="article-meta"><time datetime="2026-09-02">September 2, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
+                <p>The same Star Pulse workload, JDK 25, and 80 MiB heap. Quarkus started larger, then had the smaller resident set, while RSS hid swap and the box later ran out of headroom.</p>
+            </article>
 
             <article class="article-entry" data-tags="engineering">
                 <div class="article-tags" aria-label="Article topics">
@@ -255,7 +265,7 @@
                     <span>Monitoring</span>
                 </div>
                 <h2><a href="/articles/lightweight-spring-boot-monitoring.html">Lightweight Spring Boot Monitoring Without Prometheus and Grafana</a></h2>
-                <div class="article-meta"><time datetime="2026-07-19">July 19, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
+                <div class="article-meta"><time datetime="2026-07-19">July 19, 2026</time> · Updated September 3, 2026 · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Turn Spring Boot Actuator data into a focused dashboard for a few applications on a VPS, without operating a full Prometheus and Grafana stack.</p>
             </article>
 
