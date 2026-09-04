@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 // --- Simple Fade-in Animation for Sections on Scroll (Optional) ---
-    const animatedSections = document.querySelectorAll('.service-card, .timeline-item, .about-image, .about-text, .contact-details');
+    const animatedSections = document.querySelectorAll('.service-card, .about-image, .about-text, .contact-details');
 
     if (animatedSections.length) {
         const observer = new IntersectionObserver((entries, sectionObserver) => {

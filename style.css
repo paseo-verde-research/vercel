@@ -253,7 +253,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- Hero Section --- */
 .hero-section {
-    min-height: 90vh;
+    min-height: clamp(42rem, 82vh, 52rem);
     display: flex;
     align-items: center;
     padding-top: var(--header-height); /* Account for fixed header */
@@ -277,13 +277,15 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 40px;
+    gap: clamp(2.5rem, 5vw, 5rem);
     position: relative; /* To keep content above pseudo-elements */
     z-index: 1;
 }
 
 .hero-content {
-    max-width: 55%;
+    flex: 1 1 58%;
+    max-width: 58%;
+    min-width: 0;
 }
 
 /* Short top-level display titles only - not long H1s or section titles */
@@ -303,30 +305,47 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-visual {
-    max-width: 40%;
+    flex: 0 1 32rem;
+    width: 38%;
+    max-width: 32rem;
 }
 
-.code-snippet-visual {
-    background-color: rgba(31, 31, 31, 0.7); /* Semi-transparent card */
+.hero-tools {
+    display: grid;
+    gap: 1rem;
+}
+
+.hero-tool {
+    display: block;
+    background-color: rgba(31, 31, 31, 0.8);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 25px;
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
+    padding: 1rem;
     box-shadow: 0 10px 30px rgba(0, 255, 100, 0.1);
     backdrop-filter: blur(5px);
+    overflow: hidden;
 }
-.code-snippet-visual pre {
-    margin: 0;
-    white-space: pre;
-    overflow-x: auto;
+
+.hero-tool:hover {
+    border-color: var(--primary-green);
 }
-.code-keyword { color: #569CD6; }
-.code-class, .code-type { color: #4EC9B0; }
-.code-method { color: #DCDCAA; }
-.code-comment { color: #6A9955; }
-.code-string { color: #CE9178; }
-.code-annotation, .code-number { color: #B5CEA8; }
+
+.hero-tool .product-wordmark {
+    margin-bottom: 0.75rem;
+}
+
+.hero-tool img {
+    display: block;
+    width: 100%;
+    height: clamp(9rem, 18vh, 11rem);
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 5px;
+}
+
+.hero-tool:last-child img {
+    object-position: left center;
+}
 
 .scroll-down-indicator {
     position: absolute;
@@ -466,73 +485,6 @@ h1, h2, h3, h4, h5, h6 {
 .about-values li .highlight {
     margin-right: 10px;
     font-size: 1.2rem;
-}
-
-
-/* --- Process Section --- */
-.process-section {
-    padding: 60px 0;
-    background-color: var(--bg-medium);
-}
-
-.process-timeline {
-    position: relative;
-    max-width: 800px;
-    margin: 3rem auto 0;
-}
-
-.process-timeline::before { /* The central line */
-    content: '';
-    position: absolute;
-    left: 20px;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: var(--primary-green);
-    opacity: 0.3;
-}
-
-.timeline-item {
-    position: relative;
-    margin-bottom: 40px;
-    padding-left: 60px; /* Space for icon and line */
-}
-.timeline-item:last-child {
-    margin-bottom: 0;
-}
-
-.timeline-icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 40px;
-    height: 40px;
-    background-color: var(--primary-green);
-    color: var(--bg-dark);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 1.2rem;
-    border: 3px solid var(--bg-medium); /* To make it pop from the line */
-}
-
-.timeline-content {
-    background-color: var(--bg-light);
-    padding: 20px;
-    border-radius: 8px;
-    position: relative;
-}
-.timeline-content h3 {
-    font-size: 1.3rem;
-    color: var(--text-primary);
-}
-.timeline-content p {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin-bottom: 0;
 }
 
 
@@ -837,11 +789,15 @@ h1, h2, h3, h4, h5, h6 {
         text-align: center;
     }
     .hero-content {
+        flex: none;
         max-width: 100%;
+        width: 100%;
         margin-bottom: 2rem;
     }
     .hero-visual {
-        max-width: 80%; /* Allow visual to be a bit larger on tablets */
+        flex: none;
+        width: 80%;
+        max-width: 46rem;
         margin: 0 auto;
     }
     .hero-title {
@@ -908,7 +864,6 @@ h1, h2, h3, h4, h5, h6 {
     .services-section,
     .products-section,
     .about-section,
-    .process-section,
     .contact-section {
         padding: 50px 0;
     }
@@ -920,6 +875,22 @@ h1, h2, h3, h4, h5, h6 {
     }
     .hero-title {
         font-size: 2.5rem;
+    }
+    .hero-section {
+        min-height: auto;
+        padding-bottom: 3.5rem;
+    }
+    .hero-tools {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .hero-tool {
+        padding: 0.75rem;
+    }
+    .hero-tool .product-wordmark {
+        font-size: 1.2rem;
+    }
+    .hero-tool img {
+        height: 90px;
     }
     .nav-menu {
         position: fixed;
@@ -943,10 +914,6 @@ h1, h2, h3, h4, h5, h6 {
     .nav-link {
         font-size: 1.2rem;
     }
-    .code-snippet-visual {
-        padding: 15px;
-        font-size: 0.7rem;
-    }
     .calendly-inline-widget {
         min-width: 0;
         height: 500px;
@@ -969,28 +936,19 @@ h1, h2, h3, h4, h5, h6 {
         overflow: hidden;
     }
 
-    .process-timeline::before {
-        display: none;
-    }
-    .timeline-item {
-        padding-left: 0;
-        text-align: center; /* Center content for mobile */
-    }
-    .timeline-icon {
-        position: static; /* Remove absolute positioning */
-        margin: 0 auto 15px auto; /* Center the icon */
-    }
-    .timeline-content {
-        text-align: left; /* Re-align text if preferred, or keep centered */
-    }
 }
 
 @media (max-width: 480px) {
     .hero-title {
-        font-size: 2rem;
+        font-size: clamp(1.65rem, 7.4vw, 2rem);
+        overflow-wrap: anywhere;
     }
     .hero-subtitle {
         font-size: 1rem;
+    }
+    .hero-visual {
+        width: 100%;
+        max-width: 100%;
     }
     .hero-content .btn {
         display: block;
