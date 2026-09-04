@@ -1,8 +1,8 @@
 {
-  "name": "PVRLabs - Java Performance & Profiling",
-  "short_name": "PVRLabs",
-  "description": "Expert consulting for optimizing and tuning your Java applications.",
-  "start_url": "/index.html",
+  "name": "PVR Labs",
+  "short_name": "PVR Labs",
+  "description": "PVR Labs builds practical, lightweight developer tools including StatLite and AI Badger, and provides focused Java performance consulting.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0A0A0A",
   "theme_color": "#2ECC71",
