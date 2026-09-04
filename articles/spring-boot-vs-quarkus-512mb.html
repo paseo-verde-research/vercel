@@ -29,7 +29,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/articles/article.css?v=20260902">
+    <link rel="stylesheet" href="/articles/article.css?v=20260904">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
@@ -188,7 +188,10 @@
     <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
 </div></nav></header>
 <main><article class="article-page">
-    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <nav class="article-product-nav" aria-label="StatLite article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
+    </nav>
     <h1>Spring Boot vs Quarkus on a 512 MB VPS</h1>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-02">September 2, 2026</time></div>
     <div class="article-body">

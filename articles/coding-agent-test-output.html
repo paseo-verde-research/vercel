@@ -32,7 +32,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/articles/article.css?v=20260830">
+    <link rel="stylesheet" href="/articles/article.css?v=20260904">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         .article-page h1 { font-size: clamp(1.65rem, 5vw, 2.35rem); }
@@ -68,7 +68,10 @@
 </div></nav></header>
 
 <main><article class="article-page">
-    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <nav class="article-product-nav" aria-label="AI Badger article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/aibadger/" class="article-product-nav__link article-product-nav__link--product">AI Badger</a>
+    </nav>
     <h1>Your Coding Agent Doesn’t Need 1,476 Lines of Test Output</h1>
     <p class="article-subtitle">A successful test run produced 1,476 lines. The agent needed roughly one.</p>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 30, 2026</div>

@@ -31,7 +31,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/articles/article.css?v=20260830">
+    <link rel="stylesheet" href="/articles/article.css?v=20260904">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <style>
@@ -87,7 +87,6 @@
         .article-cta-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
         .article-cta-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
         .article-cta-actions .icon { margin-right: 4px; }
-        .back-link { margin-bottom: 32px; }
         @media (max-width: 768px) { .article-body h2 { font-size: 1.4rem; } }
         @media (max-width: 480px) { .article-cta { padding: 20px; } .terminal-content { font-size: .78rem; padding: 18px 14px; } .terminal-label { display: block; width: auto; } .terminal-value { margin-left: 5px; } }
     </style>
@@ -100,7 +99,9 @@
 </div></nav></header>
 
 <main><article class="article-page">
-    <a href="/articles/" class="back-link">&larr; Back to Articles</a>
+    <nav class="article-product-nav" aria-label="Article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
     <h1>I Taught Maven to Be an Introvert</h1>
     <p class="article-subtitle">How a small Bash wrapper reduced successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</p>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 30, 2026 · Updated August 30, 2026</div>
