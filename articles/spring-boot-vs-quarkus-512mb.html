@@ -192,7 +192,7 @@
     <h1>Spring Boot vs Quarkus on a 512 MB VPS</h1>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-02">September 2, 2026</time></div>
     <div class="article-body">
-        <p>I have been testing the Quarkus support we just added in <a href="/statlite/">StatLite</a> 0.4.0, a lightweight self-hosted metrics dashboard. StatLite already monitors Spring Boot applications, so I put equivalent Spring Boot and Quarkus applications side by side to exercise both integrations and see how they behaved on a genuinely small server.</p>
+        <p>I have been testing the Quarkus support we just added to <a href="/statlite/">StatLite</a>. Since StatLite already monitors Spring Boot applications, I put equivalent Spring Boot and Quarkus applications side by side to exercise both integrations and see how they behaved on a genuinely small server.</p>
         <p>The setup was intentionally demanding: both apps got one Star Pulse workload, one JDK 25 build, one <code>Xmx80m</code> profile, and one 512 MiB VM with 256 MiB of swap. One StatLite process monitored both applications and the host.</p>
         <p>The short version is not that one framework simply uses more memory everywhere. Quarkus started larger in this workload, then developed a smaller resident working set and a smaller JVM heap under sustained pressure. RSS alone was misleading, because Linux was paging Quarkus more aggressively. In a later follow-up, the machine eventually ran out of memory and swap, and Spring was selected as the OOM victim.</p>
         <blockquote>
@@ -321,7 +321,7 @@
         <p>The stronger result came afterward. Once the obvious package-maintenance pressure had cleared, Spring and Quarkus were started again with the same JDK 25 and <code>Xmx80m</code> configuration. A fresh one-hour observation began. About 41 minutes later, swap was again effectively exhausted and the kernel OOM-killed Spring. Spring restarted automatically. Quarkus and StatLite did not restart, and the final health checks were successful.</p>
         <p>The later OOM was not caused by the active <code>apt</code> transaction seen earlier. It also should not be read as proof that no other operating-system activity contributed to the final memory state. The defensible conclusion is that 512 MiB of RAM and 256 MiB of swap did not provide enough overall headroom to guarantee reliable survival of both JVM applications for an hour.</p>
 
-        <h2>StatLite stayed small and kept watching</h2>
+        <h2>Monitoring overhead remained small</h2>
         <p>StatLite remained a small part of the system, at roughly 10 to 15 MiB RSS in the relevant checkpoints. It continued monitoring through the Spring restart, recorded the temporary health failure, and observed recovery. Quarkus and StatLite stayed available while Spring was being restarted.</p>
         <p>The application workload also encountered unauthenticated GitHub rate limits. Those upstream 403 responses are documented in the experiment record. They affected application polling, but they were not StatLite or framework crashes.</p>
         <p>The 24-hour views below are context through the morning maintenance window, not the timed comparison. Runtime memory MB is JVM heap, not RSS. The current cards come from a later local replay.</p>
@@ -366,14 +366,6 @@
             </figure>
         </dialog>
 
-        <div class="statlite-pitch">
-            <p>StatLite combines lightweight application monitoring with basic host visibility in one small self-hosted binary. If this looks useful for your servers, star it on GitHub. You can also try it with Spring Boot or Quarkus in a few minutes.</p>
-            <div class="article-actions">
-                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
-                <a href="https://github.com/PVRLabs/statlite#try-it" class="btn btn-github" target="_blank" rel="noopener noreferrer">Try StatLite</a>
-            </div>
-        </div>
-
         <h2>Takeaways</h2>
         <ul>
             <li>Quarkus started with higher RSS, so startup memory alone gave a misleading picture.</li>
@@ -386,9 +378,10 @@
         <h2>Evidence and reproducibility</h2>
         <p>The method, JVM flags, selected checkpoints, and kernel evidence are in the public experiment record. Full archives, databases, and private metadata are omitted. Star Pulse for both frameworks is included in that tree. StatLite is the monitoring dashboard shown in the screenshots: a single Go binary using SQLite, with Spring Boot Actuator and Quarkus metrics collectors.</p>
         <div class="statlite-pitch">
-            <p>Watching two JVMs on a box this small is exactly the kind of job StatLite is for.</p>
+            <p>Running Spring Boot or Quarkus on a small VPS? StatLite provides application metrics and basic host visibility without a separate Prometheus/Grafana stack.</p>
             <div class="article-actions">
-                <a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a>
+                <a href="https://github.com/PVRLabs/statlite#try-it" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Try StatLite</a>
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a>
                 <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" class="btn btn-github" target="_blank" rel="noopener noreferrer">Public experiment</a>
             </div>
         </div>
