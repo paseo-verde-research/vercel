@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>StatLite dashboard demo</title>
+    <meta name="description" content="Explore a sample StatLite dashboard with simulated Spring Boot, Quarkus, and self-monitoring data.">
+    <link rel="canonical" href="https://pvrlabs.xyz/statlite/demo.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/statlite/demo.html">
+    <meta property="og:title" content="StatLite dashboard demo">
+    <meta property="og:site_name" content="StatLite">
+    <meta property="og:description" content="Explore a sample StatLite dashboard with simulated Spring Boot, Quarkus, and self-monitoring data.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StatLite dashboard demo">
+    <meta name="twitter:description" content="Explore a sample StatLite dashboard with simulated Spring Boot, Quarkus, and self-monitoring data.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "StatLite dashboard demo",
+      "applicationCategory": "DeveloperApplication",
+      "description": "A sample StatLite dashboard with simulated Spring Boot, Quarkus, and self-monitoring data.",
+      "url": "https://pvrlabs.xyz/statlite/demo.html",
+      "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+    <link rel="stylesheet" href="/statlite/style.css?v=20260904b">
+    <link rel="stylesheet" href="/statlite/demo.css?v=20260904d">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="container">
+            <div class="header-left">
+                <a href="/statlite/" class="product-logo"><span class="wordmark-accent">Stat</span><span>Lite</span></a>
+            </div>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/statlite/" class="nav-link">Home</a></li>
+                <li><a href="/statlite/demo.html" class="nav-link active">Demo</a></li>
+                <li><a href="/statlite/#install" class="nav-link">Install</a></li>
+                <li><a href="/articles/lightweight-spring-boot-monitoring.html" class="nav-link">Spring Boot Guide</a></li>
+                <li><a href="https://github.com/PVRLabs/statlite" class="nav-link">GitHub</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="statlite-demo">
+        <div class="dashboard-bar">
+            <div class="demo-heading">
+                <h1>Explore the dashboard</h1>
+                <p>Sample data. Switch between Spring Boot, Quarkus, and StatLite self-monitoring.</p>
+            </div>
+            <div class="range" role="group" aria-label="Time range">
+                <button type="button" data-range="1h" aria-pressed="false">1h</button>
+                <button type="button" data-range="24h" class="active" aria-pressed="true">24h</button>
+                <button type="button" data-range="7d" aria-pressed="false">7d</button>
+                <button type="button" data-range="30d" aria-pressed="false">30d</button>
+            </div>
+        </div>
+        <div class="demo-body">
+            <section class="target-context" aria-label="Target">
+                <span class="label">Target:</span>
+                <span class="target-picker">
+                    <span id="target-status" class="target-status warn" aria-label="Target health unavailable" title="Target health unavailable">●</span>
+                    <span id="target-name" class="target-name">...</span>
+                    <select id="target-select" class="target-select hidden" aria-label="Target"></select>
+                </span>
+                <span id="target-endpoint" class="target-endpoint">...</span>
+                <span class="target-type-wrap">
+                    <span id="target-type" class="target-type">...</span>
+                    <button type="button" class="help" aria-label="Target type help" aria-expanded="false">i</button>
+                    <span id="target-type-tooltip" class="tooltip right" role="tooltip">Monitored through this collector type.</span>
+                </span>
+            </section>
+
+            <section class="status-grid" aria-label="Current status">
+                <div class="metric"><div class="label">Health</div><div id="health" class="value"><span class="pill">...</span></div></div>
+                <div class="metric"><div class="label label-help">DB <button type="button" class="help" aria-label="DB health help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Health reported by the target for its database dependency.</span></div><div id="db-health" class="value"><span class="pill">...</span></div></div>
+                <div class="metric"><div class="label">Started</div><div id="process-start" class="value small">...</div></div>
+                <div class="metric"><div class="label label-help">Restart <button type="button" class="help" aria-label="Restart detection help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Detected from process start time or counter resets; detection can lag by one poll.</span></div><div id="restart-detected" class="value small">...</div></div>
+                <div class="metric"><div class="label">Last poll success</div><div id="last-success" class="value small">...</div></div>
+                <div class="metric"><div class="label">Poll failures</div><div id="failures" class="value">0</div></div>
+                <div class="metric poll-status"><div class="label">Last poll</div><div id="last-poll" class="value small"><span id="poll-status-state" class="poll-status-state">...</span><span id="poll-status-time"></span></div><div id="poll-error" class="poll-status-error" hidden></div></div>
+            </section>
+
+            <section id="application-section" class="capability-section" aria-labelledby="application-heading">
+                <h2 id="application-heading">Application</h2>
+                <div class="chart-grid">
+                    <div class="chart">
+                        <div class="chart-head"><h2>Requests</h2><div id="requests-note" class="note"></div></div>
+                        <div class="canvas-wrap"><canvas id="requests-chart"></canvas></div>
+                    </div>
+                    <div class="chart">
+                        <div class="chart-head"><h2>HTTP errors</h2><div id="errors-note" class="note"></div></div>
+                        <div class="canvas-wrap"><canvas id="errors-chart"></canvas></div>
+                    </div>
+                    <div class="chart">
+                        <div class="chart-head"><h2 class="label-help">Average latency <button type="button" class="help" aria-label="Average latency help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Average request time for each interval, not a percentile.</span></h2><div id="latency-note" class="note"></div></div>
+                        <div class="canvas-wrap"><canvas id="latency-chart"></canvas></div>
+                    </div>
+                    <div id="process-section" class="chart">
+                        <div class="chart-head"><h2 class="label-help">Process runtime <button type="button" class="help" aria-label="Runtime help" aria-expanded="false">i</button><span id="runtime-tooltip" class="tooltip" role="tooltip">Process CPU usage and current managed runtime heap or allocator usage.</span></h2></div>
+                        <div class="canvas-wrap"><canvas id="runtime-chart"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="host-section" class="capability-section" aria-labelledby="host-heading">
+                <h2 id="host-heading">Host resources</h2>
+                <div class="chart-grid">
+                    <div id="host-runtime-chart-card" class="chart">
+                        <div class="chart-head"><h2 class="label-help">Host runtime <button type="button" class="help" aria-label="Host runtime help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Current and total host RAM, with CPU usage across the capacity visible to StatLite.</span></h2></div>
+                        <div class="canvas-wrap"><canvas id="host-runtime-chart"></canvas></div>
+                    </div>
+                    <div id="host-disk-chart-card" class="chart">
+                        <div class="chart-head"><h2>Disk</h2><div id="host-disk-note" class="note"></div></div>
+                        <div class="canvas-wrap"><canvas id="host-disk-chart"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lower">
+                <div class="section">
+                    <h2>Recent events</h2>
+                    <div id="events" class="events"><div class="empty">...</div></div>
+                </div>
+                <div class="section">
+                    <h2>Latest snapshot</h2>
+                    <pre id="latest-json">{}</pre>
+                </div>
+            </section>
+        </div>
+        <footer class="dashboard-footer">
+            <div class="footer-summary" aria-label="Dashboard summary">
+                <span>Targets: <span id="footer-targets">...</span></span>
+                <span class="footer-separator" aria-hidden="true">|</span>
+                <span>UP: <span id="footer-up">...</span></span>
+                <span class="footer-separator" aria-hidden="true">|</span>
+                <span>Last refresh: <span id="footer-refresh">...</span></span>
+            </div>
+            <div class="footer-project">
+                <a href="https://github.com/PVRLabs/statlite" target="_blank" rel="noopener noreferrer">★ Star on GitHub</a>
+            </div>
+        </footer>
+    </div>
+</main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div></footer>
+
+<script src="/script.js?v=20260830"></script>
+<script src="/statlite/demo/vendor/chart.4.4.8.min.js"></script>
+<script src="/statlite/demo/data/helpers.js"></script>
+<script src="/statlite/demo/data/spring.js"></script>
+<script src="/statlite/demo/data/quarkus.js"></script>
+<script src="/statlite/demo/data/statlite.js"></script>
+<script src="/statlite/demo.js" defer></script>
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
