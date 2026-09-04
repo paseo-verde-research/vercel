@@ -50,6 +50,10 @@
     };
   }
 
+  function wobble(seed, span) {
+    return (seed * 17 + 11) % (span * 2 + 1) - span;
+  }
+
   function interpolatedRange(pointsForDay) {
     const source = pointsForDay.slice(-3);
     const expanded = [];
@@ -79,36 +83,113 @@
   }
 
   function oneHourRange(pointsForDay) {
-    const expanded = interpolatedRange(pointsForDay);
-    const recentErrors = [
-      {},
-      { http_404: 1 },
-      { http_4xx: 1 },
-      { http_404: 1 },
-      { http_5xx: 1 }
-    ];
-    return expanded.map((point, index) => Object.assign(point, {
-      http_404: 0,
-      http_4xx: 0,
-      http_5xx: 0
-    }, recentErrors[index] || {}));
+    return interpolatedRange(pointsForDay).map((point, index) => {
+      const next = Object.assign({}, point);
+      const drift = wobble(index, 2);
+      if (typeof next.requests === "number") {
+        next.requests = Math.max(0, next.requests + drift);
+      }
+      if (typeof next.process_cpu_usage === "number") {
+        next.process_cpu_usage = Math.max(0, next.process_cpu_usage + drift * 0.002);
+      }
+      if (typeof next.average_latency_seconds === "number") {
+        next.average_latency_seconds = Math.max(0.001, next.average_latency_seconds + drift * 0.0005);
+      }
+      if (typeof next.heap_used_bytes === "number") {
+        next.heap_used_bytes *= 1 + (index % 4) * 0.012;
+      }
+      if (typeof next.host_cpu_usage === "number") {
+        next.host_cpu_usage = Math.max(0, next.host_cpu_usage + drift * 0.003);
+      }
+      next.http_404 = (index === 2 || index === 3) ? 1 : 0;
+      next.http_4xx = index === 4 ? 1 : 0;
+      next.http_5xx = index === 6 ? 1 : 0;
+      return next;
+    });
   }
 
-  // The longer views repeat eight representative points from the curated
-  // daily shape. Repetition keeps the fixture deterministic and easy to edit.
+  // Fixture-calendar day variation. After rebase this is not necessarily
+  // the weekday shown on the chart.
+  function dayScale(timestamp) {
+    const day = new Date(timestamp).getUTCDay();
+    if (day === 0) return 0.4;
+    if (day === 6) return 0.52;
+    if (day === 5) return 1.08;
+    if (day === 1) return 0.9;
+    return 1;
+  }
+
+  function scaleTraffic(point, scale, options) {
+    const next = Object.assign({}, point);
+    if (typeof next.requests === "number") {
+      next.requests = Math.max(0, Math.round(next.requests * scale) + wobble(options.seed, 2));
+    }
+    if (typeof next.average_latency_seconds === "number") {
+      next.average_latency_seconds *= 0.97 + 0.07 * Math.min(scale, 1.2);
+    }
+    if (typeof next.process_cpu_usage === "number") {
+      next.process_cpu_usage = Math.max(0.01, next.process_cpu_usage * Math.max(0.45, scale));
+    }
+    if (typeof next.heap_used_bytes === "number") {
+      next.heap_used_bytes *= 0.96 + 0.06 * Math.min(scale, 1.15);
+    }
+    if (typeof next.host_cpu_usage === "number") {
+      next.host_cpu_usage = Math.max(0.03, next.host_cpu_usage * Math.max(0.5, scale));
+    }
+    if (typeof next.host_memory_used_bytes === "number") {
+      next.host_memory_used_bytes *= 0.98 + 0.03 * Math.min(scale, 1.1);
+    }
+    if (options.clearErrors) {
+      next.http_5xx = 0;
+      next.http_4xx = 0;
+      next.http_404 = options.stray404 ? 1 : 0;
+    } else {
+      ["http_404", "http_4xx", "http_5xx"].forEach((key) => {
+        if (typeof next[key] === "number") next[key] = Math.round(next[key] * Math.max(scale, 0.5));
+      });
+      if (options.incidentSpike) {
+        next.http_5xx = Math.max(next.http_5xx || 0, 1);
+        next.http_4xx = Math.max(next.http_4xx || 0, 1);
+      }
+    }
+    if (options.diskUsed != null && Number.isFinite(next.host_disk_total_bytes)) {
+      next.host_disk_used_bytes = options.diskUsed;
+      next.host_disk_usage = next.host_disk_used_bytes / next.host_disk_total_bytes;
+    }
+    return next;
+  }
+
+  // Longer views reuse the daily shape, with day-to-day variation, one
+  // incident day, and disk that grows toward the current sample instead of repeating.
   function expandedRange(pointsForDay, days, pointsPerDay) {
     const expanded = [];
     const sampleIndexes = [0, 7, 13, 20, 27, 34, 40, 47];
     const span = days * DAY_MILLISECONDS;
-    for (let index = 0; index < days * pointsPerDay; index++) {
+    const total = days * pointsPerDay;
+    const incidentDay = days <= 7 ? days - 2 : Math.round(days * 0.62);
+    const lastDisk = pointsForDay[pointsForDay.length - 1].host_disk_used_bytes;
+    const diskStart = Number.isFinite(lastDisk)
+      ? lastDisk - (days >= 30 ? 8 * GB : 2 * GB)
+      : null;
+    for (let index = 0; index < total; index++) {
+      const dayIndex = Math.floor(index / pointsPerDay);
       const withinDay = index % pointsPerDay;
       const baseIndex = sampleIndexes[withinDay] == null
         ? Math.round(withinDay * (pointsForDay.length - 1) / (pointsPerDay - 1))
         : Math.min(sampleIndexes[withinDay], pointsForDay.length - 1);
-      const point = Object.assign({}, pointsForDay[baseIndex]);
-      const progress = index / (days * pointsPerDay - 1);
+      const progress = index / (total - 1);
       const timestamp = FIXTURE_REFERENCE_TIME - span + progress * span;
-      point.timestamp = new Date(timestamp).toISOString();
+      let scale = dayScale(timestamp) * (0.94 + (dayIndex * 13 + 7) % 13 / 100);
+      if (days >= 30) scale *= 0.88 + 0.24 * (dayIndex / Math.max(days - 1, 1));
+      const point = scaleTraffic(Object.assign({}, pointsForDay[baseIndex], {
+        timestamp: new Date(timestamp).toISOString()
+      }), scale, {
+        seed: index + days,
+        clearErrors: dayIndex !== incidentDay,
+        stray404: dayIndex !== incidentDay && scale > 0.85 && withinDay === 3 && dayIndex % 3 === 0,
+        incidentSpike: dayIndex === incidentDay && withinDay === 2,
+        diskUsed: diskStart == null ? null : diskStart + (lastDisk - diskStart) * progress
+      });
       expanded.push(point);
     }
     return expanded;

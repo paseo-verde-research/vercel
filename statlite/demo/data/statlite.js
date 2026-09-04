@@ -69,7 +69,9 @@
       { timestamp: "2026-09-02T13:00:00Z", severity: "info", type: "collector", metric_key: "", message: "All configured targets collected successfully" },
       { timestamp: "2026-09-02T06:00:00Z", severity: "info", type: "recovery", metric_key: "process.cpu.usage", message: "Process CPU returned below 10%" },
       { timestamp: "2026-09-02T05:00:00Z", severity: "warning", type: "threshold", metric_key: "process.cpu.usage", message: "Collection load reached 11% process CPU" },
-      { timestamp: "2026-09-01T22:00:00Z", severity: "info", type: "collector", metric_key: "host.disk", message: "Disk usage sample recorded" }
+      { timestamp: "2026-09-01T22:00:00Z", severity: "info", type: "collector", metric_key: "host.disk", message: "Disk usage sample recorded" },
+      { timestamp: "2026-08-27T09:30:00Z", severity: "info", type: "collector", metric_key: "", message: "All configured targets collected successfully" },
+      { timestamp: "2026-08-20T16:00:00Z", severity: "info", type: "collector", metric_key: "host.disk", message: "Disk usage remained within the expected band" }
     ]
   });
 }());

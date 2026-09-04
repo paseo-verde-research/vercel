@@ -69,7 +69,9 @@
       { timestamp: "2026-09-02T09:30:00Z", severity: "warning", type: "threshold", metric_key: "http.server.requests", message: "Latency increased during the morning workload" },
       { timestamp: "2026-09-02T02:30:00Z", severity: "info", type: "restart_detected", metric_key: "process.start.time", message: "Application restart detected after the new process started" },
       { timestamp: "2026-09-02T02:30:00Z", severity: "info", type: "recovery", metric_key: "http.server.errors", message: "5xx error rate returned to normal" },
-      { timestamp: "2026-09-02T02:00:00Z", severity: "warning", type: "threshold", metric_key: "http.server.errors", message: "A 5xx response was observed during the busy period" }
+      { timestamp: "2026-09-02T02:00:00Z", severity: "warning", type: "threshold", metric_key: "http.server.errors", message: "A 5xx response was observed during the busy period" },
+      { timestamp: "2026-08-28T03:15:00Z", severity: "info", type: "restart_detected", metric_key: "process.start.time", message: "Application restart detected after a release" },
+      { timestamp: "2026-08-15T14:40:00Z", severity: "info", type: "collector", metric_key: "", message: "Collection stayed healthy after a configuration reload" }
     ]
   });
 }());
