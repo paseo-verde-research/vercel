@@ -196,7 +196,7 @@
         <p>The setup was intentionally demanding: both apps got one Star Pulse workload, one JDK 25 build, one <code>Xmx80m</code> profile, and one 512 MiB VM with 256 MiB of swap. One StatLite process monitored both applications and the host.</p>
         <p>The short version is not that one framework simply uses more memory everywhere. Quarkus started larger in this workload, then developed a smaller resident working set and a smaller JVM heap under sustained pressure. RSS alone was misleading, because Linux was paging Quarkus more aggressively. In a later follow-up, the machine eventually ran out of memory and swap, and Spring was selected as the OOM victim.</p>
         <blockquote>
-            <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" target="_blank" rel="noopener noreferrer">published experiment record</a> contains the exact JVM flags and versions, selected RSS/PSS/VmSwap measurements, selected checkpoints, kernel/OOM evidence, restart chronology, methodology, and limitations. Full archives, databases, and private metadata are omitted.</p>
+            <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" target="_blank" rel="noopener noreferrer">published experiment record</a> contains the exact JVM flags and versions, demo application source code, selected RSS/PSS/VmSwap measurements, selected checkpoints, kernel/OOM evidence, restart chronology, methodology, and limitations. Full archives, databases, and private metadata are omitted.</p>
         </blockquote>
 
         <h2>Three observations</h2>
@@ -376,7 +376,7 @@
         <p>This is useful evidence about behavior under extreme memory pressure, not a clean definitive framework-memory benchmark. At this level of pressure, Linux paging and OOM behavior become part of the result. A higher-headroom follow-up on a less constrained VM would reduce those side effects and provide a cleaner comparison of the frameworks themselves. That is a future experiment, not a result reported here.</p>
 
         <h2>Evidence and reproducibility</h2>
-        <p>The method, JVM flags, selected checkpoints, and kernel evidence are in the public experiment record. Full archives, databases, and private metadata are omitted. Star Pulse for both frameworks is included in that tree. StatLite is the monitoring dashboard shown in the screenshots: a single Go binary using SQLite, with Spring Boot Actuator and Quarkus metrics collectors.</p>
+        <p>The method, JVM flags, demo application source code, selected checkpoints, and kernel evidence are in the public experiment record. Full archives, databases, and private metadata are omitted. Both Star Pulse implementations are included in that tree. StatLite is the monitoring dashboard shown in the screenshots: a single Go binary using SQLite, with Spring Boot Actuator and Quarkus metrics collectors.</p>
         <div class="statlite-pitch">
             <p>Running Spring Boot or Quarkus on a small VPS? StatLite provides application metrics and basic host visibility without a separate Prometheus/Grafana stack.</p>
             <div class="article-actions">
