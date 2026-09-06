@@ -1,5 +1,4 @@
-// StatLite self-monitoring fixture: steady host capacity with a brief
-// collection warning and recovery.
+// StatLite self-monitoring fixture: steady host capacity.
 (function () {
   const rows = [
     ["2026-09-01T19:00:00Z", 8, 0, 0, 0, 0.012, 86, 0.025, 0.08, 7.1, 62.0],
@@ -63,15 +62,6 @@
       process_start_time: "2026-08-30T11:42:00Z"
     },
     latestRestart: null,
-    events: [
-      { timestamp: "2026-09-02T18:15:00Z", severity: "info", type: "recovery", metric_key: "collector.poll", message: "Collection recovered after a brief endpoint timeout" },
-      { timestamp: "2026-09-02T18:00:00Z", severity: "warning", type: "poll", metric_key: "collector.poll", message: "One target poll exceeded its timeout" },
-      { timestamp: "2026-09-02T13:00:00Z", severity: "info", type: "collector", metric_key: "", message: "All configured targets collected successfully" },
-      { timestamp: "2026-09-02T06:00:00Z", severity: "info", type: "recovery", metric_key: "process.cpu.usage", message: "Process CPU returned below 10%" },
-      { timestamp: "2026-09-02T05:00:00Z", severity: "warning", type: "threshold", metric_key: "process.cpu.usage", message: "Collection load reached 11% process CPU" },
-      { timestamp: "2026-09-01T22:00:00Z", severity: "info", type: "collector", metric_key: "host.disk", message: "Disk usage sample recorded" },
-      { timestamp: "2026-08-27T09:30:00Z", severity: "info", type: "collector", metric_key: "", message: "All configured targets collected successfully" },
-      { timestamp: "2026-08-20T16:00:00Z", severity: "info", type: "collector", metric_key: "host.disk", message: "Disk usage remained within the expected band" }
-    ]
+    events: []
   });
 }());

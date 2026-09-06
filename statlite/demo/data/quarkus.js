@@ -63,14 +63,7 @@
     },
     latestRestart: "2026-09-02T02:30:00Z",
     events: [
-      { timestamp: "2026-09-02T12:30:00Z", severity: "info", type: "collector", metric_key: "", message: "Quarkus metrics and health collection healthy" },
-      { timestamp: "2026-09-02T08:45:00Z", severity: "info", type: "recovery", metric_key: "http.server.requests", message: "Latency returned below the normal operating band" },
-      { timestamp: "2026-09-02T08:15:00Z", severity: "warning", type: "threshold", metric_key: "http.server.requests", message: "Latency briefly increased with request volume" },
-      { timestamp: "2026-09-02T02:30:00Z", severity: "info", type: "restart_detected", metric_key: "process.start.time", message: "Application restart detected after the new process started" },
-      { timestamp: "2026-09-02T02:30:00Z", severity: "info", type: "recovery", metric_key: "http.server.errors", message: "Catalog lookup errors returned to baseline" },
-      { timestamp: "2026-09-02T02:00:00Z", severity: "warning", type: "threshold", metric_key: "http.server.errors", message: "One transient 5xx response was observed" },
-      { timestamp: "2026-08-29T11:20:00Z", severity: "info", type: "recovery", metric_key: "http.server.requests", message: "Latency returned to the normal operating band" },
-      { timestamp: "2026-08-14T08:00:00Z", severity: "info", type: "collector", metric_key: "", message: "Quarkus metrics collection stayed healthy" }
+      { timestamp: "2026-09-02T02:30:00Z", severity: "warning", type: "restart_detected", metric_key: "", message: "process.start.time changed" }
     ]
   });
 }());
