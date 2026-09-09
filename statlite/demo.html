@@ -77,7 +77,7 @@
             <section class="target-context" aria-label="Target">
                 <span class="label">Target:</span>
                 <span class="target-picker">
-                    <span id="target-status" class="target-status warn" aria-label="Target health unavailable" title="Target health unavailable">●</span>
+                    <span id="target-status" class="target-status warn" aria-label="Target status unavailable" title="Target status unavailable">●</span>
                     <span id="target-name" class="target-name">...</span>
                     <select id="target-select" class="target-select hidden" aria-label="Target"></select>
                 </span>
@@ -90,8 +90,8 @@
             </section>
 
             <section class="status-grid" aria-label="Current status">
-                <div class="metric"><div class="label">Health</div><div id="health" class="value"><span class="pill">...</span></div></div>
-                <div class="metric"><div class="label label-help">DB <button type="button" class="help" aria-label="DB health help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Health reported by the target for its database dependency.</span></div><div id="db-health" class="value"><span class="pill">...</span></div></div>
+                <div class="metric"><div class="label label-help">App health <button type="button" class="help" aria-label="Application health help" aria-describedby="application-health-tooltip" aria-expanded="false">i</button><span id="application-health-tooltip" class="tooltip" role="tooltip">UP is StatLite’s positive app status. It means explicit application health is positive or metrics collection is succeeding. The current signal source appears here after the first poll.</span></div><div id="health" class="value"><span class="pill">...</span></div></div>
+                <div class="metric"><div class="label label-help">DB health <button type="button" class="help" aria-label="DB health help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Health explicitly reported by the target for its database dependency. Unavailable means no authoritative database health signal was provided.</span></div><div id="db-health" class="value"><span class="pill">...</span></div></div>
                 <div class="metric"><div class="label">Started</div><div id="process-start" class="value small">...</div></div>
                 <div class="metric"><div class="label label-help">Restart <button type="button" class="help" aria-label="Restart detection help" aria-expanded="false">i</button><span class="tooltip" role="tooltip">Detected from process start time or counter resets; detection can lag by one poll.</span></div><div id="restart-detected" class="value small">...</div></div>
                 <div class="metric"><div class="label">Last poll success</div><div id="last-success" class="value small">...</div></div>
@@ -150,7 +150,7 @@
             <div class="footer-summary" aria-label="Dashboard summary">
                 <span>Targets: <span id="footer-targets">...</span></span>
                 <span class="footer-separator" aria-hidden="true">|</span>
-                <span>UP: <span id="footer-up">...</span></span>
+                <span title="Targets whose latest metrics collection succeeded; not an application-health assertion">Reporting: <span id="footer-reporting">...</span></span>
                 <span class="footer-separator" aria-hidden="true">|</span>
                 <span>Last refresh: <span id="footer-refresh">...</span></span>
             </div>
@@ -165,11 +165,11 @@
 
 <script src="/script.js?v=20260830"></script>
 <script src="/statlite/demo/vendor/chart.4.4.8.min.js"></script>
-<script src="/statlite/demo/data/helpers.js?v=20260905"></script>
+<script src="/statlite/demo/data/helpers.js?v=20260909"></script>
 <script src="/statlite/demo/data/spring.js?v=20260905"></script>
 <script src="/statlite/demo/data/quarkus.js?v=20260905"></script>
 <script src="/statlite/demo/data/statlite.js?v=20260905"></script>
-<script src="/statlite/demo.js?v=20260904" defer></script>
+<script src="/statlite/demo.js?v=20260909" defer></script>
 <script>
     var sc_project = 13137699;
     var sc_invisible = 1;

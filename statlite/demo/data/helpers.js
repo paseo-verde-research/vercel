@@ -225,6 +225,13 @@
     return latest;
   }
 
+  function shiftMonitorStatus(status, offset) {
+    if (!status) return status;
+    status.last_successful_poll_at = shiftTimestamp(status.last_successful_poll_at, offset);
+    status.last_poll_at = shiftTimestamp(status.last_poll_at, offset);
+    return status;
+  }
+
   function rebaseFixture(source, sessionNow) {
     const fixture = JSON.parse(JSON.stringify(source));
     const offset = sessionNow.getTime() - FIXTURE_REFERENCE_TIME;
@@ -235,10 +242,10 @@
     });
     fixture.summary.latest = shiftLatest(fixture.summary.latest, offset);
     fixture.summary.latest_restart = shiftTimestamp(fixture.summary.latest_restart, offset);
-    fixture.summary.monitor.last_successful_poll_at = shiftTimestamp(fixture.summary.monitor.last_successful_poll_at, offset);
-    fixture.summary.monitor.last_poll_at = shiftTimestamp(fixture.summary.monitor.last_poll_at, offset);
+    shiftMonitorStatus(fixture.summary.monitor, offset);
     fixture.summary.targets.forEach((target) => {
       target.latest = shiftLatest(target.latest, offset);
+      target.status = shiftMonitorStatus(target.status, offset);
     });
     return fixture;
   }
@@ -265,6 +272,7 @@
     delete metrics.timestamp;
     const latest = {
       timestamp: last.timestamp,
+      status: "ok",
       result: Object.assign({}, metrics, config.current)
     };
     const metadata = {
@@ -272,19 +280,20 @@
       type: config.type,
       endpoint: config.endpoint
     };
+    const monitor = {
+      last_successful_poll_at: last.timestamp,
+      last_poll_at: last.timestamp,
+      consecutive_poll_failures: 0,
+      last_poll_error_summary: ""
+    };
     return {
       summary: {
         selected_target: metadata,
-        targets: [{ metadata, latest }],
+        targets: [{ metadata, status: monitor, latest }],
         latest,
         latest_restart_status: config.latestRestart ? "found" : "none",
         latest_restart: config.latestRestart || null,
-        monitor: {
-          last_successful_poll_at: last.timestamp,
-          last_poll_at: last.timestamp,
-          consecutive_poll_failures: 0,
-          last_poll_error_summary: ""
-        }
+        monitor
       },
       series: series(config.points),
       ranges: ranges(config.points),

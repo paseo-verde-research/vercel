@@ -196,6 +196,7 @@ function renderFixture() {
   const fixture = selectedFixture();
   const targets = Object.entries(state.fixtures).map(([key, item]) => ({
     metadata: Object.assign({ demo_key: key }, item.summary.selected_target),
+    status: item.summary.monitor,
     latest: item.summary.latest
   }));
   const summary = Object.assign({}, fixture.summary, { targets });
@@ -213,8 +214,8 @@ function renderSummary(summary) {
   const targets = summary.targets || [];
   renderTargetContext(targets, selected);
   renderFooterSummary(targets, state.sessionNow);
-  setPill("health", result.health_status);
-  setPill("db-health", result.db_health_status);
+  renderApplicationHealth(targetPresentation({ latest, status: monitor }));
+  renderDatabaseHealth(result.db_health_status);
   setText("process-start", formatDateTime(result.process_start_time));
   renderRestart(summary);
   setText("last-success", formatDateTime(monitor.last_successful_poll_at));
@@ -223,13 +224,101 @@ function renderSummary(summary) {
 }
 
 function renderFooterSummary(targets, now) {
-  const ok = targets.filter((target) => {
-    const health = (((target.latest || {}).result || {}).health_status) || "";
-    return statusTone(health) === "ok";
-  }).length;
+  const reporting = targets.filter((target) => targetPresentation(target).reporting).length;
   setText("footer-targets", String(targets.length));
-  setText("footer-up", String(ok));
+  setText("footer-reporting", String(reporting));
   setText("footer-refresh", now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+}
+
+function targetPresentation(target) {
+  const latest = (target && target.latest) || {};
+  const monitor = (target && target.status) || {};
+  const rawHealth = String(((latest.result || {}).health_status) || "").trim();
+  const normalizedHealth = rawHealth.toUpperCase();
+  const latestStatus = String(latest.status || "").trim().toLowerCase();
+  const currentFailure = latestStatus === "error" || (monitor.consecutive_poll_failures || 0) > 0;
+  const reportingState = latestStatus === "ok" && !currentFailure
+    ? "Reporting"
+    : currentFailure
+      ? "Unavailable"
+      : "Not reporting";
+
+  let label = reportingState === "Reporting" ? "UP" : reportingState === "Unavailable" ? "DOWN" : reportingState;
+  let tone = reportingState === "Reporting" ? "ok" : reportingState === "Unavailable" ? "bad" : "warn";
+  let healthDetail = "";
+  if (currentFailure) {
+    label = "DOWN";
+    tone = "bad";
+  } else if (normalizedHealth === "UP" || normalizedHealth === "OK") {
+    label = "UP";
+    tone = "ok";
+  } else if (["DOWN", "ERROR", "OUT_OF_SERVICE"].includes(normalizedHealth)) {
+    label = "Unhealthy";
+    tone = "bad";
+    healthDetail = rawHealth;
+  } else if (rawHealth) {
+    label = rawHealth;
+    tone = "warn";
+  }
+
+  const healthDescription = currentFailure
+    ? "Application availability: DOWN because collection is failing" + (rawHealth ? "; last reported application health: " + rawHealth : "")
+    : rawHealth
+      ? "Application health: " + label + (healthDetail ? " (" + healthDetail + ")" : "")
+      : reportingState === "Reporting"
+        ? "Authoritative application health unavailable; target is reporting and shown as UP"
+        : "Authoritative application health unavailable; target is " + reportingState.toLowerCase();
+  return {
+    label,
+    tone,
+    accessibleLabel: healthDescription + "; reporting status: " + reportingState,
+    selectorSuffix: presentationSymbol(tone) + " " + label + (healthDetail && label === "Unhealthy" ? " (" + healthDetail + ")" : ""),
+    reportingState,
+    reporting: reportingState === "Reporting",
+    authoritativeHealth: rawHealth !== "",
+    rawHealth
+  };
+}
+
+function presentationSymbol(tone) {
+  if (tone === "ok") return "\u{1F7E2}";
+  if (tone === "bad") return "\u{1F534}";
+  return "\u{26AA}";
+}
+
+function renderApplicationHealth(presentation) {
+  const health = document.getElementById("health");
+  health.innerHTML = '<span class="pill ' + presentation.tone + '">' + escapeHTML(presentation.label) + "</span>";
+  health.title = presentation.accessibleLabel;
+  health.setAttribute("aria-label", presentation.accessibleLabel);
+
+  const tooltip = document.getElementById("application-health-tooltip");
+  if (presentation.reportingState === "Unavailable") {
+    tooltip.textContent = "StatLite cannot currently collect from the application." +
+      (presentation.authoritativeHealth ? " Last reported application health: " + presentation.rawHealth + "." : "");
+  } else if (!presentation.authoritativeHealth) {
+    tooltip.textContent = presentation.reporting
+      ? "No explicit application health signal is available. UP is based on successful metrics collection."
+      : "No explicit application health signal is available. StatLite has not completed a poll.";
+  } else if (presentation.rawHealth.toUpperCase() !== presentation.label.toUpperCase() && presentation.rawHealth.toUpperCase() !== "OK") {
+    tooltip.textContent = "Application reported " + presentation.rawHealth + ", shown as " + presentation.label +
+      ". Collection status: " + presentation.reportingState + ".";
+  } else {
+    const reportedHealth = presentation.rawHealth.toUpperCase() === "OK" ? "UP" : presentation.rawHealth;
+    tooltip.textContent = (reportedHealth === "UP" ? "UP means the application reported positive health" : "Application reported " + reportedHealth) +
+      ". Collection status: " + presentation.reportingState + ".";
+  }
+}
+
+function renderDatabaseHealth(value) {
+  const rawHealth = String(value || "").trim();
+  const health = document.getElementById("db-health");
+  health.innerHTML = pillHTML(rawHealth || "Unavailable");
+  const label = rawHealth
+    ? "Database health reported by the target: " + rawHealth
+    : "Authoritative database health unavailable";
+  health.title = label;
+  health.setAttribute("aria-label", label);
 }
 
 function renderPollStatus(monitor) {
@@ -288,13 +377,12 @@ function renderTargetContext(targets, selected) {
   const endpoint = selected.endpoint || "Endpoint unavailable";
   const multiple = targets.length > 1;
   const selectedSummary = targets.find((target) => (target.metadata || {}).name === selected.name) || {};
-  const selectedHealth = (((selectedSummary.latest || {}).result || {}).health_status) || "";
+  const selectedPresentation = targetPresentation(selectedSummary);
   const targetStatus = document.getElementById("target-status");
-  const targetStatusLabel = statusLabel(selectedHealth);
 
-  targetStatus.className = "target-status " + statusTone(selectedHealth);
-  targetStatus.title = targetStatusLabel;
-  targetStatus.setAttribute("aria-label", targetStatusLabel);
+  targetStatus.className = "target-status " + selectedPresentation.tone;
+  targetStatus.title = selectedPresentation.accessibleLabel;
+  targetStatus.setAttribute("aria-label", selectedPresentation.accessibleLabel);
   document.getElementById("target-name").textContent = name;
   document.getElementById("target-name").classList.toggle("hidden", multiple);
   document.getElementById("target-endpoint").textContent = endpoint;
@@ -309,11 +397,11 @@ function renderTargetContext(targets, selected) {
   select.innerHTML = "";
   targets.forEach((target) => {
     const metadata = target.metadata || {};
-    const health = (((target.latest || {}).result || {}).health_status) || "";
+    const presentation = targetPresentation(target);
     const option = document.createElement("option");
     option.value = metadata.demo_key || metadata.name || "";
     option.selected = metadata.name === selected.name;
-    option.textContent = (metadata.name || "Unnamed target") + "  " + statusPrefix(health);
+    option.textContent = (metadata.name || "Unnamed target") + "  " + presentation.selectorSuffix;
     select.appendChild(option);
   });
 }
@@ -433,21 +521,8 @@ function pillHTML(value) {
 function statusTone(value) {
   const normalized = String(value || "").toUpperCase();
   if (normalized === "UP" || normalized === "OK") return "ok";
-  if (normalized === "DOWN" || normalized === "ERROR") return "bad";
+  if (normalized === "DOWN" || normalized === "ERROR" || normalized === "OUT_OF_SERVICE") return "bad";
   return "warn";
-}
-
-function statusPrefix(value) {
-  const tone = statusTone(value);
-  if (tone === "ok") return "\u{1F7E2} UP";
-  if (tone === "bad") return "\u{1F534} DOWN";
-  return "\u{26AA} UNKNOWN";
-}
-
-function statusLabel(value) {
-  const normalized = String(value || "").toUpperCase();
-  if (!normalized) return "Target health unknown";
-  return "Target health: " + normalized;
 }
 
 function targetTypeHelp(value) {
