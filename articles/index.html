@@ -135,10 +135,58 @@
             line-height: 1.6;
             margin-bottom: 0;
         }
+        .vps-lab {
+            margin: 12px 0;
+            padding: 22px clamp(16px, 4vw, 28px) 6px;
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 8px 8px 0;
+            background: var(--bg-light);
+        }
+        .vps-lab__header {
+            margin-bottom: 2px;
+        }
+        .vps-lab__title {
+            margin: 0 0 4px;
+            color: var(--primary-green);
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .vps-lab__description {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .vps-lab .article-entry {
+            padding: 22px 0;
+        }
+        .vps-lab__toggle {
+            min-height: 44px;
+            margin: 0;
+            padding: 8px 0;
+            border: 0;
+            background: transparent;
+            color: var(--primary-green);
+            font: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .vps-lab__toggle:hover {
+            text-decoration: underline;
+        }
+        .vps-lab__toggle:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 3px;
+        }
         @media (max-width: 768px) {
             .articles-hero h1 { font-size: 2rem; }
             .articles-hero { padding: 100px 0 30px; }
             .article-filters { gap: 0 16px; }
+        }
+        @media (max-width: 480px) {
+            .vps-lab { padding-inline: 16px; }
         }
     </style>
 </head>
@@ -174,6 +222,7 @@
     <nav class="article-filters" aria-label="Filter articles by topic">
             <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(10)</span></button>
             <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span>(4)</span></button>
+        <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count></span></button>
         <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(4)</span></button>
         <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(8)</span></button>
     </nav>
@@ -181,8 +230,9 @@
     <section class="articles-list">
         <div class="container">
 
-            <article class="article-entry" data-tags="statlite engineering">
+            <article class="article-entry" data-tags="vps statlite engineering">
                 <div class="article-tags" aria-label="Article topics">
+                    <span>VPS</span>
                     <span>StatLite</span>
                     <span>Engineering</span>
                 </div>
@@ -210,8 +260,9 @@
                 <p>The agent already explored the repo and understands the task. Hand off that session state instead of reconstructing it somewhere else.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite engineering">
+            <article class="article-entry" data-tags="vps statlite engineering">
                 <div class="article-tags" aria-label="Article topics">
+                    <span>VPS</span>
                     <span>StatLite</span>
                     <span>Engineering</span>
                 </div>
@@ -220,8 +271,9 @@
                 <p>A JDK 25 Alpine follow-up completed the hour on a nominal 256 MiB VPS, but high swap use and a long scheduling delay kept the result firmly in stretch-test territory.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite engineering">
+            <article class="article-entry" data-tags="vps statlite engineering">
                 <div class="article-tags" aria-label="Article topics">
+                    <span>VPS</span>
                     <span>StatLite</span>
                     <span>Engineering</span>
                 </div>
@@ -290,7 +342,7 @@
     </div>
 </footer>
 
-<script src="/script.js?v=20260830"></script>
+<script src="/script.js?v=20260909"></script>
 <!-- Default Statcounter code for PVR Labs -->
 <script>
     var sc_project = 13137699;

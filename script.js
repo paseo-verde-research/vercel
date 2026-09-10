@@ -244,9 +244,77 @@ document.addEventListener('DOMContentLoaded', () => {
     const articleFilters = Array.from(document.querySelectorAll('.article-filter'));
     const articleEntries = Array.from(document.querySelectorAll('.article-entry'));
     if (articleFilters.length && articleEntries.length) {
+        const articlesContainer = articleEntries[0].parentElement;
+        const vpsArticles = articleEntries.filter(article => article.dataset.tags.split(/\s+/).includes('vps'));
+        const vpsFilterCount = document.querySelector('.article-filter[data-filter="vps"] [data-article-count]');
+        const vpsLabId = 'vps-lab-articles';
+        const vpsArticlePlaceholders = new Map();
+        let vpsLab;
+
+        if (vpsFilterCount) vpsFilterCount.textContent = `(${vpsArticles.length})`;
+
+        const showVpsLab = () => {
+            if (!articlesContainer || !vpsArticles.length || vpsLab) return;
+
+            vpsLab = document.createElement('section');
+            vpsLab.className = 'vps-lab';
+            vpsLab.setAttribute('aria-labelledby', 'vps-lab-title');
+            vpsLab.innerHTML = `
+                <header class="vps-lab__header">
+                    <h2 class="vps-lab__title" id="vps-lab-title">VPS Lab</h2>
+                    <p class="vps-lab__description">Experiments running real software on small VPS instances.</p>
+                </header>
+                <div id="${vpsLabId}"></div>
+                <button class="vps-lab__toggle" type="button" aria-expanded="false" aria-controls="${vpsLabId}"></button>
+            `;
+
+            const newestVpsArticle = vpsArticles[0];
+            articlesContainer.insertBefore(vpsLab, newestVpsArticle);
+            const labArticles = vpsLab.querySelector(`#${vpsLabId}`);
+            const toggle = vpsLab.querySelector('.vps-lab__toggle');
+
+            vpsArticles.forEach((article, index) => {
+                const placeholder = document.createComment('VPS article position');
+                article.before(placeholder);
+                vpsArticlePlaceholders.set(article, placeholder);
+                labArticles.appendChild(article);
+                article.hidden = index !== 0;
+            });
+
+            const updateToggle = expanded => {
+                vpsArticles.slice(1).forEach(article => {
+                    article.hidden = !expanded;
+                });
+                toggle.setAttribute('aria-expanded', String(expanded));
+                toggle.textContent = expanded
+                    ? 'Hide experiments ↑'
+                    : `Show all ${vpsArticles.length} experiments ↓`;
+            };
+
+            toggle.addEventListener('click', () => {
+                updateToggle(toggle.getAttribute('aria-expanded') !== 'true');
+            });
+            updateToggle(false);
+        };
+
+        const hideVpsLab = () => {
+            if (!vpsLab) return;
+            vpsArticles.forEach(article => {
+                const placeholder = vpsArticlePlaceholders.get(article);
+                placeholder.replaceWith(article);
+            });
+            vpsArticlePlaceholders.clear();
+            vpsLab.remove();
+            vpsLab = undefined;
+        };
+
+        showVpsLab();
+
         articleFilters.forEach(filterButton => {
             filterButton.addEventListener('click', () => {
                 const selectedFilter = filterButton.dataset.filter;
+
+                hideVpsLab();
 
                 articleFilters.forEach(button => {
                     const isActive = button === filterButton;
@@ -258,6 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const tags = article.dataset.tags.split(/\s+/);
                     article.hidden = selectedFilter !== 'all' && !tags.includes(selectedFilter);
                 });
+
+                if (selectedFilter === 'all') showVpsLab();
             });
         });
     }
