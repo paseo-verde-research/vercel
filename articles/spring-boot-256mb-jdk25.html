@@ -143,7 +143,7 @@
         <p>I did not isolate every JDK 25 change, and I have no separate heap-savings number for compact object headers. The comparison is JDK 21 versus JDK 25, with a different heap ceiling and several constrained-runtime settings.</p>
 
         <h2>Does this mean I recommend 256 MB?</h2>
-        <p>No. The hour finished, but the guest ended with 184 MiB of swap in use and an unresolved Hikari housekeeper delay of about two minutes. I would still start a real deployment at 512 MB RAM with a modest swapfile.</p>
+        <p>No. The hour finished, but the guest ended with 184 MiB of swap in use and an unresolved Hikari housekeeper delay of about two minutes. I would still start a real deployment at <a href="/articles/spring-boot-512mb-vps.html">512 MB RAM</a> with a modest swapfile.</p>
 
         <h2>Source</h2>
         <p>The method, demo, deployment kit, and selected measurements are in the public experiment snapshot. Star Pulse is included in the experiment tree. StatLite is the monitoring dashboard shown in the screenshots: a single Go binary using SQLite and Spring Boot Actuator. The snapshot also records the precise Alpine package, Java, and StatLite identities used for the preserved run.</p>

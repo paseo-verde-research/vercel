@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</title>
-    <meta name="description" content="Learn how local-first project mapping can reduce context and usage when reviewing code with Claude Code, ChatGPT, Codex, or another AI chat.">
+    <title>Reduce Claude Code Context with Local Repository Mapping</title>
+    <meta name="description" content="Local repository mapping prepares focused Claude Code review context, reducing repeated file reads and tool overhead without bypassing provider quotas.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/claude-code-token-savings.html">
 
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/claude-code-token-savings.html">
-    <meta property="og:title" content="Bypassing the Claude Code 'Token Tax': Smart Code Reviews with Local Mapping">
+    <meta property="og:title" content="Reduce Claude Code Context with Local Repository Mapping">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="How local-first project mapping can reduce context and usage during code reviews in the AI chat of your choice.">
+    <meta property="og:description" content="Local repository mapping prepares focused Claude Code review context, reducing repeated file reads and tool overhead without bypassing provider quotas.">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/claude-code-token-savings-og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="675">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Bypassing the Claude Code 'Token Tax': Smart Code Reviews with Local Mapping">
-    <meta name="twitter:description" content="How local-first project mapping can reduce context and usage during code reviews in the AI chat of your choice.">
+    <meta name="twitter:title" content="Reduce Claude Code Context with Local Repository Mapping">
+    <meta name="twitter:description" content="Local repository mapping prepares focused Claude Code review context, reducing repeated file reads and tool overhead without bypassing provider quotas.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/claude-code-token-savings-og.jpg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -133,12 +133,12 @@
             <a href="/aibadger/" class="article-product-nav__link article-product-nav__link--product">AI Badger</a>
         </nav>
 
-        <h1>Bypassing the Claude Code "Token Tax": Smart Code Reviews with Local Mapping</h1>
-        <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 6, 2026 · Updated August 26, 2026</div>
+        <h1>Reduce Claude Code Context with Local Repository Mapping</h1>
+        <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · July 6, 2026 · Updated September 10, 2026</div>
 
         <div class="article-body">
 
-            <p>Autonomous coding agents are powerful, but they can carry a steep <strong>token tax</strong>. Tools like Claude Code may use more of your allowance when a review requires repeated file reads, broad context, tool calls, or a long-running conversation.</p>
+            <p>Claude Code reviews can spend unnecessary context on repeated file reads, broad repository scans, and tool calls. This article shows how local repository mapping prepares focused review context with AI Badger, reducing that overhead without bypassing provider quotas.</p>
 
             <p>By <strong>“token tax”</strong>, I mean the extra context, repeated file reads, and tool overhead of an autonomous coding-agent workflow, not Claude’s account-level usage limits. AI Badger helps reduce that overhead; it does not bypass provider quotas.</p>
 
