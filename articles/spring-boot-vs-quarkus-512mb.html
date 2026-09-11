@@ -29,7 +29,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/articles/article.css?v=20260904">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
@@ -48,122 +48,6 @@
             background: var(--bg-light);
             color: var(--text-secondary);
         }
-        .screenshot-gallery { margin: 0 0 1.5rem; }
-        .screenshot-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .screenshot-tab {
-            display: inline-flex;
-            min-height: 44px;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-light);
-            color: var(--text-secondary);
-            font: inherit;
-            font-size: .9rem;
-            cursor: pointer;
-        }
-        .screenshot-tab:hover,
-        .screenshot-tab:focus-visible {
-            color: var(--primary-green);
-            border-color: var(--primary-green);
-        }
-        .screenshot-tab:focus-visible {
-            outline: 2px solid var(--primary-green);
-            outline-offset: 2px;
-        }
-        .screenshot-tab[aria-selected="true"] {
-            color: var(--primary-green);
-            border-color: var(--primary-green);
-        }
-        .screenshot-link {
-            display: block;
-            border-radius: 8px;
-            cursor: zoom-in;
-        }
-        .screenshot-link:hover img,
-        .screenshot-link:focus-visible img {
-            border-color: var(--primary-green);
-        }
-        .screenshot-link:focus-visible {
-            outline: 2px solid var(--primary-green);
-            outline-offset: 4px;
-        }
-        .screenshot-lightbox {
-            display: none;
-            box-sizing: border-box;
-            width: 100%;
-            max-width: none;
-            height: 100%;
-            max-height: none;
-            margin: 0;
-            padding: clamp(16px, 4vw, 48px);
-            border: 0;
-            background: rgba(0, 0, 0, .9);
-            color: var(--text-primary);
-        }
-        .screenshot-lightbox[open] {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .screenshot-lightbox::backdrop {
-            background: rgba(0, 0, 0, .9);
-        }
-        .screenshot-lightbox__content {
-            position: relative;
-            max-width: 100%;
-            max-height: 100%;
-            margin: 0;
-        }
-        .screenshot-lightbox__image {
-            display: block;
-            max-width: 100%;
-            max-height: calc(100vh - 6rem);
-            width: auto;
-            height: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-        .screenshot-lightbox__caption {
-            max-width: 70rem;
-            margin: 8px auto 0;
-            color: var(--text-secondary);
-            font-size: .85rem;
-            line-height: 1.5;
-        }
-        .screenshot-lightbox__close {
-            position: fixed;
-            top: clamp(12px, 3vw, 28px);
-            right: clamp(12px, 3vw, 28px);
-            z-index: 1;
-            min-width: 44px;
-            min-height: 44px;
-            padding: 4px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-light);
-            color: var(--text-primary);
-            font: inherit;
-            font-size: 1.5rem;
-            line-height: 1;
-            cursor: pointer;
-        }
-        .screenshot-lightbox__close:hover,
-        .screenshot-lightbox__close:focus-visible {
-            border-color: var(--primary-green);
-            color: var(--primary-green);
-        }
-        .screenshot-lightbox__close:focus-visible {
-            outline: 2px solid var(--primary-green);
-            outline-offset: 2px;
-        }
         .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; padding: 24px 28px; margin: 32px 0 40px; }
         .statlite-pitch p { margin-bottom: 0; }
         .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
@@ -175,7 +59,6 @@
             .statlite-pitch { padding: 20px; }
         }
         @media (max-width: 480px) {
-            .screenshot-tab { flex: 1 1 100%; }
             .article-actions { flex-direction: column; }
             .article-actions .btn { width: 100%; }
         }
@@ -391,80 +274,8 @@
     </div>
 </article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
-<script src="/script.js?v=20260902"></script>
-<script>
-    (function () {
-        const gallery = document.querySelector("[data-gallery]");
-        if (!gallery) {
-            return;
-        }
-        const tabs = Array.from(gallery.querySelectorAll('[role="tab"]'));
-        const panels = Array.from(gallery.querySelectorAll('[role="tabpanel"]'));
-        const lightbox = document.querySelector("[data-screenshot-lightbox]");
-        const lightboxImage = lightbox.querySelector("[data-lightbox-image]");
-        const lightboxCaption = lightbox.querySelector("[data-lightbox-caption]");
-        const lightboxClose = lightbox.querySelector("[data-lightbox-close]");
-        let lastTrigger = null;
-
-        function selectTab(index) {
-            tabs.forEach((tab, i) => {
-                const selected = i === index;
-                tab.setAttribute("aria-selected", String(selected));
-                tab.tabIndex = selected ? 0 : -1;
-                panels[i].hidden = !selected;
-            });
-        }
-
-        tabs.forEach((tab, index) => {
-            tab.addEventListener("click", () => selectTab(index));
-            tab.addEventListener("keydown", (event) => {
-                if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
-                    return;
-                }
-                event.preventDefault();
-                const offset = event.key === "ArrowRight" ? 1 : -1;
-                const nextIndex = (index + offset + tabs.length) % tabs.length;
-                selectTab(nextIndex);
-                tabs[nextIndex].focus();
-            });
-        });
-
-        function closeLightbox() {
-            if (!lightbox.open) {
-                return;
-            }
-            lightbox.close();
-        }
-
-        gallery.querySelectorAll(".screenshot-link").forEach((link) => {
-            link.addEventListener("click", (event) => {
-                event.preventDefault();
-                const image = link.querySelector("img");
-                const caption = link.closest("figure").querySelector("figcaption");
-                lastTrigger = link;
-                lightboxImage.src = link.href;
-                lightboxImage.alt = image.alt;
-                lightboxCaption.textContent = caption ? caption.textContent : "";
-                lightbox.showModal();
-                lightboxClose.focus();
-            });
-        });
-
-        lightboxClose.addEventListener("click", closeLightbox);
-        lightbox.addEventListener("click", (event) => {
-            if (event.target === lightbox) {
-                closeLightbox();
-            }
-        });
-        lightbox.addEventListener("close", () => {
-            lightboxImage.removeAttribute("src");
-            lightboxCaption.textContent = "";
-            if (lastTrigger) {
-                lastTrigger.focus();
-            }
-        });
-    })();
-</script>
+<script src="/script.js?v=20260911"></script>
+<script src="/articles/screenshot-gallery.js?v=20260911"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
 <script src="https://www.statcounter.com/counter/counter.js" async></script>
 </body>

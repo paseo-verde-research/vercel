@@ -220,81 +220,91 @@
     </section>
 
     <nav class="article-filters" aria-label="Filter articles by topic">
-            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(10)</span></button>
+            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(11)</span></button>
             <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span>(4)</span></button>
         <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count></span></button>
         <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(4)</span></button>
-        <button type="button" class="article-filter" data-filter="engineering" aria-pressed="false">Engineering <span>(8)</span></button>
+        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span>(5)</span></button>
+        <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Developer Tooling <span>(5)</span></button>
     </nav>
 
     <section class="articles-list">
         <div class="container">
 
-            <article class="article-entry" data-tags="vps statlite engineering">
+            <article class="article-entry" data-tags="spring-boot">
+                <div class="article-tags" aria-label="Article topics">
+                    <span>Spring Boot</span>
+                </div>
+                <h2><a href="/articles/spring-boot-extracted-layout.html">Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</a></h2>
+                <div class="article-meta"><time datetime="2026-09-11">September 11, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
+                <p>The official extracted layout cut median Spring startup 23.3% and first-request latency 34.1% in six paired runs. Settled RSS and swap did not show a material winner.</p>
+            </article>
+
+            <article class="article-entry" data-tags="vps statlite spring-boot">
                 <div class="article-tags" aria-label="Article topics">
                     <span>VPS</span>
                     <span>StatLite</span>
-                    <span>Engineering</span>
+                    <span>Spring Boot</span>
                 </div>
                 <h2><a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a></h2>
                 <div class="article-meta"><time datetime="2026-09-02">September 2, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>The same Star Pulse workload, JDK 25, and 80 MiB heap. Quarkus started larger, then had the smaller resident set, while RSS hid swap and the box later ran out of headroom.</p>
             </article>
 
-            <article class="article-entry" data-tags="engineering">
+            <article class="article-entry" data-tags="developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
-                    <span>Engineering</span>
+                    <span>Developer Tooling</span>
                 </div>
                 <h2><a href="/articles/coding-agent-test-output.html">Your Coding Agent Doesn’t Need 1,476 Lines of Test Output</a></h2>
                 <div class="article-meta"><time datetime="2026-08-30">August 30, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>A successful test run produced 1,476 lines. The agent needed roughly one.</p>
             </article>
 
-            <article class="article-entry" data-tags="ai-badger engineering">
+            <article class="article-entry" data-tags="ai-badger developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
                     <span>AI Badger</span>
-                    <span>Engineering</span>
+                    <span>Developer Tooling</span>
                 </div>
                 <h2><a href="/articles/coding-agent-session-handoff.html">Your coding-agent quota is at 99%. Now what?</a></h2>
                 <div class="article-meta"><time datetime="2026-08-28">August 28, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>The agent already explored the repo and understands the task. Hand off that session state instead of reconstructing it somewhere else.</p>
             </article>
 
-            <article class="article-entry" data-tags="vps statlite engineering">
+            <article class="article-entry" data-tags="vps statlite spring-boot">
                 <div class="article-tags" aria-label="Article topics">
                     <span>VPS</span>
                     <span>StatLite</span>
-                    <span>Engineering</span>
+                    <span>Spring Boot</span>
                 </div>
                 <h2><a href="/articles/spring-boot-256mb-jdk25.html">Spring Boot on a 256 MB VPS: What Changed with JDK 25 Compact Object Headers</a></h2>
                 <div class="article-meta"><time datetime="2026-08-25">August 25, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>A JDK 25 Alpine follow-up completed the hour on a nominal 256 MiB VPS, but high swap use and a long scheduling delay kept the result firmly in stretch-test territory.</p>
             </article>
 
-            <article class="article-entry" data-tags="vps statlite engineering">
+            <article class="article-entry" data-tags="vps statlite spring-boot">
                 <div class="article-tags" aria-label="Article topics">
                     <span>VPS</span>
                     <span>StatLite</span>
-                    <span>Engineering</span>
+                    <span>Spring Boot</span>
                 </div>
                 <h2><a href="/articles/spring-boot-512mb-vps.html">Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits</a></h2>
                 <div class="article-meta"><time datetime="2026-08-20">August 20, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>A Spring Boot 3.5 app with JPA, Tomcat, and Actuator ran on 512 MB plus a small swapfile. The monitor stayed around 12 MiB.</p>
             </article>
 
-            <article class="article-entry" data-tags="ai-badger engineering">
+            <article class="article-entry" data-tags="ai-badger developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
                     <span>AI Badger</span>
-                    <span>Engineering</span>
+                    <span>Developer Tooling</span>
                 </div>
                 <h2><a href="/articles/reviewing-ai-generated-code-vscode-aibadger.html">Reviewing agent-generated code with an independent second model in VS Code</a></h2>
                 <div class="article-meta"><time datetime="2026-08-14">August 14, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Review complete Git changes in VS Code, then use focused repository context when an AI reviewer needs more evidence.</p>
             </article>
 
-            <article class="article-entry" data-tags="engineering">
+            <article class="article-entry" data-tags="developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
-                    <span>Engineering</span>
+                    <span>Developer Tooling</span>
                 </div>
                 <h2><a href="/articles/introverted-maven.html">I Taught Maven to Be an Introvert</a></h2>
                 <div class="article-meta"><time datetime="2026-07-30">July 30, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
@@ -311,20 +321,21 @@
                 <p>Use AI coding assistants without granting them repository access: map locally, disclose only reviewed context, and confirm every proposed write.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite monitoring">
+            <article class="article-entry" data-tags="statlite monitoring spring-boot">
                 <div class="article-tags" aria-label="Article topics">
                     <span>StatLite</span>
                     <span>Monitoring</span>
+                    <span>Spring Boot</span>
                 </div>
                 <h2><a href="/articles/lightweight-spring-boot-monitoring.html">Lightweight Spring Boot Monitoring Without Prometheus and Grafana</a></h2>
                 <div class="article-meta"><time datetime="2026-07-19">July 19, 2026</time> · Updated September 3, 2026 · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Turn Spring Boot Actuator data into a focused dashboard for a few applications on a VPS, without operating a full Prometheus and Grafana stack.</p>
             </article>
 
-            <article class="article-entry" data-tags="ai-badger engineering">
+            <article class="article-entry" data-tags="ai-badger developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
                     <span>AI Badger</span>
-                    <span>Engineering</span>
+                    <span>Developer Tooling</span>
                 </div>
                 <h2><a href="/articles/claude-code-token-savings.html">Reduce Claude Code Context with Local Repository Mapping</a></h2>
                 <div class="article-meta"><time datetime="2026-07-06">July 6, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Fat JAR vs Extracted Layout | PVR Labs</title>
+    <meta name="description" content="Six paired runs of the same Spring Boot 4.1.1 app on a 256 MiB Alpine VM. The official extracted layout cut median startup 23.3% and first-request latency 34.1%. Settled RSS showed no material difference.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html">
+    <meta property="og:title" content="Spring Boot Fat JAR vs Extracted Layout">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Six paired runs of the same Spring Boot 4.1.1 app on a 256 MiB Alpine VM. The official extracted layout cut median startup 23.3% and first-request latency 34.1%. Settled RSS showed no material difference.">
+    <meta property="article:published_time" content="2026-09-11T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-extracted-layout-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot Fat JAR vs Extracted Layout">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot Fat JAR vs Extracted Layout">
+    <meta name="twitter:description" content="Six paired runs of the same Spring Boot 4.1.1 app on a 256 MiB Alpine VM. The official extracted layout cut median startup 23.3% and first-request latency 34.1%. Settled RSS showed no material difference.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-extracted-layout-og.jpg">
+    <meta name="twitter:image:alt" content="Spring Boot Fat JAR vs Extracted Layout">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .article-body p > code, .article-body li > code { overflow-wrap: anywhere; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; min-width: 40rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-body blockquote {
+            margin: 0 0 1.5rem;
+            padding: 16px 20px;
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 8px 8px 0;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+        }
+        .layout-chart-figure { margin: 0 0 1.5rem; }
+        .layout-chart {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 0 0 8px;
+            padding: 16px 12px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-light);
+        }
+        .layout-chart__legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            margin: 0 0 2px;
+            color: var(--text-secondary);
+            font-size: .82rem;
+        }
+        .layout-chart__note {
+            margin: 0 0 8px;
+            color: var(--text-secondary);
+            font-size: .82rem;
+        }
+        .layout-chart__swatch {
+            display: inline-block;
+            width: .7rem;
+            height: .7rem;
+            margin-right: 6px;
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            vertical-align: -1px;
+        }
+        .layout-chart__swatch--fat { color: #8fb4c9; background: #8fb4c9; }
+        .layout-chart__swatch--extracted { color: var(--primary-green); background: var(--primary-green); }
+        .layout-chart__panel h3 {
+            margin: 0 0 4px;
+            color: var(--text-primary);
+            font-size: .92rem;
+            text-align: center;
+        }
+        .layout-chart__panel svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .layout-chart__delta {
+            margin: 0 0 8px;
+            color: var(--text-secondary);
+            font-size: .78rem;
+            line-height: 1.4;
+            text-align: center;
+        }
+        .layout-chart__delta strong { color: var(--primary-green); }
+        .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; padding: 24px 28px; margin: 32px 0 40px; }
+        .statlite-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        @media (max-width: 768px) {
+            .article-body table { font-size: .85rem; }
+            .layout-chart { grid-template-columns: 1fr; }
+            .statlite-pitch { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .article-actions { flex-direction: column; }
+            .article-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Articles">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
+    <h1>Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-11">September 11, 2026</time></div>
+    <div class="article-body">
+        <p>Yes for startup in this experiment, but not for everything. In a controlled comparison, Spring Boot's official extracted layout reduced median Spring-reported startup from 11.056 s to 8.476 s (-23.3%) and median first-request latency from 2.195665 s to 1.447709 s (-34.1%). All six planned pairs moved in the same direction. Later requests, RSS, and swap did not show a material winner under the thresholds fixed before measurement.</p>
+        <p>That is an engineering result for one application, JDK, VM, and launch profile. It is not a claim that extraction always makes Spring Boot faster.</p>
+        <blockquote>
+            <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" target="_blank" rel="noopener noreferrer">published experiment record</a> contains the method, JVM flags, paired-run evidence, operational follow-up, and limitations. Full archives, databases, and private metadata are omitted.</p>
+        </blockquote>
+
+        <h2>Why test the layout?</h2>
+        <p>Earlier constrained-memory work showed that Spring Boot could run on a <a href="/articles/spring-boot-256mb-jdk25.html">256 MiB machine</a>, but startup was relatively slow and the environment could feel borderline. That raised a specific suspicion: perhaps executable fat-JAR and nested-JAR class loading was contributing meaningful startup overhead.</p>
+        <p>This experiment tests that suspicion by changing only the runtime layout. The 256 MiB Alpine VM is a deliberately demanding environment where startup overhead matters. It is not the article's subject by itself.</p>
+
+        <h2>What was compared</h2>
+        <p>A Spring Boot 4.1.1 application was built once as an executable fat JAR. The baseline launched that JAR normally. The variant was produced from that exact JAR with Spring Boot's official <code>jarmode=tools</code> extraction and launched its discovered application JAR with the same JVM options, arguments, data, and working directory. The two layouts used the same 86 dependency JARs on the same guest filesystem.</p>
+        <p>The application renders a deterministic local H2-backed dashboard at <code>GET /</code>. The measured request does not contact GitHub or another external service. A neutral copy of H2 performs the database reset before each launch, so the reset does not warm either layout's H2 file immediately before startup.</p>
+        <p>The test environment was Alpine 3.23.4 x86_64 with OpenJDK 25.0.4, one vCPU, 256 MiB configured RAM, and a fixed 512 MiB swapfile. The JVM profile was:</p>
+        <pre data-lang="text"><code>-Xms16m -Xmx80m -Xss256k -XX:+UseSerialGC
+-XX:TieredStopAtLevel=1 -XX:ReservedCodeCacheSize=32m
+-XX:+UseCompactObjectHeaders</code></pre>
+        <p>There were six fresh starts per layout in alternating paired order: <code>fat, extracted</code>, <code>extracted, fat</code>, repeated three times. Each start had one timed first request, five following requests, and a five-minute observation. StatLite and other monitoring clients were absent from all twelve comparison runs. The experiment did not claim a cold page cache; it used the same reset and alternation procedure for every run.</p>
+
+        <h2>Results</h2>
+        <p>There were six fresh starts per layout, twelve starts total. The visual summary should make the main contrast immediate: startup and first request move substantially, while settled memory does not.</p>
+
+        <figure class="layout-chart-figure">
+            <div class="layout-chart__legend">
+                <span><span class="layout-chart__swatch layout-chart__swatch--fat" aria-hidden="true"></span>Fat JAR</span>
+                <span><span class="layout-chart__swatch layout-chart__swatch--extracted" aria-hidden="true"></span>Extracted layout</span>
+            </div>
+            <p class="layout-chart__note">Points are individual runs; the short bar is the median.</p>
+            <div class="layout-chart">
+                <div class="layout-chart__panel">
+                    <h3>Spring startup (s)</h3>
+                    <svg viewBox="0 0 220 210" role="img" aria-label="Spring startup in seconds. Fat JAR points cluster near 11 seconds, median 11.056. Extracted points cluster near 8.5 seconds, median 8.476, 23.3 percent faster.">
+                        <line x1="48" y1="178" x2="200" y2="178" stroke="#333" />
+                        <line x1="48" y1="131.85" x2="200" y2="131.85" stroke="#333" stroke-dasharray="2 4" />
+                        <line x1="48" y1="85.69" x2="200" y2="85.69" stroke="#333" stroke-dasharray="2 4" />
+                        <line x1="48" y1="39.54" x2="200" y2="39.54" stroke="#333" stroke-dasharray="2 4" />
+                        <text x="42" y="182" text-anchor="end" fill="#A0A0A0" font-size="11">0</text>
+                        <text x="42" y="136" text-anchor="end" fill="#A0A0A0" font-size="11">4</text>
+                        <text x="42" y="90" text-anchor="end" fill="#A0A0A0" font-size="11">8</text>
+                        <text x="42" y="44" text-anchor="end" fill="#A0A0A0" font-size="11">12</text>
+                        <line x1="58" y1="50.43" x2="82" y2="50.43" stroke="#8fb4c9" stroke-width="3" />
+                        <line x1="138" y1="80.2" x2="162" y2="80.2" stroke="#2ECC71" stroke-width="3" />
+                        <circle cx="61.5" cy="57.11" r="4" fill="#8fb4c9"><title>Fat run 01: 10.477 s</title></circle>
+                        <circle cx="64.9" cy="47.8" r="4" fill="#8fb4c9"><title>Fat run 04: 11.284 s</title></circle>
+                        <circle cx="68.3" cy="50.73" r="4" fill="#8fb4c9"><title>Fat run 05: 11.030 s</title></circle>
+                        <circle cx="71.7" cy="50.13" r="4" fill="#8fb4c9"><title>Fat run 08: 11.082 s</title></circle>
+                        <circle cx="75.1" cy="51.03" r="4" fill="#8fb4c9"><title>Fat run 09: 11.004 s</title></circle>
+                        <circle cx="78.5" cy="44.62" r="4" fill="#8fb4c9"><title>Fat run 12: 11.560 s</title></circle>
+                        <circle cx="141.5" cy="74.23" r="4" fill="#2ECC71"><title>Extracted run 02: 8.993 s</title></circle>
+                        <circle cx="144.9" cy="75.34" r="4" fill="#2ECC71"><title>Extracted run 03: 8.897 s</title></circle>
+                        <circle cx="148.3" cy="85.36" r="4" fill="#2ECC71"><title>Extracted run 06: 8.029 s</title></circle>
+                        <circle cx="151.7" cy="84.54" r="4" fill="#2ECC71"><title>Extracted run 07: 8.100 s</title></circle>
+                        <circle cx="155.1" cy="78.87" r="4" fill="#2ECC71"><title>Extracted run 10: 8.591 s</title></circle>
+                        <circle cx="158.5" cy="81.53" r="4" fill="#2ECC71"><title>Extracted run 11: 8.361 s</title></circle>
+                        <text x="70" y="198" text-anchor="middle" fill="#A0A0A0" font-size="11">Fat</text>
+                        <text x="150" y="198" text-anchor="middle" fill="#A0A0A0" font-size="11">Extracted</text>
+                    </svg>
+                    <p class="layout-chart__delta"><strong>-23.3%</strong> median (11.056 s to 8.476 s)</p>
+                </div>
+                <div class="layout-chart__panel">
+                    <h3>First request (s)</h3>
+                    <svg viewBox="0 0 220 210" role="img" aria-label="First-request latency in seconds. Fat JAR median 2.196 seconds. Extracted median 1.448 seconds, 34.1 percent faster. The two groups do not overlap.">
+                        <line x1="48" y1="178" x2="200" y2="178" stroke="#333" />
+                        <line x1="48" y1="120.31" x2="200" y2="120.31" stroke="#333" stroke-dasharray="2 4" />
+                        <line x1="48" y1="62.62" x2="200" y2="62.62" stroke="#333" stroke-dasharray="2 4" />
+                        <text x="42" y="182" text-anchor="end" fill="#A0A0A0" font-size="11">0</text>
+                        <text x="42" y="124" text-anchor="end" fill="#A0A0A0" font-size="11">1</text>
+                        <text x="42" y="67" text-anchor="end" fill="#A0A0A0" font-size="11">2</text>
+                        <line x1="58" y1="51.33" x2="82" y2="51.33" stroke="#8fb4c9" stroke-width="3" />
+                        <line x1="138" y1="94.48" x2="162" y2="94.48" stroke="#2ECC71" stroke-width="3" />
+                        <circle cx="61.5" cy="63.69" r="4" fill="#8fb4c9"><title>Fat run 01: 1.981374 s</title></circle>
+                        <circle cx="64.9" cy="37.44" r="4" fill="#8fb4c9"><title>Fat run 04: 2.436299 s</title></circle>
+                        <circle cx="68.3" cy="43.41" r="4" fill="#8fb4c9"><title>Fat run 05: 2.332848 s</title></circle>
+                        <circle cx="71.7" cy="57.55" r="4" fill="#8fb4c9"><title>Fat run 08: 2.087719 s</title></circle>
+                        <circle cx="75.1" cy="65.68" r="4" fill="#8fb4c9"><title>Fat run 09: 1.946922 s</title></circle>
+                        <circle cx="78.5" cy="45.1" r="4" fill="#8fb4c9"><title>Fat run 12: 2.303610 s</title></circle>
+                        <circle cx="141.5" cy="91.22" r="4" fill="#2ECC71"><title>Extracted run 02: 1.504225 s</title></circle>
+                        <circle cx="144.9" cy="82.43" r="4" fill="#2ECC71"><title>Extracted run 03: 1.656602 s</title></circle>
+                        <circle cx="148.3" cy="99.87" r="4" fill="#2ECC71"><title>Extracted run 06: 1.354330 s</title></circle>
+                        <circle cx="151.7" cy="99.25" r="4" fill="#2ECC71"><title>Extracted run 07: 1.365086 s</title></circle>
+                        <circle cx="155.1" cy="92.02" r="4" fill="#2ECC71"><title>Extracted run 10: 1.490406 s</title></circle>
+                        <circle cx="158.5" cy="96.94" r="4" fill="#2ECC71"><title>Extracted run 11: 1.405012 s</title></circle>
+                        <text x="70" y="198" text-anchor="middle" fill="#A0A0A0" font-size="11">Fat</text>
+                        <text x="150" y="198" text-anchor="middle" fill="#A0A0A0" font-size="11">Extracted</text>
+                    </svg>
+                    <p class="layout-chart__delta"><strong>-34.1%</strong> median (2.196 s to 1.448 s)</p>
+                </div>
+                <div class="layout-chart__panel">
+                    <h3>Settled JVM RSS (KiB)</h3>
+                    <svg viewBox="0 0 220 210" role="img" aria-label="Settled JVM RSS in KiB on a zero-based scale. Fat JAR median 137212 KiB. Extracted median 131952 KiB, 3.8 percent lower, overlapping and not material.">
+                        <line x1="48" y1="178" x2="200" y2="178" stroke="#333" />
+                        <line x1="48" y1="103" x2="200" y2="103" stroke="#333" stroke-dasharray="2 4" />
+                        <line x1="48" y1="28" x2="200" y2="28" stroke="#333" stroke-dasharray="2 4" />
+                        <text x="42" y="182" text-anchor="end" fill="#A0A0A0" font-size="11">0</text>
+                        <text x="42" y="107" text-anchor="end" fill="#A0A0A0" font-size="11">80k</text>
+                        <text x="42" y="32" text-anchor="end" fill="#A0A0A0" font-size="11">160k</text>
+                        <line x1="58" y1="49.36" x2="82" y2="49.36" stroke="#8fb4c9" stroke-width="3" />
+                        <line x1="138" y1="54.3" x2="162" y2="54.3" stroke="#2ECC71" stroke-width="3" />
+                        <circle cx="61.5" cy="41.78" r="4" fill="#8fb4c9"><title>Fat run 01: 145304 KiB</title></circle>
+                        <circle cx="64.9" cy="45.87" r="4" fill="#8fb4c9"><title>Fat run 04: 140940 KiB</title></circle>
+                        <circle cx="68.3" cy="53.84" r="4" fill="#8fb4c9"><title>Fat run 05: 132436 KiB</title></circle>
+                        <circle cx="71.7" cy="53.95" r="4" fill="#8fb4c9"><title>Fat run 08: 132316 KiB</title></circle>
+                        <circle cx="75.1" cy="48" r="4" fill="#8fb4c9"><title>Fat run 09: 138664 KiB</title></circle>
+                        <circle cx="78.5" cy="50.72" r="4" fill="#8fb4c9"><title>Fat run 12: 135760 KiB</title></circle>
+                        <circle cx="141.5" cy="55.62" r="4" fill="#2ECC71"><title>Extracted run 02: 130544 KiB</title></circle>
+                        <circle cx="144.9" cy="49.99" r="4" fill="#2ECC71"><title>Extracted run 03: 136540 KiB</title></circle>
+                        <circle cx="148.3" cy="56.02" r="4" fill="#2ECC71"><title>Extracted run 06: 130116 KiB</title></circle>
+                        <circle cx="151.7" cy="52.97" r="4" fill="#2ECC71"><title>Extracted run 07: 133360 KiB</title></circle>
+                        <circle cx="155.1" cy="58.08" r="4" fill="#2ECC71"><title>Extracted run 10: 127916 KiB</title></circle>
+                        <circle cx="158.5" cy="47.35" r="4" fill="#2ECC71"><title>Extracted run 11: 139364 KiB</title></circle>
+                        <text x="70" y="198" text-anchor="middle" fill="#A0A0A0" font-size="11">Fat</text>
+                        <text x="150" y="198" text-anchor="middle" fill="#A0A0A0" font-size="11">Extracted</text>
+                    </svg>
+                    <p class="layout-chart__delta">-3.8% median, not material (zero-based scale)</p>
+                </div>
+            </div>
+            <figcaption>Six observations per layout. Startup and first request separate cleanly. Settled RSS overlaps, and the scale starts at zero so the small gap is not exaggerated.</figcaption>
+        </figure>
+
+        <p>All twelve runs survived their five-minute observation and returned valid responses. The twelve-run table is in the <a href="https://github.com/PVRLabs/experiments/blob/main/spring-boot/extracted-layout/results/phase-7-analysis.md" target="_blank" rel="noopener noreferrer">published analysis</a>. Times are seconds except external startup (milliseconds), RSS, and swap (KiB). The medians and ranges were:</p>
+        <div class="table-scroll">
+            <table class="article-table article-table--compact">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Fat median (range)</th>
+                        <th>Extracted median (range)</th>
+                        <th>Extracted minus fat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Spring startup</td><td>11.056 s (10.477–11.560)</td><td>8.476 s (8.029–8.993)</td><td>-2.580 s (-23.3%)</td></tr>
+                    <tr><td>External startup</td><td>11910 ms (11270–12490)</td><td>9000 ms (8560–9560)</td><td>-2910 ms (-24.4%)</td></tr>
+                    <tr><td>First request</td><td>2.195665 s (1.946922–2.436299)</td><td>1.447709 s (1.354330–1.656602)</td><td>-0.747956 s (-34.1%)</td></tr>
+                    <tr><td>Median requests 2–6</td><td>0.020696 s</td><td>0.019139 s</td><td>-7.5%</td></tr>
+                    <tr><td>Peak RSS</td><td>160064 KiB</td><td>155570 KiB</td><td>-2.8%</td></tr>
+                    <tr><td>Settled RSS</td><td>137212 KiB</td><td>131952 KiB</td><td>-3.8%</td></tr>
+                    <tr><td>Swap delta</td><td>145347 KiB</td><td>137652 KiB</td><td>-5.3%</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p>The startup and first-request differences clear both the absolute and relative materiality thresholds, and every paired comparison favors extracted. Memory and swap did not show a material winner. Extracted had slightly lower median RSS and swap, but the differences were below the experiment's materiality thresholds and were not consistently reproduced across measurements. Peak RSS favored extracted in five of six pairs; settled RSS in four of six. The roughly 7.7 MiB swap difference is far below the frozen 16 MiB plus 10% threshold.</p>
+
+        <h2>What happens after startup?</h2>
+        <p>Requests 2–6 were much closer than the first request. Their per-run median was 0.020696 s for fat and 0.019139 s for extracted (-7.5%), which did not meet the materiality rule. The large difference is therefore concentrated in the startup and first-request path rather than in steady warm requests.</p>
+
+        <h2>Why might extraction help?</h2>
+        <p>The extracted layout keeps the application classes and dependency JARs as ordinary filesystem entries instead of requiring the launcher and class loader to work through nested entries in one executable archive. This experiment shows a repeatable startup and first-request difference under memory pressure, but it does not isolate which individual class-loading or filesystem action causes the difference. That would require a different experiment.</p>
+
+        <h2>Separate operational follow-up</h2>
+        <p>After selecting extracted from the primary result, I ran it once more with StatLite. It was started only after six clean requests completed. The clean startup was 6.904 s; clean request 1 was 0.950558 s. StatLite then polled the application and its own loopback metrics every 30 seconds for one hour while a guest-local request ran at the same cadence.</p>
+        <p>All 120 scheduled requests succeeded with HTTP 200 and the expected 11,423 bytes. Latency ranged from 5.513 ms to 106.305 ms (mean 14.729 ms), and the latest request was only 100 ms behind schedule. The application kept one PID and shut down cleanly, with no fatal or OOM evidence. Guest-wide <code>MemAvailable</code> varied from 30,892 to 178,716 KiB; <code>SwapFree</code> varied from 354,236 to 520,100 KiB and ended at 518,916 KiB.</p>
+        <p>This follow-up is operational evidence, not a thirteenth comparison sample. The sampler's background shell did not receive the updated application and StatLite PID variables, so its per-process RSS columns are unavailable. That limitation is preserved in the journal and raw evidence; it was not worth repeating an hour-long run because it cannot change the primary comparison or the observed request and survival result.</p>
+
+        <div class="screenshot-gallery" data-gallery>
+            <div class="screenshot-tabs" role="tablist" aria-label="StatLite operational views">
+                <button type="button" class="screenshot-tab" role="tab" id="tab-application" aria-controls="panel-application" aria-selected="true" tabindex="0">Application</button>
+                <button type="button" class="screenshot-tab" role="tab" id="tab-host" aria-controls="panel-host" aria-selected="false" tabindex="-1">Host</button>
+            </div>
+            <div id="panel-application" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-application">
+                <figure>
+                    <a class="screenshot-link" href="/articles/img/spring-boot-extracted-layout/statlite-operational-dashboard.webp?v=20260911" aria-label="Open the StatLite application dashboard screenshot at full size">
+                        <img src="/articles/img/spring-boot-extracted-layout/statlite-operational-dashboard.webp?v=20260911" width="2926" height="1776" loading="lazy" decoding="async" alt="StatLite one-hour application dashboard for star-pulse, showing health UP, about three requests per interval, zero HTTP errors, latency mostly under 20 ms, and JVM heap oscillating between about 40 and 55 MB">
+                    </a>
+                    <figcaption>Application tab. Request activity, latency, errors, and process runtime during the one-hour extracted-layout follow-up. This is operational context, not another comparison sample.</figcaption>
+                </figure>
+            </div>
+            <div id="panel-host" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-host" hidden>
+                <figure>
+                    <a class="screenshot-link" href="/articles/img/spring-boot-extracted-layout/statlite-operational-host-resources.webp?v=20260911" aria-label="Open the StatLite host resources screenshot at full size">
+                        <img src="/articles/img/spring-boot-extracted-layout/statlite-operational-host-resources.webp?v=20260911" width="2960" height="702" loading="lazy" decoding="async" alt="StatLite host resources over one hour, with RAM used near 0.16 GB of about 0.21 GB total, disk about 1.3 GB of 3.7 GB, and host CPU near idle">
+                    </a>
+                    <figcaption>Host tab. Guest RAM, CPU, and disk during the same hour. The machine stayed up; the capture is not a memory-winner chart.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+            <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+            <figure class="screenshot-lightbox__content">
+                <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+            </figure>
+        </dialog>
+
+        <h2>What this means for production</h2>
+        <p>The deployment pattern is straightforward:</p>
+        <pre data-lang="text"><code>build fat JAR
+→ extract during packaging/deployment
+→ run extracted application JAR + lib/</code></pre>
+        <p>Extraction is especially easy to adopt when deployment already creates a container image, VM image, release directory, or other versioned application bundle. When startup time matters, the extracted layout is a sensible production choice to try first, particularly on constrained deployments. Memory and swap did not show a material winner, so extraction should not be sold as an RSS or swap optimization. Validate it against the actual application and runtime profile, and do not expect the same percentages for every Spring Boot application.</p>
+
+        <h2>Limits and conclusion</h2>
+        <p>This is one representative application on one constrained VM, with one JDK distribution and one fixed JVM profile. It does not establish a universal Spring Boot performance rule, nor does it measure deployment extraction cost as part of startup. The result is narrower and more useful: for this setup, Spring Boot's supported extracted layout produced a large, repeatable startup and first-request improvement, while later-request latency and memory/swap changes were not materially different.</p>
+        <p>Secondarily, the extracted layout made the already-demonstrated <a href="/articles/spring-boot-256mb-jdk25.html">256 MiB deployment</a> smoother at the point where startup was most expensive. That is context for this test, not a separate claim about Spring Boot hosting.</p>
+        <p>The method, JVM flags, paired-run evidence, and operational follow-up are in the public experiment record. Full archives, databases, and private metadata are omitted.</p>
+
+        <div class="statlite-pitch">
+            <p>Running Spring Boot on a small VPS? StatLite provides application metrics and basic host visibility without a separate Prometheus/Grafana stack.</p>
+            <div class="article-actions">
+                <a href="/statlite/" class="btn btn-primary">Try StatLite</a>
+                <a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a>
+                <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" class="btn btn-github" target="_blank" rel="noopener noreferrer">Public experiment</a>
+            </div>
+        </div>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260911"></script>
+<script src="/articles/screenshot-gallery.js?v=20260911"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

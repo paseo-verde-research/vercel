@@ -51,7 +51,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-11</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html</loc>
+    <lastmod>2026-09-11</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html</loc>
@@ -71,7 +75,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-09-11</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/reviewing-ai-generated-code-vscode-aibadger.html</loc>
