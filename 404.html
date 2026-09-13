@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="noindex">
+    <title>Page not found | PVR Labs</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .not-found-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .not-found-main {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            padding: calc(var(--header-height) + clamp(3rem, 6vw, 4.5rem)) 0 clamp(3rem, 6vw, 4.5rem);
+        }
+
+        .not-found-container {
+            width: 100%;
+            max-width: 58rem;
+        }
+
+        .not-found-intro {
+            max-width: 44rem;
+        }
+
+        .not-found-code {
+            margin-bottom: 0.25rem;
+            color: var(--primary-green);
+            font-family: var(--font-logo);
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .not-found-intro h1 {
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-size: clamp(2rem, 5vw, 3rem);
+        }
+
+        .not-found-intro > p:not(.not-found-code) {
+            margin-bottom: 1.75rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .not-found-links {
+            margin-top: clamp(2rem, 4vw, 3rem);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .not-found-links > h2 {
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            font-size: 1.25rem;
+        }
+
+        .not-found-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--border-color);
+        }
+
+        .not-found-card {
+            min-width: 0;
+            padding: 1.1rem 1.25rem;
+            background: var(--bg-medium);
+        }
+
+        .not-found-card h3 {
+            margin-bottom: 0.2rem;
+            font-size: 1rem;
+        }
+
+        .not-found-card h3 a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .not-found-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .not-found-main {
+                padding-top: calc(var(--header-height) + 3rem);
+            }
+
+            .not-found-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .not-found-card {
+                padding: 0.9rem 1rem;
+            }
+        }
+    </style>
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+<body class="not-found-page">
+<header id="header">
+    <nav class="navbar" aria-label="Primary navigation">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/java-performance/" class="nav-link">Consulting</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="not-found-main">
+    <div class="container not-found-container">
+        <section class="not-found-intro" aria-labelledby="not-found-title">
+            <p class="not-found-code">404</p>
+            <h1 id="not-found-title">Page not found</h1>
+            <p>The page you're looking for doesn't exist or may have moved.</p>
+            <a href="/" class="btn btn-primary">Go to PVR Labs home &rarr;</a>
+        </section>
+
+        <section class="not-found-links" aria-labelledby="suggested-links-title">
+            <h2 id="suggested-links-title">You might also be interested in</h2>
+            <div class="not-found-grid">
+                <article class="not-found-card">
+                    <h3><a href="/aibadger/">AI Badger</a></h3>
+                    <p>Local-first code context for LLMs.</p>
+                </article>
+                <article class="not-found-card">
+                    <h3><a href="/statlite/">StatLite</a></h3>
+                    <p>Lightweight monitoring for applications and small services.</p>
+                </article>
+                <article class="not-found-card">
+                    <h3><a href="/articles/">Articles</a></h3>
+                    <p>Engineering experiments, benchmarks, and notes.</p>
+                </article>
+                <article class="not-found-card">
+                    <h3><a href="/java-performance/">Java consulting</a></h3>
+                    <p>Java and JVM performance work.</p>
+                </article>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Practical developer tools and Java performance engineering.</p>
+    </div>
+</footer>
+
+<script src="/script.js?v=20260830"></script>
+</body>
+</html>
