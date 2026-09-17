@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A0A0A">
-    <meta name="robots" content="noindex,follow">
+    <meta name="robots" content="index,follow">
     <title>Spring Boot Fat JAR vs Extracted Layout vs Gradle Distribution | PVR Labs</title>
-    <meta name="description" content="Planned Java experiment: compare Spring Boot fat JAR, extracted layout, and Gradle application distribution startup and first-request latency.">
+    <meta name="description" content="A quick comparison of Spring Boot fat JAR, extracted layout, and Gradle application distribution startup and first-request latency.">
     <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html">
     <meta property="og:title" content="Spring Boot Fat JAR vs Extracted Layout vs Gradle Application Distribution">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="A planned exploratory comparison of three Spring Boot packaging and launch layouts.">
+    <meta property="og:description" content="A quick exploratory comparison of three Spring Boot packaging and launch layouts.">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Spring Boot Fat JAR vs Extracted Layout vs Gradle Application Distribution">
-    <meta name="twitter:description" content="A planned exploratory comparison of three Spring Boot packaging and launch layouts.">
+    <meta name="twitter:description" content="A quick exploratory comparison of three Spring Boot packaging and launch layouts.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -23,6 +23,23 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
+        .experiment-table-scroll table { min-width: 36rem; margin-bottom: 0; }
+        .experiment-table-scroll th, .experiment-table-scroll td { white-space: nowrap; }
+        .experiment-chart-figure { margin: 1.75rem 0 0; }
+        .experiment-chart-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; }
+        .experiment-chart-figure figcaption { margin-top: .65rem; color: var(--text-secondary); font-size: .86rem; }
+        @media (max-width: 600px) {
+            .experiment-table-scroll table { min-width: 0; }
+            .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .experiment-table-scroll tbody, .experiment-table-scroll tr, .experiment-table-scroll td { display: block; }
+            .experiment-table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; white-space: normal; }
+            .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; }
+            .experiment-table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+    </style>
 </head>
 <body>
 <header id="header">
@@ -47,10 +64,9 @@
 <main class="lab-page">
     <section class="lab-hero">
         <div class="container experiment-note">
-            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a> / Planned experiment</p>
-            <span class="lab-status">Planned</span>
-            <h1>Spring Boot fat JAR vs extracted layout vs Gradle distribution</h1>
-            <p class="lab-lead">A small local comparison of three packaging and launch layouts for the same Spring Boot application.</p>
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
+            <h1>Spring Boot Fat JAR vs Extracted Layout vs Gradle Application Distribution</h1>
+            <p class="lab-lead">A small exploratory comparison of three ways to launch the same Spring Boot application, including a conventional Gradle application plugin distribution.</p>
         </div>
     </section>
 
@@ -62,10 +78,15 @@
             </section>
             <section>
                 <h2>Why test this?</h2>
-                <p>Spring Boot's executable JAR uses nested dependency JARs, while both the extracted Spring Boot layout and a conventional Gradle application distribution place dependencies on the filesystem. This experiment will check whether that difference produces similar runtime behavior in a simple local comparison.</p>
+                <p>Spring Boot's executable JAR uses nested dependency JARs, while both the extracted Spring Boot layout and a conventional Gradle application distribution place dependencies on the filesystem. This experiment checks whether that difference produces similar runtime behavior in a simple local comparison.</p>
             </section>
             <section>
-                <h2>Planned comparison</h2>
+                <h2>Setup</h2>
+                <p>I reused the same Spring Boot 4.1.1 application and constrained Alpine VM from the earlier <a href="/articles/spring-boot-extracted-layout.html">fat JAR vs extracted-layout experiment</a>. All three layouts ran on OpenJDK 25.0.4 with the same JVM profile.</p>
+                <p>This was intentionally quick: three fresh starts per layout, nine starts total.</p>
+            </section>
+            <section>
+                <h2>Comparison</h2>
                 <ul class="comparison-list">
                     <li>Spring Boot executable fat JAR</li>
                     <li>Spring Boot <code>jarmode=tools</code> extracted layout</li>
@@ -75,11 +96,31 @@
             </section>
             <section>
                 <h2>Results</h2>
-                <p>Experiment not run yet.</p>
+                <div class="experiment-table-scroll" tabindex="0" role="region" aria-label="Layout comparison results">
+                    <table>
+                        <thead><tr><th>Layout</th><th>Median startup</th><th>Median first request</th></tr></thead>
+                        <tbody>
+                            <tr><td data-label="Layout">Fat JAR</td><td data-label="Median startup">10.103 s</td><td data-label="Median first request">1.950 s</td></tr>
+                            <tr><td data-label="Layout">Extracted layout</td><td data-label="Median startup">8.357 s</td><td data-label="Median first request">1.427 s</td></tr>
+                            <tr><td data-label="Layout">Gradle application distribution</td><td data-label="Median startup">7.921 s</td><td data-label="Median first request">1.343 s</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Both filesystem-based layouts were faster than the executable fat JAR in this short run. Compared with the fat JAR, extracted reduced median startup and first-request latency by about 17% and 27%; Gradle reduced them by about 22% and 31%.</p>
+                <figure class="experiment-chart-figure">
+                    <img src="./img/gradle-layout-comparison.svg" alt="Dot plot comparing three Spring Boot startup and first-request runs for the fat JAR, extracted layout, and Gradle application distribution, with a slower third Gradle run visible.">
+                    <figcaption>Each dot is one fresh start. The slower third Gradle run remains visible rather than being hidden behind a summary bar.</figcaption>
+                </figure>
             </section>
             <section>
-                <h2>Detailed experiment</h2>
-                <p>Source, commands, logs, and raw observations will be published in the <a href="https://github.com/PVRLabs/experiments" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a> after the test is complete.</p>
+                <h2>What this suggests</h2>
+                <p>The Gradle application distribution behaved more like Spring Boot's extracted layout than the nested executable fat JAR. Gradle had the lowest medians, but the generated artifacts, dependency ordering, and launch paths were not byte-identical, so this does not show that Gradle itself is faster.</p>
+                <p>The useful conclusion is narrower: <strong>in this run, the gap between the fat JAR and either filesystem layout was much larger than the gap between the two filesystem layouts.</strong></p>
+            </section>
+            <section>
+                <h2>Limits</h2>
+                <p>This is directional evidence, not a general benchmark. Every round used the same order—fat JAR, extracted layout, then Gradle—and the third Gradle start was noticeably slower than its first two.</p>
+                <p>Source, commands, supporting files, and selected raw evidence are available in the <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/gradle-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a>.</p>
             </section>
         </div>
     </section>
