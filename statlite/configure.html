@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create a minimal StatLite configuration for your application.">
+  <meta name="theme-color" content="#0A0A0A">
+  <title>Configure StatLite</title>
+  <link rel="canonical" href="https://pvrlabs.xyz/statlite/configure.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pvrlabs.xyz/statlite/configure.html">
+  <meta property="og:title" content="Configure StatLite">
+  <meta property="og:site_name" content="StatLite">
+  <meta property="og:description" content="Create a minimal StatLite configuration for your application.">
+  <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Configure StatLite">
+  <meta name="twitter:description" content="Create a minimal StatLite configuration for your application.">
+  <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap">
+  <link rel="stylesheet" href="/statlite/style.css?v=20260904b">
+  <link rel="stylesheet" href="/statlite/configure.css?v=20260917d">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <header id="header">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="container">
+        <div class="header-left"><a href="/statlite/" class="product-logo"><span class="wordmark-accent">Stat</span><span>Lite</span></a></div>
+        <ul class="nav-menu" id="primary-navigation">
+          <li><a href="/statlite/" class="nav-link">Home</a></li>
+          <li><a href="/statlite/demo.html" class="nav-link">Demo</a></li>
+          <li><a href="/statlite/configure.html" class="nav-link active">Configure</a></li>
+          <li><a href="/statlite/#install" class="nav-link">Install</a></li>
+          <li><a href="/articles/lightweight-spring-boot-monitoring.html" class="nav-link">Spring Boot Guide</a></li>
+          <li><a href="https://github.com/PVRLabs/statlite" class="nav-link">GitHub</a></li>
+        </ul>
+        <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <main class="shell">
+    <header class="intro wizard-heading">
+      <h1>Connect your application</h1>
+      <p class="lede">Choose an integration and get a minimal configuration you can run right away.</p>
+    </header>
+
+    <section aria-labelledby="integration-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="integration-heading">Choose an integration</h2>
+        </div>
+        <p>Not sure? Choose Inspect.</p>
+      </div>
+
+      <div class="integration-grid" role="radiogroup" aria-labelledby="integration-heading">
+        <label class="integration-card">
+          <input type="radio" name="integration" value="spring" checked>
+          <span class="card-content">
+            <span class="integration-mark spring-mark" aria-hidden="true">
+              <svg viewBox="0 0 48 48" role="img"><path d="M40 7C24 7 9 16 8 31c8-9 17-14 28-16-11 4-19 10-25 20 5 7 16 8 23 2 8-7 8-20 6-30Z"/><path class="stem" d="M8 39c6-13 16-21 30-25"/></svg>
+            </span>
+            <span><strong>Spring Boot</strong><small>Actuator</small></span>
+            <span class="selected-check" aria-hidden="true">✓</span>
+          </span>
+        </label>
+
+        <label class="integration-card">
+          <input type="radio" name="integration" value="quarkus">
+          <span class="card-content">
+            <span class="integration-mark quarkus-mark" aria-hidden="true">Q<span></span></span>
+            <span><strong>Quarkus</strong><small>Micrometer</small></span>
+            <span class="selected-check" aria-hidden="true">✓</span>
+          </span>
+        </label>
+
+        <label class="integration-card">
+          <input type="radio" name="integration" value="statlite-metrics">
+          <span class="card-content">
+            <span class="integration-mark project-marks" aria-hidden="true">
+              <span class="statlite-favicon" title="StatLite"><img src="/statlite/configure/assets/statlite-icon.png" alt=""></span>
+              <span title="FastAPI integration"><img class="fastapi-logo" src="/statlite/configure/assets/fastapi.svg" alt=""></span>
+              <span title="Express integration"><img class="express-logo" src="/statlite/configure/assets/express.svg" alt=""></span>
+              <span title="Django integration"><img class="django-logo" src="/statlite/configure/assets/django.svg" alt=""></span>
+            </span>
+            <span><strong>StatLite Metrics</strong><small>StatLite Metrics format v1</small></span>
+            <span class="selected-check" aria-hidden="true">✓</span>
+          </span>
+        </label>
+
+        <label class="integration-card">
+          <input type="radio" name="integration" value="inspect">
+          <span class="card-content">
+            <span class="integration-mark inspect-mark" aria-hidden="true">?</span>
+            <span><strong>Inspect</strong><small>Help me choose</small></span>
+            <span class="selected-check" aria-hidden="true">✓</span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <div id="builder-flow">
+      <section class="workspace" aria-labelledby="details-heading">
+        <div class="form-panel">
+          <div class="section-heading compact">
+            <div>
+              <h2 id="details-heading">Application details</h2>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label class="field full">
+              <span>Application name</span>
+              <input id="app-name" name="app-name" value="my-app" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="field">
+              <span>Host</span>
+              <input id="host" name="host" value="localhost" autocomplete="url" spellcheck="false">
+            </label>
+            <label class="field">
+              <span>Port</span>
+              <input id="port" name="port" value="8080" inputmode="numeric" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="toggle full">
+              <input id="https" type="checkbox">
+              <span class="toggle-track" aria-hidden="true"><span></span></span>
+              <span><strong>Use HTTPS</strong><small>Keep the port you entered</small></span>
+            </label>
+          </div>
+
+          <div id="framework-guides" class="framework-guides" hidden>
+            <div class="guide-intro">
+              <p class="mini-label">Application setup required</p>
+              <h3>Add StatLite Metrics to your app</h3>
+              <p>Generated YAML configures StatLite. You must also add the helper, middleware or view and expose <code>/statlite/metrics</code> in your application.</p>
+            </div>
+            <div class="framework-options" aria-label="Framework integration guides">
+              <a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo/" target="_blank" rel="noreferrer">
+                <img class="fastapi-logo" src="/statlite/configure/assets/fastapi.svg" alt=""><b>FastAPI</b><span class="external-icon" aria-hidden="true"></span>
+              </a>
+              <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md" target="_blank" rel="noreferrer">
+                <img class="express-logo" src="/statlite/configure/assets/express.svg" alt=""><b>Express</b><span class="external-icon" aria-hidden="true"></span>
+              </a>
+              <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md" target="_blank" rel="noreferrer">
+                <img class="django-logo" src="/statlite/configure/assets/django.svg" alt=""><b>Django</b><span class="external-icon" aria-hidden="true"></span>
+              </a>
+            </div>
+            <p class="guide-caveat">These lightweight integrations keep cumulative state in the application process. Use a single process or single worker unless your application provides its own aggregation.</p>
+          </div>
+        </div>
+
+        <div class="config-panel">
+          <div class="config-heading">
+            <div>
+              <p class="mini-label">Live preview</p>
+              <h2>statlite.yaml</h2>
+            </div>
+            <button id="copy-config" class="copy-button" type="button" data-default-label="Copy configuration">
+              <span class="copy-icon" aria-hidden="true"></span>
+              <span class="copy-label">Copy configuration</span>
+            </button>
+          </div>
+          <pre class="yaml"><code id="yaml-output"></code></pre>
+          <p class="custom-note"><span aria-hidden="true">✦</span> Using a custom endpoint or management path? Edit the generated YAML before starting StatLite.</p>
+        </div>
+      </section>
+
+      <section class="next-steps" aria-labelledby="next-heading">
+        <div class="section-heading compact">
+          <div>
+            <h2 id="next-heading">Start StatLite</h2>
+          </div>
+          <p>Three small steps and you’re live.</p>
+        </div>
+        <ol class="steps-list">
+          <li><span class="number">1</span><div><strong>Save the configuration</strong><code>statlite.yaml</code></div></li>
+          <li><span class="number">2</span><div><strong>Start StatLite</strong><code>statlite</code></div></li>
+          <li><span class="number">3</span><div><strong>Open the dashboard</strong><a href="http://127.0.0.1:9090">http://127.0.0.1:9090 <span aria-hidden="true">↗</span></a></div></li>
+        </ol>
+      </section>
+    </div>
+
+    <section id="inspect-flow" class="inspect-panel" aria-labelledby="inspect-heading" hidden>
+      <div class="inspect-visual" aria-hidden="true">?</div>
+      <div class="inspect-content">
+        <p class="mini-label">Let StatLite help</p>
+        <h2 id="inspect-heading">Not sure which integration to use?</h2>
+        <p>Let StatLite inspect your application locally. The browser will not connect to your app.</p>
+        <div class="command-row">
+          <code id="inspect-command">statlite inspect http://localhost:8080</code>
+          <button id="copy-command" class="copy-button compact-copy" type="button" data-default-label="Copy command"><span class="copy-icon" aria-hidden="true"></span><span class="copy-label">Copy command</span></button>
+        </div>
+        <p class="inspect-result">StatLite will detect a supported integration, show the available capabilities, and print a suggested <code>statlite.yaml</code>.</p>
+        <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#discover-a-target-with-inspect" target="_blank" rel="noreferrer">Read the Inspect documentation <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <div id="copy-status" class="copy-status" role="status" aria-live="polite"></div>
+  <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div></footer>
+  <script src="/script.js?v=20260830"></script>
+  <script src="/statlite/configure.js?v=20260917" defer></script>
+  <script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+  </script>
+  <script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
