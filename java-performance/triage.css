@@ -1,6 +1,6 @@
 .triage-page { padding-bottom: 5rem; }
 .triage-hero { background: var(--bg-dark) url('/img/carbon-fibre-v2.png'); padding: calc(var(--header-height) + 1.25rem) 0 2.5rem; text-align: center; }
-.triage-hero h1 { font-family: var(--font-logo); font-size: 2.8rem; font-weight: 700; }
+.triage-hero h1 { font-family: var(--font-heading); font-size: clamp(1.9rem, 4vw, 2.5rem); font-weight: 600; letter-spacing: -0.035em; }
 .triage-hero p { max-width: 37.5rem; margin: 0 auto; color: var(--text-secondary); }
 .triage-content { padding: 1.25rem 0 0; }
 .triage-shell { max-width: 50rem; margin: 0 auto; border: 1px solid var(--border-color); background: rgba(20,20,20,.94); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.28); }

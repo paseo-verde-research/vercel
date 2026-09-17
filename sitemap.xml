@@ -7,11 +7,15 @@
 
   <url>
     <loc>https://pvrlabs.xyz/</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-09-17</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-09-17</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
+    <lastmod>2026-09-17</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/triage.html</loc>
@@ -51,7 +55,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-17</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html</loc>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Java Performance Experiments | PVR Labs</title>
+    <meta name="description" content="Small, reproducible Java and JVM experiments on Spring Boot startup, memory, packaging, and deployment. Each test starts with one question and publishes what happened.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/">
+    <meta property="og:title" content="Java Performance Experiments | PVR Labs">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Small, reproducible Java and JVM experiments covering startup, memory, packaging, and deployment.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Java Performance Experiments | PVR Labs">
+    <meta name="twitter:description" content="Small, reproducible Java and JVM experiments covering startup, memory, packaging, and deployment.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Java Performance Experiments",
+      "url": "https://pvrlabs.xyz/java-performance/experiments/",
+      "description": "Small, reproducible Java and JVM experiments covering startup, memory, packaging, and deployment.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PVR Labs",
+        "url": "https://pvrlabs.xyz/"
+      },
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html",
+            "name": "Spring Boot fat JAR vs extracted layout"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html",
+            "name": "Spring Boot vs Quarkus on a 512 MB VPS"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html",
+            "name": "Spring Boot on a 256 MiB VPS with JDK 25"
+          }
+        ]
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / Experiments</p>
+            <h1>Java and JVM experiments</h1>
+            <p class="lab-lead">Small tests around Spring Boot, packaging, startup, memory, and deployment. One concrete question, the smallest useful run, and a public record of what happened. Longer write-ups live in Articles when a result needs more room.</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container">
+            <h2 class="lab-index-heading">Featured experiments</h2>
+            <div class="lab-index">
+                <article class="lab-entry">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Packaging</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-extracted-layout.html">Spring Boot fat JAR vs extracted layout</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-11">September 11, 2026</time></p>
+                    <p>A controlled comparison of startup, first-request latency, and memory. The official extracted layout cut median startup 23.3% and first-request latency 34.1%.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-extracted-layout.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Quarkus</span>
+                        <span>VPS</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-02">September 2, 2026</time></p>
+                    <p>A side-by-side JVM-mode comparison on the same 512 MB virtual machine, JDK 25, and 80 MiB heap.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-vs-quarkus-512mb.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>JDK 25</span>
+                        <span>VPS</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-256mb-jdk25.html">Spring Boot on a 256 MiB VPS with JDK 25</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-08-25">August 25, 2026</time></p>
+                    <p>A practical look at Spring Boot, compact object headers, and monitoring on a 256 MiB VPS.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-256mb-jdk25.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+            </div>
+
+            <h2 class="lab-index-heading">Quick experiments</h2>
+            <div class="lab-index">
+                <article class="lab-entry">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Gradle</span>
+                        <span>Packaging</span>
+                    </div>
+                    <span class="lab-status">Planned</span>
+                    <h3><a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">Fat JAR vs extracted layout vs Gradle distribution</a></h3>
+                    <p>A small local comparison of three Spring Boot packaging and launch layouts, including a Gradle application-plugin distribution.</p>
+                    <p class="lab-entry-links">
+                        <a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">View the plan</a>
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="lab-section lab-section--alt">
+        <div class="container">
+            <h2>How these experiments work</h2>
+            <p>Quick experiments are designed to answer a practical question quickly. A run may use one environment and only a few samples, and each write-up should say so. Featured experiments use more controlled methodology and are documented as fuller studies, with articles when a result warrants more room.</p>
+            <p>Source, commands, supporting files, and selected raw evidence live in the public <a href="https://github.com/PVRLabs/experiments" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a>.</p>
+            <p>Longer-running experiments may use <a href="/statlite/">StatLite</a> for lightweight Spring Boot and JVM monitoring without operating a Prometheus/Grafana stack.</p>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>

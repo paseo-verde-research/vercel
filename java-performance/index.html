@@ -4,135 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A0A0A">
-    <title>Java Performance Engineering | PVR Labs</title>
-    <meta name="description" content="PVR Labs diagnoses latency, CPU, memory, GC, database, JDBC, transaction, and concurrency problems in production Java systems.">
+    <title>Java Performance Consulting &amp; JVM Engineering | PVR Labs</title>
+    <meta name="description" content="PVR Labs provides Java performance consulting for latency, CPU, memory, GC, database, JDBC, transaction, and concurrency problems in production Java systems.">
     <link rel="canonical" href="https://pvrlabs.xyz/java-performance/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/java-performance/">
-    <meta property="og:title" content="Java Performance Engineering | PVR Labs">
+    <meta property="og:title" content="Java Performance Consulting &amp; JVM Engineering | PVR Labs">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Cross-layer diagnosis for difficult production Java performance problems.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Java Performance Engineering | PVR Labs">
+    <meta name="twitter:title" content="Java Performance Consulting &amp; JVM Engineering | PVR Labs">
     <meta name="twitter:description" content="Cross-layer diagnosis for difficult production Java performance problems.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Java Performance Consulting & JVM Engineering",
+      "url": "https://pvrlabs.xyz/java-performance/",
+      "description": "Cross-layer diagnosis for difficult production Java performance problems.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PVR Labs",
+        "url": "https://pvrlabs.xyz/"
+      }
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <style>
-        .consulting-page {
-            padding-top: var(--header-height);
-        }
-        .consulting-intro {
-            padding: 80px 0 60px;
-            background: var(--bg-dark) url('/img/carbon-fibre-v2.png');
-        }
-        .consulting-copy {
-            max-width: 52rem;
-        }
-        .consulting-intro h1 {
-            font-family: var(--font-logo);
-            font-size: clamp(2.25rem, 5vw, 3.8rem);
-            line-height: 1.15;
-        }
-        .consulting-intro p,
-        .consulting-text p,
-        .case-story p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-        }
-        .consulting-intro p {
-            max-width: 44rem;
-            margin-bottom: 2rem;
-        }
-        .consulting-section {
-            padding: 60px 0;
-        }
-        .consulting-section:nth-child(odd) {
-            background: var(--bg-medium);
-        }
-        .consulting-section .container {
-            max-width: 62rem;
-        }
-        .consulting-section h2 {
-            font-size: clamp(2rem, 4vw, 2.8rem);
-        }
-        .diagnostic-list,
-        .layer-list {
-            list-style: none;
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0.8rem 2rem;
-            margin-top: 2rem;
-        }
-        .diagnostic-list li,
-        .layer-list li {
-            position: relative;
-            padding: 0.65rem 0 0.65rem 1.4rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .diagnostic-list li::before,
-        .layer-list li::before {
-            content: '>';
-            position: absolute;
-            left: 0;
-            color: var(--primary-green);
-        }
-        .case-stories {
-            display: grid;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        .case-story {
-            padding: 1.5rem;
-            background: var(--bg-light);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-        .case-story h3 {
-            color: var(--text-primary);
-        }
-        .case-story p:last-child {
-            margin-bottom: 0;
-        }
-        .consulting-cta {
-            text-align: center;
-        }
-        .consulting-cta p {
-            max-width: 38rem;
-            margin: 0 auto 2rem;
-            color: var(--text-secondary);
-        }
-        @media (max-width: 768px) {
-            .consulting-intro {
-                padding: 55px 0 45px;
-            }
-            .diagnostic-list,
-            .layer-list {
-                grid-template-columns: 1fr;
-            }
-        }
-        @media (max-width: 480px) {
-            .consulting-intro h1 {
-                font-size: 2rem;
-                overflow-wrap: anywhere;
-            }
-            .consulting-intro .btn,
-            .consulting-cta .btn {
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-            .consulting-intro .btn-secondary {
-                margin-left: 0;
-                margin-top: .75rem;
-            }
-        }
-    </style>
 </head>
 <body>
 <header id="header">
@@ -154,21 +59,22 @@
     </nav>
 </header>
 
-<main class="consulting-page">
-    <section class="consulting-intro">
+<main class="lab-page">
+    <section class="lab-hero">
         <div class="container">
-            <div class="consulting-copy">
-                <h1>Java <span class="highlight">Performance Engineering</span></h1>
-                <p>We diagnose and fix difficult production performance problems across Java, JVM, JDBC, transactions, and databases. The work starts with evidence and ends with a root cause your team can verify.</p>
-                <a href="/java-performance/triage.html" class="btn btn-primary">Start Java Performance Triage</a>
-                <a href="/#contact" class="btn btn-secondary">Discuss a Performance Problem</a>
+            <h1>Java performance engineering</h1>
+            <p class="lab-lead">We diagnose difficult production problems across Java, the JVM, JDBC, transactions, and databases. The work starts with evidence and ends with a root cause your team can verify.</p>
+            <div class="lab-actions">
+                <a href="/java-performance/triage.html" class="btn btn-primary">Start Java performance triage</a>
+                <a href="/java-performance/experiments/" class="lab-text-link">Browse experiments</a>
+                <a href="/#contact" class="lab-text-link">Discuss a problem</a>
             </div>
         </div>
     </section>
 
-    <section class="consulting-section">
+    <section class="lab-section lab-section--alt">
         <div class="container">
-            <h2>Problems We <span class="highlight">Diagnose</span></h2>
+            <h2>Problems we diagnose</h2>
             <ul class="diagnostic-list">
                 <li>Slow or unpredictable requests</li>
                 <li>High CPU and infrastructure cost</li>
@@ -180,9 +86,9 @@
         </div>
     </section>
 
-    <section class="consulting-section consulting-text">
+    <section class="lab-section">
         <div class="container">
-            <h2>Follow the Evidence <span class="highlight">Across Layers</span></h2>
+            <h2>Follow the evidence across layers</h2>
             <p>A symptom in one layer often begins somewhere else. A depleted JDBC pool may start with transaction scope or a database lock. GC pressure may start with application allocation or retention. High CPU may reflect contention, retries, or queue buildup rather than productive work.</p>
             <p>We correlate evidence instead of tuning each component in isolation.</p>
             <ul class="layer-list">
@@ -196,36 +102,61 @@
         </div>
     </section>
 
-    <section class="consulting-section">
+    <section class="lab-section lab-section--alt" id="experiments">
         <div class="container">
-            <h2>Production Engineering <span class="highlight">Experience</span></h2>
-            <p class="section-subtitle" style="text-align:left;margin-left:0;">Here are some of the production performance problems we worked on at Google, Apple, and ServiceNow. Details have been anonymized and simplified.</p>
+            <h2>Java experiments</h2>
+            <p class="lab-section-intro">Short, reproducible tests of JVM startup, memory, packaging, and deployment. When a result needs more room, it becomes a full article. We use small experiments to test JVM and framework hypotheses before turning them into production recommendations.</p>
+            <div class="lab-index">
+                <article class="lab-entry">
+                    <h3><a href="/articles/spring-boot-extracted-layout.html">Spring Boot fat JAR vs extracted layout</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-11">September 11, 2026</time></p>
+                    <p>The official extracted layout cut median startup 23.3% and first-request latency 34.1% in six paired runs.</p>
+                </article>
+                <article class="lab-entry">
+                    <h3><a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-02">September 2, 2026</time></p>
+                    <p>The same workload, JDK 25, and 80 MiB heap. Quarkus started larger, then had the smaller resident set.</p>
+                </article>
+                <article class="lab-entry">
+                    <h3><a href="/articles/spring-boot-256mb-jdk25.html">Spring Boot on a 256 MiB VPS with JDK 25</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-08-25">August 25, 2026</time></p>
+                    <p>Compact object headers helped, but swap and scheduling delay kept the result in stretch-test territory.</p>
+                </article>
+            </div>
+            <p class="lab-footer-note"><a href="/java-performance/experiments/">All Java experiments &rarr;</a></p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container">
+            <h2>Production engineering notes</h2>
+            <p class="lab-section-intro">A few production performance problems we worked on at Google, Apple, and ServiceNow. Details have been anonymized and simplified.</p>
             <div class="case-stories">
                 <article class="case-story">
-                    <h3>Connection Pool Starvation</h3>
+                    <h3>Connection pool starvation</h3>
                     <p>Troubleshooting production slowdowns caused by exhausted connection pools and requests waiting for database connections.</p>
                 </article>
                 <article class="case-story">
-                    <h3>MariaDB History List Growth</h3>
+                    <h3>MariaDB history list growth</h3>
                     <p>Tracing history list length growth to an open transaction that prevented old row versions from being cleared.</p>
                 </article>
                 <article class="case-story">
-                    <h3>Production Deadlocks</h3>
+                    <h3>Production deadlocks</h3>
                     <p>Troubleshooting deadlocks in production by connecting thread and transaction behavior to the resources involved.</p>
                 </article>
                 <article class="case-story">
-                    <h3>Excessive Garbage Collection</h3>
+                    <h3>Excessive garbage collection</h3>
                     <p>Identifying performance bottlenecks caused by excessive GC, including memory leaks, wasteful logging, and unnecessary in-memory processing.</p>
                 </article>
             </div>
         </div>
     </section>
 
-    <section class="consulting-section consulting-cta">
+    <section class="lab-section lab-section--alt lab-cta">
         <div class="container">
-            <h2>Bring Us the <span class="highlight">Hard Problem</span></h2>
-            <p>Tell us what changed, what you have measured, and where the investigation is stuck.</p>
-            <a href="/#contact" class="btn btn-primary">Discuss a Performance Problem</a>
+            <h2>If the investigation is stuck</h2>
+            <p class="lab-lead">Tell us what changed, what you have measured, and where the trail went cold.</p>
+            <a href="/#contact" class="btn btn-primary">Discuss a performance problem</a>
         </div>
     </section>
 </main>

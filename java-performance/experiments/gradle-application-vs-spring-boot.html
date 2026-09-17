@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="noindex,follow">
+    <title>Spring Boot Fat JAR vs Extracted Layout vs Gradle Distribution | PVR Labs</title>
+    <meta name="description" content="Planned Java experiment: compare Spring Boot fat JAR, extracted layout, and Gradle application distribution startup and first-request latency.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html">
+    <meta property="og:title" content="Spring Boot Fat JAR vs Extracted Layout vs Gradle Application Distribution">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A planned exploratory comparison of three Spring Boot packaging and launch layouts.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Spring Boot Fat JAR vs Extracted Layout vs Gradle Application Distribution">
+    <meta name="twitter:description" content="A planned exploratory comparison of three Spring Boot packaging and launch layouts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container experiment-note">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a> / Planned experiment</p>
+            <span class="lab-status">Planned</span>
+            <h1>Spring Boot fat JAR vs extracted layout vs Gradle distribution</h1>
+            <p class="lab-lead">A small local comparison of three packaging and launch layouts for the same Spring Boot application.</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container experiment-note">
+            <section>
+                <h2>Question</h2>
+                <p>How does a Gradle application plugin distribution compare with Spring Boot's executable fat JAR and official extracted layout for startup and first-request latency?</p>
+            </section>
+            <section>
+                <h2>Why test this?</h2>
+                <p>Spring Boot's executable JAR uses nested dependency JARs, while both the extracted Spring Boot layout and a conventional Gradle application distribution place dependencies on the filesystem. This experiment will check whether that difference produces similar runtime behavior in a simple local comparison.</p>
+            </section>
+            <section>
+                <h2>Planned comparison</h2>
+                <ul class="comparison-list">
+                    <li>Spring Boot executable fat JAR</li>
+                    <li>Spring Boot <code>jarmode=tools</code> extracted layout</li>
+                    <li>Gradle application-plugin distribution</li>
+                </ul>
+                <p>The intent is a small exploratory local experiment, not a general Maven-vs-Gradle benchmark.</p>
+            </section>
+            <section>
+                <h2>Results</h2>
+                <p>Experiment not run yet.</p>
+            </section>
+            <section>
+                <h2>Detailed experiment</h2>
+                <p>Source, commands, logs, and raw observations will be published in the <a href="https://github.com/PVRLabs/experiments" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a> after the test is complete.</p>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>
