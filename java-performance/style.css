@@ -10,7 +10,7 @@
 }
 
 .lab-hero {
-    padding: clamp(2.5rem, 6vw, 3.75rem) 0 clamp(2.25rem, 5vw, 3rem);
+    padding: clamp(2.5rem, 6vw, 3.75rem) 0 clamp(1.25rem, 3vw, 1.5rem);
     background: var(--bg-dark) url('/img/carbon-fibre-v2.png');
 }
 
@@ -38,6 +38,10 @@
     font-size: 1.08rem;
 }
 
+.lab-lead:last-child {
+    margin-bottom: 0;
+}
+
 .lab-actions {
     display: flex;
     flex-wrap: wrap;
@@ -59,6 +63,14 @@
 
 .lab-section {
     padding: clamp(2.75rem, 6vw, 4rem) 0;
+}
+
+.lab-hero + .lab-section {
+    padding-top: clamp(1.25rem, 3vw, 1.5rem);
+}
+
+.lab-hero + .lab-section > .container > h2:first-child {
+    margin-top: 0;
 }
 
 .lab-section--alt {
@@ -303,6 +315,10 @@
 
 .lab-footer-note a {
     font-weight: 600;
+}
+
+.lab-context-note {
+    margin-top: 1rem;
 }
 
 @media (pointer: coarse) {
