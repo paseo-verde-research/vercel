@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, or Django. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta name="description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta name="theme-color" content="#0A0A0A">
   <title>Configure StatLite - Lightweight Application Monitoring</title>
   <link rel="canonical" href="https://pvrlabs.xyz/statlite/configure.html">
@@ -11,17 +11,17 @@
   <meta property="og:url" content="https://pvrlabs.xyz/statlite/configure.html">
   <meta property="og:title" content="Configure StatLite - Lightweight Application Monitoring">
   <meta property="og:site_name" content="StatLite">
-  <meta property="og:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, or Django. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta property="og:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Configure StatLite - Lightweight Application Monitoring">
-  <meta name="twitter:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, or Django. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta name="twitter:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="/statlite/style.css?v=20260904b">
-  <link rel="stylesheet" href="/statlite/configure.css?v=20260917h">
+  <link rel="stylesheet" href="/statlite/configure.css?v=20260918">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -47,7 +47,7 @@
     <header class="intro wizard-heading">
       <h1>Connect your application</h1>
       <p class="lede">Choose an integration and get a minimal configuration you can run right away.</p>
-      <p class="search-context">Connect Spring Boot, Quarkus, FastAPI, Express, or Django to lightweight self-hosted monitoring without deploying a full Prometheus and Grafana stack.</p>
+      <p class="search-context">Connect Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http to lightweight self-hosted monitoring without deploying a full Prometheus and Grafana stack.</p>
     </header>
 
     <section aria-labelledby="integration-heading">
@@ -84,9 +84,13 @@
           <span class="card-content">
             <span class="integration-mark project-marks" aria-hidden="true">
               <span class="statlite-favicon" title="StatLite"><img src="/statlite/configure/assets/statlite-icon.png" alt=""></span>
-              <span title="FastAPI integration"><img class="fastapi-logo" src="/statlite/configure/assets/fastapi.svg" alt=""></span>
-              <span title="Express integration"><img class="express-logo" src="/statlite/configure/assets/express.svg" alt=""></span>
-              <span title="Django integration"><img class="django-logo" src="/statlite/configure/assets/django.svg" alt=""></span>
+              <span class="project-frameworks">
+                <span title="FastAPI integration"><img class="fastapi-logo" src="/statlite/configure/assets/fastapi.svg" alt=""></span>
+                <span title="Express integration"><img class="express-logo" src="/statlite/configure/assets/express.svg" alt=""></span>
+                <span title="Django integration"><img class="django-logo" src="/statlite/configure/assets/django.svg" alt=""></span>
+                <span title="Go net/http integration"><img class="go-http-logo" src="/statlite/configure/assets/go-http.svg" alt=""></span>
+                <span title="Gin integration"><img class="gin-logo" src="/statlite/configure/assets/gin.svg" alt=""></span>
+              </span>
             </span>
             <span><strong>StatLite Metrics</strong><small>StatLite Metrics format v1</small></span>
             <span class="selected-check" aria-hidden="true">✓</span>
@@ -137,7 +141,7 @@
             <div class="guide-intro">
               <p class="mini-label">Application setup required</p>
               <h3>Add StatLite Metrics to your app</h3>
-              <p>Generated YAML configures StatLite. You must also add the helper, middleware or view and expose <code>/statlite/metrics</code> in your application.</p>
+              <p>Generated YAML configures StatLite. You must also add the helper, middleware, or view and expose <code>/statlite/metrics</code> in your application.</p>
             </div>
             <div class="framework-options" aria-label="Framework integration guides">
               <a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo/" target="_blank" rel="noreferrer">
@@ -149,8 +153,14 @@
               <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md" target="_blank" rel="noreferrer">
                 <img class="django-logo" src="/statlite/configure/assets/django.svg" alt=""><b>Django</b><span class="external-icon" aria-hidden="true"></span>
               </a>
+              <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/go/net-http.md" target="_blank" rel="noreferrer" aria-label="Go net/http integration guide">
+                <img class="go-http-logo" src="/statlite/configure/assets/go-http.svg" alt=""><b>net/http</b><span class="external-icon" aria-hidden="true"></span>
+              </a>
+              <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/go/gin.md" target="_blank" rel="noreferrer">
+                <img class="gin-logo" src="/statlite/configure/assets/gin.svg" alt=""><b>Gin</b><span class="external-icon" aria-hidden="true"></span>
+              </a>
             </div>
-            <p class="guide-caveat">These lightweight integrations keep cumulative state in the application process. Use a single process or single worker unless your application provides its own aggregation.</p>
+            <p class="guide-caveat">These lightweight integrations keep cumulative state in the application process. Use one stable endpoint and StatLite target per process unless your application provides its own aggregation.</p>
           </div>
         </div>
 

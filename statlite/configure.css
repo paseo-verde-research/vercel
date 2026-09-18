@@ -83,10 +83,13 @@ h1, h2, h3, p { margin-top: 0; }
 .quarkus-mark > span { width: 7px; height: 7px; align-self: end; margin: 0 6px 5px 0; background: #df4a44; }
 .project-marks { display: flex; width: auto; height: 46px; flex-wrap: nowrap; align-items: center; gap: 4px; }
 .project-marks > span { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid var(--border-strong); border-radius: 5px; background: rgba(255, 255, 255, .025); }
+.project-marks > .project-frameworks { width: auto; height: auto; grid-template-columns: repeat(3, 20px); gap: 4px; border: 0; border-radius: 0; background: transparent; }
+.project-frameworks > span { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid var(--border-strong); border-radius: 5px; background: rgba(255, 255, 255, .025); }
 .project-marks img { width: 13px; height: 13px; object-fit: contain; opacity: .72; filter: grayscale(1); }
 .project-marks .statlite-favicon { width: 44px; height: 44px; margin-right: 5px; overflow: hidden; border: 0; border-radius: 9px; background: transparent; }
 .project-marks .statlite-favicon img { width: 44px; height: 44px; opacity: 1; filter: none; }
 .project-marks .express-logo { width: 15px; filter: invert(1); }
+.project-marks .go-http-logo, .project-marks .gin-logo { width: 17px; height: 17px; }
 .inspect-mark { border: 1px dashed var(--border-strong); border-radius: 50%; font: 700 25px/1 var(--mono); }
 
 .workspace { display: grid; grid-template-columns: minmax(0, .82fr) minmax(480px, 1.18fr); gap: 18px; margin-top: 44px; }
@@ -129,6 +132,7 @@ code { font-family: var(--mono); }
 .framework-options a { display: flex; min-width: 0; min-height: 52px; align-items: center; justify-content: flex-start; gap: 8px; border: 1px solid var(--border-strong); border-radius: 7px; color: var(--soft); padding: 8px 9px; text-decoration: none; font-size: 11px; font-weight: 700; transition: border-color .16s ease, background .16s ease, color .16s ease; }
 .framework-options img { width: 23px; height: 23px; object-fit: contain; opacity: .68; filter: grayscale(1); transition: opacity .16s ease, filter .16s ease; }
 .framework-options .express-logo { width: 29px; filter: invert(1); }
+.framework-options .go-http-logo, .framework-options .gin-logo { width: 27px; height: 27px; }
 .framework-options b { min-width: 0; overflow: hidden; font: inherit; text-overflow: ellipsis; }
 .framework-options a:hover { border-color: var(--green); background: var(--green-wash); color: var(--green-bright); }
 .framework-options a:hover img { opacity: 1; filter: none; }

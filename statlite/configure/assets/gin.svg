@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Gin</title>
+  <rect width="64" height="64" rx="14" fill="#43b4a7"/>
+  <path fill="#fff" d="M13 15h38L36 34v11h8v5H20v-5h8V34L13 15Zm11 7 8 10 8-10H24Z"/>
+  <circle cx="44" cy="17" r="6" fill="#f3cf59"/>
+  <circle cx="44" cy="17" r="2.5" fill="#43b4a7"/>
+</svg>
