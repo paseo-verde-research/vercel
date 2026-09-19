@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="index,follow">
+    <title>Spring Boot vs Quarkus on a 768 MiB VPS | PVR Labs</title>
+    <meta name="description" content="A short controlled follow-up comparing Spring Boot and Quarkus memory behavior on a 768 MiB VPS with JDK 25 and a bounded workload.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html">
+    <meta property="og:title" content="Spring Boot vs Quarkus on a 768 MiB VPS">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A short controlled follow-up comparing Spring Boot and Quarkus memory behavior on a 768 MiB VPS with JDK 25 and a bounded workload.">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-vs-quarkus-768-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot vs Quarkus on a 768 MiB VPS">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot vs Quarkus on a 768 MiB VPS">
+    <meta name="twitter:description" content="A short controlled follow-up comparing Spring Boot and Quarkus memory behavior on a 768 MiB VPS with JDK 25 and a bounded workload.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-vs-quarkus-768-og.jpg">
+    <meta name="twitter:image:alt" content="Spring Boot vs Quarkus on a 768 MiB VPS">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
+        .experiment-table-scroll table { width: 100%; min-width: 38rem; margin-bottom: 0; border-collapse: collapse; font-size: .92rem; }
+        .experiment-table-scroll th, .experiment-table-scroll td { padding: .7rem .75rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .experiment-table-scroll th { background: var(--bg-light); color: var(--text-primary); }
+        .experiment-table-scroll td:not(:first-child), .experiment-table-scroll th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+        .experiment-result { margin: 1.5rem 0 0; padding: 1.15rem 1.25rem; border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; background: var(--bg-light); }
+        .experiment-result p { margin-bottom: 0; }
+        .memory-chart-figure { margin: 1.75rem 0 0; }
+        .memory-chart__legend { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin-bottom: .5rem; color: var(--text-secondary); font-size: .82rem; }
+        .memory-chart__swatch { display: inline-block; width: .7rem; height: .7rem; margin-right: .35rem; border-radius: 50%; vertical-align: -1px; }
+        .memory-chart__swatch--spring { background: #8fb4c9; }
+        .memory-chart__swatch--quarkus { background: var(--primary-green); }
+        .memory-chart { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: 1rem .75rem .5rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-light); }
+        .memory-chart__panel h3 { margin: 0 0 .25rem; color: var(--text-primary); font-size: .92rem; text-align: center; }
+        .memory-chart__panel svg { display: block; width: 100%; height: auto; }
+        .memory-chart__note, .memory-chart-figure figcaption { color: var(--text-secondary); font-size: .82rem; line-height: 1.45; }
+        .memory-chart__note { margin: 0 0 .5rem; }
+        .memory-chart-figure figcaption { margin-top: .65rem; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 768px) {
+            .memory-chart { grid-template-columns: 1fr; }
+            .experiment-table-scroll { overflow-x: visible; }
+            .experiment-table-scroll table { min-width: 0; }
+            .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .experiment-table-scroll tbody, .experiment-table-scroll tr, .experiment-table-scroll td { display: block; }
+            .experiment-table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; text-align: right; white-space: normal; }
+            .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; text-align: left; }
+            .experiment-table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+        @media (max-width: 480px) {
+            .experiment-table-scroll td { align-items: flex-start; flex-direction: column; gap: .1rem; text-align: left; }
+            .experiment-table-scroll td::before { font-size: .82rem; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container experiment-note">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
+            <h1>Spring Boot vs Quarkus on a 768 MiB VPS</h1>
+            <p class="lab-lead">A short follow-up to the <a href="/articles/spring-boot-vs-quarkus-512mb.html">512 MB Spring Boot vs Quarkus experiment</a>, comparing memory behavior under the same constrained JVM profile, application shape, and bounded workload.</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container experiment-note">
+            <section>
+                <h2>Question</h2>
+                <p>How do equivalent Spring Boot and Quarkus applications behave when they share the same 768 MiB host budget and deliberately bounded JVM settings?</p>
+            </section>
+
+            <section>
+                <h2>Setup</h2>
+                <p>The comparison ran on Ubuntu 24.04 x86_64 in a VM configured with 768 MiB of RAM, of which the guest exposed approximately 703.5 MiB, plus one vCPU and 256 MiB of swap. Both applications used Eclipse Temurin 25.0.4.1+1, Spring Boot 4.1.1, Quarkus 3.39.4, file-backed H2, and the same Star Pulse-style application shape.</p>
+                <p>Both JVMs used the same profile:</p>
+                <pre><code>-Xms16m
+-Xmx80m
+-Xss256k
+-XX:+UseSerialGC
+-XX:TieredStopAtLevel=1
+-XX:ReservedCodeCacheSize=32m
+-XX:+UseCompactObjectHeaders</code></pre>
+                <p>A loopback-only Python fixture supplied deterministic GitHub-like responses. StatLite 0.4.2 monitored Spring, Quarkus, itself, and the host. This follows the earlier <a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a> experiment, using the same startup order: Spring first, then Quarkus.</p>
+            </section>
+
+            <section>
+                <h2>Run</h2>
+                <p>After both applications were ready, I sent one deliberate request to each, started monitoring, and ran a paired workload ten times. Each repetition sent one request to Spring, one to Quarkus, and then waited one second. The controlled observation lasted ten minutes.</p>
+                <p>This is a memory-behavior observation, not a throughput benchmark or a framework-wide ranking.</p>
+            </section>
+
+            <section>
+                <h2>Results</h2>
+                <div class="experiment-table-scroll" tabindex="0" role="region" aria-label="Spring Boot and Quarkus memory comparison">
+                    <table>
+                        <thead>
+                            <tr><th>Checkpoint</th><th>Spring RSS</th><th>Spring swap</th><th>Quarkus RSS</th><th>Quarkus swap</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td data-label="Checkpoint">Ready, pre-request</td><td data-label="Spring RSS">228.2 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus RSS">164.6 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">After one request</td><td data-label="Spring RSS">223.9 MiB</td><td data-label="Spring swap">4.5 MiB</td><td data-label="Quarkus RSS">163.8 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">Post-workload</td><td data-label="Spring RSS">221.3 MiB</td><td data-label="Spring swap">7.6 MiB</td><td data-label="Quarkus RSS">164.4 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">Intermediate</td><td data-label="Spring RSS">210.1 MiB</td><td data-label="Spring swap">25.3 MiB</td><td data-label="Quarkus RSS">172.1 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">Midpoint, 5 minutes</td><td data-label="Spring RSS">208.3 MiB</td><td data-label="Spring swap">27.6 MiB</td><td data-label="Quarkus RSS">173.5 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">After 10 minutes</td><td data-label="Spring RSS">202.3 MiB</td><td data-label="Spring swap">34.3 MiB</td><td data-label="Quarkus RSS">175.7 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="experiment-result">
+                    <p>Spring stayed roughly 27 to 65 MiB above Quarkus in RSS across the measured checkpoints and accumulated about 34 MiB of process swap. Quarkus recorded no process swap during the observation.</p>
+                </div>
+                <figure class="memory-chart-figure">
+                    <div class="memory-chart__legend" aria-label="Chart legend">
+                        <span><span class="memory-chart__swatch memory-chart__swatch--spring" aria-hidden="true"></span>Spring Boot</span>
+                        <span><span class="memory-chart__swatch memory-chart__swatch--quarkus" aria-hidden="true"></span>Quarkus</span>
+                    </div>
+                    <p class="memory-chart__note">Each point is one checkpoint. The RSS chart uses a zero-based scale; process swap uses a 0 to 40 MiB scale.</p>
+                    <div class="memory-chart">
+                        <div class="memory-chart__panel">
+                            <h3>Process RSS (MiB)</h3>
+                            <svg viewBox="0 0 360 230" role="img" aria-label="Process RSS over six checkpoints. Spring Boot declines from 228.2 to 202.3 MiB. Quarkus rises from 164.6 to 175.7 MiB, remaining lower at every checkpoint.">
+                                <line x1="44" y1="190" x2="324" y2="190" stroke="#333" />
+                                <line x1="44" y1="134" x2="324" y2="134" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="44" y1="78" x2="324" y2="78" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="44" y1="22" x2="324" y2="22" stroke="#333" stroke-dasharray="2 4" />
+                                <text x="38" y="194" text-anchor="end" fill="#A0A0A0" font-size="11">0</text>
+                                <text x="38" y="138" text-anchor="end" fill="#A0A0A0" font-size="11">80</text>
+                                <text x="38" y="82" text-anchor="end" fill="#A0A0A0" font-size="11">160</text>
+                                <text x="38" y="26" text-anchor="end" fill="#A0A0A0" font-size="11">240</text>
+                                <path d="M44 30.3 L100 33.3 L156 35.1 L212 43.0 L268 44.2 L324 48.4" fill="none" stroke="#8fb4c9" stroke-width="2.5" />
+                                <path d="M44 74.8 L100 75.3 L156 74.9 L212 69.5 L268 68.6 L324 67.0" fill="none" stroke="#2ECC71" stroke-width="2.5" />
+                                <circle cx="44" cy="30.3" r="3.5" fill="#8fb4c9"><title>Spring ready: 228.2 MiB</title></circle>
+                                <circle cx="100" cy="33.3" r="3.5" fill="#8fb4c9"><title>Spring after one request: 223.9 MiB</title></circle>
+                                <circle cx="156" cy="35.1" r="3.5" fill="#8fb4c9"><title>Spring post-workload: 221.3 MiB</title></circle>
+                                <circle cx="212" cy="43.0" r="3.5" fill="#8fb4c9"><title>Spring intermediate: 210.1 MiB</title></circle>
+                                <circle cx="268" cy="44.2" r="3.5" fill="#8fb4c9"><title>Spring midpoint: 208.3 MiB</title></circle>
+                                <circle cx="324" cy="48.4" r="3.5" fill="#8fb4c9"><title>Spring after 10 minutes: 202.3 MiB</title></circle>
+                                <circle cx="44" cy="74.8" r="3.5" fill="#2ECC71"><title>Quarkus ready: 164.6 MiB</title></circle>
+                                <circle cx="100" cy="75.3" r="3.5" fill="#2ECC71"><title>Quarkus after one request: 163.8 MiB</title></circle>
+                                <circle cx="156" cy="74.9" r="3.5" fill="#2ECC71"><title>Quarkus post-workload: 164.4 MiB</title></circle>
+                                <circle cx="212" cy="69.5" r="3.5" fill="#2ECC71"><title>Quarkus intermediate: 172.1 MiB</title></circle>
+                                <circle cx="268" cy="68.6" r="3.5" fill="#2ECC71"><title>Quarkus midpoint: 173.5 MiB</title></circle>
+                                <circle cx="324" cy="67.0" r="3.5" fill="#2ECC71"><title>Quarkus after 10 minutes: 175.7 MiB</title></circle>
+                                <text x="44" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">Ready</text>
+                                <text x="100" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">1 req</text>
+                                <text x="156" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">Post</text>
+                                <text x="212" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">Mid</text>
+                                <text x="268" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">5m</text>
+                                <text x="324" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">10m</text>
+                            </svg>
+                        </div>
+                        <div class="memory-chart__panel">
+                            <h3>Process swap (MiB)</h3>
+                            <svg viewBox="0 0 360 230" role="img" aria-label="Process swap over six checkpoints. Spring Boot rises from zero to 34.3 MiB. Quarkus remains at zero across all checkpoints.">
+                                <line x1="44" y1="190" x2="324" y2="190" stroke="#333" />
+                                <line x1="44" y1="106" x2="324" y2="106" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="44" y1="22" x2="324" y2="22" stroke="#333" stroke-dasharray="2 4" />
+                                <text x="38" y="194" text-anchor="end" fill="#A0A0A0" font-size="11">0</text>
+                                <text x="38" y="110" text-anchor="end" fill="#A0A0A0" font-size="11">20</text>
+                                <text x="38" y="26" text-anchor="end" fill="#A0A0A0" font-size="11">40</text>
+                                <path d="M44 190 L100 171.1 L156 158.1 L212 83.7 L268 74.1 L324 46.1" fill="none" stroke="#8fb4c9" stroke-width="2.5" />
+                                <path d="M44 190 L100 190 L156 190 L212 190 L268 190 L324 190" fill="none" stroke="#2ECC71" stroke-width="2.5" />
+                                <circle cx="44" cy="190" r="3.5" fill="#8fb4c9"><title>Spring ready: 0.0 MiB</title></circle>
+                                <circle cx="100" cy="171.1" r="3.5" fill="#8fb4c9"><title>Spring after one request: 4.5 MiB</title></circle>
+                                <circle cx="156" cy="158.1" r="3.5" fill="#8fb4c9"><title>Spring post-workload: 7.6 MiB</title></circle>
+                                <circle cx="212" cy="83.7" r="3.5" fill="#8fb4c9"><title>Spring intermediate: 25.3 MiB</title></circle>
+                                <circle cx="268" cy="74.1" r="3.5" fill="#8fb4c9"><title>Spring midpoint: 27.6 MiB</title></circle>
+                                <circle cx="324" cy="46.1" r="3.5" fill="#8fb4c9"><title>Spring after 10 minutes: 34.3 MiB</title></circle>
+                                <circle cx="44" cy="190" r="2.5" fill="#2ECC71"><title>Quarkus ready: 0.0 MiB</title></circle>
+                                <circle cx="100" cy="190" r="2.5" fill="#2ECC71"><title>Quarkus after one request: 0.0 MiB</title></circle>
+                                <circle cx="156" cy="190" r="2.5" fill="#2ECC71"><title>Quarkus post-workload: 0.0 MiB</title></circle>
+                                <circle cx="212" cy="190" r="2.5" fill="#2ECC71"><title>Quarkus intermediate: 0.0 MiB</title></circle>
+                                <circle cx="268" cy="190" r="2.5" fill="#2ECC71"><title>Quarkus midpoint: 0.0 MiB</title></circle>
+                                <circle cx="324" cy="190" r="2.5" fill="#2ECC71"><title>Quarkus after 10 minutes: 0.0 MiB</title></circle>
+                                <text x="44" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">Ready</text>
+                                <text x="100" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">1 req</text>
+                                <text x="156" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">Post</text>
+                                <text x="212" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">Mid</text>
+                                <text x="268" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">5m</text>
+                                <text x="324" y="213" text-anchor="middle" fill="#A0A0A0" font-size="10">10m</text>
+                                <text x="318" y="40" text-anchor="end" fill="#8fb4c9" font-size="10">34.3</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <figcaption>Six checkpoints from the controlled run. RSS remains lower for Quarkus, while Spring is the only process that accumulates swap.</figcaption>
+                </figure>
+            </section>
+
+            <section>
+                <h2>Validity checks</h2>
+                <ul class="comparison-list">
+                    <li>The paired workload completed with exactly ten HTTP 200 requests to each application.</li>
+                    <li>Spring, Quarkus, and StatLite stayed active with zero restarts.</li>
+                    <li>StatLite reported all monitored targets successfully with zero consecutive poll failures at closeout.</li>
+                    <li>No matching kernel OOM or service-failure signals appeared in the collected closeout journals.</li>
+                    <li>Final database files were 28 KiB for Spring H2, 32 KiB for Quarkus H2, and 172 KiB for StatLite SQLite.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>What this suggests</h2>
+                <p>For this application pair and this constrained VM, Quarkus used less resident memory and avoided process swap during the ten-minute run. Spring remained operational, but it had both a higher resident footprint and increasing process swap.</p>
+                <p>The conclusion is deliberately narrow. It does not establish that Quarkus is generally more memory-efficient or that it is a universal framework winner. The observation lasted ten minutes, and Linux paging is part of what was measured.</p>
+            </section>
+
+            <section>
+                <h2>Evidence</h2>
+                <p>The public experiment record contains the method, frozen inputs, workload contract, checkpoint data, polling summary, and selected screenshots.</p>
+                <p>Monitoring for this experiment was collected with <a href="/statlite/">StatLite</a>, a lightweight self-hosted metrics dashboard for Spring Boot and Quarkus.</p>
+                <p class="experiment-links">
+                    <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    <a href="https://github.com/PVRLabs/statlite" target="_blank" rel="noopener noreferrer">StatLite on GitHub</a>
+                </p>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>
