@@ -29,6 +29,7 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
@@ -49,6 +50,7 @@
         .memory-chart__note, .memory-chart-figure figcaption { color: var(--text-secondary); font-size: .82rem; line-height: 1.45; }
         .memory-chart__note { margin: 0 0 .5rem; }
         .memory-chart-figure figcaption { margin-top: .65rem; }
+        .screenshot-gallery img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; }
         .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
         .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
         @media (max-width: 768px) {
@@ -94,7 +96,7 @@
         <div class="container experiment-note">
             <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
             <h1>Spring Boot vs Quarkus on a 768 MiB VPS</h1>
-            <p class="lab-lead">A short follow-up to the <a href="/articles/spring-boot-vs-quarkus-512mb.html">512 MB Spring Boot vs Quarkus experiment</a>, comparing memory behavior under the same constrained JVM profile, application shape, and bounded workload.</p>
+            <p class="lab-lead">A follow-up to the <a href="/articles/spring-boot-vs-quarkus-512mb.html">512 MB Spring Boot vs Quarkus experiment</a>, comparing memory behavior under the same constrained JVM profile and application shape, with a bounded workload.</p>
         </div>
     </section>
 
@@ -220,6 +222,7 @@
                     </div>
                     <figcaption>Six checkpoints from the controlled run. RSS remains lower for Quarkus, while Spring is the only process that accumulates swap.</figcaption>
                 </figure>
+                <p>The RSS lines appear to converge over the ten-minute observation, but RSS alone is misleading here. Spring's RSS fell by about 26 MiB while its process swap increased by about 34 MiB. Part of the apparent convergence therefore reflects Linux paging Spring memory out of RAM, rather than Spring simply reducing its memory footprint.</p>
             </section>
 
             <section>
@@ -240,11 +243,56 @@
             </section>
 
             <section>
+                <h2>Dashboard views</h2>
+                <p>These closeout screenshots show the monitored application and host dashboards. They provide operational context; the checkpoint table and chart above remain the primary measured evidence.</p>
+                <div class="screenshot-gallery" data-gallery>
+                    <div class="screenshot-tabs" role="tablist" aria-label="768 MiB experiment dashboard views">
+                        <button type="button" class="screenshot-tab" role="tab" id="tab-spring-768" aria-controls="panel-spring-768" aria-selected="true" tabindex="0">Spring Boot</button>
+                        <button type="button" class="screenshot-tab" role="tab" id="tab-quarkus-768" aria-controls="panel-quarkus-768" aria-selected="false" tabindex="-1">Quarkus</button>
+                        <button type="button" class="screenshot-tab" role="tab" id="tab-host-768" aria-controls="panel-host-768" aria-selected="false" tabindex="-1">Host resources</button>
+                    </div>
+                    <div id="panel-spring-768" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-spring-768">
+                        <figure>
+                            <a class="screenshot-link" href="/java-performance/experiments/img/spring-boot-vs-quarkus-768/spring.webp?v=20260918" aria-label="Open the Spring Boot dashboard screenshot at full size">
+                                <img src="/java-performance/experiments/img/spring-boot-vs-quarkus-768/spring.webp?v=20260918" width="2954" height="1778" loading="eager" decoding="async" alt="StatLite dashboard for the Spring Boot target, showing application and database health UP, no restarts, zero poll failures, request activity, latency, and process runtime.">
+                            </a>
+                            <figcaption>Spring Boot closeout view. The target was healthy with no restart and zero poll failures at capture.</figcaption>
+                        </figure>
+                    </div>
+                    <div id="panel-quarkus-768" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-quarkus-768" hidden>
+                        <figure>
+                            <a class="screenshot-link" href="/java-performance/experiments/img/spring-boot-vs-quarkus-768/quarkus.webp?v=20260918" aria-label="Open the Quarkus dashboard screenshot at full size">
+                                <img src="/java-performance/experiments/img/spring-boot-vs-quarkus-768/quarkus.webp?v=20260918" width="2958" height="1782" loading="lazy" decoding="async" alt="StatLite dashboard for the Quarkus target, showing application and database health UP, no restarts, zero poll failures, request activity, latency, and process runtime.">
+                            </a>
+                            <figcaption>Quarkus closeout view. The target was healthy with no restart and zero poll failures at capture.</figcaption>
+                        </figure>
+                    </div>
+                    <div id="panel-host-768" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-host-768" hidden>
+                        <figure>
+                            <a class="screenshot-link" href="/java-performance/experiments/img/spring-boot-vs-quarkus-768/host.webp?v=20260918" aria-label="Open the host resources screenshot at full size">
+                                <img src="/java-performance/experiments/img/spring-boot-vs-quarkus-768/host.webp?v=20260918" width="3076" height="720" loading="lazy" decoding="async" alt="StatLite host resources dashboard showing guest RAM, disk, and CPU over the closeout period.">
+                            </a>
+                            <figcaption>Host resources closeout view. RAM total reflects the guest-visible memory, not the VM's configured 768 MiB.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+
+                <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+                    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+                    <figure class="screenshot-lightbox__content">
+                        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+                    </figure>
+                </dialog>
+            </section>
+
+            <section>
                 <h2>Evidence</h2>
                 <p>The public experiment record contains the method, frozen inputs, workload contract, checkpoint data, polling summary, and selected screenshots.</p>
                 <p>Monitoring for this experiment was collected with <a href="/statlite/">StatLite</a>, a lightweight self-hosted metrics dashboard for Spring Boot and Quarkus.</p>
                 <p class="experiment-links">
                     <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    <a href="https://github.com/PVRLabs/experiments/discussions" target="_blank" rel="noopener noreferrer">Questions and comments</a>
                     <a href="https://github.com/PVRLabs/statlite" target="_blank" rel="noopener noreferrer">StatLite on GitHub</a>
                 </p>
             </section>
@@ -259,6 +307,7 @@
     </div>
 </footer>
 <script src="/script.js?v=20260830"></script>
+<script src="/screenshot-gallery.js?v=20260919"></script>
 <!-- Default Statcounter code for PVR Labs -->
 <script>
     var sc_project = 13137699;

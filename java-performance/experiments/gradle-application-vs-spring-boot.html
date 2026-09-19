@@ -30,6 +30,8 @@
         .experiment-chart-figure { margin: 1.75rem 0 0; }
         .experiment-chart-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; }
         .experiment-chart-figure figcaption { margin-top: .65rem; color: var(--text-secondary); font-size: .86rem; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
         @media (max-width: 600px) {
             .experiment-table-scroll table { min-width: 0; }
             .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
@@ -38,6 +40,9 @@
             .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; white-space: normal; }
             .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; }
             .experiment-table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+        @media (max-width: 480px) {
+            .experiment-links { flex-direction: column; }
         }
     </style>
 </head>
@@ -120,7 +125,10 @@
             <section>
                 <h2>Limits</h2>
                 <p>This is directional evidence, not a general benchmark. Every round used the same order: fat JAR, extracted layout, then Gradle. The third Gradle start was noticeably slower than its first two.</p>
-                <p>Source, commands, supporting files, and selected raw evidence are available in the <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/gradle-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a>.</p>
+                <p class="experiment-links">
+                    <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/gradle-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    <a href="https://github.com/PVRLabs/experiments/discussions" target="_blank" rel="noopener noreferrer">Questions and comments</a>
+                </p>
             </section>
         </div>
     </section>
