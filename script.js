@@ -452,6 +452,113 @@ document.addEventListener('DOMContentLoaded', () => {
         codeBlock.replaceChildren(highlightedCode);
     });
 
+    const javascriptKeywords = new Set([
+        'async', 'await', 'case', 'catch', 'class', 'const', 'else', 'finally',
+        'for', 'function', 'if', 'let', 'new', 'of', 'return', 'switch', 'throw',
+        'try', 'typeof', 'var', 'while'
+    ]);
+    const javascriptLiterals = new Set(['false', 'null', 'true', 'undefined']);
+    const javascriptOperators = new Set([
+        '!', '!=', '!==', '%', '*', '+', '-', '/', '<', '<=', '=', '==', '===',
+        '>', '>=', '&&', '||', '++', '--', '=>'
+    ]);
+    const javascriptTokenPattern = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`|\b(?:true|false|null|undefined)\b|-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?|===|!==|=>|==|!=|>=|<=|\+\+|--|&&|\|\||[\{\}\[\]\(\);,.:?]|[=+\-*\/%!<>]|[A-Za-z_$][A-Za-z0-9_$]*/g;
+
+    function javascriptTokenClass(token) {
+        if (token.startsWith('//') || token.startsWith('/*')) {
+            return 'code-token-comment';
+        }
+        if (token.startsWith("'") || token.startsWith('"') || token.startsWith('`')) {
+            return 'code-token-string';
+        }
+        if (javascriptLiterals.has(token)) {
+            return 'code-token-literal';
+        }
+        if (/^-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(token)) {
+            return 'code-token-number';
+        }
+        if (javascriptOperators.has(token)) {
+            return 'code-token-operator';
+        }
+        if (javascriptKeywords.has(token)) {
+            return 'code-token-keyword';
+        }
+        if (/^[{}[\]();,.:?]$/.test(token)) {
+            return 'code-token-punctuation';
+        }
+        return '';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="javascript"] > code').forEach(codeBlock => {
+        const source = codeBlock.textContent;
+        const highlightedCode = document.createDocumentFragment();
+        let sourceIndex = 0;
+
+        for (const match of source.matchAll(javascriptTokenPattern)) {
+            const token = match[0];
+            const tokenIndex = match.index;
+
+            if (tokenIndex > sourceIndex) {
+                highlightedCode.append(source.slice(sourceIndex, tokenIndex));
+            }
+
+            const tokenClass = javascriptTokenClass(token);
+            if (tokenClass) {
+                const tokenElement = document.createElement('span');
+                tokenElement.className = tokenClass;
+                tokenElement.textContent = token;
+                highlightedCode.append(tokenElement);
+            } else {
+                highlightedCode.append(token);
+            }
+
+            sourceIndex = tokenIndex + token.length;
+        }
+
+        highlightedCode.append(source.slice(sourceIndex));
+        codeBlock.replaceChildren(highlightedCode);
+    });
+
+    const jsonTokenPattern = /"(?:[^"\\]|\\.)*"|-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null|[{}[\],:]/g;
+
+    function jsonTokenClass(token, source, tokenIndex) {
+        if (token.startsWith('"')) {
+            const restOfSource = source.slice(tokenIndex + token.length);
+            return /^\s*:/.test(restOfSource) ? 'code-token-key' : 'code-token-string';
+        }
+        if (/^(?:true|false|null)$/.test(token)) {
+            return 'code-token-literal';
+        }
+        if (/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(token)) {
+            return 'code-token-number';
+        }
+        return 'code-token-punctuation';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="json"] > code').forEach(codeBlock => {
+        const source = codeBlock.textContent;
+        const highlightedCode = document.createDocumentFragment();
+        let sourceIndex = 0;
+
+        for (const match of source.matchAll(jsonTokenPattern)) {
+            const token = match[0];
+            const tokenIndex = match.index;
+
+            if (tokenIndex > sourceIndex) {
+                highlightedCode.append(source.slice(sourceIndex, tokenIndex));
+            }
+
+            const tokenElement = document.createElement('span');
+            tokenElement.className = jsonTokenClass(token, source, tokenIndex);
+            tokenElement.textContent = token;
+            highlightedCode.append(tokenElement);
+            sourceIndex = tokenIndex + token.length;
+        }
+
+        highlightedCode.append(source.slice(sourceIndex));
+        codeBlock.replaceChildren(highlightedCode);
+    });
+
     const yamlTokenPattern = /#[^\n]*|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|\b(?:true|false|null)\b|\b\d+(?:\.\d+)?\b|^[ \t]*-(?=\s)|[A-Za-z_][A-Za-z0-9_-]*(?=\s*:)|:/gim;
 
     function yamlTokenClass(token) {
