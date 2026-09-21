@@ -280,14 +280,13 @@ for i in {1..10}; do curl -s http://127.0.0.1:3000/failure &gt; /dev/null; done<
 
         <h2>Boundaries that matter in production</h2>
         <h3>One process, one target</h3>
-        <p>The helper's counters and <code>started_at</code> belong to a single Node.js process. StatLite does not add workers together. If a load balancer sends polls to different workers, counters can fall and the start time can change. The dashboard then shows a phantom restart or a broken rate, when the only change was which worker answered.</p>
-        <p>For more than one process, aggregate in the application or give each process a stable URL and its own StatLite target. The same limit applies to the FastAPI, Django, Gin, and <code>net/http</code> helpers.</p>
+        <p>The helper keeps counters in one Node.js process. For multi-process deployments, use stable per-process targets or application-owned aggregation; otherwise load-balanced polling can produce misleading rates or apparent restarts.</p>
+        <p>See <a href="https://github.com/PVRLabs/statlite/blob/main/docs/monitoring-options.md#multi-process-applications" target="_blank" rel="noopener noreferrer">Monitoring Options</a> for the multi-process tradeoff and the aggregation approach under consideration.</p>
         <h3>Keep the snapshot cheap</h3>
         <p><code>/statlite/metrics</code> should return numbers the process already has. Snapshot collection in this helper does no database or network I/O. If a reverse proxy mounts the application under a prefix, the configured URL still has to reach the same <code>/statlite/metrics</code> path the middleware excludes.</p>
-        <h3>The dashboard and the endpoint stay private</h3>
-        <p>StatLite does not ship dashboard authentication, and the <code>statlite-metrics</code> target does not send credentials. <code>statlite inspect</code> does not accept them either. Bind the dashboard to loopback, as the sample config does, and reach it through an SSH tunnel, a VPN, or an authenticated proxy when you need it from another machine.</p>
-        <p>Keep <code>/statlite/metrics</code> reachable by StatLite over loopback, a private network, or firewall rules. If the rest of the application requires a login, exempt this route. A Basic Auth challenge between StatLite and the endpoint will fail, because this target cannot present a password.</p>
-        <p>The memory and operational cost of the StatLite process itself is independent of Express. The <a href="/articles/spring-boot-512mb-vps.html">512 MB VPS run</a> shows that same binary beside a Spring Boot application. Use the <a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot guide</a> when the question is whether Prometheus, Grafana, or a larger administration UI is the better fit, including alerting. StatLite does not page you.</p>
+        <h3>Keep the dashboard and endpoint private</h3>
+        <p>StatLite is designed for a private or protected monitoring path. Keep the dashboard on loopback or behind a VPN, SSH tunnel, firewall, or authenticated reverse proxy, and keep <code>/statlite/metrics</code> reachable by StatLite without requiring the target to present credentials. See <a href="https://github.com/PVRLabs/statlite/blob/main/docs/monitoring-options.md#private-access-and-authentication" target="_blank" rel="noopener noreferrer">Monitoring Options</a> for deployment and authentication details.</p>
+        <p><a href="https://github.com/PVRLabs/statlite/blob/main/docs/monitoring-options.md#alerts-and-automation" target="_blank" rel="noopener noreferrer">StatLite does not page you.</a></p>
 
         <h2>Run the example</h2>
         <p>The tested application, helper, tests, and config are in <a href="https://github.com/PVRLabs/statlite/tree/main/examples/node-express-demo" target="_blank" rel="noopener noreferrer">examples/node-express-demo</a>. <code>npm test</code> in that directory checks normal, 404, and 500 responses, and checks that polling <code>/statlite/metrics</code> does not increment application counters.</p>
@@ -295,7 +294,7 @@ for i in {1..10}; do curl -s http://127.0.0.1:3000/failure &gt; /dev/null; done<
     </div>
 </article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
-<script src="/script.js?v=20260830"></script>
+<script src="/script.js?v=20260921"></script>
 <script src="/screenshot-gallery.js?v=20260919"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
 <script src="https://www.statcounter.com/counter/counter.js" async></script>
