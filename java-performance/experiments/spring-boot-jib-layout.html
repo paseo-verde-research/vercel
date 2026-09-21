@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="index,follow">
+    <title>Spring Boot Extracted Layout vs Jib Exploded Layout | PVR Labs</title>
+    <meta name="description" content="A short comparison of Spring Boot's extracted layout and a Jib-style exploded application layout on a constrained VM.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html">
+    <meta property="og:title" content="Spring Boot Extracted Layout vs Jib Exploded Layout">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A short comparison of two filesystem layouts for the same Spring Boot application.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Spring Boot Extracted Layout vs Jib Exploded Layout">
+    <meta name="twitter:description" content="A short comparison of two filesystem layouts for the same Spring Boot application.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260921b">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
+        .experiment-table-scroll table { min-width: 38rem; margin-bottom: 0; }
+        .experiment-table-scroll th, .experiment-table-scroll td { white-space: nowrap; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 600px) {
+            .experiment-table-scroll table { min-width: 0; }
+            .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .experiment-table-scroll tbody, .experiment-table-scroll tr, .experiment-table-scroll td { display: block; }
+            .experiment-table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; white-space: normal; }
+            .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; }
+            .experiment-table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+        @media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container experiment-note">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
+            <h1>Spring Boot Extracted Layout vs Jib Exploded Layout</h1>
+            <p class="lab-lead">A short follow-up asking whether removing the application JAR adds a benefit after dependencies are already extracted.</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container experiment-note">
+            <section>
+                <h2>Question</h2>
+                <p>Does Spring Boot's extracted layout gain anything measurable by moving the application's own classes and resources out of <code>app.jar</code> as Jib does?</p>
+            </section>
+            <section>
+                <h2>Setup</h2>
+                <p>I used the same Spring Boot 4.1.1 application, OpenJDK 25.0.4, and existing Alpine VM as the related <a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">Gradle application distribution comparison</a>.</p>
+                <p>The VM had one vCPU, 256 MiB RAM, and 512 MiB swap. Both layouts used the same JVM profile, including <code>-Xmx80m</code>, the same database reset, and the same loopback workload. There were three fresh starts per layout, with a 30-second survival check.</p>
+            </section>
+            <section>
+                <h2>Layouts</h2>
+                <ul class="comparison-list">
+                    <li>Spring Boot extracted: <code>app.jar + lib/*.jar</code></li>
+                    <li>Jib-style exploded: <code>classes/ + resources/ + libs/*.jar</code></li>
+                </ul>
+            </section>
+            <section>
+                <h2>Results</h2>
+                <div class="experiment-table-scroll" tabindex="0" role="region" aria-label="Extracted and Jib layout results">
+                    <table>
+                        <thead><tr><th>Layout</th><th>Median startup</th><th>Median first request</th><th>Peak RSS</th><th>Process swap</th></tr></thead>
+                        <tbody>
+                            <tr><td data-label="Layout">Spring Boot extracted</td><td data-label="Median startup">13,880 ms</td><td data-label="Median first request">1.829 s</td><td data-label="Peak RSS">154.8 MiB</td><td data-label="Process swap">79.1 MiB</td></tr>
+                            <tr><td data-label="Layout">Jib exploded</td><td data-label="Median startup">13,740 ms</td><td data-label="Median first request">2.018 s</td><td data-label="Peak RSS">155.0 MiB</td><td data-label="Process swap">79.3 MiB</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Both layouts started and served all validated requests successfully. Jib's median startup was 140 ms lower, effectively tied at this sample size. Its median first request was about 0.19 seconds higher, while RSS and process swap were similar.</p>
+            </section>
+            <section>
+                <h2>What this suggests</h2>
+                <p>For a simple non-container deployment, use Spring Boot's extracted layout and stop there. In this test, the Jib-style exploded layout added complexity without a measurable runtime benefit.</p>
+                <p>Jib is still useful for container image building and layering, which is a separate benefit from the runtime comparison tested here.</p>
+            </section>
+            <section>
+                <h2>Evidence and limits</h2>
+                <p>This was a three-run-per-layout comparison with a fixed <code>extracted, jib</code> order and a 30-second observation. RSS and process swap are reported in MiB here; the public CSV contains the underlying KiB values.</p>
+                <p class="experiment-links">
+                    <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jib-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    <a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">Related Gradle comparison</a>
+                    <a href="https://github.com/PVRLabs/experiments/discussions" target="_blank" rel="noopener noreferrer">Questions and comments</a>
+                </p>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript><div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>

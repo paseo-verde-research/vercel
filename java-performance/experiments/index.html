@@ -61,6 +61,18 @@
             "position": 5,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html",
             "name": "Spring Boot vs Quarkus on a 768 MiB VPS"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html",
+            "name": "Spring Boot vs Quarkus at 1 GiB with swap disabled"
+          },
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html",
+            "name": "Spring Boot extracted layout vs Jib exploded layout"
           }
         ]
       }
@@ -71,7 +83,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260921b">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -105,9 +117,18 @@
 
     <section class="lab-section">
         <div class="container">
+            <nav class="lab-filters" aria-label="Filter experiments by topic">
+                <button type="button" class="lab-filter active" data-filter="all" aria-pressed="true">All <span data-experiment-count="all"></span></button>
+                <button type="button" class="lab-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-experiment-count="spring-boot"></span></button>
+                <button type="button" class="lab-filter" data-filter="quarkus" aria-pressed="false">Quarkus <span data-experiment-count="quarkus"></span></button>
+                <button type="button" class="lab-filter" data-filter="vps" aria-pressed="false">VPS <span data-experiment-count="vps"></span></button>
+                <button type="button" class="lab-filter" data-filter="memory" aria-pressed="false">Memory <span data-experiment-count="memory"></span></button>
+                <button type="button" class="lab-filter" data-filter="jdk" aria-pressed="false">JDK <span data-experiment-count="jdk"></span></button>
+                <button type="button" class="lab-filter" data-filter="packaging" aria-pressed="false">Packaging <span data-experiment-count="packaging"></span></button>
+            </nav>
             <h2 class="lab-index-heading">Featured experiments</h2>
             <div class="lab-index">
-                <article class="lab-entry">
+                <article class="lab-entry" data-tags="spring-boot packaging">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>
                         <span>Packaging</span>
@@ -120,7 +141,7 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry">
+                <article class="lab-entry" data-tags="spring-boot quarkus vps">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>
                         <span>Quarkus</span>
@@ -135,10 +156,10 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry">
+                <article class="lab-entry" data-tags="spring-boot jdk vps">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>
-                        <span>JDK 25</span>
+                        <span>JDK</span>
                         <span>VPS</span>
                     </div>
                     <h3><a href="/articles/spring-boot-256mb-jdk25.html">Spring Boot on a 256 MiB VPS with JDK 25</a></h3>
@@ -153,30 +174,59 @@
 
             <h2 class="lab-index-heading">Quick experiments</h2>
             <div class="lab-index">
-                <article class="lab-entry">
+                <article class="lab-entry" data-tags="spring-boot packaging">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>
-                        <span>Gradle</span>
                         <span>Packaging</span>
                     </div>
                     <h3><a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">Fat JAR vs extracted layout vs Gradle distribution</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-17">September 17, 2026</time></p>
                     <p>A quick comparison of fat JAR, extracted layout, and Gradle application distribution startup and first-request latency.</p>
                     <p class="lab-entry-links">
                         <a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">Read the result</a>
                         <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/gradle-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry">
+                <article class="lab-entry" data-tags="spring-boot packaging">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Packaging</span>
+                    </div>
+                    <h3><a href="/java-performance/experiments/spring-boot-jib-layout.html">Spring Boot extracted layout vs Jib exploded layout</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-21">September 21, 2026</time></p>
+                    <p>A short comparison of Spring Boot's extracted layout and a Jib-style exploded application layout on a constrained VM.</p>
+                    <p class="lab-entry-links">
+                        <a href="/java-performance/experiments/spring-boot-jib-layout.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jib-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry" data-tags="spring-boot quarkus memory vps">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Quarkus</span>
+                        <span>Memory</span>
+                        <span>VPS</span>
+                    </div>
+                    <h3><a href="/java-performance/experiments/spring-boot-vs-quarkus-768.html">Spring Boot vs Quarkus on a 768 MiB VPS</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-18">September 18, 2026</time></p>
+                    <p>A short follow-up comparing RSS, process swap, workload health, and monitoring continuity under the same constrained JVM profile.</p>
+                    <p class="lab-entry-links">
+                        <a href="/java-performance/experiments/spring-boot-vs-quarkus-768.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry" data-tags="spring-boot quarkus memory">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>
                         <span>Quarkus</span>
                         <span>Memory</span>
                     </div>
-                    <h3><a href="/java-performance/experiments/spring-boot-vs-quarkus-768.html">Spring Boot vs Quarkus on a 768 MiB VPS</a></h3>
-                    <p>A short follow-up comparing RSS, process swap, workload health, and monitoring continuity under the same constrained JVM profile.</p>
+                    <h3><a href="/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">Spring Boot vs Quarkus at 1 GiB with swap disabled</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-21">September 21, 2026</time></p>
+                    <p>A no-swap follow-up comparing RSS, process swap, workload health, and monitoring continuity with approximately 1 GiB of RAM.</p>
                     <p class="lab-entry-links">
-                        <a href="/java-performance/experiments/spring-boot-vs-quarkus-768.html">Read the result</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                        <a href="/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768/results/follow-up-1g" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
             </div>
@@ -199,7 +249,7 @@
         <p>Java performance, systems engineering, and local-first developer tools.</p>
     </div>
 </footer>
-<script src="/script.js?v=20260830"></script>
+<script src="/script.js?v=20260921a"></script>
 <!-- Default Statcounter code for PVR Labs -->
 <script>
     var sc_project = 13137699;

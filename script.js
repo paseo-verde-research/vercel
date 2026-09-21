@@ -332,6 +332,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Experiment Topic Filters ---
+    const experimentFilters = Array.from(document.querySelectorAll('.lab-filter'));
+    const experimentEntries = Array.from(document.querySelectorAll('.lab-entry[data-tags]'));
+    if (experimentFilters.length && experimentEntries.length) {
+        const experimentGroups = Array.from(document.querySelectorAll('.lab-index')).map(grid => ({
+            grid,
+            heading: grid.previousElementSibling
+        }));
+
+        experimentFilters.forEach(filterButton => {
+            const selectedFilter = filterButton.dataset.filter;
+            const matchingEntries = selectedFilter === 'all'
+                ? experimentEntries
+                : experimentEntries.filter(entry => entry.dataset.tags.split(/\s+/).includes(selectedFilter));
+            const countElement = filterButton.querySelector('[data-experiment-count]');
+            if (countElement) countElement.textContent = `(${matchingEntries.length})`;
+        });
+
+        const updateExperimentVisibility = selectedFilter => {
+            experimentEntries.forEach(entry => {
+                const tags = entry.dataset.tags.split(/\s+/);
+                entry.hidden = selectedFilter !== 'all' && !tags.includes(selectedFilter);
+            });
+
+            experimentGroups.forEach(({ grid, heading }) => {
+                const hasVisibleEntry = Array.from(grid.querySelectorAll('.lab-entry')).some(entry => !entry.hidden);
+                grid.hidden = !hasVisibleEntry;
+                if (heading && heading.classList.contains('lab-index-heading')) heading.hidden = !hasVisibleEntry;
+            });
+        };
+
+        experimentFilters.forEach(filterButton => {
+            filterButton.addEventListener('click', () => {
+                const selectedFilter = filterButton.dataset.filter;
+
+                experimentFilters.forEach(button => {
+                    const isActive = button === filterButton;
+                    button.classList.toggle('active', isActive);
+                    button.setAttribute('aria-pressed', String(isActive));
+                });
+
+                updateExperimentVisibility(selectedFilter);
+            });
+        });
+    }
+
     // Lightweight syntax highlighting for article shell examples.
     // Add lowercase entries here to promote more product or command names.
     const articleCodeHighlightTokens = new Set([

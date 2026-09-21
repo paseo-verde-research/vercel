@@ -131,7 +131,7 @@
         <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
     </nav>
     <h1>Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-11">September 11, 2026</time></div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-11">September 11, 2026</time> · Updated September 21, 2026</div>
     <div class="article-body">
         <p>Yes for startup in this experiment, but not for everything. In a controlled comparison, Spring Boot's official extracted layout reduced median Spring-reported startup from 11.056 s to 8.476 s (-23.3%) and median first-request latency from 2.195665 s to 1.447709 s (-34.1%). All six planned pairs moved in the same direction. Later requests, RSS, and swap did not show a material winner under the thresholds fixed before measurement.</p>
         <p>That is an engineering result for one application, JDK, VM, and launch profile. It is not a claim that extraction always makes Spring Boot faster.</p>
@@ -281,6 +281,13 @@
 
         <h2>Why might extraction help?</h2>
         <p>The extracted layout keeps the application classes and dependency JARs as ordinary filesystem entries instead of requiring the launcher and class loader to work through nested entries in one executable archive. This experiment shows a repeatable startup and first-request difference under memory pressure, but it does not isolate which individual class-loading or filesystem action causes the difference. That would require a different experiment.</p>
+
+        <h2>Follow-up experiments</h2>
+        <p>This layout result led to two smaller follow-up experiments testing other filesystem-based packaging approaches. They are separate exploratory runs, not additional samples in this article's six paired comparisons.</p>
+        <ul>
+            <li><a href="/java-performance/experiments/gradle-application-vs-spring-boot.html">Fat JAR vs extracted layout vs Gradle distribution</a> compares Spring Boot's executable JAR and extracted layout with a conventional Gradle application distribution.</li>
+            <li><a href="/java-performance/experiments/spring-boot-jib-layout.html">Spring Boot extracted layout vs Jib exploded layout</a> found that further exploding <code>app.jar</code> did not show a clear benefit, so the extracted layout remains the simpler default.</li>
+        </ul>
 
         <h2>Separate operational follow-up</h2>
         <p>After selecting extracted from the primary result, I ran it once more with StatLite. It was started only after six clean requests completed. The clean startup was 6.904 s; clean request 1 was 0.950558 s. StatLite then polled the application and its own loopback metrics every 30 seconds for one hour while a guest-local request ran at the same cadence.</p>

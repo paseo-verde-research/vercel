@@ -89,10 +89,54 @@
     margin-bottom: 1.5rem;
 }
 
+.lab-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lab-filter {
+    min-height: 44px;
+    padding: 0.5rem 0 0.45rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.lab-filter:hover,
+.lab-filter.active {
+    color: var(--primary-green);
+}
+
+.lab-filter.active {
+    border-bottom-color: var(--primary-green);
+}
+
+.lab-filter:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: -2px;
+}
+
+.lab-filter span {
+    color: inherit;
+}
+
 .lab-index {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
+}
+
+.lab-index[hidden],
+.lab-index-heading[hidden],
+.lab-entry[hidden] {
+    display: none;
 }
 
 .lab-entry {
@@ -334,6 +378,10 @@
     .diagnostic-list,
     .layer-list {
         grid-template-columns: 1fr;
+    }
+
+    .lab-filters {
+        gap: 0 1rem;
     }
 }
 

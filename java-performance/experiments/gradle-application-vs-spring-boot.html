@@ -121,6 +121,7 @@
                 <h2>What this suggests</h2>
                 <p>The Gradle application distribution behaved more like Spring Boot's extracted layout than the nested executable fat JAR. Gradle had the lowest medians, but the generated artifacts, dependency ordering, and launch paths were not byte-identical, so this does not show that Gradle itself is faster.</p>
                 <p>The useful conclusion is narrower: <strong>in this run, the gap between the fat JAR and either filesystem layout was much larger than the gap between the two filesystem layouts.</strong></p>
+                <p>The <a href="/java-performance/experiments/spring-boot-jib-layout.html">Jib follow-up</a> reinforces that the meaningful jump was from the nested executable fat JAR to a filesystem-based layout, not between the different exploded layouts.</p>
             </section>
             <section>
                 <h2>Limits</h2>

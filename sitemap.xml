@@ -15,11 +15,23 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html</loc>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html</loc>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/triage.html</loc>
@@ -59,11 +71,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html</loc>
