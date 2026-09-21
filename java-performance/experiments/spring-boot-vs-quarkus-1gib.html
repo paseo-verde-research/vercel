@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="index,follow">
+    <title>Spring Boot vs Quarkus at 1 GiB with Swap Disabled | PVR Labs</title>
+    <meta name="description" content="A short no-swap follow-up to the 768 MiB Spring Boot vs Quarkus memory experiment.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">
+    <meta property="og:title" content="Spring Boot vs Quarkus at 1 GiB with Swap Disabled">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A short no-swap follow-up to the 768 MiB Spring Boot vs Quarkus memory experiment.">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-vs-quarkus-768-og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot vs Quarkus at 1 GiB with Swap Disabled">
+    <meta name="twitter:description" content="A short no-swap follow-up to the 768 MiB Spring Boot vs Quarkus memory experiment.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-vs-quarkus-768-og.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
+        .experiment-table-scroll table { width: 100%; min-width: 34rem; margin-bottom: 0; border-collapse: collapse; font-size: .92rem; }
+        .experiment-table-scroll th, .experiment-table-scroll td { padding: .7rem .75rem; border: 1px solid var(--border-color); text-align: left; }
+        .experiment-table-scroll th { background: var(--bg-light); color: var(--text-primary); }
+        .experiment-table-scroll td:not(:first-child), .experiment-table-scroll th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+        .experiment-result { margin: 1.5rem 0 0; padding: 1.15rem 1.25rem; border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; background: var(--bg-light); }
+        .experiment-result p { margin-bottom: 0; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 768px) {
+            .experiment-table-scroll { overflow-x: visible; }
+            .experiment-table-scroll table { min-width: 0; }
+            .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .experiment-table-scroll tbody, .experiment-table-scroll tr, .experiment-table-scroll td { display: block; }
+            .experiment-table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; text-align: right; }
+            .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; text-align: left; }
+            .experiment-table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container experiment-note">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
+            <h1>Spring Boot vs Quarkus at 1 GiB with swap disabled</h1>
+            <p class="lab-lead">A short follow-up to the <a href="/java-performance/experiments/spring-boot-vs-quarkus-768.html">768 MiB Spring Boot vs Quarkus experiment</a>.</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container experiment-note">
+            <section>
+                <h2>Question</h2>
+                <p>What changes when the same constrained-JVM experiment gets approximately 1 GiB of RAM and no swap?</p>
+            </section>
+
+            <section>
+                <h2>Setup</h2>
+                <p>I stopped the existing VM, changed its configured memory to 1 GiB, started it again, and disabled swap with <code>sudo swapoff -a</code>. The guest reported 955 MiB of RAM and <code>Swap: 0B</code>.</p>
+                <p>Spring Boot 4.1.1 and Quarkus 3.39.4 used Eclipse Temurin 25.0.4.1+1, the same JVM flags including <code>-Xmx80m</code>, separate file-backed H2 databases, the same deterministic fixture, and the same startup order. The paired workload sent ten requests to each application, followed by a ten-minute observation with the same checkpoints.</p>
+            </section>
+
+            <section>
+                <h2>Results</h2>
+                <div class="experiment-table-scroll" tabindex="0" role="region" aria-label="1 GiB Spring Boot and Quarkus memory comparison">
+                    <table>
+                        <thead>
+                            <tr><th>Checkpoint</th><th>Spring RSS</th><th>Quarkus RSS</th><th>Spring swap</th><th>Quarkus swap</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td data-label="Checkpoint">Ready, pre-request</td><td data-label="Spring RSS">233.1 MiB</td><td data-label="Quarkus RSS">169.6 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">After one request</td><td data-label="Spring RSS">234.8 MiB</td><td data-label="Quarkus RSS">170.5 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">Post-workload</td><td data-label="Spring RSS">235.4 MiB</td><td data-label="Quarkus RSS">171.9 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">Intermediate</td><td data-label="Spring RSS">239.7 MiB</td><td data-label="Quarkus RSS">178.4 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">Midpoint, 5 minutes</td><td data-label="Spring RSS">240.0 MiB</td><td data-label="Quarkus RSS">179.6 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                            <tr><td data-label="Checkpoint">After 10 minutes</td><td data-label="Spring RSS">240.4 MiB</td><td data-label="Quarkus RSS">181.2 MiB</td><td data-label="Spring swap">0.0 MiB</td><td data-label="Quarkus swap">0.0 MiB</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="experiment-result">
+                    <p>Both applications recorded zero process swap with swap disabled. At ten minutes, Spring RSS was 240.4 MiB and Quarkus RSS was 181.2 MiB.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Comparison with 768 MiB</h2>
+                <p>At the final checkpoint in the 768 MiB run, Spring was 202.3 MiB RSS with 34.3 MiB of process swap, while Quarkus was 175.7 MiB RSS with no process swap. The 1 GiB run showed higher RSS for both applications, especially Spring late in the observation, but that is an observed difference under different memory pressure—not a standalone efficiency ranking.</p>
+                <p>Final heap snapshots were also contextual: Spring was 13.0 MiB at 768 MiB versus 6.2 MiB at 1 GiB, while Quarkus was 8.3 MiB versus 6.9 MiB. Normal garbage collection changes these values between captures.</p>
+            </section>
+
+            <section>
+                <h2>What this suggests</h2>
+                <p>The extra memory removed the swap behavior from this short run. Spring still had the higher resident footprint at every checkpoint, while Quarkus remained lower. Both applications completed ten HTTP 200 requests, had zero restarts, and StatLite continued polling all three targets successfully.</p>
+                <p>This remains a result for these applications, flags, workload, and observation window—not a universal framework conclusion.</p>
+            </section>
+
+            <section>
+                <h2>Evidence</h2>
+                <p>The curated <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768/results/follow-up-1g" target="_blank" rel="noopener noreferrer">1 GiB follow-up record</a> contains the checkpoint data, workload, polling summary, and direct comparison with the 768 MiB run. Monitoring was provided by <a href="/statlite/">StatLite</a>.</p>
+                <p class="experiment-links">
+                    <a href="/java-performance/experiments/spring-boot-vs-quarkus-768.html">Back to the 768 MiB experiment</a>
+                    <a href="https://github.com/PVRLabs/statlite" target="_blank" rel="noopener noreferrer">StatLite on GitHub</a>
+                </p>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>

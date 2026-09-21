@@ -240,6 +240,7 @@
                 <h2>What this suggests</h2>
                 <p>For this application pair and this constrained VM, Quarkus used less resident memory and avoided process swap during the ten-minute run. Spring remained operational, but it had both a higher resident footprint and increasing process swap.</p>
                 <p>The conclusion is deliberately narrow. It does not establish that Quarkus is generally more memory-efficient or that it is a universal framework winner. The observation lasted ten minutes, and Linux paging is part of what was measured.</p>
+                <p>The same setup was repeated at 1 GiB with swap disabled. See the <a href="/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">1 GiB no-swap follow-up</a>.</p>
             </section>
 
             <section>
