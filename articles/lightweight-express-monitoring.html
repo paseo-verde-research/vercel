@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightweight Express.js Monitoring | StatLite</title>
+    <meta name="description" content="Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/lightweight-express-monitoring.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/lightweight-express-monitoring.html">
+    <meta property="og:title" content="Lightweight Express.js Monitoring Without Prometheus and Grafana">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.">
+    <meta property="article:modified_time" content="2026-09-21T00:00:00-07:00">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/express-monitoring-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lightweight Express.js Monitoring Without Prometheus and Grafana">
+    <meta name="twitter:description" content="Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/express-monitoring-og.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260904">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td a { overflow-wrap: anywhere; }
+        .statlite-pitch { background: var(--bg-light); border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; padding: 24px 28px; margin: 32px 0 40px; }
+        .statlite-pitch p { margin-bottom: 0; }
+        .article-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .article-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: .85rem; padding: 8px 20px; }
+        .article-actions .btn-github { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .article-actions .btn-github:hover { background: rgba(255, 255, 255, .06); border-color: var(--primary-green); color: var(--text-primary); }
+        @media (max-width: 768px) { .article-body table { display: block; overflow-x: auto; } }
+        @media (max-width: 480px) {
+            .article-actions { flex-direction: column; }
+            .article-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="StatLite article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
+    </nav>
+    <h1>Lightweight Express.js Monitoring Without Prometheus and Grafana</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · September 21, 2026</div>
+    <div class="article-body">
+        <p>A small Express application still needs a few operational answers: how much traffic is arriving, whether 4xx or 5xx responses are rising, whether requests are slowing down, and how much CPU and heap the Node.js process is using. Prometheus and Grafana can answer those questions. For one application on a VPS, they can also be more infrastructure than the application warrants.</p>
+        <p>In this article, we show you how to add lightweight metrics to an Express application and visualize them in StatLite. A small helper exposes the application's request, error, latency, CPU, heap, and uptime data to StatLite, which stores the history and presents it in one dashboard. The integration uses StatLite's <code>statlite-metrics</code> profile and does not require a Prometheus client or Grafana.</p>
+        <p>FastAPI, Django, Gin, and Go <code>net/http</code> use that same endpoint and the same StatLite target, each with its own helper. Spring Boot keeps a first-party Actuator integration, described in <a href="/articles/lightweight-spring-boot-monitoring.html">Lightweight Spring Boot Monitoring Without Prometheus and Grafana</a>.</p>
+        <p>The helper below matches the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md" target="_blank" rel="noopener noreferrer">Express integration guide</a>. That guide is the source of truth if the two ever differ.</p>
+        <figure data-gallery>
+            <a class="screenshot-link" href="/articles/img/express-statlite-dashboard-full.jpg" aria-label="Open the Express StatLite dashboard screenshot at full size">
+                <img src="/articles/img/express-statlite-dashboard.webp" width="1600" height="940" loading="eager" decoding="async" alt="StatLite dashboard for an Express app after a burst of requests and 500 responses">
+            </a>
+            <figcaption>Express traffic and a short 5xx burst, collected from <code>/statlite/metrics</code>. Database health stays unavailable because this helper has no database signal to report.</figcaption>
+        </figure>
+        <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+            <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+            <figure class="screenshot-lightbox__content">
+                <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+            </figure>
+        </dialog>
+        <div class="statlite-pitch"><p><strong>One JSON endpoint. One StatLite process. No Prometheus client in the application.</strong></p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
+
+        <h2>What the helper is for</h2>
+        <p>StatLite cannot see request counts, HTTP errors, or latency from outside the process. The helper records them where Express already sees every response. It is ordinary application code: no npm metrics package, no exporter, and no sidecar.</p>
+        <p>The example was exercised with Node.js 24.21.0 LTS and Express 5.1.0. It uses stable process APIs and the standard middleware and response APIs. That is the tested baseline, not a promise about every Express release.</p>
+        <p>Counters live in the Node.js process. This article is for one process. Cluster mode, PM2 clusters, and several replicas each need their own counters and their own start time. That boundary is covered later, because a load balancer in front of those workers will make the charts lie.</p>
+
+        <h2>Quick start for an existing app</h2>
+        <p>If you already have an Express application, the integration has four pieces:</p>
+        <ol>
+            <li>Save the helper below as <code>statlite-metrics.js</code>.</li>
+            <li>Register its middleware before your routes and its metrics endpoint alongside your routes.</li>
+            <li>Keep <code>/statlite/metrics</code> reachable by StatLite, but private from the public internet.</li>
+            <li>Add a <code>statlite-metrics</code> target pointing to that endpoint.</li>
+        </ol>
+        <p>The runnable demo later in this article includes sample routes and a local <code>app.listen</code> call. Copy the helper and integration wiring into an existing app, but keep your app's own routes, startup code, and deployment bind address.</p>
+
+        <h2>Paste the helper into the application</h2>
+        <p>Save this as <code>statlite-metrics.js</code> next to the application file:</p>
+        <pre data-lang="javascript"><code>// Source and updates: https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md
+
+const { performance } = require("node:perf_hooks");
+
+const METRICS_PATH = "/statlite/metrics";
+const startedAt = new Date(Date.now() - process.uptime() * 1000);
+
+const counters = {
+  requestsTotal: 0,
+  responses404Total: 0,
+  responses4xxTotal: 0,
+  responses5xxTotal: 0,
+  requestDurationSecondsTotal: 0,
+};
+
+let previousCpu = process.cpuUsage();
+let previousCpuTime = performance.now();
+
+function record(statusCode, durationSeconds) {
+  counters.requestsTotal += 1;
+  counters.requestDurationSecondsTotal += durationSeconds;
+  if (statusCode === 404) counters.responses404Total += 1;
+  if (statusCode &gt;= 400 &amp;&amp; statusCode &lt; 500) counters.responses4xxTotal += 1;
+  if (statusCode &gt;= 500 &amp;&amp; statusCode &lt; 600) counters.responses5xxTotal += 1;
+}
+
+function statliteMetricsMiddleware(req, res, next) {
+  if (req.path === METRICS_PATH) return next();
+
+  const requestStarted = performance.now();
+  res.once("finish", () => {
+    record(res.statusCode, (performance.now() - requestStarted) / 1000);
+  });
+  next();
+}
+
+function snapshot() {
+  const now = performance.now();
+  const cpu = process.cpuUsage();
+  const elapsedSeconds = (now - previousCpuTime) / 1000;
+  const cpuSeconds =
+    (cpu.user - previousCpu.user + cpu.system - previousCpu.system) / 1e6;
+  const processCpuUsage = elapsedSeconds &gt; 0 ? cpuSeconds / elapsedSeconds : 0;
+  previousCpu = cpu;
+  previousCpuTime = now;
+
+  return {
+    schema: "statlite-metrics/v1",
+    integration: "express",
+    status: "UP",
+    started_at: startedAt.toISOString(),
+    metrics: {
+      requests_total: counters.requestsTotal,
+      responses_404_total: counters.responses404Total,
+      responses_4xx_total: counters.responses4xxTotal,
+      responses_5xx_total: counters.responses5xxTotal,
+      request_duration_seconds_total: counters.requestDurationSecondsTotal,
+      process_cpu_usage: processCpuUsage,
+      runtime_heap_used_bytes: process.memoryUsage().heapUsed,
+      uptime_seconds: process.uptime(),
+    },
+  };
+}
+
+function statliteMetricsEndpoint(req, res) {
+  res.json(snapshot());
+}
+
+module.exports = {
+  METRICS_PATH,
+  statliteMetricsEndpoint,
+  statliteMetricsMiddleware,
+};</code></pre>
+        <p>Register the middleware before the routes, and keep the error handler after them. The <code>finish</code> listener then sees the final status, including a 500 chosen by later error-handling middleware.</p>
+        <pre data-lang="javascript"><code>const express = require("express");
+const {
+  METRICS_PATH,
+  statliteMetricsEndpoint,
+  statliteMetricsMiddleware,
+} = require("./statlite-metrics");
+
+const app = express();
+
+app.use(statliteMetricsMiddleware);
+app.get(METRICS_PATH, statliteMetricsEndpoint);
+
+app.get("/", (req, res) =&gt; res.json({ message: "hello" }));
+app.get("/failure", (req, res, next) =&gt; next(new Error("example failure")));
+
+app.use((err, req, res, next) =&gt; {
+  console.error(err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ error: "internal server error" });
+});
+
+app.listen(3000, "127.0.0.1");</code></pre>
+        <p>The middleware skips <code>/statlite/metrics</code>, including requests that carry a query string, so StatLite's own polls do not inflate traffic or latency. A 404 increments both the 404 counter and the 4xx counter, because a 404 is a subset of 4xx. Connections that close before a response finishes are not counted.</p>
+        <p>The sample binds Express to <code>127.0.0.1</code> for a local demo. In a container or deployment where a reverse proxy reaches Express over the network, bind to the interface your deployment requires, often <code>0.0.0.0</code>, and keep the metrics endpoint private with network or proxy access controls.</p>
+        <p><code>runtime_heap_used_bytes</code> is V8 heap, not process RSS, container memory, or a heap limit. <code>process_cpu_usage</code> is CPU seconds divided by wall seconds since the previous snapshot, in cores. Host CPU, memory, and disk are omitted. StatLite can show those from its <a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#statlite-self-monitoring" target="_blank" rel="noopener noreferrer">self-monitoring target</a> when it runs on the same machine.</p>
+        <figure>
+            <img src="/articles/img/host-monitoring.webp" width="2911" height="691" loading="lazy" decoding="async" alt="StatLite host resources charts for memory, CPU, and disk">
+            <figcaption>Example host memory, CPU, and disk metrics from a StatLite self-monitoring target.</figcaption>
+        </figure>
+
+        <h2>The endpoint StatLite polls</h2>
+        <p><code>GET /statlite/metrics</code> returns one JSON snapshot and a successful 2xx response. A response can look like this:</p>
+        <pre data-lang="json"><code>{
+  "schema": "statlite-metrics/v1",
+  "integration": "express",
+  "status": "UP",
+  "started_at": "2026-09-17T20:00:00Z",
+  "metrics": {
+    "requests_total": 1420,
+    "responses_404_total": 18,
+    "responses_4xx_total": 31,
+    "responses_5xx_total": 4,
+    "request_duration_seconds_total": 84.31,
+    "process_cpu_usage": 0.031,
+    "runtime_heap_used_bytes": 25165824,
+    "uptime_seconds": 1820
+  }
+}</code></pre>
+        <p>Only <code>schema</code> and a non-empty <code>status</code> are required. <code>integration</code>, <code>started_at</code>, and each metric are optional. <code>started_at</code> is worth sending when the process can name its start time, because StatLite uses it, together with counter resets, to notice a new run.</p>
+        <p><code>status: "UP"</code> in this helper is the application's own statement at snapshot time. It does not mean every dependency is healthy. The helper leaves out <code>database_status</code> on purpose. Add that field only from a signal the application already trusts, or from a cached check. Do not query a database on every StatLite poll, and do not invent a value when no signal exists.</p>
+        <p>Field semantics, including which counters are cumulative, live in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/statlite-metrics-v1.md" target="_blank" rel="noopener noreferrer">StatLite Metrics v1 specification</a>. The profile has no labels, histogram buckets, or arbitrary metric names. Average latency on the dashboard is derived by StatLite from the change in cumulative duration and request count between polls. The application keeps the running totals.</p>
+
+        <h2>Point StatLite at the endpoint</h2>
+        <p>Install the StatLite binary with the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" target="_blank" rel="noopener noreferrer">installation guide</a>, or follow the same install step in the <a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot article</a>. The process, the SQLite file, and the dashboard are the same. The target type is what changes.</p>
+        <p>The runnable <a href="https://github.com/PVRLabs/statlite/tree/main/examples/node-express-demo" target="_blank" rel="noopener noreferrer">Express demo</a> ships this configuration:</p>
+        <pre data-lang="yaml"><code>server:
+  listen: "127.0.0.1:9090"
+
+storage:
+  sqlite_path: "./statlite-express-demo.sqlite"
+
+polling:
+  interval: "10s"
+  timeout: "5s"
+
+targets:
+  - name: "node-express-demo"
+    type: "statlite-metrics"
+    url: "http://127.0.0.1:3000/statlite/metrics"</code></pre>
+        <p>A relative <code>sqlite_path</code> is resolved from the directory that contains the config file. <code>listen</code> keeps the dashboard on loopback. Ten seconds is for a local demo. Use 30 seconds or longer in production. The YAML tells StatLite where to poll. It does not install the middleware.</p>
+        <p>For a normal deployment the target block is the part that matters. Server, storage, and polling options are documented in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md" target="_blank" rel="noopener noreferrer">configuration reference</a>.</p>
+
+        <h2>Run it and check the numbers</h2>
+        <p>From a clone of the repository:</p>
+        <pre data-lang="bash"><code>cd statlite/examples/node-express-demo
+npm install
+npm start</code></pre>
+        <p>The demo requires Node.js 24.21.0 LTS and an installed <code>statlite</code> binary. If you are using a source checkout instead, the source-based command appears below.</p>
+        <p>Express listens on <code>http://127.0.0.1:3000</code>. In another terminal, send one success, one miss, and one failure, then read the snapshot:</p>
+        <pre data-lang="bash"><code>curl -s http://127.0.0.1:3000/
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:3000/missing
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:3000/failure
+curl -s http://127.0.0.1:3000/statlite/metrics</code></pre>
+        <p>The snapshot should show three completed application requests, one 404 counted in both the 404 and 4xx fields, and one 5xx. Use <code>statlite inspect</code> to validate the endpoint and profile, then use <code>statlite --config statlite.yaml</code> to start the dashboard. If the binary is not on your <code>PATH</code>, replace <code>statlite</code> with its installed path:</p>
+        <pre data-lang="bash"><code>statlite inspect 'http://127.0.0.1:3000/statlite/metrics'
+statlite --config statlite.yaml</code></pre>
+        <p>Open <code>http://127.0.0.1:9090</code>. To make the charts move, generate a burst and then some failures:</p>
+        <pre data-lang="bash"><code>for i in {1..50}; do curl -s http://127.0.0.1:3000/ &gt; /dev/null; done
+for i in {1..10}; do curl -s http://127.0.0.1:3000/failure &gt; /dev/null; done</code></pre>
+        <p>Wait for the next poll. Request volume and 5xx activity should step up together. StatLite treats the counters as resettable process signals: it does not draw negative deltas, and it does not carry a delta across a detected restart. A restart shows up on a later successful poll, so the dashboard can lag the process by about one interval.</p>
+        <p>If you are running StatLite from a source checkout instead of an installed binary, start it from the repository root:</p>
+        <pre data-lang="bash"><code>go run ./cmd/statlite --config examples/node-express-demo/statlite.yaml</code></pre>
+
+        <h2>The same pattern in other frameworks</h2>
+        <p>Each guide below is a copyable helper for one framework. All of them use <code>type: statlite-metrics</code> and <code>GET /statlite/metrics</code>. None of them is a new target type.</p>
+        <table>
+            <thead><tr><th>Framework</th><th>Guide</th><th>Runnable demo</th></tr></thead>
+            <tbody>
+                <tr><td>Express</td><td><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md" target="_blank" rel="noopener noreferrer">Express guide</a></td><td><a href="https://github.com/PVRLabs/statlite/tree/main/examples/node-express-demo" target="_blank" rel="noopener noreferrer">Express demo</a></td></tr>
+                <tr><td>FastAPI</td><td><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">FastAPI guide</a></td><td><a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo" target="_blank" rel="noopener noreferrer">FastAPI demo</a></td></tr>
+                <tr><td>Django</td><td><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md" target="_blank" rel="noopener noreferrer">Django guide</a></td><td><a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-django-demo" target="_blank" rel="noopener noreferrer">Django demo</a></td></tr>
+                <tr><td>Go <code>net/http</code></td><td><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/go/net-http.md" target="_blank" rel="noopener noreferrer">net/http guide</a></td><td><a href="https://github.com/PVRLabs/statlite/tree/main/examples/go-net-http-demo" target="_blank" rel="noopener noreferrer">net/http demo</a></td></tr>
+                <tr><td>Gin</td><td><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/go/gin.md" target="_blank" rel="noopener noreferrer">Gin guide</a></td><td><a href="https://github.com/PVRLabs/statlite/tree/main/examples/go-gin-demo" target="_blank" rel="noopener noreferrer">Gin demo</a></td></tr>
+            </tbody>
+        </table>
+        <p>The <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/principles.md" target="_blank" rel="noopener noreferrer">integration principles</a> are the shared rules: report only what the application can actually observe, keep the helper small, and leave unsupported cases out of the metrics instead of inventing a number. The <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/README.md" target="_blank" rel="noopener noreferrer">integration index</a> is the list to check when a framework is missing here.</p>
+        <p>A general Prometheus client inside Express would still need an adapter. StatLite does not ingest arbitrary Prometheus or OpenMetrics text on this target. Spring Boot and Quarkus are the first-party path, because those frameworks already publish a stable metrics contract. The <a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot article</a> uses that Actuator target directly.</p>
+
+        <h2>Boundaries that matter in production</h2>
+        <h3>One process, one target</h3>
+        <p>The helper's counters and <code>started_at</code> belong to a single Node.js process. StatLite does not add workers together. If a load balancer sends polls to different workers, counters can fall and the start time can change. The dashboard then shows a phantom restart or a broken rate, when the only change was which worker answered.</p>
+        <p>For more than one process, aggregate in the application or give each process a stable URL and its own StatLite target. The same limit applies to the FastAPI, Django, Gin, and <code>net/http</code> helpers.</p>
+        <h3>Keep the snapshot cheap</h3>
+        <p><code>/statlite/metrics</code> should return numbers the process already has. Snapshot collection in this helper does no database or network I/O. If a reverse proxy mounts the application under a prefix, the configured URL still has to reach the same <code>/statlite/metrics</code> path the middleware excludes.</p>
+        <h3>The dashboard and the endpoint stay private</h3>
+        <p>StatLite does not ship dashboard authentication, and the <code>statlite-metrics</code> target does not send credentials. <code>statlite inspect</code> does not accept them either. Bind the dashboard to loopback, as the sample config does, and reach it through an SSH tunnel, a VPN, or an authenticated proxy when you need it from another machine.</p>
+        <p>Keep <code>/statlite/metrics</code> reachable by StatLite over loopback, a private network, or firewall rules. If the rest of the application requires a login, exempt this route. A Basic Auth challenge between StatLite and the endpoint will fail, because this target cannot present a password.</p>
+        <p>The memory and operational cost of the StatLite process itself is independent of Express. The <a href="/articles/spring-boot-512mb-vps.html">512 MB VPS run</a> shows that same binary beside a Spring Boot application. Use the <a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot guide</a> when the question is whether Prometheus, Grafana, or a larger administration UI is the better fit, including alerting. StatLite does not page you.</p>
+
+        <h2>Run the example</h2>
+        <p>The tested application, helper, tests, and config are in <a href="https://github.com/PVRLabs/statlite/tree/main/examples/node-express-demo" target="_blank" rel="noopener noreferrer">examples/node-express-demo</a>. <code>npm test</code> in that directory checks normal, 404, and 500 responses, and checks that polling <code>/statlite/metrics</code> does not increment application counters.</p>
+        <div class="statlite-pitch"><p><strong>Monitor an Express application with one pasted helper and a local StatLite dashboard.</strong></p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Express integration guide</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260830"></script>
+<script src="/screenshot-gallery.js?v=20260919"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
