@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring a FastAPI App on a Small VPS | StatLite</title>
+    <meta name="description" content="Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/monitoring-fastapi-app-small-vps.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/monitoring-fastapi-app-small-vps.html">
+    <meta property="og:title" content="Monitoring a FastAPI App on a Small VPS">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.">
+    <meta property="article:modified_time" content="2026-09-22T00:00:00-07:00">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/fastapi-statlite-dashboard-full.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="2944">
+    <meta property="og:image:height" content="1750">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Monitoring a FastAPI App on a Small VPS">
+    <meta name="twitter:description" content="Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/fastapi-statlite-dashboard-full.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260904">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="StatLite article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
+    </nav>
+    <h1>Monitoring a FastAPI App on a Small VPS</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · September 22, 2026</div>
+    <div class="article-body">
+        <p>You have a FastAPI application that you want to run on a small VPS. Once real traffic arrives, you want practical answers: how much traffic is coming in, which HTTP errors appear, whether latency is changing, and whether the process or server is under pressure.</p>
+        <p>You do not need a VPS to try the setup in this article. I ran the example locally, where FastAPI exposes one small metrics endpoint and StatLite stores the resulting history in SQLite. The same simple setup can run alongside a small FastAPI deployment on a VPS without adding Prometheus, Grafana, or another monitoring database.</p>
+        <figure data-gallery>
+            <a class="screenshot-link" href="/articles/img/fastapi-statlite-dashboard-full.jpg" aria-label="Open the FastAPI StatLite dashboard screenshot at full size">
+                <img src="/articles/img/fastapi-statlite-dashboard.webp" width="1600" height="952" loading="eager" decoding="async" alt="StatLite dashboard showing FastAPI baseline traffic, distinct 404 and aggregate 4xx errors, a 5xx spike, recovery, latency, and runtime memory">
+            </a>
+            <figcaption>FastAPI traffic, distinct 404 and aggregate 4xx errors, a short 5xx incident, recovery, latency, and runtime memory.</figcaption>
+        </figure>
+        <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+            <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+            <figure class="screenshot-lightbox__content">
+                <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+            </figure>
+        </dialog>
+
+        <h2>What you get</h2>
+        <p>The FastAPI integration gives StatLite enough information to show:</p>
+        <ul>
+            <li>request traffic and 404, 4xx, and 5xx responses;</li>
+            <li>average request latency;</li>
+            <li>process CPU and, with the current helper, runtime heap and process identity;</li>
+            <li>polling status, restart signals, and historical charts in SQLite.</li>
+        </ul>
+        <p>When StatLite runs on the same host, its self-monitoring target can also show host CPU, memory, and disk history. Host metrics belong to the StatLite execution environment, not to FastAPI's application endpoint.</p>
+        <p>The screenshot uses a small steady request flow so the charts remain readable. The larger request bursts are easy to spot above that baseline. The HTTP error chart also keeps 404 separate from the aggregate 4xx series: a 404 is part of 4xx, so the 4xx line is expected to be at least as high. A mix of missing routes and another client error, such as a 405, makes that relationship visible without inventing an additional metric type.</p>
+
+        <h2>One endpoint, one StatLite process</h2>
+        <p>FastAPI middleware counts requests and accumulates request duration in memory. The application exposes those counters at:</p>
+        <pre data-lang="text"><code>GET /statlite/metrics</code></pre>
+        <p>StatLite polls that endpoint on a configured interval, calculates counter deltas, stores the observations, and presents the resulting history. The metrics endpoint is excluded from the application's own counters, so monitoring does not inflate the traffic or latency charts.</p>
+        <p>The integration uses the fixed <code>statlite-metrics/v1</code> profile. It is deliberately small and bounded; it is not a Prometheus or OpenMetrics exporter.</p>
+
+        <h2>Quick start</h2>
+        <p>The repository contains a <a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo" target="_blank" rel="noopener noreferrer">runnable FastAPI demo</a>. If the <code>statlite</code> executable is not installed, follow the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" target="_blank" rel="noopener noreferrer">installation guide</a> first. This is intentionally a local trial; from the demo directory:</p>
+        <ol>
+            <li>Create the environment and install the pinned dependencies:
+                <pre data-lang="bash"><code>python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt</code></pre>
+            </li>
+            <li>Start FastAPI with one worker and leave it running:
+                <pre data-lang="bash"><code>uvicorn app:app --host 127.0.0.1 --port 8000 --workers 1</code></pre>
+            </li>
+            <li>In another terminal, start StatLite with the demo configuration:
+                <pre data-lang="bash"><code>statlite --config statlite.yaml</code></pre>
+            </li>
+            <li>Open the dashboard:
+                <pre data-lang="text"><code>http://127.0.0.1:9090</code></pre>
+            </li>
+        </ol>
+        <p>You can optionally run <code>statlite inspect http://127.0.0.1:8000</code> to verify that StatLite recognizes the integration and see a starter configuration for your own FastAPI app.</p>
+
+        <h2>The FastAPI registration is tiny</h2>
+        <p>The application needs the helper, middleware registration, and one endpoint:</p>
+        <pre data-lang="python"><code>from fastapi import FastAPI
+
+from statlite_metrics import StatLiteMetrics
+
+
+app = FastAPI()
+metrics = StatLiteMetrics()
+app.middleware("http")(metrics.middleware)
+
+
+@app.get("/statlite/metrics")
+def statlite_metrics() -&gt; dict:
+    return metrics.snapshot()</code></pre>
+        <p>The complete copyable helper, field semantics, tests, and deployment guidance are maintained in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">canonical FastAPI integration guide</a>. Keep that guide as the source of truth rather than copying an abbreviated version of the helper into this article.</p>
+
+        <h2>Demo configuration</h2>
+        <p>This is the configuration included with the runnable demo:</p>
+        <pre data-lang="yaml"><code>server:
+  listen: "127.0.0.1:9090"
+
+storage:
+  sqlite_path: "./statlite-fastapi-demo.sqlite"
+
+polling:
+  # Short interval for a responsive local demo. Use 30s or longer in production.
+  interval: "10s"
+  timeout: "5s"
+
+targets:
+  - name: "python-fastapi-demo"
+    type: "statlite-metrics"
+    url: "http://127.0.0.1:8000/statlite/metrics"</code></pre>
+        <p>The 10-second interval is intentionally short for fast local feedback. Use 30 seconds or longer for a normal deployment. The application integration must be registered before StatLite can collect this endpoint.</p>
+        <p>For a quick check, send a normal request, a missing-route request, and a safe application failure, then query the metrics endpoint. The demo's tests exercise the same normal, 404, 500, and metrics-exclusion behavior.</p>
+        <p>After the first few polls, the dashboard begins building historical points. Average latency is calculated from the change in cumulative duration divided by the change in request count. A quiet interval therefore has no meaningful latency value and may appear as a gap, while the steady baseline in the example keeps the latency chart readable between larger traffic events.</p>
+
+        <h2>Three boundaries to keep in mind</h2>
+        <h3>One process or one worker</h3>
+        <p>The simple helper keeps counters in the process. Use one Uvicorn worker for the default setup. Multiple workers need shared aggregation or stable per-worker targets; StatLite does not aggregate them automatically.</p>
+        <h3>Keep the endpoint cheap</h3>
+        <p><code>/statlite/metrics</code> should return an inexpensive snapshot. Do not perform a database query or blocking dependency check on every poll. If the application has a cached dependency-health signal, it can expose that bounded value.</p>
+        <h3>Keep it private</h3>
+        <p>The endpoint exposes operational data, and the StatLite dashboard has no built-in authentication. Keep both reachable only through loopback, a private network, a VPN, an SSH tunnel, or an authenticated reverse proxy.</p>
+        <p>This setup is intentionally focused. It answers whether the application is receiving traffic, whether client or server errors appeared, whether average latency changed, and whether the local process or host is using more resources. It does not attempt to provide arbitrary business metrics, distributed traces, PromQL, or fleet-wide aggregation.</p>
+
+        <h2>Try the complete example</h2>
+        <ul>
+            <li><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">FastAPI integration guide</a></li>
+            <li><a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo" target="_blank" rel="noopener noreferrer">Runnable FastAPI demo</a></li>
+            <li><a href="https://github.com/PVRLabs/statlite/blob/main/docs/statlite-metrics-v1.md" target="_blank" rel="noopener noreferrer">StatLite Metrics v1 specification</a></li>
+        </ul>
+        <p>For a small FastAPI deployment, this is the whole monitoring path:</p>
+        <pre data-lang="text"><code>FastAPI middleware
+       |
+/statlite/metrics
+       |
+    StatLite
+       |
+     SQLite
+       |
+    dashboard</code></pre>
+        <p>Once you are happy with it locally, run StatLite alongside the FastAPI application on the VPS and keep both the metrics endpoint and dashboard private.</p>
+        <p>Start small. If you later need arbitrary metrics, labels, PromQL, tracing, fleet-wide aggregation, or sophisticated alerting, choose a system designed for that larger problem.</p>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260921"></script>
+<script src="/screenshot-gallery.js?v=20260919"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
