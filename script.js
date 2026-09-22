@@ -519,6 +519,59 @@ document.addEventListener('DOMContentLoaded', () => {
         codeBlock.replaceChildren(highlightedCode);
     });
 
+    const pythonKeywords = new Set([
+        'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue',
+        'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global',
+        'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass',
+        'raise', 'return', 'try', 'while', 'with', 'yield'
+    ]);
+    const pythonLiterals = new Set(['False', 'None', 'True']);
+    const pythonTokenPattern = /#[^\n]*|(?:[rRuUbBfF]{1,2})?(?:'''[\s\S]*?'''|"""[\s\S]*?"""|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|@[A-Za-z_][A-Za-z_0-9]*|\b(?:False|None|True)\b|\b\d+(?:\.\d+)?\b|->|==|!=|>=|<=|\*\*|\/\/|:=|[{}\[\]();,.:]|[=+\-*\/%<>]|[A-Za-z_][A-Za-z_0-9]*/g;
+
+    document.querySelectorAll('.article-body pre[data-lang="python"] > code').forEach(codeBlock => {
+        const source = codeBlock.textContent;
+        const highlightedCode = document.createDocumentFragment();
+        let sourceIndex = 0;
+
+        for (const match of source.matchAll(pythonTokenPattern)) {
+            const token = match[0];
+            const tokenIndex = match.index;
+            let tokenClass = '';
+
+            if (token.startsWith('#')) {
+                tokenClass = 'code-token-comment';
+            } else if (/^(?:[rRuUbBfF]{1,2})?['"]/.test(token)) {
+                tokenClass = 'code-token-string';
+            } else if (token.startsWith('@')) {
+                tokenClass = 'code-token-keyword';
+            } else if (pythonLiterals.has(token)) {
+                tokenClass = 'code-token-literal';
+            } else if (/^\d/.test(token)) {
+                tokenClass = 'code-token-number';
+            } else if (pythonKeywords.has(token)) {
+                tokenClass = 'code-token-keyword';
+            } else if (/^[{}\[\]();,.:]$/.test(token)) {
+                tokenClass = 'code-token-punctuation';
+            } else if (/^[=+\-*\/%<>!]/.test(token)) {
+                tokenClass = 'code-token-operator';
+            }
+
+            highlightedCode.append(source.slice(sourceIndex, tokenIndex));
+            if (tokenClass) {
+                const tokenElement = document.createElement('span');
+                tokenElement.className = tokenClass;
+                tokenElement.textContent = token;
+                highlightedCode.append(tokenElement);
+            } else {
+                highlightedCode.append(token);
+            }
+            sourceIndex = tokenIndex + token.length;
+        }
+
+        highlightedCode.append(source.slice(sourceIndex));
+        codeBlock.replaceChildren(highlightedCode);
+    });
+
     const jsonTokenPattern = /"(?:[^"\\]|\\.)*"|-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null|[{}[\],:]/g;
 
     function jsonTokenClass(token, source, tokenIndex) {
