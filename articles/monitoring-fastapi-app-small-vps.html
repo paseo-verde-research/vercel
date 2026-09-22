@@ -12,15 +12,16 @@
     <meta property="og:title" content="Monitoring a FastAPI App on a Small VPS">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.">
+    <meta property="article:published_time" content="2026-09-22T00:00:00-07:00">
     <meta property="article:modified_time" content="2026-09-22T00:00:00-07:00">
-    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/fastapi-statlite-dashboard-full.jpg">
-    <meta property="og:image:type" content="image/jpeg">
-    <meta property="og:image:width" content="2944">
-    <meta property="og:image:height" content="1750">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/fastapi-monitoring-og.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1774">
+    <meta property="og:image:height" content="887">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Monitoring a FastAPI App on a Small VPS">
     <meta name="twitter:description" content="Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.">
-    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/fastapi-statlite-dashboard-full.jpg">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/fastapi-monitoring-og.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -111,7 +112,7 @@ app.middleware("http")(metrics.middleware)
 @app.get("/statlite/metrics")
 def statlite_metrics() -&gt; dict:
     return metrics.snapshot()</code></pre>
-        <p>Run FastAPI with one Uvicorn worker, then use the demo configuration to point StatLite at this endpoint. The complete helper, field semantics, tests, and deployment guidance are maintained in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">canonical FastAPI integration guide</a>, which remains the source of truth.</p>
+        <p>Run FastAPI with one Uvicorn worker, then use the demo configuration to point StatLite at this endpoint. The complete helper, field semantics, tests, and deployment guidance are maintained in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">canonical FastAPI integration guide</a>.</p>
 
         <h2>Demo configuration</h2>
         <p>This is the configuration included with the runnable demo:</p>
@@ -143,11 +144,10 @@ targets:
         <p>The endpoint exposes operational data, and the StatLite dashboard has no built-in authentication. Keep both reachable only through loopback, a private network, a VPN, an SSH tunnel, or an authenticated reverse proxy.</p>
         <p>This setup is intentionally focused. It answers whether the application is receiving traffic, whether client or server errors appeared, whether average latency changed, and whether the local process or host is using more resources. It does not attempt to provide arbitrary business metrics, distributed traces, PromQL, or fleet-wide aggregation.</p>
 
-        <h2>Try the complete example</h2>
+        <h2>Next steps</h2>
         <ul>
             <li><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">FastAPI integration guide</a></li>
             <li><a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo" target="_blank" rel="noopener noreferrer">Runnable FastAPI demo</a></li>
-            <li><a href="https://github.com/PVRLabs/statlite/blob/main/docs/statlite-metrics-v1.md" target="_blank" rel="noopener noreferrer">StatLite Metrics v1 specification</a></li>
         </ul>
         <p>For a small FastAPI deployment, this is the whole monitoring path:</p>
         <pre data-lang="text"><code>FastAPI middleware
