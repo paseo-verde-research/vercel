@@ -97,7 +97,7 @@ python -m pip install -r requirements.txt</code></pre>
         <p>You can optionally run <code>statlite inspect http://127.0.0.1:8000</code> to verify that StatLite recognizes the integration and see a starter configuration for your own FastAPI app.</p>
 
         <h2>The FastAPI registration is tiny</h2>
-        <p>The application needs the helper, middleware registration, and one endpoint:</p>
+        <p>To complete the integration, save the complete <code>statlite_metrics.py</code> helper from the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md#minimal-dependency-light-integration" target="_blank" rel="noopener noreferrer">minimal dependency-light integration section of the canonical FastAPI guide</a> next to your application. Import <code>StatLiteMetrics</code>, create one instance, register its middleware, and expose <code>GET /statlite/metrics</code> by returning <code>metrics.snapshot()</code>:</p>
         <pre data-lang="python"><code>from fastapi import FastAPI
 
 from statlite_metrics import StatLiteMetrics
@@ -111,7 +111,7 @@ app.middleware("http")(metrics.middleware)
 @app.get("/statlite/metrics")
 def statlite_metrics() -&gt; dict:
     return metrics.snapshot()</code></pre>
-        <p>The complete copyable helper, field semantics, tests, and deployment guidance are maintained in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">canonical FastAPI integration guide</a>. Keep that guide as the source of truth rather than copying an abbreviated version of the helper into this article.</p>
+        <p>Run FastAPI with one Uvicorn worker, then use the demo configuration to point StatLite at this endpoint. The complete helper, field semantics, tests, and deployment guidance are maintained in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md" target="_blank" rel="noopener noreferrer">canonical FastAPI integration guide</a>, which remains the source of truth.</p>
 
         <h2>Demo configuration</h2>
         <p>This is the configuration included with the runnable demo:</p>
