@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My API Is Up, but Slow. Is It My Code or the Server? | PVR Labs</title>
+    <meta name="description" content="A Spring Boot API slows during a CPU-heavy job on a small VPS. See how application and host metrics on one timeline help narrow down the cause.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/api-slow-cpu-contention.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/api-slow-cpu-contention.html">
+    <meta property="og:title" content="My API Is Up, but Slow. Is It My Code or the Server?">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Use application and host metrics on one timeline to investigate a slow API on a small server.">
+    <meta property="article:published_time" content="2026-09-28T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/api-contention-512/api-slow-cpu-contention-og.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Application latency and host CPU spike in the same time window">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My API Is Up, but Slow. Is It My Code or the Server?">
+    <meta name="twitter:description" content="Use application and host metrics on one timeline to investigate a slow API on a small server.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/api-contention-512/api-slow-cpu-contention-og.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260928">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.6rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body code { overflow-wrap: anywhere; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { min-width: 36rem; }
+        .statlite-pitch { margin: 32px 0 40px; padding: 24px 28px; border-left: 4px solid var(--primary-green); border-radius: 0 8px 8px 0; background: var(--bg-light); }
+        .statlite-pitch p { margin-bottom: 0; }
+        .statlite-pitch p + p { margin-top: 12px; }
+        .article-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+        .article-actions .btn { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 8px 20px; font-size: .85rem; }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } .statlite-pitch { padding: 20px; } }
+        @media (max-width: 480px) { .article-actions { flex-direction: column; } .article-actions .btn { width: 100%; } }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="StatLite article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
+    </nav>
+    <h1>My API Is Up, but Slow. Is It My Code or the Server?</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-09-28">September 28, 2026</time></div>
+    <div class="article-body">
+        <p>Your orders API runs on a small VPS. Health checks are green, logs show <code>200 OK</code>, and yet users say it feels sluggish. By the time you SSH in and run <code>top</code>, everything looks normal.</p>
+        <p>Uptime checks tell you the API is available. Application logs show its requests, but rarely show what else ran on the machine. <code>top</code> shows the machine now, not ten minutes ago. To investigate a short slowdown, you need application and host metrics on the same timeline with some history.</p>
+        <p>StatLite runs next to the app, reads Spring Boot Actuator metrics, and keeps the history in a local SQLite file. It can also show host metrics. Here's how those views help explore a slowdown.</p>
+        <p>This example uses Spring Boot. StatLite also supports Quarkus and applications that expose the StatLite Metrics v1 endpoint; see the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrations.md" target="_blank" rel="noopener noreferrer">integrations</a>.</p>
+
+        <h2>The scenario</h2>
+        <ul>
+            <li>A small VPS with one CPU</li>
+            <li>A Spring Boot orders API backed by a database, receiving steady traffic</li>
+            <li>StatLite running on the same machine</li>
+            <li>A CPU-heavy maintenance job that starts partway through, runs for about 90 seconds, then exits</li>
+        </ul>
+        <p>The API's code, configuration, and request pace stay the same throughout this hypothetical example.</p>
+
+        <h2>Step 1: When did it get slow?</h2>
+        <p>Open the dashboard and look at <strong>Average latency</strong>, which shows how long requests take on average between polls.</p>
+        <figure>
+            <img src="/articles/img/api-contention-512/orders-dashboard.webp" width="2940" height="1778" loading="eager" decoding="async" alt="Illustrative application dashboard showing a latency rise around 3:18 PM with request volume, HTTP errors, status, and process metrics">
+            <figcaption>Illustrative dashboard showing a short latency spike.</figcaption>
+        </figure>
+        <p>After startup settles, requests take about 3 to 5 ms. At about 3:18 PM, average latency climbs to around 25 ms, then drops back at about 3:20 PM. That gives you a time window to compare with the other charts.</p>
+
+        <h2>Step 2: Is it more traffic, or errors?</h2>
+        <p>On the same screen, <strong>Requests</strong> stay flat, <strong>HTTP errors</strong> stay at zero, and <strong>App status</strong> stays <strong>UP</strong>. An uptime monitor would report the service as healthy through this period.</p>
+
+        <h2>Step 3: Is the app doing more work?</h2>
+        <p><strong>Process runtime</strong> on the dashboard shows the API's own JVM. Its CPU remains under about 3% in the displayed period, while its memory follows the same pattern before, during, and after the pressure window.</p>
+        <p>The app does not appear to be using more CPU. That makes an application CPU regression less likely, though the chart alone cannot rule out database, disk, or network waits.</p>
+
+        <h2>Step 4: Is something else busy on the server?</h2>
+        <p>Spring Boot does not provide this host view by default. StatLite can show host data when an application exposes it. It also comes with a self-monitoring target that collects metrics from the machine running StatLite. In this example, that target gives us a second dashboard. Switch to <code>statlite-self</code> and look at <strong>Host resources</strong>.</p>
+        <figure>
+            <img src="/articles/img/api-contention-512/statlite-self-host-resources.webp" width="2932" height="702" loading="lazy" decoding="async" alt="Illustrative host resources dashboard showing CPU near 90 percent from around 3:18 to 3:20 PM while memory and disk remain stable">
+            <figcaption>Host resources in this example. CPU rises to about 90% during the maintenance job; RAM and disk stay roughly flat.</figcaption>
+        </figure>
+        <p>Host CPU rises from roughly 10% to about 90% at 3:18 PM, then falls just before 3:20 PM. RAM and disk stay roughly flat.</p>
+        <p>The app's CPU stays low while the host's CPU is busy. On a single CPU, another process can make the API wait for CPU time. This pattern points toward <strong>CPU contention</strong>. Here, the competing process is the maintenance job. On a real server, the dashboards narrow the search to other processes during that time window.</p>
+
+        <h2>Finding the culprit</h2>
+        <p>The host chart tells us when the CPU was busy, but it does not name the process. Looking at what else ran during those minutes, we find a scheduled maintenance job. That fits the timing: it starts as latency rises and ends as latency returns to normal.</p>
+        <p>On another server, the cause could be a different job or process. The useful part is the narrower question: what was using the host CPU during the slow window?</p>
+
+        <h2>Other patterns to notice</h2>
+        <div class="table-scroll"><table>
+            <thead><tr><th>What you see</th><th>Where to look next</th></tr></thead>
+            <tbody>
+                <tr><td>Requests up, app CPU up</td><td>Traffic volume and application capacity</td></tr>
+                <tr><td>Requests flat, app CPU up</td><td>Application work, including a recent deploy</td></tr>
+                <tr><td>Requests flat, app CPU flat, host CPU up</td><td>Other processes on the host</td></tr>
+                <tr><td>App memory keeps climbing</td><td>Memory pressure, application allocation, and possible memory leaks</td></tr>
+                <tr><td>Everything flat except latency</td><td>Dependencies, database, disk, and network waits</td></tr>
+            </tbody>
+        </table></div>
+        <p>These are clues for investigation, not diagnoses by themselves. StatLite keeps the application and host history together so you can inspect the relevant minutes after the slowdown is over.</p>
+        <div class="statlite-pitch"><p><strong>See application and host metrics on one timeline.</strong> Set up StatLite on your server, or explore the sample dashboard first.</p><p>For questions about this article or StatLite, visit the <a href="https://github.com/PVRLabs/statlite/discussions" target="_blank" rel="noopener noreferrer">StatLite discussions</a>.</p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="/statlite/demo.html" class="btn btn-secondary">Explore the dashboard</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Star on GitHub</a></div></div>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260909"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

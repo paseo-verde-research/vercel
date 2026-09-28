@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="title description">
+  <title id="title">My API is up, but slow</title>
+  <desc id="description">Aligned application latency and host CPU spikes reveal a shared time window.</desc>
+  <defs>
+    <radialGradient id="background-glow" cx="75%" cy="52%" r="75%">
+      <stop offset="0" stop-color="#10301e"/>
+      <stop offset="0.58" stop-color="#0b1710"/>
+      <stop offset="1" stop-color="#070b09"/>
+    </radialGradient>
+    <linearGradient id="panel" x2="0" y2="1">
+      <stop offset="0" stop-color="#15221a"/>
+      <stop offset="1" stop-color="#101812"/>
+    </linearGradient>
+    <linearGradient id="latency-fill" x2="0" y2="1">
+      <stop offset="0" stop-color="#5be9a2" stop-opacity="0.23"/>
+      <stop offset="1" stop-color="#5be9a2" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="cpu-fill" x2="0" y2="1">
+      <stop offset="0" stop-color="#91d7ff" stop-opacity="0.21"/>
+      <stop offset="1" stop-color="#91d7ff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="line-glow" x="-20%" y="-100%" width="140%" height="300%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#8bcbaa" opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#background-glow)"/>
+  <rect width="1200" height="630" fill="url(#dots)" opacity="0.45"/>
+  <path d="M0 559H1200" stroke="#2a4933" stroke-width="1"/>
+
+  <text x="58" y="75" fill="#f4f8f4" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" letter-spacing="-2">PVR<tspan fill="#2ecc71">Labs</tspan></text>
+  <text x="59" y="101" fill="#6ead7f" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="3">ENGINEERING NOTES</text>
+
+  <text x="58" y="203" fill="#f7faf7" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="800" letter-spacing="-2.4">My API is up.</text>
+  <text x="58" y="278" fill="#f7faf7" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="800" letter-spacing="-2.4">Why is it</text>
+  <text x="58" y="353" fill="#42dc84" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="800" letter-spacing="-2.6">slow?</text>
+  <rect x="60" y="382" width="74" height="4" rx="2" fill="#2ecc71"/>
+  <text x="58" y="428" fill="#bed0c1" font-family="Arial, Helvetica, sans-serif" font-size="24">App latency and host CPU</text>
+  <text x="58" y="461" fill="#bed0c1" font-family="Arial, Helvetica, sans-serif" font-size="24">on the same timeline.</text>
+
+  <rect x="58" y="497" width="174" height="37" rx="18.5" fill="#173622" stroke="#3f8051"/>
+  <circle cx="77" cy="515.5" r="5" fill="#42dc84"/>
+  <text x="92" y="522" fill="#d9f5e0" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">APP STATUS: UP</text>
+  <rect x="244" y="497" width="185" height="37" rx="18.5" fill="#19281d" stroke="#405346"/>
+  <text x="262" y="522" fill="#c6d8c9" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">REQUESTS STEADY</text>
+
+  <rect x="568" y="115" width="574" height="189" rx="16" fill="url(#panel)" stroke="#31533b" stroke-width="1.5"/>
+  <rect x="568" y="323" width="574" height="189" rx="16" fill="url(#panel)" stroke="#31533b" stroke-width="1.5"/>
+
+  <text x="594" y="152" fill="#d5e6d8" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="1.2">AVERAGE LATENCY</text>
+  <text x="594" y="360" fill="#d5e6d8" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="1.2">HOST CPU</text>
+  <text x="1112" y="152" text-anchor="end" fill="#75e9a6" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">25 ms</text>
+  <text x="1112" y="360" text-anchor="end" fill="#9fddff" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">90%</text>
+
+  <path d="M594 188H1114M594 228H1114M594 268H1114M594 396H1114M594 436H1114M594 476H1114" stroke="#355342" stroke-width="1" stroke-dasharray="3 7" opacity="0.55"/>
+  <rect x="826" y="173" width="126" height="111" rx="6" fill="#2ecc71" opacity="0.08"/>
+  <rect x="826" y="381" width="126" height="111" rx="6" fill="#2ecc71" opacity="0.08"/>
+  <path d="M826 173V492M952 173V492" stroke="#61db8f" stroke-width="1.5" stroke-dasharray="5 6" opacity="0.56"/>
+
+  <path d="M594 266 L650 264 L696 267 L742 262 L790 265 L824 263 L842 246 L858 208 L878 186 L899 190 L919 215 L938 252 L958 266 L1012 264 L1060 267 L1114 264 L1114 283 L594 283Z" fill="url(#latency-fill)"/>
+  <path d="M594 266 L650 264 L696 267 L742 262 L790 265 L824 263 L842 246 L858 208 L878 186 L899 190 L919 215 L938 252 L958 266 L1012 264 L1060 267 L1114 264" fill="none" stroke="#42dc84" stroke-width="8" opacity="0.38" filter="url(#line-glow)"/>
+  <path d="M594 266 L650 264 L696 267 L742 262 L790 265 L824 263 L842 246 L858 208 L878 186 L899 190 L919 215 L938 252 L958 266 L1012 264 L1060 267 L1114 264" fill="none" stroke="#57eda0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M594 474 L650 473 L696 476 L742 472 L790 474 L824 470 L842 437 L858 399 L878 390 L899 391 L919 399 L938 443 L958 473 L1012 474 L1060 471 L1114 474 L1114 491 L594 491Z" fill="url(#cpu-fill)"/>
+  <path d="M594 474 L650 473 L696 476 L742 472 L790 474 L824 470 L842 437 L858 399 L878 390 L899 391 L919 399 L938 443 L958 473 L1012 474 L1060 471 L1114 474" fill="none" stroke="#8fd6ff" stroke-width="8" opacity="0.3" filter="url(#line-glow)"/>
+  <path d="M594 474 L650 473 L696 476 L742 472 L790 474 L824 470 L842 437 L858 399 L878 390 L899 391 L919 399 L938 443 L958 473 L1012 474 L1060 471 L1114 474" fill="none" stroke="#93d9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="889" y="538" text-anchor="middle" fill="#82c997" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="1.6">SAME TIME WINDOW</text>
+  <text x="58" y="595" fill="#b8c9bc" font-family="Arial, Helvetica, sans-serif" font-size="20">pvrlabs.xyz</text>
+  <text x="1142" y="595" text-anchor="end" fill="#f2faf4" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800">Stat<tspan fill="#42dc84">Lite</tspan></text>
+</svg>
