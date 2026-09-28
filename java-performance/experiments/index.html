@@ -53,24 +53,30 @@
           {
             "@type": "ListItem",
             "position": 4,
+            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html",
+            "name": "Spring Boot JPA vs JDBC"
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
             "url": "https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html",
             "name": "Spring Boot fat JAR vs extracted layout vs Gradle application distribution"
           },
           {
             "@type": "ListItem",
-            "position": 5,
+            "position": 6,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html",
             "name": "Spring Boot vs Quarkus on a 768 MiB VPS"
           },
           {
             "@type": "ListItem",
-            "position": 6,
+            "position": 7,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html",
             "name": "Spring Boot vs Quarkus at 1 GiB with swap disabled"
           },
           {
             "@type": "ListItem",
-            "position": 7,
+            "position": 8,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html",
             "name": "Spring Boot extracted layout vs Jib exploded layout"
           }
@@ -174,6 +180,19 @@
 
             <h2 class="lab-index-heading">Quick experiments</h2>
             <div class="lab-index">
+                <article class="lab-entry" data-tags="spring-boot memory">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Memory</span>
+                    </div>
+                    <h3><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
+                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
+                    <p class="lab-entry-links">
+                        <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
                 <article class="lab-entry" data-tags="spring-boot packaging">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>

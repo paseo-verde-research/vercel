@@ -11,11 +11,15 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-09-28</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-28</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
+    <lastmod>2026-09-28</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html</loc>

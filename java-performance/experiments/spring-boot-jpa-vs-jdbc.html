@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="index,follow">
+    <title>Spring Boot JPA vs JDBC | PVR Labs</title>
+    <meta name="description" content="A small Spring Boot stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">
+    <meta property="og:title" content="Spring Boot JPA vs JDBC">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="On one Mac, a small Spring Boot app used about 90 MiB less RSS with JdbcTemplate than with Spring Data JPA and Hibernate.">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-jpa-vs-jdbc-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot JPA vs JDBC: about 90 MiB less RSS, and about 4 seconds versus 8 seconds to the first dashboard">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot JPA vs JDBC">
+    <meta name="twitter:description" content="On one Mac, a small Spring Boot app used about 90 MiB less RSS with JdbcTemplate than with Spring Data JPA and Hibernate.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-jpa-vs-jdbc-og.jpg">
+    <meta name="twitter:image:alt" content="Spring Boot JPA vs JDBC: about 90 MiB less RSS, and about 4 seconds versus 8 seconds to the first dashboard">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20260921b">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .experiment-note strong { color: var(--text-primary); }
+        .experiment-note pre { overflow-x: auto; margin: 0 0 1rem; padding: 1rem 1.1rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); color: var(--text-primary); font-family: var(--font-mono); font-size: .9rem; line-height: 1.55; }
+        .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
+        .experiment-table-scroll table { width: 100%; min-width: 44rem; margin-bottom: 0; border-collapse: collapse; font-size: .92rem; }
+        .experiment-table-scroll th, .experiment-table-scroll td { padding: .7rem .75rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .experiment-table-scroll th { background: var(--bg-light); color: var(--text-primary); }
+        .experiment-table-scroll td:not(:first-child), .experiment-table-scroll th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        .experiment-chart-figure { margin: 1.25rem 0 1rem; }
+        .experiment-chart__legend { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin-bottom: .5rem; color: var(--text-secondary); font-size: .82rem; }
+        .experiment-chart__swatch { display: inline-block; width: .7rem; height: .7rem; margin-right: .35rem; border-radius: 2px; vertical-align: -1px; }
+        .experiment-chart__swatch--jpa { background: #8fb4c9; }
+        .experiment-chart__swatch--jdbc { background: var(--primary-green); }
+        .experiment-chart { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: 1rem .75rem .5rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-light); }
+        .experiment-chart__panel h3 { margin: 0 0 .25rem; color: var(--text-primary); font-size: .92rem; text-align: center; }
+        .experiment-chart__panel svg { display: block; width: 100%; height: auto; }
+        .experiment-chart__note, .experiment-chart-figure figcaption { color: var(--text-secondary); font-size: .82rem; line-height: 1.45; }
+        .experiment-chart__note { margin: 0 0 .5rem; }
+        .experiment-chart-figure figcaption { margin-top: .65rem; }
+        @media (max-width: 600px) {
+            .experiment-table-scroll table { min-width: 0; }
+            .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .experiment-table-scroll tbody, .experiment-table-scroll tr, .experiment-table-scroll td { display: block; }
+            .experiment-table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; white-space: normal; text-align: right; }
+            .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; text-align: left; }
+            .experiment-table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+            .experiment-chart { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container experiment-note">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
+            <h1>Spring Boot JPA vs JDBC: How Much Can a Small App Save?</h1>
+            <p class="lab-lead">A small Spring Boot app that tracks GitHub stars used about 90 MiB less RSS with <code>JdbcTemplate</code> than with Spring Data JPA and Hibernate, and reached its dashboard in about half the time.</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container experiment-note">
+            <section>
+                <h2>Question</h2>
+                <p>For a small Spring Boot application, how much resident memory and startup time do I save by choosing Spring JDBC instead of the conventional Spring Data JPA and Hibernate stack?</p>
+            </section>
+            <section>
+                <h2>What changed</h2>
+                <p>Both versions are Spring Boot 4.1.1 applications running on JDK 25 with compact object headers. Both use H2, Thymeleaf, the same local GitHub fixture, the same dashboard, and the same monitoring request workload. Both ran as executable fat JARs. Packaging is a separate question, covered by the earlier <a href="/articles/spring-boot-extracted-layout.html">fat JAR vs extracted layout</a> comparison.</p>
+                <p>Both variants exposed metrics through Spring Boot Actuator's Prometheus endpoint, suitable for monitoring with tools like <a href="/statlite/">StatLite</a>.</p>
+                <p>The JPA version uses entities, Spring Data repositories, Hibernate-managed relationships, and Spring transactions. The JDBC version uses <code>JdbcTemplate</code> directly and keeps persistence logic in a small service.</p>
+                <p>The result compares the complete application variants. Changing the persistence approach also changes the application structure and data model. The JPA baseline stores additional repository fields and has more repository and service code.</p>
+            </section>
+            <section>
+                <h2>Results</h2>
+                <p>Across two runs in reversed order, the JDBC version used about <strong>90 to 91 MiB less RSS</strong>, roughly <strong>38% less than the JPA baseline</strong>. It also reached its first successful dashboard response sooner: about <strong>3.9 to 4.2 seconds</strong> from process launch, compared with <strong>8.1 to 8.8 seconds</strong> for JPA.</p>
+                <figure class="experiment-chart-figure">
+                    <div class="experiment-chart__legend" aria-label="Chart legend">
+                        <span><span class="experiment-chart__swatch experiment-chart__swatch--jpa" aria-hidden="true"></span>JPA</span>
+                        <span><span class="experiment-chart__swatch experiment-chart__swatch--jdbc" aria-hidden="true"></span>JDBC</span>
+                    </div>
+                    <p class="experiment-chart__note">Both charts start at zero. RSS is the median of twelve samples. Startup is the single time from process launch to the first successful dashboard response.</p>
+                    <div class="experiment-chart">
+                        <div class="experiment-chart__panel">
+                            <h3>Median RSS (MiB)</h3>
+                            <svg viewBox="0 0 360 240" role="img" aria-label="Median RSS. JPA is 237.0 MiB when run first and 236.9 MiB when run second. JDBC is 145.8 MiB and 146.6 MiB in those same orders.">
+                                <line x1="48" y1="200" x2="344" y2="200" stroke="#333" />
+                                <line x1="48" y1="154" x2="344" y2="154" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="48" y1="108" x2="344" y2="108" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="48" y1="62" x2="344" y2="62" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="48" y1="16" x2="344" y2="16" stroke="#333" stroke-dasharray="2 4" />
+                                <text x="42" y="204" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">0</text>
+                                <text x="42" y="158" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">70</text>
+                                <text x="42" y="112" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">140</text>
+                                <text x="42" y="66" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">210</text>
+                                <text x="42" y="20" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">280</text>
+                                <rect x="78" y="44.3" width="40" height="155.7" rx="2" fill="#8fb4c9"><title>JPA, run first: 237.0 MiB</title></rect>
+                                <rect x="124" y="104.2" width="40" height="95.8" rx="2" fill="#2ECC71"><title>JDBC, run second: 145.8 MiB</title></rect>
+                                <rect x="226" y="44.3" width="40" height="155.7" rx="2" fill="#8fb4c9"><title>JPA, run second: 236.9 MiB</title></rect>
+                                <rect x="272" y="103.7" width="40" height="96.3" rx="2" fill="#2ECC71"><title>JDBC, run first: 146.6 MiB</title></rect>
+                                <text x="98" y="38" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">237.0</text>
+                                <text x="144" y="98" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">145.8</text>
+                                <text x="246" y="38" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">236.9</text>
+                                <text x="292" y="97" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">146.6</text>
+                                <text x="121" y="222" text-anchor="middle" fill="#A0A0A0" font-size="12" font-family="Inter, Arial, sans-serif">JPA first</text>
+                                <text x="269" y="222" text-anchor="middle" fill="#A0A0A0" font-size="12" font-family="Inter, Arial, sans-serif">JDBC first</text>
+                            </svg>
+                        </div>
+                        <div class="experiment-chart__panel">
+                            <h3>Time to first dashboard (s)</h3>
+                            <svg viewBox="0 0 360 240" role="img" aria-label="Time to first dashboard. JPA takes 8.134 seconds when run first and 8.804 seconds when run second. JDBC takes 4.162 seconds and 3.939 seconds in those same orders.">
+                                <line x1="48" y1="200" x2="344" y2="200" stroke="#333" />
+                                <line x1="48" y1="108" x2="344" y2="108" stroke="#333" stroke-dasharray="2 4" />
+                                <line x1="48" y1="16" x2="344" y2="16" stroke="#333" stroke-dasharray="2 4" />
+                                <text x="42" y="204" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">0</text>
+                                <text x="42" y="112" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">5</text>
+                                <text x="42" y="20" text-anchor="end" fill="#A0A0A0" font-size="11" font-family="Inter, Arial, sans-serif">10</text>
+                                <rect x="78" y="50.3" width="40" height="149.7" rx="2" fill="#8fb4c9"><title>JPA, run first: 8.134 s</title></rect>
+                                <rect x="124" y="123.4" width="40" height="76.6" rx="2" fill="#2ECC71"><title>JDBC, run second: 4.162 s</title></rect>
+                                <rect x="226" y="38.0" width="40" height="162.0" rx="2" fill="#8fb4c9"><title>JPA, run second: 8.804 s</title></rect>
+                                <rect x="272" y="127.5" width="40" height="72.5" rx="2" fill="#2ECC71"><title>JDBC, run first: 3.939 s</title></rect>
+                                <text x="98" y="44" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">8.134</text>
+                                <text x="144" y="117" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">4.162</text>
+                                <text x="246" y="32" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">8.804</text>
+                                <text x="292" y="121" text-anchor="middle" fill="#f5f5f5" font-size="11" font-family="Inter, Arial, sans-serif">3.939</text>
+                                <text x="121" y="222" text-anchor="middle" fill="#A0A0A0" font-size="12" font-family="Inter, Arial, sans-serif">JPA first</text>
+                                <text x="269" y="222" text-anchor="middle" fill="#A0A0A0" font-size="12" font-family="Inter, Arial, sans-serif">JDBC first</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <figcaption>The same gap shows up in both orders. JDBC stays near 146 MiB and about 4 seconds. JPA stays near 237 MiB and about 8 to 9 seconds.</figcaption>
+                </figure>
+                <div class="experiment-table-scroll" tabindex="0" role="region" aria-label="JPA and JDBC resident memory and startup results">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Run order</th>
+                                <th>JPA median RSS</th>
+                                <th>JDBC median RSS</th>
+                                <th>RSS difference</th>
+                                <th>JPA startup</th>
+                                <th>JDBC startup</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Run order">JPA, then JDBC</td>
+                                <td data-label="JPA median RSS">237.0 MiB</td>
+                                <td data-label="JDBC median RSS">145.8 MiB</td>
+                                <td data-label="RSS difference">91.2 MiB</td>
+                                <td data-label="JPA startup">8.134 s</td>
+                                <td data-label="JDBC startup">4.162 s</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Run order">JDBC, then JPA</td>
+                                <td data-label="JPA median RSS">236.9 MiB</td>
+                                <td data-label="JDBC median RSS">146.6 MiB</td>
+                                <td data-label="RSS difference">90.4 MiB</td>
+                                <td data-label="JPA startup">8.804 s</td>
+                                <td data-label="JDBC startup">3.939 s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Startup here means time from process launch until the first successful dashboard response. It includes application initialization and that first request.</p>
+            </section>
+            <section>
+                <h2>How I measured it</h2>
+                <p>Both variants ran on one macOS machine with Temurin JDK 25.0.4 and the same JVM configuration:</p>
+                <pre>-Xms16m
+-Xmx80m
+-Xss256k
+-XX:+UseSerialGC
+-XX:TieredStopAtLevel=1
+-XX:ReservedCodeCacheSize=32m
+-XX:+UseCompactObjectHeaders</pre>
+                <p>The comparison script starts a deterministic local GitHub fixture, launches one application, waits until its dashboard responds, performs one refresh, warms it for 30 seconds, then samples process RSS every five seconds for one minute. During warmup and sampling, it requests the dashboard and the Actuator health, metrics, and Prometheus endpoints. It checks that the dashboard shows all three fixture star counts and that both apps expose JVM metrics.</p>
+                <p>The fixture served fixed star counts, and background polling was delayed so it stayed out of the measurement window.</p>
+                <p>The script then repeats the same run for the other variant. I ran it in both orders so the result would show whether running first or second changed the outcome. RSS is whole-process resident memory from <code>ps -o rss=</code>. Both processes rose by roughly 1 to 2 MiB during the sample minute, so these are warm runtime measurements.</p>
+            </section>
+            <section>
+                <h2>What this suggests</h2>
+                <p>For this application, Hibernate is more machinery than the data model needs. Hibernate still solves real problems, particularly as applications and domain models grow and persistence behavior gets more complicated.</p>
+                <p>This app has a simple data model and straightforward queries. The JDBC version is still small and readable, and its measured runtime footprint is substantially lower.</p>
+                <p>Saving about 90 MiB can be absorbed on a large server. On a 256 or 512 MiB VPS, the same difference can materially affect capacity. These runs were made on a Mac without a VPS memory limit, so that capacity claim still needs a measurement on the target machine.</p>
+                <p>The startup difference was also interesting. I expected the JDBC version to use less memory. It also reached the first dashboard response in about half the time in these runs.</p>
+            </section>
+            <section>
+                <h2>The takeaway</h2>
+                <p>I would read this as a reason to question the default for small applications. If a Spring Boot service has a handful of tables and simple persistence needs, JPA and Hibernate may be more machinery than it requires. Spring JDBC gives up some abstraction, and in this experiment the simpler app used about 90 MiB less RSS and reached its first successful dashboard response about four to five seconds sooner.</p>
+                <p>For small services on memory-constrained machines, that is enough of a difference that I would measure before automatically reaching for Hibernate.</p>
+            </section>
+            <section>
+                <h2>Evidence and limits</h2>
+                <p>This is two reversed-order runs on one macOS host, with a 30 second warmup and twelve RSS samples per variant. It compares two complete application variants. An isolated Hibernate measurement would need the same data model, UI, and surrounding code in both builds.</p>
+                <p class="experiment-links">
+                    <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    <a href="/articles/spring-boot-extracted-layout.html">Related packaging comparison</a>
+                    <a href="https://github.com/PVRLabs/experiments/discussions" target="_blank" rel="noopener noreferrer">Questions and comments</a>
+                </p>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript><div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>
