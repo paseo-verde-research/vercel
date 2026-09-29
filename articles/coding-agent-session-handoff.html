@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your coding-agent quota is at 99%. Now what?</title>
-    <meta name="description" content="When a coding-agent session hits its allowance or a natural checkpoint, hand the conversation state to AI Badger and continue in any browser AI chat.">
+    <title>Continue Codex or Claude Code Sessions in ChatGPT | AI Badger</title>
+    <meta name="description" content="Continue a local Codex or Claude Code session in ChatGPT or another browser AI chat. AI Badger imports the transcript and current repository context.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/coding-agent-session-handoff.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/coding-agent-session-handoff.html">
     <meta property="og:title" content="Your coding-agent quota is at 99%. Now what?">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="When a coding-agent session hits its allowance or a natural checkpoint, hand the conversation state to AI Badger and continue in any browser AI chat.">
+    <meta property="og:description" content="Continue a local Codex or Claude Code session in ChatGPT or another browser AI chat. AI Badger imports the transcript and current repository context.">
     <meta property="article:published_time" content="2026-08-28">
+    <meta property="article:modified_time" content="2026-09-29T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/coding-agent-session-handoff.webp">
     <meta property="og:image:type" content="image/webp">
@@ -21,9 +22,26 @@
     <meta property="og:image:alt" content="Coding agent at 99% usage handing off to a web chat through AI Badger">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Your coding-agent quota is at 99%. Now what?">
-    <meta name="twitter:description" content="When a coding-agent session hits its allowance or a natural checkpoint, hand the conversation state to AI Badger and continue in any browser AI chat.">
+    <meta name="twitter:description" content="Continue a local Codex or Claude Code session in ChatGPT or another browser AI chat. AI Badger imports the transcript and current repository context.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/coding-agent-session-handoff.webp">
     <meta name="twitter:image:alt" content="Coding agent at 99% usage handing off to a web chat through AI Badger">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Your coding-agent quota is at 99%. Now what?",
+      "description": "Continue a local Codex or Claude Code session in ChatGPT or another browser AI chat. AI Badger imports the transcript and current repository context.",
+      "datePublished": "2026-08-28",
+      "dateModified": "2026-09-29",
+      "author": {
+        "@type": "Person",
+        "name": "Ted Kupolov",
+        "url": "https://github.com/ejboy"
+      },
+      "image": "https://pvrlabs.xyz/articles/img/coding-agent-session-handoff.webp",
+      "mainEntityOfPage": "https://pvrlabs.xyz/articles/coding-agent-session-handoff.html"
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -45,13 +63,14 @@
         <a href="/aibadger/" class="article-product-nav__link article-product-nav__link--product">AI Badger</a>
     </nav>
     <h1>Your coding-agent quota is at 99%. Now what?</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 28, 2026</div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · August 28, 2026 · Updated September 29, 2026</div>
     <img class="article-cover" src="/articles/img/coding-agent-session-handoff.webp" width="2048" height="1152" loading="eager" decoding="async" alt="Coding agent at 99% usage handing off to a web chat through AI Badger">
 
     <div class="article-body">
         <p>Your coding agent has already explored the repository, made some changes, and understands the task. Then you notice the five-hour allowance is at 99%.</p>
         <p>The session doesn't necessarily have to stop.</p>
         <p>If you already have useful context in that session, you can hand it off instead of reconstructing everything somewhere else.</p>
+        <p>AI Badger can also continue directly from a local Codex or Claude Code session. It reads the existing transcript, adds current repository context, and prepares it for ChatGPT or another browser AI chat.</p>
 
         <h2>Handoff the session</h2>
         <p>Inside the coding-agent session, use the lightweight <code><a href="https://skills.sh/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">handoff</a></code> skill to hand the current work off to <a href="https://github.com/PVRLabs/aibadger" target="_blank" rel="noopener noreferrer">AI Badger</a>.</p>
@@ -74,6 +93,14 @@ browser AI chat</code></pre>
         <p>The skill and the CLI are separate installs. The skill carries conversation state. Badger collects current repository context itself:</p>
         <pre data-lang="bash"><code>brew install pvrlabs/tap/badger
 badger skills install</code></pre>
+
+        <h2>Continue a local Codex or Claude Code session</h2>
+        <p>Codex and Claude Code already store the session on disk. From the project directory, Badger can read that transcript without the handoff skill. An active Codex or Claude Code subscription is unnecessary. Badger only reads the session files already on the machine.</p>
+        <pre data-lang="bash"><code>badger continue --agent codex
+badger continue --agent claude</code></pre>
+        <p>Each command opens a picker of recent local sessions. Nothing is selected for you. Add <code>--session &lt;session-id&gt;</code> when you already know which one.</p>
+        <p>If there is no <code>.badger-handoff</code> file, plain <code>badger continue</code> offers recent Codex sessions on its own.</p>
+        <p>Badger imports a bounded slice of the conversation, collects the current repository context locally, and prepares the same kind of continuation prompt. Copy it into ChatGPT, Claude, or another AI chat. The original session stays on disk. This carries the conversation. It does not restore the agent's tools, approvals, or terminal state.</p>
 
         <h2>Quota is just one reason to hand off</h2>
         <p>I didn't build handoff specifically for running out of quota.</p>
