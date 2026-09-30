@@ -12,7 +12,7 @@
     <meta property="og:title" content="Lightweight Spring Boot Monitoring Without Prometheus and Grafana">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Monitor Spring Boot applications on a small VPS using Actuator and StatLite, without operating a full Prometheus and Grafana stack.">
-    <meta property="article:modified_time" content="2026-09-21T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-09-29T00:00:00-07:00">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/statlite-monitoring-og.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
@@ -58,10 +58,10 @@
         <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
     </nav>
     <h1>Lightweight Spring Boot Monitoring Without Prometheus and Grafana</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 19, 2026 · Updated September 21, 2026</div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 19, 2026 · Updated September 29, 2026</div>
     <div class="article-body">
         <p>Running one Spring Boot application or a handful of them on a VPS still calls for basic operational visibility. You need to know whether an application is reachable, whether errors are rising, and whether it restarted. You may not need a complete monitoring platform to answer those questions.</p>
-        <p>Spring Boot Actuator already exposes much of that information. StatLite turns it into a focused dashboard for health, requests, errors, latency, memory, uptime, and restarts. It runs as one Go binary and stores its history in SQLite.</p>
+        <p>Spring Boot Actuator already exposes much of that information through its health endpoint and Micrometer metrics. StatLite turns it into a focused dashboard for health, requests, errors, latency, memory, uptime, and restarts. It runs as one Go binary and stores its history in SQLite.</p>
         <img class="article-hero-image" src="/img/statlite-dashboard.webp" width="800" height="457" loading="eager" decoding="async" alt="StatLite dashboard showing Spring Boot health, request activity, latency, memory, CPU, uptime, and restarts">
         <div class="statlite-pitch"><p><strong>Monitor Spring Boot without operating a full monitoring stack.</strong></p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
 
@@ -70,15 +70,12 @@
         <p><a href="https://codecentric.github.io/spring-boot-admin/current/" target="_blank" rel="noopener noreferrer">Spring Boot Admin</a> provides rich application administration, but running a separate Spring Boot application for monitoring can be heavy on a small VPS. <strong>Prometheus and Grafana</strong> are strong choices when you need a larger monitoring system, flexible queries, or long-term retention across an estate.</p>
         <p>For a few services on one VPS, a narrower dashboard can be enough. StatLite reads the Actuator data you already have and shows the operational signals most useful during routine checks.</p>
 
-        <h2>The questions a small deployment needs answered</h2>
-        <ul><li>Is the application reachable and healthy?</li><li>Are errors increasing?</li><li>Are requests slowing down?</li><li>Is memory usage growing?</li><li>Did the application restart?</li><li>Are related services, such as a database, reachable?</li></ul>
-
         <h2>Quick comparison</h2>
         <table><thead><tr><th>Tool</th><th>Operational complexity</th><th>Best fit</th></tr></thead><tbody><tr><td>Raw Actuator endpoints</td><td>Low</td><td>Occasional manual checks</td></tr><tr><td>Spring Boot Admin</td><td>Medium (requires Java runtime &amp; memory)</td><td>Application administration and monitoring</td></tr><tr><td>Prometheus and Grafana</td><td>High</td><td>Larger deployments and advanced observability</td></tr><tr><td>StatLite</td><td>Very low (single Go binary + SQLite)</td><td>A few Spring Boot services on a small server</td></tr></tbody></table>
         <p>These tools can also coexist. Choosing StatLite for a focused dashboard today does not prevent adopting Prometheus and Grafana later if your requirements grow.</p>
 
         <h2>Set up StatLite in a few minutes</h2>
-        <p>The following example uses the runnable <a href="https://github.com/PVRLabs/statlite/tree/main/examples/spring-actuator-demo" target="_blank" rel="noopener noreferrer">Spring Actuator demo</a> included with StatLite.</p>
+        <p>These steps assume an existing Spring Boot application with Actuator. To try StatLite without one, the repository includes a runnable <a href="https://github.com/PVRLabs/statlite/tree/main/examples/spring-actuator-demo" target="_blank" rel="noopener noreferrer">Spring Actuator demo</a> with a traffic generator.</p>
         <h3>1. Expose health and Prometheus metrics from Spring Boot</h3>
         <p>Add <code>io.micrometer:micrometer-registry-prometheus</code> if the application does not already include it, then expose health and the Prometheus endpoint. Keep Actuator reachable only from trusted networks and add authentication where your deployment requires it.</p>
         <pre data-lang="yaml"><code>management:
@@ -89,15 +86,12 @@
   endpoint:
     health:
       show-details: always</code></pre>
-        <p>For the included demo, start the application from <code>examples/spring-actuator-demo</code>:</p>
-        <pre data-lang="bash"><code>mvn spring-boot:run</code></pre>
         <h3>2. Install StatLite</h3>
-        <p>Use the installation method for your platform in the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" target="_blank" rel="noopener noreferrer">StatLite installation guide</a>. It covers the release installer, Homebrew, and what each method does and does not set up for you.</p>
-        <p>Developers who prefer to build from source can clone the repository and build the binary:</p>
-        <pre data-lang="bash"><code>git clone https://github.com/PVRLabs/statlite.git
-cd statlite
-go build -o statlite ./cmd/statlite</code></pre>
+        <p>The recommended path on macOS or Linux is the release installer, which installs <code>statlite</code> to <code>~/.local/bin</code>:</p>
+        <pre data-lang="bash"><code>curl -fsSL https://raw.githubusercontent.com/PVRLabs/statlite/main/install.sh | sh</code></pre>
+        <p>Add <code>~/.local/bin</code> to your <code>PATH</code> if it is not already included. For Homebrew and other options, see the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" target="_blank" rel="noopener noreferrer">StatLite installation guide</a>.</p>
         <h3>3. Add one target configuration</h3>
+        <p>Save the following as <code>statlite.yaml</code>:</p>
         <pre data-lang="yaml"><code>server:
   listen: "127.0.0.1:9090"
 
@@ -109,30 +103,26 @@ polling:
   timeout: "5s"
 
 targets:
-  - name: "spring-demo"
+  - name: "my-spring-app"
     type: "spring"
     url: "http://127.0.0.1:8080/actuator"</code></pre>
         <p><code>listen</code> keeps the dashboard local by default. <code>sqlite_path</code> is the file used for dashboard history. <code>url</code> is the Actuator management base URL. StatLite collects health from Actuator and application metrics from <code>/actuator/prometheus</code>. For Basic Auth, multiple targets, retention, and production security details, see the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md" target="_blank" rel="noopener noreferrer">configuration documentation</a>.</p>
         <h3>4. Open the dashboard</h3>
-        <pre data-lang="bash"><code>./statlite --config ./statlite.yaml</code></pre>
+        <pre data-lang="bash"><code>statlite --config ./statlite.yaml</code></pre>
         <p>Open <code>http://127.0.0.1:9090</code> in a browser. StatLite polls on the configured interval, so wait for the next poll after creating traffic or restarting the application.</p>
-        <p>If you are following the included demo, generate traffic in a second terminal from the StatLite repository root:</p>
-        <pre data-lang="bash"><code>./examples/spring-actuator-demo/generate-traffic.sh</code></pre>
-        <p>The script sends successful, database, and slow requests, plus <code>400</code>, <code>404</code>, and <code>500</code> responses to the demo application so the request and error charts have activity to show. Wait for the next StatLite poll after running it.</p>
         <div class="statlite-pitch"><p><strong>See the dashboard updating?</strong> If StatLite fits your setup, star the repository to bookmark it and help more Spring Boot developers find it.</p><div class="article-actions"><a href="https://github.com/PVRLabs/statlite" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star StatLite on GitHub</a></div></div>
 
         <h2>Why StatLite stays small</h2>
-        <ul><li>A single Go binary</li><li>SQLite storage</li><li>No monitoring agent</li><li>No custom application instrumentation beyond Actuator</li><li>Suitable for systemd deployment</li><li>Multiple Spring Boot targets in one configuration</li></ul>
+        <ul><li>No Java agent or per-application monitoring agent</li><li>No custom application instrumentation beyond Actuator and Micrometer</li><li>Multiple Spring Boot targets in one configuration</li></ul>
         <p>It is intentionally Actuator-first. You enable or expose Actuator as needed; StatLite does not remove that setup step.</p>
 
         <h2>When not to use StatLite</h2>
         <p>Use a broader observability platform when you need many services or hosts, long retention, advanced metric queries, alert routing, distributed tracing, centralized logs, or organization-wide dashboards.</p>
-        <p>StatLite is not a replacement for enterprise observability. It is a focused option when the operational job is to monitor a few applications without operating a full Prometheus and Grafana stack.</p>
+        <p>StatLite is not a replacement for enterprise observability. It is a focused option when the operational job is to monitor a few Spring Boot applications without operating a full Prometheus and Grafana stack.</p>
 
         <h2>Related resources</h2>
         <p>For a 512 MB VPS measurement with Spring Boot and the dashboard included, see <a href="/articles/spring-boot-512mb-vps.html">Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits</a>.</p>
-        <p>For a side-by-side Spring Boot and Quarkus run on the same 512 MB VM, see <a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a>.</p>
-        <p>Applications without a first-party target can expose <code>GET /statlite/metrics</code> instead of Actuator. <a href="/articles/lightweight-express-monitoring.html">Lightweight Express.js Monitoring Without Prometheus and Grafana</a> walks through that helper once, using Express. FastAPI, Django, Gin, and Go <code>net/http</code> use the same StatLite target with their own copy of the helper.</p>
+        <p>For a Spring Boot API that slows down during a CPU-heavy job, see <a href="/articles/api-slow-cpu-contention.html">My API Is Up, but Slow. Is It My Code or the Server?</a></p>
 
         <div class="statlite-pitch"><p><strong>Monitor your first Spring Boot application with StatLite.</strong></p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Configuration documentation</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
     </div>
