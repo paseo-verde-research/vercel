@@ -77,6 +77,9 @@
         <p>StatLite polls that endpoint on a configured interval, calculates counter deltas, stores the observations, and presents the resulting history. The metrics endpoint is excluded from the application's own counters, so monitoring does not inflate the traffic or latency charts.</p>
         <p>The integration uses the fixed <code>statlite-metrics/v1</code> profile. It is deliberately small and bounded; it is not a Prometheus or OpenMetrics exporter.</p>
 
+        <p>Copy the complete helper from the canonical guide into your application and register the middleware and route shown below. No StatLite SDK or package and no additional third-party monitoring runtime dependency are required. The helper uses Python's standard library; registration uses FastAPI. You can inspect, modify, test, and review this application-owned source with your usual development and security tools.</p>
+        <p>The helper makes no outbound network requests, sends no telemetry to PVR Labs or another external service, and performs no database I/O during snapshot collection. Your own StatLite instance pulls aggregate request and error counts, cumulative duration, process CPU, traced Python allocations, uptime, start time, status, and schema/integration identifiers. The response contains no request or response bodies, headers, URL lists, or user identifiers. The helper enables <code>tracemalloc</code> if needed; allocation tracing adds CPU and memory overhead to evaluate with your application.</p>
+
         <h2>Quick start</h2>
         <p>The repository contains a <a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo" target="_blank" rel="noopener noreferrer">runnable FastAPI demo</a>. If the <code>statlite</code> executable is not installed, follow the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" target="_blank" rel="noopener noreferrer">installation guide</a> first. This is intentionally a local trial; from the demo directory:</p>
         <ol>
@@ -98,7 +101,7 @@ python -m pip install -r requirements.txt</code></pre>
         <p>You can optionally run <code>statlite inspect http://127.0.0.1:8000</code> to verify that StatLite recognizes the integration and see a starter configuration for your own FastAPI app.</p>
 
         <h2>The FastAPI registration is tiny</h2>
-        <p>To complete the integration, save the complete <code>statlite_metrics.py</code> helper from the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md#minimal-dependency-light-integration" target="_blank" rel="noopener noreferrer">minimal dependency-light integration section of the canonical FastAPI guide</a> next to your application. Import <code>StatLiteMetrics</code>, create one instance, register its middleware, and expose <code>GET /statlite/metrics</code> by returning <code>metrics.snapshot()</code>:</p>
+        <p>To complete the integration, save the complete <code>statlite_metrics.py</code> helper from the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md#copyable-helper" target="_blank" rel="noopener noreferrer">copyable helper section of the canonical FastAPI guide</a> next to your application. Import <code>StatLiteMetrics</code>, create one instance, register its middleware, and expose <code>GET /statlite/metrics</code> by returning <code>metrics.snapshot()</code>:</p>
         <pre data-lang="python"><code>from fastapi import FastAPI
 
 from statlite_metrics import StatLiteMetrics
@@ -141,7 +144,7 @@ targets:
         <h3>Keep the endpoint cheap</h3>
         <p><code>/statlite/metrics</code> should return an inexpensive snapshot. Do not perform a database query or blocking dependency check on every poll. If the application has a cached dependency-health signal, it can expose that bounded value.</p>
         <h3>Keep it private</h3>
-        <p>The endpoint exposes operational data, and the StatLite dashboard has no built-in authentication. Keep both reachable only through loopback, a private network, a VPN, an SSH tunnel, or an authenticated reverse proxy.</p>
+        <p>The endpoint exposes operational data, and the StatLite dashboard has no built-in authentication. Restrict access to both through loopback, a private network, a VPN, or an SSH tunnel. An authenticated reverse proxy can protect the dashboard, but the StatLite Metrics target sends no authentication credentials: proxy controls for the application endpoint must allow your StatLite instance to poll without a credential challenge.</p>
         <p>This setup is intentionally focused. It answers whether the application is receiving traffic, whether client or server errors appeared, whether average latency changed, and whether the local process or host is using more resources. It does not attempt to provide arbitrary business metrics, distributed traces, PromQL, or fleet-wide aggregation.</p>
 
         <h2>Next steps</h2>
