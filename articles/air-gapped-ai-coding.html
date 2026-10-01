@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Air-Gapped AI Coding for Proprietary Repositories</title>
-    <meta name="description" content="Use powerful AI coding assistants without giving them direct access to your proprietary codebase. A local-first approach creates a controlled, auditable boundary between your repo and the cloud.">
+    <title>Local-First AI Coding for Proprietary Repositories</title>
+    <meta name="description" content="Use AI coding assistants without giving them direct access to your proprietary codebase. A local-first approach creates a controlled, auditable boundary between your repo and the cloud.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/air-gapped-ai-coding.html">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/air-gapped-ai-coding.html">
-    <meta property="og:title" content="Air-Gapped AI Coding for Proprietary Repositories">
+    <meta property="og:title" content="Local-First AI Coding for Proprietary Repositories">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Keep proprietary repositories local while using AI chats through a controlled, reviewable workflow.">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/air-gapped-coding.webp">
     <meta property="og:image:type" content="image/webp">
     <meta property="og:image:width" content="1536">
     <meta property="og:image:height" content="1024">
-    <meta property="og:image:alt" content="Air-Gapped AI Coding: keeping proprietary repositories local with AI Badger">
+    <meta property="og:image:alt" content="Local-First AI Coding: keeping proprietary repositories local with AI Badger">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Air-Gapped AI Coding for Proprietary Repositories">
+    <meta name="twitter:title" content="Local-First AI Coding for Proprietary Repositories">
     <meta name="twitter:description" content="Keep proprietary repositories local while using AI chats through a controlled, reviewable workflow.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/air-gapped-coding.webp">
-    <meta name="twitter:image:alt" content="Air-Gapped AI Coding: keeping proprietary repositories local with AI Badger">
+    <meta name="twitter:image:alt" content="Local-First AI Coding: keeping proprietary repositories local with AI Badger">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,12 +58,12 @@
         <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
         <a href="/aibadger/" class="article-product-nav__link article-product-nav__link--product">AI Badger</a>
     </nav>
-    <h1>Air-Gapped AI Coding: Keeping Proprietary Repositories Off the Cloud</h1>
+    <h1>Local-First AI Coding: Keeping Proprietary Repositories Local</h1>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · July 21, 2026</div>
-    <img class="article-cover" src="/articles/img/air-gapped-coding.webp" width="1536" height="1024" loading="eager" decoding="async" alt="Air-Gapped AI Coding: keeping proprietary repositories local with AI Badger">
+    <img class="article-cover" src="/articles/img/air-gapped-coding.webp" width="1536" height="1024" loading="eager" decoding="async" alt="Local-First AI Coding: keeping proprietary repositories local with AI Badger">
 
     <div class="article-body">
-        <p>AI coding agents are powerful, but they often demand broad repository access. For enterprise developers, freelancers under NDA, and privacy-conscious engineers, that access is a non-starter.</p>
+        <p>AI coding agents often demand broad repository access. For enterprise developers, freelancers under NDA, and privacy-conscious engineers, that access is a non-starter.</p>
         <p>The question isn’t whether AI can help. It’s whether you can use it <em>without</em> handing over unrestricted access to sensitive code, credentials, or customer data.</p>
         <p>The answer is yes, <strong>if</strong> the architecture puts you in control.</p>
 
@@ -71,13 +71,13 @@
         <p>Recent reports of repository uploads and prompt-injection vulnerabilities show why developers need visibility into exactly what leaves their machine. An agent’s stated file-access rules or a provider’s policy are not the same thing as a technical boundary around proprietary code.</p>
 
         <h2>What “Air-Gapped AI Coding” Really Means</h2>
-        <p>True air-gapping, keeping both the model and codebase fully offline, is the gold standard but often impractical. In practice, three models exist:</p>
+        <p>True air-gapping keeps both the model and codebase fully offline. Selectively sharing code with a cloud chat is a different arrangement. Here are three common setups:</p>
         <ol>
             <li><strong>Fully local AI:</strong> Everything stays on your hardware. Maximum privacy, but higher hardware demands and potentially weaker model performance.</li>
             <li><strong>Local-first, selective disclosure:</strong> The repository stays local. A trusted local tool prepares limited, reviewable context that you manually paste into an approved cloud chat.</li>
             <li><strong>Cloud-connected agents:</strong> Broad repository access with automation. Most convenient, with the largest trust boundary.</li>
         </ol>
-        <p>For most proprietary work, <strong>local-first, selective disclosure</strong> offers the best balance: strong external reasoning without direct cloud access to your codebase.</p>
+        <p><strong>Local-first, selective disclosure</strong> can fit teams allowed to share reviewed snippets with a cloud service but unable to grant it repository access.</p>
 
         <h2>Privacy Policies Aren’t Technical Boundaries</h2>
         <p>Provider policies matter, but they do not solve data minimization. Even enterprise-oriented tools can send more context than a task requires. The safer approach is to minimize disclosure before anything reaches the provider.</p>
@@ -102,7 +102,7 @@
         <h2>The Clipboard Is Part of the Boundary</h2>
         <p>Copy-paste feels less “agentic”, but that explicitness is the feature. Every transfer is deliberate. Endpoint security still matters, of course: clipboard managers and remote-access tools can observe content.</p>
 
-        <h2>When This Approach Wins</h2>
+        <h2>When This Approach Fits</h2>
         <ul>
             <li>Enterprise teams allowed to use web chats but not repo-indexing extensions</li>
             <li>Freelancers working under strict NDAs</li>
@@ -122,7 +122,7 @@
         </ol>
 
         <h2>Conclusion</h2>
-        <p>Secure AI coding isn’t just about choosing the provider with the best policy. It’s about controlling the path between your repository and the model.</p>
+        <p>Secure AI coding requires both an approved provider and control over what you send to it.</p>
         <p>Keep the repo local. Expose only narrowly selected, human-reviewed context. Require confirmation on every write.</p>
         <p><a href="/aibadger/">AI Badger</a> is built for this controlled-disclosure model: it keeps your proprietary code under your control while letting you use the cloud reasoning you choose.</p>
     </div>
