@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lightweight Express.js Monitoring | StatLite</title>
+    <title>Express.js Monitoring: Errors, Latency, CPU and Memory | StatLite</title>
     <meta name="description" content="Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/lightweight-express-monitoring.html">
@@ -12,7 +12,7 @@
     <meta property="og:title" content="Lightweight Express.js Monitoring Without Prometheus and Grafana">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.">
-    <meta property="article:modified_time" content="2026-09-21T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-10-01T18:10:31-07:00">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/express-monitoring-og.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
@@ -60,7 +60,7 @@
     <h1>Lightweight Express.js Monitoring Without Prometheus and Grafana</h1>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · September 21, 2026</div>
     <div class="article-body">
-        <p>A small Express application still needs a few operational answers: how much traffic is arriving, whether 4xx or 5xx responses are rising, whether requests are slowing down, and how much CPU and heap the Node.js process is using. Prometheus and Grafana can answer those questions. For one application on a VPS, they can also be more infrastructure than the application warrants.</p>
+        <p>A small Express application still needs a few operational answers: how much traffic is arriving, whether 4xx or 5xx responses are rising, whether you have slow requests or increasing request latency, and how much CPU and heap the Node.js process is using. Prometheus and Grafana can answer those questions. For one application on a VPS, they can also be more infrastructure than the application warrants.</p>
         <p>In this article, we show you how to add lightweight metrics to an Express application and visualize them in StatLite. A small helper exposes the application's request, error, latency, CPU, heap, and uptime data to StatLite, which stores the history and presents it in one dashboard. The integration uses StatLite's <code>statlite-metrics</code> profile and does not require a Prometheus client or Grafana.</p>
         <p>FastAPI, Django, Gin, and Go <code>net/http</code> use that same endpoint and the same StatLite target, each with its own helper. Spring Boot keeps a first-party Actuator integration, described in <a href="/articles/lightweight-spring-boot-monitoring.html">Lightweight Spring Boot Monitoring Without Prometheus and Grafana</a>.</p>
         <p>The helper below matches the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md" target="_blank" rel="noopener noreferrer">Express integration guide</a>. That guide is the source of truth if the two ever differ.</p>
@@ -79,7 +79,7 @@
         </dialog>
         <div class="statlite-pitch"><p><strong>One JSON endpoint. One StatLite process. No Prometheus client in the application.</strong></p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
 
-        <h2>What the helper is for</h2>
+        <h2>What you can monitor in an Express app</h2>
         <p>StatLite cannot see request counts, HTTP errors, or latency from outside the process. The helper records them where Express already sees every response. The complete helper below is application-owned source you can inspect, modify, test, and review with your usual security and code-review tools. It uses Express and Node.js built-in APIs: no StatLite SDK or package and no additional third-party runtime dependency are required.</p>
         <p>Your own StatLite instance polls <code>/statlite/metrics</code>. The helper makes no outbound network requests, sends no telemetry to PVR Labs or another external service, and performs no database I/O during snapshot collection. Its JSON response exposes aggregate request and error counts, cumulative duration, process CPU, V8 heap use, uptime, start time, status, and schema/integration identifiers. It includes no request or response bodies, headers, URL lists, or user identifiers. These operational metrics are still visible to anyone who can reach the endpoint, so keep it private as described below.</p>
         <p>The example was exercised with Node.js 24.21.0 LTS and Express 5.1.0. It uses stable process APIs and the standard middleware and response APIs. That is the tested baseline, not a promise about every Express release.</p>
