@@ -12,7 +12,7 @@
     <meta property="og:title" content="Lightweight Express.js Monitoring Without Prometheus and Grafana">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.">
-    <meta property="article:modified_time" content="2026-10-01T18:10:31-07:00">
+    <meta property="article:modified_time" content="2026-10-03T22:18:04-07:00">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/express-monitoring-og.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
@@ -26,7 +26,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/articles/article.css?v=20260904">
+    <link rel="stylesheet" href="/articles/article.css?v=20261003">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
@@ -291,6 +291,10 @@ for i in {1..10}; do curl -s http://127.0.0.1:3000/failure &gt; /dev/null; done<
         <h2>Run the example</h2>
         <p>The tested application, helper, tests, and config are in <a href="https://github.com/PVRLabs/statlite/tree/main/examples/node-express-demo" target="_blank" rel="noopener noreferrer">examples/node-express-demo</a>. <code>npm test</code> in that directory checks normal, 404, and 500 responses, and checks that polling <code>/statlite/metrics</code> does not increment application counters.</p>
         <div class="statlite-pitch"><p><strong>Monitor an Express application with one pasted helper and a local StatLite dashboard.</strong></p><div class="article-actions"><a href="/statlite/#install" class="btn btn-primary">Install StatLite</a><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Express integration guide</a><a href="https://github.com/PVRLabs/statlite" class="btn btn-github" target="_blank" rel="noopener noreferrer">⭐ Star on GitHub</a></div></div>
+    </div>
+    <div class="article-discussion">
+        <p class="article-discussion__label">Discuss this article</p>
+        <a class="article-discussion__link" href="https://daily.dev/posts/mevniynmz"><span class="article-discussion__icon" aria-hidden="true"></span>Join the discussion on daily.dev</a>
     </div>
 </article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>

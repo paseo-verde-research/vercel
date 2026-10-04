@@ -256,6 +256,44 @@
     color: var(--primary-green);
 }
 
+.article-discussion {
+    margin-top: .5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.article-discussion__label {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+.article-discussion__link {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 44px;
+    color: var(--text-secondary);
+    font-size: .95rem;
+}
+
+.article-discussion__link:hover,
+.article-discussion__link:focus-visible {
+    color: var(--primary-green);
+}
+
+.article-discussion__icon {
+    display: block;
+    width: 2rem;
+    height: 1.125rem;
+    flex: 0 0 auto;
+    background-color: currentColor;
+    -webkit-mask: url("/articles/img/daily-dev.svg") center / contain no-repeat;
+    mask: url("/articles/img/daily-dev.svg") center / contain no-repeat;
+}
+
 .screenshot-gallery {
     margin: 0 0 1.5rem;
 }
