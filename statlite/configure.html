@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta name="description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta name="theme-color" content="#0A0A0A">
   <title>Configure StatLite - Lightweight Application Monitoring</title>
   <link rel="canonical" href="https://pvrlabs.xyz/statlite/configure.html">
@@ -11,17 +11,17 @@
   <meta property="og:url" content="https://pvrlabs.xyz/statlite/configure.html">
   <meta property="og:title" content="Configure StatLite - Lightweight Application Monitoring">
   <meta property="og:site_name" content="StatLite">
-  <meta property="og:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta property="og:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Configure StatLite - Lightweight Application Monitoring">
-  <meta name="twitter:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta name="twitter:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="/statlite/style.css?v=20260904b">
-  <link rel="stylesheet" href="/statlite/configure.css?v=20260921">
+  <link rel="stylesheet" href="/statlite/configure.css?v=20261005d">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -47,7 +47,7 @@
     <header class="intro wizard-heading">
       <h1>Connect your application</h1>
       <p class="lede">Choose an integration and get a minimal configuration you can run right away.</p>
-      <p class="search-context">Connect Spring Boot, Quarkus, FastAPI, Express, Django, Gin, or Go net/http to lightweight self-hosted monitoring without deploying a full Prometheus and Grafana stack.</p>
+      <p class="search-context">Connect Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http to lightweight self-hosted monitoring without deploying a full Prometheus and Grafana stack.</p>
     </header>
 
     <section aria-labelledby="integration-heading">
@@ -75,6 +75,15 @@
           <span class="card-content">
             <span class="integration-mark quarkus-mark" aria-hidden="true">Q<span></span></span>
             <span><strong>Quarkus</strong><small>Micrometer</small></span>
+            <span class="selected-check" aria-hidden="true">✓</span>
+          </span>
+        </label>
+
+        <label class="integration-card">
+          <input type="radio" name="integration" value="micronaut" aria-label="Micronaut">
+          <span class="card-content">
+            <span class="integration-mark micronaut-mark" aria-hidden="true"><img src="/statlite/configure/assets/micronaut.svg?v=20261005" alt=""></span>
+            <span><strong>Micronaut</strong><small>Micrometer</small></span>
             <span class="selected-check" aria-hidden="true">✓</span>
           </span>
         </label>
@@ -135,6 +144,33 @@
               <span class="toggle-track" aria-hidden="true"><span></span></span>
               <span><strong>Use HTTPS</strong><small>Keep the port you entered</small></span>
             </label>
+          </div>
+
+          <div id="spring-guide" class="framework-guides">
+            <div class="guide-intro">
+              <p class="mini-label">Application setup required</p>
+              <h3>Enable Spring Boot Actuator</h3>
+              <p>Add Spring Boot Actuator and expose its health and metrics endpoints. StatLite works with standard Actuator metrics; Prometheus metrics are optional. Generated YAML uses <code>/actuator</code> as the management base URL.</p>
+              <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/spring.md" target="_blank" rel="noreferrer">Read the Spring Boot setup guide <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+
+          <div id="quarkus-guide" class="framework-guides" hidden>
+            <div class="guide-intro">
+              <p class="mini-label">Application setup required</p>
+              <h3>Enable Quarkus metrics</h3>
+              <p>Add <code>quarkus-micrometer-registry-prometheus</code> to expose <code>/q/metrics</code>. Add <code>quarkus-smallrye-health</code> if you also want application health reporting.</p>
+              <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/quarkus.md" target="_blank" rel="noreferrer">Read the Quarkus setup guide <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+
+          <div id="micronaut-guide" class="framework-guides" hidden>
+            <div class="guide-intro">
+              <p class="mini-label">Application setup required</p>
+              <h3>Enable Micronaut metrics</h3>
+              <p>Requires StatLite 0.6.0+. Enable Micronaut management and Micrometer to expose <code>/prometheus</code>. Generated YAML uses this metrics endpoint.</p>
+              <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/micronaut.md" target="_blank" rel="noreferrer">Read the Micronaut setup guide <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
 
           <div id="framework-guides" class="framework-guides" hidden>
@@ -205,7 +241,8 @@
           <code id="inspect-command">statlite inspect http://localhost:8080</code>
           <button id="copy-command" class="copy-button compact-copy" type="button" data-default-label="Copy command"><span class="copy-icon" aria-hidden="true"></span><span class="copy-label">Copy command</span></button>
         </div>
-        <p class="inspect-result">StatLite will detect a supported integration, show the available capabilities, and print a suggested <code>statlite.yaml</code>.</p>
+        <p class="inspect-result">StatLite will try to detect a supported integration. If successful, it will show the available capabilities and print a suggested <code>statlite.yaml</code>.</p>
+        <p class="inspect-result">For Micronaut, select the type explicitly: <code>statlite inspect --type micronaut 'http://localhost:8080'</code>.</p>
         <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#discover-a-target-with-inspect" target="_blank" rel="noreferrer">Read the Inspect documentation <span aria-hidden="true">↗</span></a>
       </div>
     </section>
@@ -214,7 +251,7 @@
   <div id="copy-status" class="copy-status" role="status" aria-live="polite"></div>
   <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div></footer>
   <script src="/script.js?v=20260830"></script>
-  <script src="/statlite/configure.js?v=20260917" defer></script>
+  <script src="/statlite/configure.js?v=20261005b" defer></script>
   <script>
     var sc_project = 13137699;
     var sc_invisible = 1;

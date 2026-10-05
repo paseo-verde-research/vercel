@@ -3,6 +3,7 @@
 
   const integrations = {
     spring: { type: "spring", path: "/actuator" },
+    micronaut: { type: "micronaut", path: "/prometheus" },
     quarkus: { type: "quarkus", path: "/q/metrics" },
     "statlite-metrics": { type: "statlite-metrics", path: "/statlite/metrics" }
   };
@@ -15,6 +16,9 @@
     port: document.querySelector("#port"),
     https: document.querySelector("#https"),
     output: document.querySelector("#yaml-output"),
+    springGuide: document.querySelector("#spring-guide"),
+    quarkusGuide: document.querySelector("#quarkus-guide"),
+    micronautGuide: document.querySelector("#micronaut-guide"),
     frameworkGuides: document.querySelector("#framework-guides"),
     copyStatus: document.querySelector("#copy-status")
   };
@@ -67,6 +71,9 @@ targets:
     const isInspect = integration === "inspect";
     elements.builder.hidden = isInspect;
     elements.inspect.hidden = !isInspect;
+    elements.springGuide.hidden = integration !== "spring";
+    elements.quarkusGuide.hidden = integration !== "quarkus";
+    elements.micronautGuide.hidden = integration !== "micronaut";
     elements.frameworkGuides.hidden = integration !== "statlite-metrics";
     updateYaml();
   };
