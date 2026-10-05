@@ -223,16 +223,23 @@
     </section>
 
     <nav class="article-filters" aria-label="Filter articles by topic">
-            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span>(14)</span></button>
-            <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span>(4)</span></button>
+            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span data-article-count>(15)</span></button>
+            <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span data-article-count>(4)</span></button>
         <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count></span></button>
-        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span>(7)</span></button>
-        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span>(6)</span></button>
-        <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Developer Tooling <span>(5)</span></button>
+        <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span data-article-count>(8)</span></button>
+        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-article-count>(7)</span></button>
+        <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Developer Tooling <span data-article-count>(5)</span></button>
     </nav>
 
     <section class="articles-list">
         <div class="container">
+
+            <article class="article-entry" data-tags="statlite spring-boot monitoring quarkus micronaut">
+                <div class="article-tags" aria-label="Article topics"><span>StatLite</span><span>Spring Boot</span><span>Quarkus</span><span>Micronaut</span></div>
+                <h2><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h2>
+                <div class="article-meta"><time datetime="2026-10-05">October 5, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
+                <p>Equivalent JDBC applications on Java 25, with measured startup, resident memory, and CPU. Quarkus and Micronaut converge near the end of this small-VM run.</p>
+            </article>
 
             <article class="article-entry" data-tags="statlite spring-boot monitoring">
                 <div class="article-tags" aria-label="Article topics">
@@ -389,7 +396,7 @@
     </div>
 </footer>
 
-<script src="/script.js?v=20260909"></script>
+<script src="/script.js?v=20261005"></script>
 <!-- Default Statcounter code for PVR Labs -->
 <script>
     var sc_project = 13137699;

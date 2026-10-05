@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM | PVR Labs</title>
+    <meta name="description" content="Equivalent JDBC apps on Java 25: startup, process RSS, and CPU for Spring Boot, Quarkus, and Micronaut on a 1 GiB Linux VM.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html">
+    <meta property="og:title" content="Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Equivalent JDBC apps on Java 25: startup, process RSS, and CPU for Spring Boot, Quarkus, and Micronaut on a 1 GiB Linux VM.">
+    <meta property="article:published_time" content="2026-10-05T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-quarkus-micronaut-jdbc/spring-boot-quarkus-micronaut-jdbc-og.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot, Quarkus, and Micronaut JDBC comparison with median RSS values">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM">
+    <meta name="twitter:description" content="Equivalent JDBC apps on Java 25: startup, process RSS, and CPU for Spring Boot, Quarkus, and Micronaut on a 1 GiB Linux VM.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-quarkus-micronaut-jdbc/spring-boot-quarkus-micronaut-jdbc-og.png">
+    <meta name="twitter:image:alt" content="Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; min-width: 40rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-body blockquote {
+            margin: 0 0 1.5rem;
+            padding: 16px 20px;
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 8px 8px 0;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+        }
+        @media (max-width: 768px) {
+            .article-body table { font-size: .85rem; }
+        }
+
+        .table-scroll table { min-width: 34rem; }
+        .method-note { padding: 1rem; background: var(--bg-light); border-left: 4px solid var(--primary-green); }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="StatLite article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
+    </nav>
+    <h1>Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-05">October 5, 2026</time></div>
+    <div class="article-body" data-lightbox-scope>
+<p>A small Java application can spend much of its memory budget on the stack around its business logic. I wanted to see how that looks across Spring Boot, Quarkus, and Micronaut when the application uses JDBC rather than an ORM.</p>
+<p>I built equivalent versions of a quote-history application and ran them one at a time in the same 1 GiB Linux VM. Each received the same scripted API traffic, synchronized quotes from the same local fixture, and stored them in file-backed H2. Then I restarted all three together for a separate observation.</p>
+<p>All three completed the workload without a scripted request error. Quarkus had the lowest median resident memory and reached readiness fastest in this run. Micronaut was close in memory, while Spring used more. CPU usage was low for all three, although Micronaut used more CPU than Quarkus in both the application and whole-VM measurements.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc">curated experiment</a> contains the method, application sources, screenshots, and downloadable data. This article describes one practical engineering investigation, not a general ranking of the frameworks.</p>
+<h2>The application behind the numbers</h2>
+<p>Market Replay follows a familiar application pattern: fetch a small JSON payload over HTTP, validate it, write a transaction, and expose current values and history through an API and browser page.</p>
+<p>The fixture replays a recorded trading session for three symbols. It runs locally and advances every 60 seconds, so the measured application never waits on an external market-data service. Each successful synchronization stores three observations. The API serves the latest quote per symbol and a bounded history.</p>
+<p>The implementations share the fixture, database version, schema, SQL, payloads, and browser assets. They also share a JDK scheduled executor with a 60-second fixed delay after each synchronization completes. Keeping that scheduling mechanism common avoids accidentally comparing different scheduling semantics.</p>
+<p>The framework integration still differs. Spring Boot 4.1.1 uses Spring MVC, JdbcClient, and HikariCP. Quarkus 3.40.1 uses Quarkus REST, JDBC, and Agroal. Micronaut Platform 5.2.1, with Core 5.2.11, uses Netty, JDBC, and HikariCP. Micronaut uses Jackson 3; Spring and Quarkus use Jackson 2. All three use H2 2.4.240 and connection pools bounded from one to four connections.</p>
+<p>These are complete application stacks. The experiment does not isolate the cost of a framework&#x27;s dependency injection container or HTTP server.</p>
+<h2>One environment, fresh JVMs</h2>
+<p>The guest was Ubuntu 24.04 x86_64 under Lima VZ on an Intel Mac, with two vCPUs, 1 GiB RAM, and no swap. All three applications used Temurin Java 25.0.4.1+1 LTS and the same flags:</p>
+<pre data-lang="text"><code>-Xms32m -Xmx192m -XX:+UseG1GC -XX:ActiveProcessorCount=2</code></pre>
+<p>The 192 MiB maximum is a heap limit, not a total process memory limit. Resident memory also includes class metadata, compiled code, thread stacks, and other native allocations.</p>
+<p>Before measuring, I launched each application for a short smoke check with separate databases and monitoring storage. That checked packaging, persistence, health, metrics, and collection while warming guest filesystem state. Each measured launch was still a fresh JVM with a fresh H2 database. Startup here means process launch to externally observed health plus a persisted first batch, rather than a framework&#x27;s startup log or a pristine VM cold start.</p>
+<p>The order was Spring, Quarkus, then Micronaut. Each ran for 15 minutes from readiness. The script requested latest and history every five seconds, rising to every second during minutes seven through ten, then returning to baseline. Each completed 638 requests with zero errors.</p>
+<p class="method-note">Sequence: Spring (15 min), Quarkus (15 min), Micronaut (15 min), then all three together (15 min). In each individual window: warmup 0–3, baseline 3–7, busier 7–10, return 10–15 minutes. The fixture and monitor run throughout.</p>
+<h2>Memory: a modest difference between Quarkus and Micronaut</h2>
+<p>Linux process RSS was sampled independently every five seconds, producing 180 observations per application window. The headline figures include the first three minutes designated runtime warmup.</p>
+<div class="table-scroll" role="region" aria-label="Comparison table" tabindex="0"><table><thead><tr><th scope="col">Application</th><th scope="col">Launch to readiness</th><th scope="col">Median RSS</th><th scope="col">Peak sampled RSS</th></tr></thead><tbody><tr><td>Spring Boot</td><td>4.90 s</td><td>214.3 MiB</td><td>224.9 MiB</td></tr><tr><td>Quarkus</td><td>2.25 s</td><td>178.4 MiB</td><td>190.3 MiB</td></tr><tr><td>Micronaut</td><td>2.54 s</td><td>186.7 MiB</td><td>189.9 MiB</td></tr></tbody></table></div>
+<p>Quarkus&#x27;s median was 8.3 MiB below Micronaut&#x27;s. Their sampled peaks were almost identical. Spring&#x27;s median was 36.0 MiB above Quarkus&#x27;s and 27.7 MiB above Micronaut&#x27;s.</p>
+<p>The time dimension matters too. RSS increased across the short test for all three applications. During the final five-minute interval, median RSS was 224.4 MiB for Spring, 189.7 MiB for Quarkus, and 189.4 MiB for Micronaut. Quarkus&#x27;s lower whole-window median therefore does not imply a large gap at every point in the run.</p>
+<figure><a class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/individual-rss.svg"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/individual-rss.svg" alt="Spring RSS rises above 220 MiB; Quarkus and Micronaut converge near 190 MiB." loading="lazy" decoding="async"></a><figcaption>Five-second RSS samples from one run per app, aligned by elapsed time. Shading marks runtime warmup (0–3 minutes) and busier traffic (7–10 minutes).</figcaption></figure>
+<p>The dashboard&#x27;s JVM runtime-memory curves were much smaller and showed repeated rises and drops. That is consistent with allocation and collection, while process RSS includes memory beyond the JVM runtime-memory series. The screenshots and RSS measurements answer different questions; their values should not be interchanged.</p>
+<h2>CPU: low absolute usage, a visible Micronaut difference</h2>
+<p>The process charts suggested higher CPU for Micronaut than Quarkus. The whole-VM measurements showed the same direction.</p>
+<div class="table-scroll" role="region" aria-label="Comparison table" tabindex="0"><table><thead><tr><th scope="col">Application window</th><th scope="col">Mean app CPU, one-core basis</th><th scope="col">Mean host CPU, two-core VM basis</th></tr></thead><tbody><tr><td>Spring Boot</td><td>0.539%</td><td>0.727%</td></tr><tr><td>Quarkus</td><td>0.439%</td><td>0.498%</td></tr><tr><td>Micronaut</td><td>0.790%</td><td>0.817%</td></tr></tbody></table></div>
+<p>These are means of 13 one-minute aggregated values per window, excluding startup and partial boundary buckets. Application CPU is expressed as a percentage of one core; host CPU is a percentage of the VM&#x27;s total two-core capacity. The two columns have different denominators and cannot be summed.</p>
+<p>Micronaut&#x27;s mean host CPU was approximately 0.32 percentage points above Quarkus&#x27;s. During the busier interval, host means were 0.892% for Spring, 0.808% for Quarkus, and 1.052% for Micronaut. This was a light workload with plenty of CPU capacity, not a throughput or saturation test.</p>
+<figure><a class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/cpu.svg"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/cpu.svg" alt="CPU minute buckets and means on separate application and host axes." loading="lazy" decoding="async"></a><figcaption>Dots show the 13 included minute buckets per window; horizontal bars mark means. Application and host percentages use different denominators.</figcaption></figure>
+<p>Host CPU includes application work, the fixture, StatLite, and guest services. These observations establish a difference during the recorded windows; they do not identify its cause.</p>
+<h2>All three together</h2>
+<p>After the individual windows, I restarted all three applications into fresh databases and observed them together for 15 minutes without scripted API traffic. Quote synchronization and monitoring continued.</p>
+<p>Median RSS was 212.7 MiB for Spring, 171.4 MiB for Quarkus, and 180.3 MiB for Micronaut. StatLite used 21.5 MiB median RSS, and the fixture approximately 22.4 MiB. Mean whole-VM CPU was 1.039% over the selected minute buckets.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/spring-quarkus-micronaut-jdbc/screenshots/host-resources.png">host screenshot</a> shows RAM rising from approximately 0.48 GB to 0.8 GB when all three launch, below the guest&#x27;s displayed total of approximately 0.94 GB. A startup CPU spike subsides, and disk usage changes little.</p>
+<figure><a class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/shared-rss.svg"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/shared-rss.svg" alt="Shared-phase RSS for the three applications, StatLite, and the fixture." loading="lazy" decoding="async"></a><figcaption>Fresh JVMs and databases, no scripted API traffic. Process RSS is not an exact accounting of total host RAM.</figcaption></figure>
+<p>Latency increased after the shared restart, particularly for Spring. That transition is visible in the screenshots, but different request populations and fresh JVM warmup prevent a controlled latency ranking. The shared phase also has a different workload from the individual tests, so its memory and CPU values remain a separate observation.</p>
+<h2>Monitoring the transitions</h2>
+<p>I used a candidate for the upcoming <a href="/statlite/">StatLite 0.6</a> release, which adds Micronaut support, to monitor the three apps and itself throughout the sequence. All targets stayed configured even when their applications were stopped. That exercised unavailable targets, recovery, and planned restarts alongside the comparison.</p>
+<p>Self-monitoring succeeded in every recorded ten-second status check. Active applications recovered collection after an initial status lag. All three were healthy in the operator screenshots, and the captured kernel journal contained no OOM messages. The fixture recorded no availability loss or replay regression.</p>
+<p>There are useful instrumentation details in the evidence. Quarkus counted approximately two fewer requests per polling interval than Spring and Micronaut under the same scripted traffic. That does not change the runner&#x27;s identical 638-request totals, but it limits direct dashboard request/latency comparisons. Spring&#x27;s DB health card showed “Not reported,” which is missing detail rather than a database-failure observation.</p>
+<div class="screenshot-gallery" data-gallery>
+<div class="screenshot-tabs" role="tablist" aria-label="StatLite application and host metrics">
+    <button type="button" class="screenshot-tab" role="tab" id="tab-spring-boot" aria-controls="panel-spring-boot" aria-selected="true" tabindex="0">Spring Boot</button>
+    <button type="button" class="screenshot-tab" role="tab" id="tab-quarkus" aria-controls="panel-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
+    <button type="button" class="screenshot-tab" role="tab" id="tab-micronaut" aria-controls="panel-micronaut" aria-selected="false" tabindex="-1">Micronaut</button>
+    <button type="button" class="screenshot-tab" role="tab" id="tab-host" aria-controls="panel-host" aria-selected="false" tabindex="-1">Host</button>
+</div>
+<div id="panel-spring-boot" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-spring-boot">
+<figure><a aria-label="Open the Spring Boot dashboard screenshot at full size" class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/spring-boot.png"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/spring-boot.png" alt="Spring Boot StatLite dashboard with request, CPU, latency, and JVM runtime-memory curves." loading="lazy" decoding="async"></a><figcaption>Spring Boot: individual window followed by the shared restart. Runtime memory differs from process RSS; request instrumentation limits comparisons between dashboards.</figcaption></figure>
+</div>
+<div id="panel-quarkus" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-quarkus" hidden>
+<figure><a aria-label="Open the Quarkus dashboard screenshot at full size" class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/quarkus.png"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/quarkus.png" alt="Quarkus StatLite dashboard with request, CPU, latency, and JVM runtime-memory curves." loading="lazy" decoding="async"></a><figcaption>Quarkus: individual window followed by the shared restart. Runtime memory differs from process RSS; request instrumentation limits comparisons between dashboards.</figcaption></figure>
+</div>
+<div id="panel-micronaut" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-micronaut" hidden>
+<figure><a aria-label="Open the Micronaut dashboard screenshot at full size" class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/micronaut.png"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/micronaut.png" alt="Micronaut StatLite dashboard with request, CPU, latency, and JVM runtime-memory curves." loading="lazy" decoding="async"></a><figcaption>Micronaut: individual window followed by the shared restart. Runtime memory differs from process RSS; request instrumentation limits comparisons between dashboards.</figcaption></figure>
+</div>
+<div id="panel-host" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-host" hidden>
+<figure><a aria-label="Open the Host dashboard screenshot at full size" class="screenshot-link" href="/articles/img/spring-boot-quarkus-micronaut-jdbc/host-resources.png"><img src="/articles/img/spring-boot-quarkus-micronaut-jdbc/host-resources.png" alt="StatLite host resources show the shared-phase RAM step and a brief startup CPU spike." loading="lazy" decoding="async"></a><figcaption>Operator screenshot during the shared window, before its end. The preceding individual windows and the shared restart are visible.</figcaption></figure>
+</div>
+</div>
+
+        <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+            <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+            <figure class="screenshot-lightbox__content">
+                <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+            </figure>
+        </dialog>
+<h2>What this run supports</h2>
+<p>For this application and JVM profile, Quarkus reached readiness sooner and had the lowest whole-window median RSS and CPU. Micronaut&#x27;s median memory was close to Quarkus&#x27;s, and their final-interval medians and sampled peaks were very close. Spring carried a larger resident footprint, while completing the same workload successfully.</p>
+<p>Those conclusions apply to this recorded setup. There was one fixed-order run, prepared filesystem state, and a continuous fixture whose starting sample changed between phases. The experiment does not establish repeated-trial variance, a long-term memory plateau, maximum throughput, or an overall winner.</p>
+<p>The operator opened the dashboard during the shared window, which may affect StatLite&#x27;s own HTTP metrics. Screenshots precede that window&#x27;s end; later inspection samples are excluded from the timed comparisons.</p>
+<p>An <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus">earlier Spring/Quarkus experiment</a> provides context, but used Hibernate and a different resource/environment profile. Its results should remain separate from this JDBC comparison. The <a href="/articles/spring-boot-vs-quarkus-512mb.html">earlier article</a> discusses the memory-pressure observations.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc/data">curated evidence and analysis script</a> make the numerical observations checkable. Running <code>python3 analyze.py</code> from that experiment directory reproduces the headline RSS, CPU, and request figures.</p>
+</div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260911"></script>
+<script src="/screenshot-gallery.js?v=20261005"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

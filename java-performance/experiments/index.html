@@ -35,48 +35,54 @@
           {
             "@type": "ListItem",
             "position": 1,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html",
+            "name": "Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
             "url": "https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html",
             "name": "Spring Boot fat JAR vs extracted layout"
           },
           {
             "@type": "ListItem",
-            "position": 2,
+            "position": 3,
             "url": "https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html",
             "name": "Spring Boot vs Quarkus on a 512 MB VPS"
           },
           {
             "@type": "ListItem",
-            "position": 3,
+            "position": 4,
             "url": "https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html",
             "name": "Spring Boot on a 256 MiB VPS with JDK 25"
           },
           {
             "@type": "ListItem",
-            "position": 4,
+            "position": 5,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html",
             "name": "Spring Boot JPA vs JDBC"
           },
           {
             "@type": "ListItem",
-            "position": 5,
+            "position": 6,
             "url": "https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html",
             "name": "Spring Boot fat JAR vs extracted layout vs Gradle application distribution"
           },
           {
             "@type": "ListItem",
-            "position": 6,
+            "position": 7,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html",
             "name": "Spring Boot vs Quarkus on a 768 MiB VM"
           },
           {
             "@type": "ListItem",
-            "position": 7,
+            "position": 8,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html",
             "name": "Spring Boot vs Quarkus at 1 GiB with swap disabled"
           },
           {
             "@type": "ListItem",
-            "position": 8,
+            "position": 9,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html",
             "name": "Spring Boot extracted layout vs Jib exploded layout"
           }
@@ -134,6 +140,22 @@
             </nav>
             <h2 class="lab-index-heading">Featured experiments</h2>
             <div class="lab-index">
+                <article class="lab-entry" data-tags="spring-boot quarkus micronaut memory jdk">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Quarkus</span>
+                        <span>Micronaut</span>
+                        <span>Memory</span>
+                        <span>JDK</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-10-05">October 5, 2026</time></p>
+                    <p>Equivalent JDBC apps on Java 25, measured one at a time for startup, resident memory, and CPU. Quarkus had the lowest overall median RSS; its memory use converged with Micronaut’s near the end of this single run.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
                 <article class="lab-entry" data-tags="spring-boot packaging">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</title>
+<desc id="desc">A Java 25 experiment comparing startup, resident memory, and CPU. Median RSS: Spring Boot 214.3 MiB, Quarkus 178.4 MiB, Micronaut 186.7 MiB.</desc>
+<defs><radialGradient id="bg" cx="80%" cy="40%" r="90%"><stop stop-color="#123323"/><stop offset="1" stop-color="#080e0b"/></radialGradient><pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#72b38d" opacity=".12"/></pattern></defs>
+<rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#dots)"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="58" y="74" fill="#f4faf6" font-size="32" font-weight="800">PVR<tspan fill="#42dc84">Labs</tspan></text>
+<text x="58" y="105" fill="#8daf9a" font-size="13" letter-spacing="3">ENGINEERING EXPERIMENT</text>
+<text x="58" y="211" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Spring Boot,</text>
+<text x="58" y="281" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Quarkus &amp;</text>
+<text x="58" y="351" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Micronaut</text>
+<text x="58" y="411" fill="#42dc84" font-size="33" font-weight="700">JDBC on a 1 GiB VM</text>
+<text x="58" y="467" fill="#bdcec3" font-size="22">Java 25 · Same app · Same workload</text>
+<text x="58" y="505" fill="#bdcec3" font-size="22">Startup, resident memory, and CPU</text>
+<rect x="622" y="138" width="520" height="376" rx="16" fill="#101d16" stroke="#365441"/>
+<text x="654" y="184" fill="#e1ece4" font-size="20" font-weight="700">MEDIAN PROCESS RSS</text>
+<text x="654" y="213" fill="#98afa1" font-size="16">Individual 15-minute windows · MiB</text>
+<text x="654" y="259" fill="#dbe7df" font-size="19">Spring Boot</text><text x="1108" y="259" text-anchor="end" fill="#f4faf6" font-size="22" font-weight="700">214.3</text><rect x="654" y="273" width="405.38" height="13" rx="3" fill="#69d98c"/><text x="654" y="340" fill="#dbe7df" font-size="19">Quarkus</text><text x="1108" y="340" text-anchor="end" fill="#f4faf6" font-size="22" font-weight="700">178.4</text><rect x="654" y="354" width="337.47" height="13" rx="3" fill="#76baff"/><text x="654" y="421" fill="#dbe7df" font-size="19">Micronaut</text><text x="1108" y="421" text-anchor="end" fill="#f4faf6" font-size="22" font-weight="700">186.7</text><rect x="654" y="435" width="353.17" height="13" rx="3" fill="#efa760"/><text x="654" y="484" fill="#98afa1" font-size="15">One recorded run per framework</text>
+<path d="M58 555H1142" stroke="#304b3a"/>
+<text x="58" y="596" fill="#b8c9bc" font-size="20">pvrlabs.xyz</text>
+<text x="1142" y="596" text-anchor="end" fill="#f2faf4" font-size="24" font-weight="800">Stat<tspan fill="#42dc84">Lite</tspan></text>
+</g></svg>

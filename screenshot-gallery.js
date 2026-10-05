@@ -48,7 +48,8 @@
         lightbox.close();
     }
 
-    gallery.querySelectorAll(".screenshot-link").forEach((link) => {
+    const imageScope = gallery.closest("[data-lightbox-scope]") || gallery;
+    imageScope.querySelectorAll(".screenshot-link").forEach((link) => {
         link.addEventListener("click", (event) => {
             event.preventDefault();
             const image = link.querySelector("img");

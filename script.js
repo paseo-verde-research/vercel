@@ -246,12 +246,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (articleFilters.length && articleEntries.length) {
         const articlesContainer = articleEntries[0].parentElement;
         const vpsArticles = articleEntries.filter(article => article.dataset.tags.split(/\s+/).includes('vps'));
-        const vpsFilterCount = document.querySelector('.article-filter[data-filter="vps"] [data-article-count]');
         const vpsLabId = 'vps-lab-articles';
         const vpsArticlePlaceholders = new Map();
         let vpsLab;
 
-        if (vpsFilterCount) vpsFilterCount.textContent = `(${vpsArticles.length})`;
+        articleFilters.forEach(filter => {
+            const count = filter.querySelector('[data-article-count]');
+            if (!count) return;
+            const topic = filter.dataset.filter;
+            const matchingEntries = topic === 'all'
+                ? articleEntries
+                : articleEntries.filter(article => article.dataset.tags.split(/\s+/).includes(topic));
+            count.textContent = `(${matchingEntries.length})`;
+        });
 
         const showVpsLab = () => {
             if (!articlesContainer || !vpsArticles.length || vpsLab) return;
