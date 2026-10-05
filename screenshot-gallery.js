@@ -14,6 +14,18 @@
     const lightboxClose = lightbox.querySelector("[data-lightbox-close]");
     let lastTrigger = null;
 
+    if (gallery.hasAttribute("data-preload-previews")) {
+        const observer = new IntersectionObserver(entries => {
+            if (!entries.some(entry => entry.isIntersecting)) return;
+            gallery.querySelectorAll(".screenshot-panel img").forEach(image => {
+                image.loading = "eager";
+                image.decode().catch(() => {});
+            });
+            observer.disconnect();
+        }, { rootMargin: "300px" });
+        observer.observe(gallery);
+    }
+
     function selectTab(index) {
         tabs.forEach((tab, i) => {
             const selected = i === index;
