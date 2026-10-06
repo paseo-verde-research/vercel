@@ -22,8 +22,8 @@ const palette = {
 };
 
 const lineStyle = {
-  borderWidth: 3,
-  pointRadius: 2,
+  borderWidth: 2,
+  pointRadius: 0,
   pointHoverRadius: 5,
   pointHitRadius: 8
 };
@@ -102,7 +102,7 @@ function buildCharts() {
   state.charts.runtime = new Chart(document.getElementById("runtime-chart"), {
     type: "line",
     data: { labels: [], datasets: [
-      { label: "Runtime memory MB", unit: "mb", data: [], borderColor: palette.heap, ...lineStyle, yAxisID: "y", tension: 0.25, spanGaps: false },
+      { label: "Runtime memory", unit: "mb", data: [], borderColor: palette.heap, ...lineStyle, yAxisID: "y", tension: 0.25, spanGaps: false },
       { label: "Process CPU", unit: "percent", data: [], borderColor: palette.cpu, ...lineStyle, yAxisID: "y1", tension: 0.25, spanGaps: false }
     ] },
     options: runtimeOptions()
@@ -490,7 +490,14 @@ function bytesToGB(value) {
 function updateChart(chart, labels, values) {
   chart.data.labels = labels;
   values.forEach((datasetValues, index) => {
-    chart.data.datasets[index].data = datasetValues;
+    const dataset = chart.data.datasets[index];
+    dataset.data = datasetValues;
+    const isolated = datasetValues.map((value, pointIndex) =>
+      Number.isFinite(value) &&
+      !Number.isFinite(datasetValues[pointIndex - 1]) &&
+      !Number.isFinite(datasetValues[pointIndex + 1]) ? 3 : 0
+    );
+    dataset.pointRadius = isolated.some((radius) => radius > 0) ? isolated : 0;
   });
   chart.update();
 }
