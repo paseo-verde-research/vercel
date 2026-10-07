@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="robots" content="index,follow">
+    <title>Can StatLite Monitor a Pyronaut Python App? | PVR Labs</title>
+    <meta name="description" content="A small Pyronaut app exposed Micronaut and Micrometer Prometheus metrics collected by StatLite's existing Micronaut integration, with no StatLite code changes.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html">
+    <meta property="og:title" content="Can StatLite monitor a Pyronaut Python app?">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A Pyronaut app exposed the Micronaut and Micrometer Prometheus metrics understood by StatLite's existing Micronaut integration.">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/pyronaut-statlite-dashboard.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Can StatLite monitor a Pyronaut Python app?">
+    <meta name="twitter:description" content="A Pyronaut app exposed the Micronaut and Micrometer Prometheus metrics understood by StatLite's existing Micronaut integration.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/pyronaut-statlite-dashboard.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20261006a">
+    <link rel="stylesheet" href="/articles/article.css?v=20261003">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .screenshot-gallery { margin: 1.5rem 0; }
+        .screenshot-gallery img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 8px; }
+        .screenshot-gallery figcaption { margin-top: .65rem; color: var(--text-secondary); font-size: .88rem; line-height: 1.5; }
+        .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
+        .experiment-table-scroll table { width: 100%; min-width: 32rem; margin-bottom: 0; border-collapse: collapse; font-size: .92rem; }
+        .experiment-table-scroll th, .experiment-table-scroll td { padding: .65rem .75rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .experiment-table-scroll th { background: var(--bg-light); color: var(--text-primary); }
+        @media (max-width: 600px) {
+            .experiment-table-scroll table { min-width: 0; }
+            .experiment-table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .experiment-table-scroll tbody, .experiment-table-scroll tr, .experiment-table-scroll td { display: block; }
+            .experiment-table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .experiment-table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border: 0; }
+            .experiment-table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; }
+        }
+    </style>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero">
+        <div class="container experiment-note">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
+            <h1>Can StatLite monitor a Pyronaut Python app?</h1>
+            <p class="lab-lead">A focused compatibility check: can a Pyronaut application use StatLite's existing Micronaut collector without Pyronaut-specific StatLite code?</p>
+        </div>
+    </section>
+
+    <section class="lab-section">
+        <div class="container experiment-note">
+            <section>
+                <h2>Question</h2>
+                <p>Can a Python app built with Pyronaut expose the Micronaut and Micrometer Prometheus metrics that StatLite already understands?</p>
+            </section>
+            <section>
+                <h2>Setup</h2>
+                <div class="experiment-table-scroll" tabindex="0" role="region" aria-label="Experiment versions">
+                    <table>
+                        <thead><tr><th>Component</th><th>Version</th></tr></thead>
+                        <tbody>
+                            <tr><td data-label="Component">Pyronaut CLI</td><td data-label="Version">0.1.0</td></tr>
+                            <tr><td data-label="Component">Micronaut Core / Platform</td><td data-label="Version">5.2.14 / 5.2.1</td></tr>
+                            <tr><td data-label="Component">Micronaut Micrometer / Micrometer</td><td data-label="Version">6.1.0 / 1.17.1</td></tr>
+                            <tr><td data-label="Component">GraalPy</td><td data-label="Version">25.4.4.1.1, Python 3.13.14</td></tr>
+                            <tr><td data-label="Component">GraalVM CE / JDK</td><td data-label="Version">25.4.4.1.1 / 25.0.4.1.1</td></tr>
+                            <tr><td data-label="Component">StatLite</td><td data-label="Version">0.6.0, released</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>The app was a one-route HTTP service, run in Docker on Ubuntu 24.04.4 x86_64. It explicitly enabled Micronaut management, Micrometer, and the Prometheus registry, and configured `/prometheus` and `/health`.</p>
+            </section>
+            <section>
+                <h2>Test</h2>
+                <ol>
+                    <li>Start the small Pyronaut app; <code>/hello</code> returns <code>Hello from Pyronaut</code>.</li>
+                    <li>Request <code>/hello</code> several times and make a 404 request so request metrics are materialized.</li>
+                    <li>Inspect <code>/prometheus</code> and <code>/health</code>.</li>
+                    <li>Poll <code>/prometheus</code> with released StatLite using the ordinary Micronaut target every five seconds.</li>
+                </ol>
+                <pre><code>targets:
+  - name: pyronaut-demo
+    type: micronaut
+    url: http://127.0.0.1:18088/prometheus</code></pre>
+            </section>
+            <section>
+                <h2>Result</h2>
+                <p><strong>PASS.</strong> StatLite 0.6.0 detected Micronaut Metrics, reported the target compatible, and collected 15 successful polls over about 68 seconds. Application health was UP, with no collection failures. All nine supported normalized signals were available:</p>
+                <ul>
+                    <li><code>http_requests_total</code></li>
+                    <li><code>http_404_total</code></li>
+                    <li><code>http_4xx_total</code></li>
+                    <li><code>http_5xx_total</code></li>
+                    <li><code>http_request_time_total_seconds</code></li>
+                    <li><code>process_cpu_usage</code></li>
+                    <li><code>jvm_heap_used_bytes</code></li>
+                    <li><code>process_start_time</code></li>
+                    <li><code>process_uptime</code></li>
+                </ul>
+                <p>HTTP count and duration changed after traffic. The raw HTTP timer was a Micrometer summary with the expected `_count` and `_sum` series and method, status, URI, and exception labels.</p>
+                <figure class="screenshot-gallery" data-gallery>
+                    <a class="screenshot-link" href="/java-performance/experiments/img/pyronaut-statlite-dashboard.webp" aria-label="Open the StatLite dashboard screenshot at full size">
+                        <img src="/java-performance/experiments/img/pyronaut-statlite-dashboard.webp" width="2946" height="1750" loading="eager" decoding="async" alt="StatLite dashboard for the pyronaut-demo target. The app is UP with zero poll failures, request and 404 activity, latency, JVM runtime memory, and process CPU charts.">
+                    </a>
+                    <figcaption>StatLite's Micronaut target collecting the Pyronaut app. Runtime memory and CPU describe the JVM/GraalPy process.</figcaption>
+                </figure>
+                <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+                    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+                    <figure class="screenshot-lightbox__content">
+                        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+                    </figure>
+                </dialog>
+            </section>
+            <section>
+                <h2>Why it works</h2>
+                <p>With Micronaut management and Micrometer Prometheus enabled, the Pyronaut app exposes the ordinary Prometheus series StatLite's existing Micronaut target already collects, so no StatLite changes were required.</p>
+            </section>
+            <section>
+                <h2>Caveat</h2>
+                <p>This demonstrates Pyronaut compatibility, not generic Python framework support. It says nothing about FastAPI, Django, Flask, or other Python applications. JVM CPU, heap, start-time, and uptime metrics describe the underlying JVM/GraalPy process. The heap metric is not a separate Python interpreter heap measurement.</p>
+            </section>
+            <section>
+                <h2>Sources</h2>
+                <p class="experiment-links">
+                    <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/pyronaut-statlite" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    <a href="https://pyronaut.io/docs/" target="_blank" rel="noopener noreferrer">Pyronaut documentation</a>
+                    <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/" target="_blank" rel="noopener noreferrer">Micronaut Micrometer guide</a>
+                    <a href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/micronaut.md" target="_blank" rel="noopener noreferrer">StatLite Micronaut target</a>
+                </p>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20260830"></script>
+<script src="/screenshot-gallery.js?v=20260919"></script>
+</body>
+</html>

@@ -345,6 +345,33 @@
     margin-bottom: 1rem;
 }
 
+.experiment-note pre {
+    overflow-x: auto;
+    margin: 0 0 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-light);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.experiment-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.15rem;
+    margin: 0;
+}
+
+.experiment-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+}
+
 .comparison-list {
     margin: 0 0 1rem 1.2rem;
 }
@@ -386,6 +413,10 @@
 }
 
 @media (max-width: 480px) {
+    .experiment-links {
+        flex-direction: column;
+    }
+
     .lab-hero h1 {
         font-size: 1.8rem;
         overflow-wrap: anywhere;

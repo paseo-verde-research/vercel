@@ -15,7 +15,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-06</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
@@ -132,6 +132,12 @@
   <url>
     <loc>https://pvrlabs.xyz/articles/claude-code-token-savings.html</loc>
     <lastmod>2026-09-10</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html</loc>
