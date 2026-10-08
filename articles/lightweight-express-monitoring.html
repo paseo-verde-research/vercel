@@ -277,7 +277,7 @@ for i in {1..10}; do curl -s http://127.0.0.1:3000/failure &gt; /dev/null; done<
             </tbody>
         </table>
         <p>The <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/principles.md" target="_blank" rel="noopener noreferrer">integration principles</a> are the shared rules: report only what the application can actually observe, keep the helper small, and leave unsupported cases out of the metrics instead of inventing a number. The <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/README.md" target="_blank" rel="noopener noreferrer">integration index</a> is the list to check when a framework is missing here.</p>
-        <p>A general Prometheus client inside Express would still need an adapter. StatLite does not ingest arbitrary Prometheus or OpenMetrics text on this target. Spring Boot and Quarkus are the first-party path, because those frameworks already publish a stable metrics contract. The <a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot article</a> uses that Actuator target directly.</p>
+        <p>A general Prometheus client inside Express would still need an adapter. StatLite does not ingest arbitrary Prometheus or OpenMetrics text on this target. Spring Boot, Micronaut, and Quarkus are the first-party path, because those frameworks already publish a stable metrics contract. The <a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot article</a> uses that Actuator target directly.</p>
 
         <h2>Boundaries that matter in production</h2>
         <h3>One process, one target</h3>

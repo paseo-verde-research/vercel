@@ -64,7 +64,7 @@
         <p>Your orders API runs on a small VPS. Health checks are green, logs show <code>200 OK</code>, and yet users say it feels sluggish. By the time you SSH in and run <code>top</code>, everything looks normal.</p>
         <p>Uptime checks tell you the API is available. Application logs show its requests, but rarely show what else ran on the machine. <code>top</code> shows the machine now, not ten minutes ago. To investigate a short slowdown, you need application and host metrics on the same timeline with some history.</p>
         <p>StatLite runs next to the app, reads Spring Boot Actuator metrics, and keeps the history in a local SQLite file. It can also show host metrics. Here's how those views help explore a slowdown.</p>
-        <p>This example uses Spring Boot. StatLite also supports Quarkus and applications that expose the StatLite Metrics v1 endpoint; see the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrations.md" target="_blank" rel="noopener noreferrer">integrations</a>.</p>
+        <p>This example uses Spring Boot. StatLite also supports Micronaut, Quarkus, and applications that expose the StatLite Metrics v1 endpoint; see the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrations.md" target="_blank" rel="noopener noreferrer">integrations</a>.</p>
 
         <h2>The scenario</h2>
         <ul>
