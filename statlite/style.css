@@ -36,6 +36,29 @@ p { margin: 0 0 1rem; }
 .hamburger { display: none; width: 48px; height: 48px; padding: 10px; border: 0; background: none; cursor: pointer; }
 .bar { display: block; height: 2px; margin: 6px 0; background: var(--green); }
 
+/* Scriptella's language control, adapted to StatLite's palette. */
+.navbar .container:has(.nav-controls) { gap: 1rem; }
+.nav-controls { display: flex; align-items: center; gap: .5rem; }
+.navbar:has(.nav-controls) .nav-menu { margin-left: auto; }
+.language-menu { position: relative; flex: 0 0 auto; }
+.language-toggle { position: relative; display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; color: var(--text); background: transparent; border: 0; border-radius: 50%; cursor: pointer; }
+.language-toggle::before { content: ''; position: absolute; inset: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 50%; }
+.language-toggle:hover, .language-toggle:focus-visible { color: var(--green); }
+.language-toggle:hover::before, .language-toggle:focus-visible::before { border-color: var(--green); }
+.language-toggle:focus-visible, .language-menu__dropdown a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.language-toggle svg { position: relative; width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.language-menu__dropdown { position: absolute; top: calc(100% + .55rem); right: 0; z-index: 30; width: max-content; min-width: 12.5rem; max-width: calc(100vw - 2rem); padding: .35rem; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 .6rem 1.5rem rgb(0 0 0 / 18%); }
+.language-menu__dropdown a { display: grid; grid-template-columns: auto auto; justify-content: space-between; align-items: center; gap: 1.25rem; min-height: 44px; padding: .5rem .75rem; color: var(--text); font-size: .9rem; border-radius: 4px; }
+.language-menu__dropdown span, .language-menu__dropdown small { white-space: nowrap; }
+.language-menu__dropdown a:hover, .language-menu__dropdown a:focus-visible { color: var(--green); background: rgba(255, 255, 255, .06); }
+.language-menu__dropdown small { color: var(--muted); font-size: .75rem; }
+.language-menu__dropdown small::before { content: "→ "; }
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .navbar:has(.nav-controls) .nav-menu { gap: .6rem; }
+    .navbar:has(.nav-controls) .nav-menu .nav-link { font-size: .8rem; }
+}
+
 .hero-section { padding: 12px 0 18px; position: relative; overflow: clip; background: var(--bg) url('../img/carbon-fibre-v2.png'); }
 .hero-section::after { content: ''; position: absolute; width: 40rem; height: 40rem; right: -16rem; top: -10rem; background: radial-gradient(circle, rgba(46, 204, 113, .12), transparent 68%); pointer-events: none; }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }

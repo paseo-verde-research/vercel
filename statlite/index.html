@@ -34,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
-    <link rel="stylesheet" href="/statlite/style.css?v=20260904b">
+    <link rel="stylesheet" href="/statlite/style.css?v=20261008">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -52,9 +52,20 @@
                 <li><a href="/articles/lightweight-spring-boot-monitoring.html" class="nav-link">Spring Boot Guide</a></li>
                 <li><a href="https://github.com/PVRLabs/statlite" class="nav-link">GitHub</a></li>
             </ul>
-            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
-                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-            </button>
+            <div class="nav-controls">
+                <div class="language-menu" data-language-menu>
+                    <button class="language-toggle" type="button" aria-expanded="false" aria-controls="translated-readmes" aria-label="Translated READMEs" title="Translated READMEs">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>
+                    </button>
+                    <div class="language-menu__dropdown" id="translated-readmes" hidden>
+                        <a href="https://github.com/PVRLabs/statlite/blob/main/README.zh-Hans.md"><span lang="zh-Hans">简体中文</span><small>README</small></a>
+                        <a href="https://github.com/PVRLabs/statlite/blob/main/README.vi.md"><span lang="vi">Tiếng Việt</span><small>README</small></a>
+                    </div>
+                </div>
+                <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </button>
+            </div>
         </div>
     </nav>
 </header>
@@ -194,6 +205,33 @@
 
 <script src="/script.js?v=20260830"></script>
 <script>
+    (() => {
+        const languageMenu = document.querySelector('[data-language-menu]');
+        const languageToggle = languageMenu.querySelector('button');
+        const languageDropdown = languageMenu.querySelector('.language-menu__dropdown');
+        function closeLanguageMenu() {
+            languageDropdown.hidden = true;
+            languageToggle.setAttribute('aria-expanded', 'false');
+        }
+        languageToggle.addEventListener('click', () => {
+            languageDropdown.hidden = !languageDropdown.hidden;
+            languageToggle.setAttribute('aria-expanded', String(!languageDropdown.hidden));
+        });
+        languageMenu.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !languageDropdown.hidden) {
+                event.stopPropagation();
+                closeLanguageMenu();
+                languageToggle.focus();
+            }
+        });
+        languageMenu.addEventListener('focusout', event => {
+            if (!languageMenu.contains(event.relatedTarget)) closeLanguageMenu();
+        });
+        document.addEventListener('click', event => {
+            if (!languageMenu.contains(event.target)) closeLanguageMenu();
+        });
+    })();
+
     (() => {
         const methods = {
             curl: {
