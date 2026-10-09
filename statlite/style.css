@@ -76,7 +76,7 @@ p { margin: 0 0 1rem; }
 .dashboard-preview:hover .dashboard-frame, .dashboard-preview:focus-visible .dashboard-frame { border-color: var(--green); }
 .dashboard-preview:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; border-radius: 9px; }
 .quick-start-links { display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; }
-.quick-start-links .text-link { margin-top: .5rem; }
+.quick-start-links .text-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: .5rem; }
 .star-cta { display: flex; align-items: center; justify-content: center; gap: 1.25rem; padding: 1.125rem 1.375rem; border: 1px solid var(--line); border-radius: 8px; background: rgba(46, 204, 113, .04); }
 .star-cta p { color: var(--muted); font-size: .9rem; line-height: 1.45; }
 .star-cta strong { color: var(--text); }
