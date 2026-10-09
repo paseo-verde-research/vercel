@@ -38,7 +38,8 @@
     font-size: 1.08rem;
 }
 
-.lab-lead:last-child {
+.lab-lead:last-child,
+.lab-lead:has(+ .lab-community-note) {
     margin-bottom: 0;
 }
 
@@ -392,7 +393,43 @@
     margin-top: 1rem;
 }
 
+.lab-community-note {
+    margin: 0.5rem 0 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.lab-community-note a {
+    display: inline-block;
+    color: inherit;
+}
+
+.lab-community-note a:hover,
+.lab-community-note a:focus-visible {
+    color: var(--primary-green);
+}
+
+.lab-community-note .lab-community-link {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.lab-community-icon {
+    display: inline-block;
+    width: 1.25rem;
+    height: 0.75rem;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+    background-color: currentColor;
+    mask: url("/articles/img/daily-dev.svg") center / contain no-repeat;
+}
+
 @media (pointer: coarse) {
+    .lab-community-note a {
+        min-height: 44px;
+        padding-block: 0.65rem;
+    }
+
     .lab-text-link,
     .lab-entry-links a,
     .breadcrumb a {
