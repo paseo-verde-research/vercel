@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Install StatLite - PVR Labs</title>
+    <meta name="description" content="Install and run StatLite with Docker, the shell installer, Homebrew, or a source build. Keep the dashboard private and persist monitoring history.">
+    <link rel="canonical" href="https://pvrlabs.xyz/statlite/install.html">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+    <link rel="stylesheet" href="/statlite/style.css?v=20261009">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="container">
+            <div class="header-left">
+                <a href="/statlite/" class="product-logo"><span class="wordmark-accent">Stat</span><span>Lite</span></a>
+            </div>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/statlite/" class="nav-link">Home</a></li>
+                <li><a href="/statlite/demo.html" class="nav-link">Demo</a></li>
+                <li><a href="/statlite/configure.html" class="nav-link">Configure</a></li>
+                <li><a href="/statlite/install.html" class="nav-link active" aria-current="page">Install</a></li>
+                <li><a href="https://github.com/PVRLabs/statlite/releases" class="nav-link">Downloads</a></li>
+                <li><a href="/articles/lightweight-spring-boot-monitoring.html" class="nav-link">Spring Boot Guide</a></li>
+                <li><a href="https://github.com/PVRLabs/statlite" class="nav-link">GitHub</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="container section install-guide">
+    <h1>Install StatLite</h1>
+    <p>Choose Docker, the shell installer, Homebrew, or a source build. For versioned binary archives and release notes, visit <a href="https://github.com/PVRLabs/statlite/releases" class="text-link">Downloads</a>.</p>
+
+    <section id="docker" aria-labelledby="docker-title">
+        <h2 id="docker-title">Docker</h2>
+        <p>Images on <a href="https://hub.docker.com/r/pvrlabs/statlite" class="text-link">Docker Hub</a> support <code>linux/amd64</code> and <code>linux/arm64</code>. Run the latest release with its built-in self-monitoring configuration:</p>
+        <div class="code-card"><div class="code-label">Terminal</div><pre><code>docker run --rm \
+  -p 127.0.0.1:9090:9090 \
+  docker.io/pvrlabs/statlite:latest</code></pre></div>
+        <p>Then open <code>http://127.0.0.1:9090</code>. The dashboard is bound to host loopback. StatLite has no built-in authentication, so keep it on a private or protected network.</p>
+        <p>To pin a release, use the version tag without a <code>v</code> prefix:</p>
+        <div class="code-card"><div class="code-label">Version 0.6.0</div><pre><code>docker run --rm \
+  -p 127.0.0.1:9090:9090 \
+  docker.io/pvrlabs/statlite:0.6.0</code></pre></div>
+        <h3>Configuration, networking, and persistent history</h3>
+        <p>The quick start stores history inside the disposable container. To monitor your application and retain SQLite history, save this as <code>statlite.yaml</code> and mount a named volume at <code>/data</code>:</p>
+        <div class="code-card"><div class="code-label">statlite.yaml</div><pre><code>server:
+  listen: "0.0.0.0:9090"
+
+storage:
+  sqlite_path: "/data/statlite.sqlite"
+
+polling:
+  interval: "30s"
+
+targets:
+  - name: "app"
+    type: "spring"
+    url: "http://host.docker.internal:8080/actuator"</code></pre></div>
+        <div class="code-card"><div class="code-label">Terminal</div><pre><code>docker run --rm \
+  -p 127.0.0.1:9090:9090 \
+  --add-host=host.docker.internal:host-gateway \
+  -v "$PWD/statlite.yaml:/etc/statlite/statlite.yaml:ro" \
+  -v statlite-data:/data \
+  docker.io/pvrlabs/statlite:latest</code></pre></div>
+        <p>Inside the container, <code>127.0.0.1</code> refers to StatLite. Docker Desktop resolves <code>host.docker.internal</code>; the <code>--add-host</code> option supplies it on Linux. Your application must listen on an address that the container can reach. For another container on a shared Docker network, use its service name in the target URL.</p>
+        <p>The configuration listens on <code>0.0.0.0:9090</code> inside the container; the published host port remains restricted to <code>127.0.0.1</code>. The mounted config must be readable by the container's non-root user. Keep credentials private.</p>
+        <p>Use <a href="/statlite/configure.html" class="text-link">Configure StatLite</a> for other targets. Before mounting a generated host configuration, adjust the listen address, SQLite path, and target URL for the container as shown above. See the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/docker.md" class="text-link">Docker guide</a> for further networking and storage guidance.</p>
+        <h3 id="registries">Container registry alternative</h3>
+        <p>Docker Hub (<code>docker.io/pvrlabs/statlite</code>) and GitHub Container Registry (<code>ghcr.io/pvrlabs/statlite</code>) distribute equivalent releases. GHCR is the authoritative release source, and Docker Hub is automatically mirrored from it. To use GHCR, replace the image name in these commands with <code>ghcr.io/pvrlabs/statlite</code> and keep the same tag.</p>
+    </section>
+
+    <section aria-labelledby="shell-title">
+        <h2 id="shell-title">Shell installer</h2>
+        <p>Install the latest binary on macOS or Linux:</p>
+        <div class="code-card"><div class="code-label">Terminal</div><pre><code>curl -fsSL https://raw.githubusercontent.com/PVRLabs/statlite/main/install.sh | sh</code></pre></div>
+        <p>The installer verifies the release checksum and installs to <code>~/.local/bin</code> by default. Add that directory to your PATH if needed.</p>
+    </section>
+
+    <section aria-labelledby="brew-title">
+        <h2 id="brew-title">Homebrew</h2>
+        <div class="code-card"><div class="code-label">Terminal</div><pre><code>brew install pvrlabs/tap/statlite</code></pre></div>
+    </section>
+
+    <section aria-labelledby="source-title">
+        <h2 id="source-title">Build from source</h2>
+        <p>With Go installed, clone the repository and build:</p>
+        <div class="code-card"><div class="code-label">Terminal</div><pre><code>git clone https://github.com/PVRLabs/statlite.git
+cd statlite
+go build -o statlite ./cmd/statlite
+./statlite</code></pre></div>
+    </section>
+
+    <section aria-labelledby="run-title">
+        <h2 id="run-title">Run the installed binary</h2>
+        <p>The shell installer and Homebrew install the binary only. They do not create configuration, storage, or services. With your Spring Boot application running, create a config and start StatLite:</p>
+        <div class="code-card"><div class="code-label">Terminal</div><pre><code>statlite inspect 'http://localhost:8080' --create-config ./statlite.yaml
+statlite</code></pre></div>
+        <p>Open <code>http://127.0.0.1:9090</code>. The command creates <code>statlite.yaml</code> only when it does not already exist. See <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md" class="text-link">Advanced installation</a> for supported platforms, custom install locations, version selection, and Linux service setup.</p>
+    </section>
+</main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div></footer>
+<script src="/script.js?v=20260830"></script>
+</body>
+</html>
