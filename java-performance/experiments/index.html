@@ -41,8 +41,8 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "url": "https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html",
-            "name": "Spring Boot fat JAR vs extracted layout"
+            "url": "https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html",
+            "name": "Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections"
           },
           {
             "@type": "ListItem",
@@ -138,19 +138,19 @@
         <div class="container">
             <nav class="lab-filters" aria-label="Filter experiments by topic">
                 <button type="button" class="lab-filter active" data-filter="all" aria-pressed="true">All <span data-experiment-count="all"></span></button>
-                <button type="button" class="lab-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-experiment-count="spring-boot"></span></button>
-                <button type="button" class="lab-filter" data-filter="quarkus" aria-pressed="false">Quarkus <span data-experiment-count="quarkus"></span></button>
+                <button type="button" class="lab-filter" data-filter="frameworks" aria-pressed="false">Frameworks <span data-experiment-count="frameworks"></span></button>
+                <button type="button" class="lab-filter" data-filter="persistence" aria-pressed="false">Persistence <span data-experiment-count="persistence"></span></button>
                 <button type="button" class="lab-filter" data-filter="vps" aria-pressed="false">VPS <span data-experiment-count="vps"></span></button>
                 <button type="button" class="lab-filter" data-filter="memory" aria-pressed="false">Memory <span data-experiment-count="memory"></span></button>
-                <button type="button" class="lab-filter" data-filter="jdk" aria-pressed="false">JDK <span data-experiment-count="jdk"></span></button>
                 <button type="button" class="lab-filter" data-filter="packaging" aria-pressed="false">Packaging <span data-experiment-count="packaging"></span></button>
             </nav>
             <h2 class="lab-index-heading">Featured experiments</h2>
             <div class="lab-index">
-                <article class="lab-entry" data-tags="spring-boot quarkus micronaut memory jdk">
+                <article class="lab-entry" data-tags="spring-boot micronaut memory persistence frameworks">
                     <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Frameworks</span>
+                        <span>Persistence</span>
                         <span>Spring Boot</span>
-                        <span>Quarkus</span>
                         <span>Micronaut</span>
                         <span>Memory</span>
                         <span>JDK</span>
@@ -163,23 +163,25 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot packaging">
+                <article class="lab-entry" data-tags="spring-boot memory jdbc postgresql persistence">
                     <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Persistence</span>
                         <span>Spring Boot</span>
-                        <span>Packaging</span>
+                        <span>JDBC</span>
+                        <span>PostgreSQL</span>
                     </div>
-                    <h3><a href="/articles/spring-boot-extracted-layout.html">Spring Boot fat JAR vs extracted layout</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-09-11">September 11, 2026</time></p>
-                    <p>A controlled comparison of startup, first-request latency, and memory. The official extracted layout cut median startup 23.3% and first-request latency 34.1%.</p>
+                    <h3><a href="/articles/spring-boot-jdbc-pool-reclaim.html">Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-10-09">October 9, 2026</time></p>
+                    <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with slower connection acquisition when traffic returned.</p>
                     <p class="lab-entry-links">
-                        <a href="/articles/spring-boot-extracted-layout.html">Read the article</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                        <a href="/articles/spring-boot-jdbc-pool-reclaim.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot quarkus vps">
+                <article class="lab-entry" data-tags="spring-boot vps frameworks">
                     <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Frameworks</span>
                         <span>Spring Boot</span>
-                        <span>Quarkus</span>
                         <span>VPS</span>
                     </div>
                     <h3><a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot vs Quarkus on a 512 MB VPS</a></h3>
@@ -191,7 +193,7 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot jdk vps">
+                <article class="lab-entry" data-tags="spring-boot vps">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Spring Boot</span>
                         <span>JDK</span>
@@ -223,8 +225,9 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/pyronaut-statlite" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot memory">
+                <article class="lab-entry" data-tags="spring-boot memory persistence">
                     <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Persistence</span>
                         <span>Spring Boot</span>
                         <span>Memory</span>
                     </div>
@@ -262,10 +265,10 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jib-application-vs-spring-boot" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot quarkus memory vps">
+                <article class="lab-entry" data-tags="spring-boot memory vps frameworks">
                     <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Frameworks</span>
                         <span>Spring Boot</span>
-                        <span>Quarkus</span>
                         <span>Memory</span>
                         <span>VPS</span>
                     </div>
@@ -277,10 +280,10 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot quarkus memory">
+                <article class="lab-entry" data-tags="spring-boot memory frameworks">
                     <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Frameworks</span>
                         <span>Spring Boot</span>
-                        <span>Quarkus</span>
                         <span>Memory</span>
                     </div>
                     <h3><a href="/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">Spring Boot vs Quarkus at 1 GiB with swap disabled</a></h3>
