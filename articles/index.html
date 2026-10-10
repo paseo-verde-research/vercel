@@ -224,11 +224,11 @@
 
     <nav class="article-filters" aria-label="Filter articles by topic">
             <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span data-article-count>(16)</span></button>
-            <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span data-article-count>(4)</span></button>
-        <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count></span></button>
         <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span data-article-count>(8)</span></button>
+            <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span data-article-count>(4)</span></button>
+        <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count>(9)</span></button>
         <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-article-count>(8)</span></button>
-        <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Developer Tooling <span data-article-count>(5)</span></button>
+        <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Dev Tools <span data-article-count>(5)</span></button>
     </nav>
 
     <section class="articles-list">
@@ -241,15 +241,15 @@
                 <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower. Recorded timelines show retirement and the latency cost of reopening.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite spring-boot monitoring quarkus micronaut">
-                <div class="article-tags" aria-label="Article topics"><span>StatLite</span><span>Spring Boot</span><span>Quarkus</span><span>Micronaut</span></div>
+            <article class="article-entry" data-tags="vps statlite spring-boot monitoring quarkus micronaut">
+                <div class="article-tags" aria-label="Article topics"><span>VPS</span><span>StatLite</span><span>Spring Boot</span><span>Quarkus</span><span>Micronaut</span></div>
                 <h2><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h2>
                 <div class="article-meta"><time datetime="2026-10-05">October 5, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>Equivalent JDBC applications on Java 25, with measured startup, resident memory, and CPU. Quarkus and Micronaut converge near the end of this small-VM run.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite spring-boot monitoring">
-                <div class="article-tags" aria-label="Article topics">
+            <article class="article-entry" data-tags="vps statlite spring-boot monitoring">
+                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
                     <span>StatLite</span>
                     <span>Monitoring</span>
                     <span>Spring Boot</span>
@@ -259,8 +259,8 @@
                 <p>A hypothetical slow API on a small VPS shows how application and host metrics can point to CPU contention from another process.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite monitoring fastapi">
-                <div class="article-tags" aria-label="Article topics">
+            <article class="article-entry" data-tags="vps statlite monitoring fastapi">
+                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
                     <span>StatLite</span>
                     <span>Monitoring</span>
                     <span>FastAPI</span>
@@ -270,8 +270,8 @@
                 <p>Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite monitoring express">
-                <div class="article-tags" aria-label="Article topics">
+            <article class="article-entry" data-tags="vps statlite monitoring express">
+                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
                     <span>StatLite</span>
                     <span>Monitoring</span>
                     <span>Express</span>
@@ -281,8 +281,8 @@
                 <p>A small Express helper exposes <code>/statlite/metrics</code> so StatLite can chart traffic, errors, latency, and Node.js memory without a Prometheus and Grafana stack.</p>
             </article>
 
-            <article class="article-entry" data-tags="spring-boot">
-                <div class="article-tags" aria-label="Article topics">
+            <article class="article-entry" data-tags="vps spring-boot">
+                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
                     <span>Spring Boot</span>
                 </div>
                 <h2><a href="/articles/spring-boot-extracted-layout.html">Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</a></h2>
@@ -303,7 +303,7 @@
 
             <article class="article-entry" data-tags="developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
-                    <span>Developer Tooling</span>
+                    <span>Dev Tools</span>
                 </div>
                 <h2><a href="/articles/coding-agent-test-output.html">Your Coding Agent Doesn’t Need 1,476 Lines of Test Output</a></h2>
                 <div class="article-meta"><time datetime="2026-08-30">August 30, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
@@ -313,7 +313,7 @@
             <article class="article-entry" data-tags="ai-badger developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
                     <span>AI Badger</span>
-                    <span>Developer Tooling</span>
+                    <span>Dev Tools</span>
                 </div>
                 <h2><a href="/articles/coding-agent-session-handoff.html">Your coding-agent quota is at 99%. Now what?</a></h2>
                 <div class="article-meta"><time datetime="2026-08-28">August 28, 2026</time> · Updated September 29, 2026 · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
@@ -345,7 +345,7 @@
             <article class="article-entry" data-tags="ai-badger developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
                     <span>AI Badger</span>
-                    <span>Developer Tooling</span>
+                    <span>Dev Tools</span>
                 </div>
                 <h2><a href="/articles/reviewing-ai-generated-code-vscode-aibadger.html">Reviewing agent-generated code with an independent second model in VS Code</a></h2>
                 <div class="article-meta"><time datetime="2026-08-14">August 14, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
@@ -354,7 +354,7 @@
 
             <article class="article-entry" data-tags="developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
-                    <span>Developer Tooling</span>
+                    <span>Dev Tools</span>
                 </div>
                 <h2><a href="/articles/introverted-maven.html">I Taught Maven to Be an Introvert</a></h2>
                 <div class="article-meta"><time datetime="2026-07-30">July 30, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
@@ -371,8 +371,8 @@
                 <p>Use AI coding assistants without granting them repository access: map locally, disclose only reviewed context, and confirm every proposed write.</p>
             </article>
 
-            <article class="article-entry" data-tags="statlite monitoring spring-boot">
-                <div class="article-tags" aria-label="Article topics">
+            <article class="article-entry" data-tags="vps statlite monitoring spring-boot">
+                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
                     <span>StatLite</span>
                     <span>Monitoring</span>
                     <span>Spring Boot</span>
@@ -385,7 +385,7 @@
             <article class="article-entry" data-tags="ai-badger developer-tooling">
                 <div class="article-tags" aria-label="Article topics">
                     <span>AI Badger</span>
-                    <span>Developer Tooling</span>
+                    <span>Dev Tools</span>
                 </div>
                 <h2><a href="/articles/claude-code-token-savings.html">Reduce Claude Code Context with Local Repository Mapping</a></h2>
                 <div class="article-meta"><time datetime="2026-07-06">July 6, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>

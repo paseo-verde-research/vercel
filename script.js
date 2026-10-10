@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             vpsLab.innerHTML = `
                 <header class="vps-lab__header">
                     <h2 class="vps-lab__title" id="vps-lab-title">VPS Lab</h2>
-                    <p class="vps-lab__description">Experiments running real software on small VPS instances.</p>
+                    <p class="vps-lab__description">Deployment experiments and monitoring guides for small VPS instances.</p>
                 </header>
                 <div id="${vpsLabId}"></div>
                 <button class="vps-lab__toggle" type="button" aria-expanded="false" aria-controls="${vpsLabId}"></button>
@@ -294,8 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 toggle.setAttribute('aria-expanded', String(expanded));
                 toggle.textContent = expanded
-                    ? 'Hide experiments ↑'
-                    : `Show all ${vpsArticles.length} experiments ↓`;
+                    ? 'Hide articles ↑'
+                    : `Show all ${vpsArticles.length} articles ↓`;
             };
 
             toggle.addEventListener('click', () => {
