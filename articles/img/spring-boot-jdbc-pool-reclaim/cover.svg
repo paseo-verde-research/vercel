@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections</title>
+<desc id="desc">Two Spring Boot instances retained 20 idle PostgreSQL connections with default pool sizing, or two with idle retirement enabled. PostgreSQL accounted memory was about 57.5 versus 28.5 MiB in this experiment.</desc>
+<defs>
+<radialGradient id="bg" cx="80%" cy="40%" r="90%"><stop stop-color="#123323"/><stop offset="1" stop-color="#080e0b"/></radialGradient>
+<pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#72b38d" opacity=".12"/></pattern>
+</defs>
+<rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#dots)"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="58" y="74" fill="#f4faf6" font-size="32" font-weight="800">PVR<tspan fill="#42dc84">Labs</tspan></text>
+<text x="58" y="105" fill="#8daf9a" font-size="13" letter-spacing="3">ENGINEERING EXPERIMENT</text>
+<text x="58" y="211" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Spring Boot</text>
+<text x="58" y="281" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Connection</text>
+<text x="58" y="351" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Pools</text>
+<text x="58" y="411" fill="#42dc84" font-size="33" font-weight="700">20 vs 2 idle connections</text>
+<text x="58" y="467" fill="#bdcec3" font-size="22">PostgreSQL · Two application instances</text>
+<text x="58" y="505" fill="#bdcec3" font-size="22">Idle retirement and the cost of reopening</text>
+<rect x="622" y="138" width="520" height="376" rx="16" fill="#101d16" stroke="#365441"/>
+<text x="654" y="184" fill="#e1ece4" font-size="20" font-weight="700">IDLE POSTGRESQL CONNECTIONS</text>
+<text x="654" y="213" fill="#98afa1" font-size="16">Both instances quiet · Two repeats</text>
+<text x="654" y="259" fill="#dbe7df" font-size="19">Default pool sizing</text>
+<text x="1108" y="259" text-anchor="end" fill="#f4faf6" font-size="22" font-weight="700">20</text>
+<rect x="654" y="273" width="405" height="13" rx="3" fill="#76baff"/>
+<text x="654" y="340" fill="#dbe7df" font-size="19">Idle retirement enabled</text>
+<text x="1108" y="340" text-anchor="end" fill="#f4faf6" font-size="22" font-weight="700">2</text>
+<rect x="654" y="354" width="40.5" height="13" rx="3" fill="#69d98c"/>
+<text x="654" y="409" fill="#98afa1" font-size="16">PostgreSQL accounted memory</text>
+<text x="654" y="445" fill="#f4faf6" font-size="29" font-weight="700">~57.5 MiB → ~28.5 MiB</text>
+<text x="654" y="484" fill="#98afa1" font-size="15">Lower idle target + enabled retirement</text>
+<path d="M58 555H1142" stroke="#304b3a"/>
+<text x="58" y="596" fill="#b8c9bc" font-size="20">pvrlabs.xyz</text>
+<text x="1142" y="596" text-anchor="end" fill="#8daf9a" font-size="18">JAVA · JDBC · POSTGRESQL</text>
+</g>
+</svg>

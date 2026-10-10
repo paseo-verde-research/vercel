@@ -223,16 +223,23 @@
     </section>
 
     <nav class="article-filters" aria-label="Filter articles by topic">
-            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span data-article-count>(15)</span></button>
+            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span data-article-count>(16)</span></button>
             <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span data-article-count>(4)</span></button>
         <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count></span></button>
         <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span data-article-count>(8)</span></button>
-        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-article-count>(7)</span></button>
+        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-article-count>(8)</span></button>
         <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Developer Tooling <span data-article-count>(5)</span></button>
     </nav>
 
     <section class="articles-list">
         <div class="container">
+
+            <article class="article-entry" data-tags="java spring-boot jdbc postgresql">
+                <div class="article-tags" aria-label="Article topics"><span>Java</span><span>Spring Boot</span><span>PostgreSQL</span></div>
+                <h2><a href="/articles/spring-boot-jdbc-pool-reclaim.html">Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections</a></h2>
+                <div class="article-meta"><time datetime="2026-10-09">October 9, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
+                <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower. Recorded timelines show retirement and the latency cost of reopening.</p>
+            </article>
 
             <article class="article-entry" data-tags="statlite spring-boot monitoring quarkus micronaut">
                 <div class="article-tags" aria-label="Article topics"><span>StatLite</span><span>Spring Boot</span><span>Quarkus</span><span>Micronaut</span></div>

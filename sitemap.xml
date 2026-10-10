@@ -79,7 +79,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-09</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/api-slow-cpu-contention.html</loc>
@@ -148,5 +148,9 @@
     <lastmod>2026-10-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html</loc>
+    <lastmod>2026-10-09</lastmod>
   </url>
 </urlset>

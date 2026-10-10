@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections | PVR Labs</title>
+    <meta name="description" content="Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html">
+    <meta property="og:title" content="Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.">
+    <meta property="article:published_time" content="2026-10-09T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="20 versus 2 idle PostgreSQL connections and their accounted database memory">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections">
+    <meta name="twitter:description" content="Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.png">
+    <meta name="twitter:image:alt" content="Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; min-width: 40rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-body blockquote {
+            margin: 0 0 1.5rem;
+            padding: 16px 20px;
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 8px 8px 0;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+        }
+        @media (max-width: 768px) {
+            .article-body table { font-size: .85rem; }
+        }
+
+        .table-scroll table { min-width: 34rem; }
+        .method-note { padding: 1rem; background: var(--bg-light); border-left: 4px solid var(--primary-green); }
+            .article-body figure img { width: 100%; height: auto; }
+        .article-body figure a { display: block; min-height: 44px; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 480px) { .article-body th, .article-body td { padding: .5rem; } }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
+    <h1>Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-09">October 9, 2026</time></div>
+    <div class="article-body" data-lightbox-scope>
+<p>Two quiet Spring Boot instances held <strong>20 PostgreSQL connections</strong> with Hikari’s default pool sizing. Allowing excess idle connections to retire brought that total to <strong>2</strong>, associated with approximately <strong>29 MiB lower PostgreSQL cgroup memory</strong>.</p>
+<p>I left HikariCP’s <code>minimumIdle</code> and <code>maximumPoolSize</code> unset. Both resolved to <strong>10</strong>: Hikari’s default idle target equals its maximum, so <code>idleTimeout</code> has no connections above the target to retire.</p>
+<p>For scale, ten application instances with Hikari’s default pool size of ten can demand 100 PostgreSQL connections even while idle. On a server configured with <code>max_connections=100</code>, that demand can exhaust ordinary application capacity before traffic returns: PostgreSQL <a href="https://www.postgresql.org/docs/16/runtime-config-connection.html#GUC-SUPERUSER-RESERVED-CONNECTIONS">reserves some slots for privileged connections</a>, so fewer than 100 may be available to application roles. This is a sizing example; the experiment below used two instances.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim">experiment record</a> includes the source, reproduction instructions, screenshots, and recorded data. This article uses Spring Boot 4.1.1, HikariCP 7.0.2, and PostgreSQL 16.15 on Java 25.</p>
+<h2>Testing the quiet period</h2>
+<p>I ran two copies of a tiny Spring Boot JDBC application using HikariCP against PostgreSQL. Instance A received a short burst; B started before A finished and stayed busy longer. That created three useful observations: both pools under demand, A idle while B remained busy, and both idle before the next burst.</p>
+<p>Each configuration ran twice in mirrored order, with fresh application processes. An independent sampler recorded per-instance PostgreSQL connections and Hikari total, active and idle counts. The applications and database shared a two-vCPU, 1 GiB Linux VM with no swap. This kept the setup compact; it was not a distributed application benchmark.</p>
+<p>Three Hikari settings describe the comparison:</p>
+<ul><li><code>maximumPoolSize</code> sets the pool’s connection ceiling: ten in this test.</li><li><code>minimumIdle</code> sets the idle connection target. The reclaim profile used one, allowing the pool to retain less capacity between bursts.</li><li><code>idleTimeout</code> retires idle connections above <code>minimumIdle</code>. Hikari’s documented default is 10 minutes, and it does nothing while <code>minimumIdle</code> equals <code>maximumPoolSize</code>. The reclaim profile used ten seconds to compress the lifecycle into a short experiment. That duration is <strong>not production tuning advice</strong>. The other two profiles set the timeout to zero so pool sizing could be compared on its own.</li></ul>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Experiment results"><table><thead><tr><th scope="col">Profile</th><th scope="col">minimumIdle</th><th scope="col">maximumPoolSize</th><th scope="col">idleTimeout</th></tr></thead><tbody><tr><td>Default sizing</td><td>unset → 10</td><td>unset → 10</td><td>disabled</td></tr><tr><td>Reclaim</td><td>1</td><td>10</td><td>10 seconds</td></tr><tr><td>No-reclaim mechanism control</td><td>1</td><td>10</td><td>disabled</td></tr></tbody></table></div>
+<p>Lifetime and keepalive were deliberately disabled for all profiles. This compares default <strong>pool sizing</strong>, not every untouched Hikari default. Each workload request intentionally held a database connection for one second, making simultaneous occupancy visible.</p>
+<figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/workload.svg" aria-label="Open workload timeline at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/workload.svg" width="1100" height="550" alt="A receives traffic at 0–16 seconds and B at 12–68 seconds. Both are then quiet. Connections and memory are measured at 118–128 seconds, before ten new requests reach A at 128 seconds and B at 130 seconds." loading="lazy" decoding="async"></a><figcaption>Colored bars show incoming traffic for each app. After both bursts end, the pools have time to retire idle connections. The green window measures what they keep; only afterward do new requests test reopening. Tap the chart to enlarge.</figcaption></figure>
+<h2>Twenty connections became two</h2>
+<p>Both pools reached ten connections in every scenario, with actual elevated overlap verified by the runner. Hikari totals agreed with PostgreSQL counts.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Experiment results"><table><thead><tr><th scope="col">Configuration</th><th scope="col">Peak aggregate</th><th scope="col">A idle, B busy: A / B</th><th scope="col">Both quiet: A / B</th><th scope="col">Quiet aggregate</th></tr></thead><tbody><tr><td>Default sizing, both repeats</td><td>20</td><td>10 / 10</td><td>10 / 10</td><td>20</td></tr><tr><td>Reclaim, both repeats</td><td>20</td><td>1 / 10</td><td>1 / 1</td><td>2</td></tr><tr><td>No-reclaim control, both repeats</td><td>20</td><td>10 / 10</td><td>10 / 10</td><td>20</td></tr></tbody></table></div>
+<p>Connection counts are medians over ten one-second samples per scenario; peaks are observed maxima. PostgreSQL cgroup memory was requested every fifth sample, so each of these 10-second windows has two cgroup readings, and the memory medians are of those two. Reclaim released 18 of the 20 connections during the quiet window, while retaining the ability to grow to ten per instance.</p>
+<p>PostgreSQL’s accounted memory moved with the connection count. Cgroup memory is the cluster’s charged memory, including cache, on this PostgreSQL 16 server (<code>shared_buffers</code> 128 MiB).</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Experiment results"><table><thead><tr><th scope="col">State</th><th scope="col">Connections</th><th scope="col">PostgreSQL cgroup memory</th></tr></thead><tbody><tr><td>Reclaim, both quiet</td><td>2</td><td>28.4–28.5 MiB</td></tr><tr><td>Reclaim, A idle and B still busy</td><td>11</td><td>about 42.9 MiB</td></tr><tr><td>Default or no-reclaim, both quiet</td><td>20</td><td>57.4–57.9 MiB</td></tr><tr><td>Reclaim, after the revisit reopened both pools</td><td>20</td><td>about 57.1 MiB</td></tr></tbody></table></div>
+<figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/postgres-memory.svg" aria-label="Open chart at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/postgres-memory.svg" alt="Green shows PostgreSQL memory while both apps are quiet. Blue shows memory after ten new requests per app test whether the pools can rebuild capacity. The reclaim pools reopen connections, and their PostgreSQL memory returns to about 57 MiB. Each bar is the median of two readings in a ten-second window; cgroup memory includes cache." loading="lazy" decoding="async"></a><figcaption>Green shows PostgreSQL memory while both apps are quiet. Blue shows memory after ten new requests per app test whether the pools can rebuild capacity. The reclaim pools reopen connections, and their PostgreSQL memory returns to about 57 MiB. Each bar is the median of two readings in a ten-second window; cgroup memory includes cache.</figcaption></figure>
+<p>The same split was already visible before the burst. Default sizing started at 20 connections and about 56–58 MiB. Both elastic profiles started at 2 connections and about 28–29 MiB. Where private PostgreSQL memory was recorded in the quiet window, it was about 12 MiB with two connections and about 36 MiB with twenty. Each application JVM stayed around 190–207 MiB either way. The memory change is on the database server.</p>
+<p>A returned to one connection while B still held ten and continued serving its longer burst. Retirement followed each instance’s demand rather than requiring the entire application pair to be quiet.</p>
+<figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/connections.svg" aria-label="Open chart at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/connections.svg" alt="Recorded PostgreSQL counts from both repetitions. Each panel has A, B, and their aggregate; idle retention is measured before revisits. Hikari totals independently agreed." loading="lazy" decoding="async"></a><figcaption>Recorded PostgreSQL counts from both repetitions. Each panel has A, B, and their aggregate; idle retention is measured before revisits. Hikari totals independently agreed.</figcaption></figure>
+<h2>Starting small did not guarantee shrinking</h2>
+<p>The no-reclaim profile isolates the mechanism: it started at one connection per instance, allowed each pool to grow to ten, and disabled idle retirement.</p>
+<p>After traffic stopped, it retained ten per instance and about 57 MiB of PostgreSQL cgroup memory. A lower <code>minimumIdle</code> did not release the connections opened during the burst while <code>idleTimeout</code> was off. Retirement is what released that capacity, and the PostgreSQL memory went with it.</p>
+<p>The reclaim pools also started at one and grew to ten. Their difference was what happened afterward: idle capacity above the target could retire.</p>
+<h2>Rebuilding capacity took time</h2>
+<p>Reclamation was not free. To test whether reclaimed capacity could be restored when traffic returned, each instance later received ten simultaneous requests. This return of traffic is the revisit. The reclaim pools reopened successfully, but median connection-acquisition times were approximately <strong>194–207 ms</strong>, compared with <strong>under 3 ms</strong> when connections had been retained.</p>
+<p>Median total revisit request time was approximately 1.44–1.46 seconds with reclaim, versus 1.02–1.03 seconds with retained pools. Those totals include the common intentional one-second connection hold. Each request waited for all ten connections to be acquired before running its one-second database operation. The slowest acquisition took about 430 ms, explaining much of the additional request latency.</p>
+<p>All 2,280 measured requests succeeded. All six scenarios were valid, with zero sampling errors or supporting warnings. After revisits, the pools again held ten connections each, showing successful regrowth after retirement.</p>
+<p>These short synthetic waves show an observed cost of rebuilding pool capacity. They do not establish general production latency.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Revisit latency"><table><thead><tr><th>Scenario</th><th>A acquisition</th><th>B acquisition</th><th>A request</th><th>B request</th></tr></thead><tbody><tr><td>default-1</td><td>1.9 ms</td><td>1.5 ms</td><td>1019.4 ms</td><td>1017.0 ms</td></tr><tr><td>no-reclaim-1</td><td>2.8 ms</td><td>0.9 ms</td><td>1022.6 ms</td><td>1018.7 ms</td></tr><tr><td>reclaim-1</td><td>204.1 ms</td><td>202.4 ms</td><td>1450.7 ms</td><td>1439.3 ms</td></tr><tr><td>reclaim-2</td><td>193.7 ms</td><td>206.8 ms</td><td>1436.7 ms</td><td>1457.1 ms</td></tr><tr><td>no-reclaim-2</td><td>1.3 ms</td><td>0.7 ms</td><td>1022.1 ms</td><td>1018.2 ms</td></tr><tr><td>default-2</td><td>2.2 ms</td><td>0.4 ms</td><td>1025.9 ms</td><td>1030.6 ms</td></tr></tbody></table></div><p>Per-instance medians from ten requests per revisit. Request times include the intentional one-second connection hold.</p>
+<h2>The practical change</h2>
+<p>PostgreSQL has a finite connection limit. This server allowed 100. Two quiet default pools used 20 of those 100 slots while serving nothing, with a larger PostgreSQL footprint. The pools that could retire excess idle connections used 2 slots and about half that PostgreSQL memory, then grew back to 20 when the ten-request wave returned.</p>
+<p>Choose <code>maximumPoolSize</code> from how many database operations must run at once and from PostgreSQL&#x27;s connection capacity. Set <code>minimumIdle</code> to the number of connections worth keeping warm. Leave <code>idleTimeout</code> enabled. Hikari’s <a href="https://github.com/brettwooldridge/HikariCP#frequently-used">configuration documentation</a> gives a 10-minute default. Choose a production timeout based on application demand and the cost of rebuilding connections; this experiment did not validate production timeout settings. <code>minimumIdle=1</code> is the setting that demonstrated the mechanism here. An application with frequent bursts can keep a higher idle target and still stay below the maximum.</p>
+<p>Hikari’s fixed-pool recommendation is aimed at spike latency. The tradeoff in this run was lower idle PostgreSQL resource use versus slower connection acquisition after a quiet period.</p>
+<p>PgBouncer can help when PostgreSQL has too many connections, but it adds another component to operate. Its <a href="https://www.pgbouncer.org/features.html">transaction-pooling mode requires care with session-dependent features</a>, such as <code>LISTEN</code> and session-level advisory locks. Modern PgBouncer supports protocol-level prepared statements with <a href="https://www.pgbouncer.org/config.html#max_prepared_statements">a nonzero <code>max_prepared_statements</code> setting</a>. Before introducing a connection pooler, I’d check whether the application is retaining unnecessary idle connections and measure what happens when those connections are allowed to retire. This experiment did not test PgBouncer.</p>
+
+<h2>Monitoring with StatLite</h2>
+<p>I used <a href="/statlite/">StatLite</a> to watch request rate, latency, JVM runtime memory, and CPU during the run. These dashboards provide workload context; connection counts and PostgreSQL memory came from the independent measurements above.</p>
+<div class="screenshot-gallery" data-gallery data-preload-previews>
+    <div class="screenshot-tabs" role="tablist" aria-label="StatLite application dashboards">
+        <button type="button" class="screenshot-tab" role="tab" id="tab-pool-a" aria-controls="panel-pool-a" aria-selected="true" tabindex="0">App A</button>
+        <button type="button" class="screenshot-tab" role="tab" id="tab-pool-b" aria-controls="panel-pool-b" aria-selected="false" tabindex="-1">App B</button>
+    </div>
+    <div id="panel-pool-a" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-pool-a">
+        <figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/pool-a.png" aria-label="Open App A dashboard at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/pool-a.png" width="2982" height="1788" alt="StatLite dashboard for App A with short request-rate and latency plateaus." loading="lazy" decoding="async"></a><figcaption>App A’s short bursts appear as brief request-rate and latency plateaus across the six scenarios.</figcaption></figure>
+    </div>
+    <div id="panel-pool-b" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-pool-b" hidden>
+        <figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/pool-b.png" aria-label="Open App B dashboard at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/pool-b.png" width="2930" height="1754" alt="StatLite dashboard for App B with longer request-rate and latency plateaus." loading="lazy" decoding="async"></a><figcaption>App B’s longer bursts produce wider plateaus across the same six scenarios.</figcaption></figure>
+    </div>
+</div>
+<p>Screenshots show the recorded workload history; the live status cards belong to later inspection apps. <strong>DB health: Not reported</strong> reflects a deliberate fixture setting: Spring Boot’s DB-health check was disabled so monitoring would not borrow connections and disturb idle retirement. The apps verified database access at startup. The red 5xx spikes came from startup health checks returning HTTP 503 before the apps were ready; the measured JDBC workload requests all returned HTTP 200.</p>
+<h2>Limits and takeaway</h2>
+<p>In both repetitions, releasing 18 idle connections was associated with about 29 MiB lower PostgreSQL cgroup memory. When traffic returned, the pools grew back to 20 connections, and the database memory footprint returned with them, at the cost of slower connection acquisition.</p>
+<p>These measurements describe idle PostgreSQL backends in one small-server setup, rather than a general memory cost per connection. Cgroup accounting includes cache as well as connection-private memory; sessions doing more substantial database work can have a different footprint.</p>
+<h2>Sources</h2>
+<p>The public experiment record includes the application source, pool settings, environment details, and measurements from all six scenarios. The analysis script checks the recorded connection counts, memory readings, and request timings against the summary.</p>
+<p class="experiment-links">
+    <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim" target="_blank" rel="noopener noreferrer">Experiment record</a>
+    <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim/results/run1007a" target="_blank" rel="noopener noreferrer">Recorded data</a>
+    <a href="https://github.com/PVRLabs/experiments/blob/main/java/jdbc-pool-reclaim/REPRODUCE.md" target="_blank" rel="noopener noreferrer">Reproduction guide</a>
+    <a href="https://github.com/PVRLabs/experiments/blob/main/java/jdbc-pool-reclaim/analyze.py" target="_blank" rel="noopener noreferrer">Analysis script</a>
+</p>
+<dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+            <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+            <figure class="screenshot-lightbox__content">
+                <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+                <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+            </figure>
+        </dialog>
+</div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260911"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
