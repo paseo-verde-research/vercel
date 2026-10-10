@@ -138,58 +138,10 @@
             line-height: 1.6;
             margin-bottom: 0;
         }
-        .vps-lab {
-            margin: 12px 0;
-            padding: 22px clamp(16px, 4vw, 28px) 6px;
-            border-left: 4px solid var(--primary-green);
-            border-radius: 0 8px 8px 0;
-            background: var(--bg-light);
-        }
-        .vps-lab__header {
-            margin-bottom: 2px;
-        }
-        .vps-lab__title {
-            margin: 0 0 4px;
-            color: var(--primary-green);
-            font-family: var(--font-heading);
-            font-size: 0.85rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-        .vps-lab__description {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        .vps-lab .article-entry {
-            padding: 22px 0;
-        }
-        .vps-lab__toggle {
-            min-height: 44px;
-            margin: 0;
-            padding: 8px 0;
-            border: 0;
-            background: transparent;
-            color: var(--primary-green);
-            font: inherit;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-        .vps-lab__toggle:hover {
-            text-decoration: underline;
-        }
-        .vps-lab__toggle:focus-visible {
-            outline: 2px solid var(--primary-green);
-            outline-offset: 3px;
-        }
         @media (max-width: 768px) {
             .articles-hero h1 { font-size: 2rem; }
             .articles-hero { padding: 100px 0 30px; }
             .article-filters { gap: 0 16px; }
-        }
-        @media (max-width: 480px) {
-            .vps-lab { padding-inline: 16px; }
         }
     </style>
 </head>
@@ -223,11 +175,11 @@
     </section>
 
     <nav class="article-filters" aria-label="Filter articles by topic">
-            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span data-article-count>(16)</span></button>
+            <button type="button" class="article-filter active" data-filter="all" aria-pressed="true">All <span data-article-count>(15)</span></button>
         <button type="button" class="article-filter" data-filter="statlite" aria-pressed="false">StatLite <span data-article-count>(8)</span></button>
             <button type="button" class="article-filter" data-filter="ai-badger" aria-pressed="false">AI Badger <span data-article-count>(4)</span></button>
-        <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count>(9)</span></button>
-        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-article-count>(8)</span></button>
+        <button type="button" class="article-filter" data-filter="vps" aria-pressed="false">VPS <span data-article-count>(7)</span></button>
+        <button type="button" class="article-filter" data-filter="spring-boot" aria-pressed="false">Spring Boot <span data-article-count>(7)</span></button>
         <button type="button" class="article-filter" data-filter="developer-tooling" aria-pressed="false">Dev Tools <span data-article-count>(5)</span></button>
     </nav>
 
@@ -248,8 +200,8 @@
                 <p>Equivalent JDBC applications on Java 25, with measured startup, resident memory, and CPU. Quarkus and Micronaut converge near the end of this small-VM run.</p>
             </article>
 
-            <article class="article-entry" data-tags="vps statlite spring-boot monitoring">
-                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
+            <article class="article-entry" data-tags="statlite spring-boot monitoring">
+                <div class="article-tags" aria-label="Article topics">
                     <span>StatLite</span>
                     <span>Monitoring</span>
                     <span>Spring Boot</span>
@@ -279,15 +231,6 @@
                 <h2><a href="/articles/lightweight-express-monitoring.html">Lightweight Express.js Monitoring Without Prometheus and Grafana</a></h2>
                 <div class="article-meta"><time datetime="2026-09-21">September 21, 2026</time> · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
                 <p>A small Express helper exposes <code>/statlite/metrics</code> so StatLite can chart traffic, errors, latency, and Node.js memory without a Prometheus and Grafana stack.</p>
-            </article>
-
-            <article class="article-entry" data-tags="vps spring-boot">
-                <div class="article-tags" aria-label="Article topics"><span>VPS</span>
-                    <span>Spring Boot</span>
-                </div>
-                <h2><a href="/articles/spring-boot-extracted-layout.html">Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</a></h2>
-                <div class="article-meta"><time datetime="2026-09-11">September 11, 2026</time> · Updated September 21, 2026 · <a href="https://github.com/ejboy">Ted Kupolov</a></div>
-                <p>The official extracted layout cut median Spring startup 23.3% and first-request latency 34.1% in six paired runs. Settled RSS and swap did not show a material winner.</p>
             </article>
 
             <article class="article-entry" data-tags="vps statlite spring-boot">
@@ -403,7 +346,7 @@
     </div>
 </footer>
 
-<script src="/script.js?v=20261005"></script>
+<script src="/script.js?v=20261009"></script>
 <!-- Default Statcounter code for PVR Labs -->
 <script>
     var sc_project = 13137699;
