@@ -15,7 +15,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-13</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
@@ -79,7 +79,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-13</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/api-slow-cpu-contention.html</loc>
@@ -152,5 +152,9 @@
   <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html</loc>
     <lastmod>2026-10-09</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html</loc>
+    <lastmod>2026-10-13</lastmod>
   </url>
 </urlset>

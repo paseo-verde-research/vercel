@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment | PVR Labs</title>
+    <meta name="description" content="Javalin and Spring Boot with JDBC, H2, and monitoring on a 256 MiB Alpine VM: startup, resident memory, latency, and paging from one run each.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html">
+    <meta property="og:title" content="Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Javalin and Spring Boot with JDBC, H2, and monitoring on a 256 MiB Alpine VM: startup, resident memory, latency, and paging from one run each.">
+    <meta property="article:published_time" content="2026-10-13T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment">
+    <meta name="twitter:description" content="Javalin and Spring Boot with JDBC, H2, and monitoring on a 256 MiB Alpine VM: startup, resident memory, latency, and paging from one run each.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/javalin-vs-spring-boot-256mb-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Javalin vs. Spring Boot on 256 MiB: readiness 2.46 vs. 9.89 seconds; median workload Java RSS 106 vs. 119 MiB; one run per application.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/javalin-vs-spring-boot-256mb-og.jpg">
+    <meta name="twitter:image:alt" content="Javalin vs. Spring Boot on 256 MiB: readiness 2.46 vs. 9.89 seconds; median workload Java RSS 106 vs. 119 MiB; one run per application.">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { min-width: 32rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-body code { overflow-wrap: anywhere; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 480px) {
+            .article-body th, .article-body td { padding: .5rem; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment", "description": "Javalin and Spring Boot with JDBC, H2, and monitoring on a 256 MiB Alpine VM: startup, resident memory, latency, and paging from one run each.", "datePublished": "2026-10-13T00:00:00-07:00", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html", "image": "https://pvrlabs.xyz/java-performance/experiments/img/javalin-vs-spring-boot-256mb-og.jpg", "isPartOf": {"@type": "CollectionPage", "name": "Java Performance Experiments", "url": "https://pvrlabs.xyz/java-performance/experiments/"}}</script>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+<nav class="article-product-nav" aria-label="Article navigation"><a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a><a href="/java-performance/" class="article-product-nav__link">Java Performance</a></nav>
+<h1>Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment</h1>
+<div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-10-13">October 13, 2026</time></div>
+<div class="article-body" data-lightbox-scope>
+<p><em>A small Java application with JDBC, H2, and monitoring, compared with an equivalent Spring Boot deployment.</em></p>
+<h2>Why test Javalin on 256 MiB?</h2>
+<p>A small self-hosted application still needs more than an HTTP endpoint. It needs persistent storage, enough operating-system headroom to keep working, and a way to observe what happens when requests arrive. For developers running personal services or small VPS deployments, those requirements can matter more than maximum throughput.</p>
+<p>I wanted to investigate a recurring question: how comfortably can a useful application run on a small server, with persistent storage and basic monitoring, while leaving enough resources for the operating system? Javalin is a lightweight option worth testing for a straightforward JSON API. I used Spring Boot as a familiar reference, with the same application behavior.</p>
+<p>This experiment ran in a VPS-sized local Alpine Linux VM, rather than a commercial provider's VPS. Each application used JDBC and file-backed H2, with StatLite collecting metrics alongside it. Traffic was deliberately modest. The goal was to observe startup, memory pressure and useful responses within a small resource budget.</p>
+<h2>Test setup</h2>
+<div class="table-scroll" role="region" aria-label="Test configuration" tabindex="0"><table class="article-table--compact"><thead><tr><th scope="col">Component</th><th scope="col">Configuration</th></tr></thead><tbody><tr><td>Operating system</td><td>Alpine Linux 3.24.2, x86_64, Lima VM</td></tr><tr><td>CPU and memory</td><td>1 vCPU, 256 MiB configured; approximately 214.9 MiB usable guest RAM</td></tr><tr><td>Swap</td><td>512 MiB disk swap</td></tr><tr><td>Java</td><td>OpenJDK 25.0.4</td></tr><tr><td>Shared JVM flags</td><td><code>-Xms16m -Xmx80m -XX:+UseSerialGC -Xss512k</code></td></tr><tr><td>Frameworks</td><td>Javalin 7.2.3; Spring Boot 4.1.1</td></tr><tr><td>Persistence</td><td>H2 2.4.240, persistent file storage; 4 MiB cache setting</td></tr><tr><td>Connection pool</td><td>HikariCP 7.0.2; 1 minimum idle / 2 maximum connections</td></tr><tr><td>Monitoring</td><td>StatLite 0.6.0; 30-second polling</td></tr><tr><td>Workload</td><td>Five minutes, 5 requests/second, 1,500 scheduled requests</td></tr></tbody></table></div>
+<p>The API serves latest quotes, reads quote history and accepts transactional three-row quote batches. The request mix is 80% reads and 20% writes, with at most four requests outstanding. That is a plausible workload for a small internal tool or personal API, although a deterministic fixture cannot represent every application's traffic.</p>
+<p>The 256 MiB allocation is intentionally constrained. It makes the cost of persistence, the Java runtime and monitoring visible together. The heap ceiling is only part of that budget: Java also needs memory outside its heap, and Linux and StatLite need their own share.</p>
+<p>I smoke-tested both deployments inside Alpine before measuring. Each recorded run began after a guest reset, with fresh database and monitoring storage. StatLite settled for 90 seconds before Java launched. Before Java startup, StatLite’s median RSS was approximately 14 MiB in both runs. This is separate from the reported Java RSS, but contributes to overall guest memory usage. Startup was followed by three minutes idle, five minutes of traffic and two minutes of recovery. Independent OS sampling recorded memory and paging, while an external HTTP generator checked responses and latency. The <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/METHOD.md">methodology</a> records the full contract and thresholds.</p>
+<h2>Equivalent applications, different frameworks</h2>
+<p>Both applications use the same business logic in <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/common/src/main/java/lab/Quotes.java">Quotes.java</a>, JDBC queries and transactions, database schema and seed fixture, API routes and response contract. They also share JVM settings, workload and final expected database state. Each begins with 1,170 seeded rows and should finish with 2,070 rows, maximum sequence 689 and a price sum of 630374.22.</p>
+<div class="table-scroll" role="region" aria-label="Application differences" tabindex="0"><table><thead><tr><th scope="col">Aspect</th><th scope="col">Javalin</th><th scope="col">Spring Boot</th></tr></thead><tbody><tr><td>Web server</td><td>Embedded Jetty</td><td>Embedded Tomcat</td></tr><tr><td>HTTP handlers</td><td>Explicit Javalin routes</td><td>Spring MVC controllers</td></tr><tr><td>Server threads</td><td>Normal Jetty defaults</td><td>16 maximum, 2 minimum spare Tomcat workers</td></tr><tr><td>Monitoring</td><td>Micrometer plus StatLite adapter</td><td>Standard Actuator and Micrometer</td></tr><tr><td>Packaging</td><td>Shaded executable JAR</td><td>Official efficient extracted JAR</td></tr></tbody></table></div>
+<p>Javalin exposes HTTP and JVM metrics through Micrometer and a small adapter, following the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/java/javalin.md">Javalin integration guide</a>; Spring Boot uses Actuator. StatLite collects both, while the independent OS sampler records resident memory and paging.</p>
+<p>These are functionally equivalent applications with different framework infrastructure. They do not have identical runtime implementations, framework capabilities or monitoring overhead. Spring's extracted layout was prepared outside the measured VM and launched with the same JVM flags.</p>
+<h2>Results: Startup, memory, and latency</h2>
+<p>Both applications completed all 1,500 requests correctly. Final database checks matched the expected state. Javalin reached readiness in about 2.46 seconds; Spring took about 9.89 seconds. Startup includes schema creation, seeding and application readiness, with monitoring already running.</p>
+<div class="table-scroll" role="region" aria-label="Measured results" tabindex="0"><table><thead><tr><th scope="col">Metric</th><th scope="col">Javalin</th><th scope="col">Spring Boot</th></tr></thead><tbody><tr><td>Startup to readiness</td><td class="num">2.458 s</td><td class="num">9.893 s</td></tr><tr><td>Median idle RSS</td><td class="num">90.03 MiB</td><td class="num">118.63 MiB</td></tr><tr><td>Median load RSS</td><td class="num">106.43 MiB</td><td class="num">118.56 MiB</td></tr><tr><td>Median recovery RSS</td><td class="num">110.49 MiB</td><td class="num">119.35 MiB</td></tr><tr><td>Minimum settled RAM available</td><td class="num">69.76 MiB</td><td class="num">45.28 MiB</td></tr><tr><td>HTTP p95</td><td class="num">6.094 ms</td><td class="num">8.393 ms</td></tr><tr><td>HTTP maximum</td><td class="num">84.051 ms</td><td class="num">119.271 ms</td></tr><tr><td>Correct requests</td><td class="num">1,500 / 1,500</td><td class="num">1,500 / 1,500</td></tr></tbody></table></div>
+<p>Javalin used less resident memory in every settled phase and left more available system RAM. Its load median was about 12 MiB below Spring's, and its minimum settled headroom was about 24.5 MiB higher. Recovery RSS remained above idle for both; returning to the initial footprint was not a requirement.</p>
+<p>Both applications completed the workload, but memory pressure differed. The Javalin guest recorded 0.32 MiB of swap-in and no swap-out during traffic, compared with 27.23 MiB in and 31.77 MiB out for Spring Boot. This is additional context for the memory measurements, not evidence that either framework would behave the same way under different workloads.</p>
+<figure><a class="screenshot-link" href="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/java-rss.svg"><img src="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/java-rss.svg" alt="Java RSS rises during startup and traffic for both applications; Spring Boot stays above Javalin during settled phases." loading="lazy" decoding="async"></a><figcaption>Independent OS samples, aligned at Java launch; one run per application. The top bands mark each run’s own phases, with a short amber startup segment. Startup sampling is approximately one second, then five seconds. Post-measurement inspection is excluded.</figcaption></figure>
+<p>HTTP latency was low for both at this request rate. Neither had workload errors or missed slots. These timings include the local SSH tunnel path, so they describe this setup rather than internet response times. They also say little about capacity at higher concurrency.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/results/run-20261008T212522Z-javalin/analysis.json">Javalin analysis</a> and <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/results/run-20261008T221334Z-spring/analysis.json">Spring analysis</a> preserve the phase measurements. The numbers support a practical footprint comparison for these applications, rather than a ranking of the frameworks' broader capabilities.</p>
+<figure><a class="screenshot-link" href="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/request-timings.svg"><img src="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/request-timings.svg" alt="Minute-level p50 and p95 request latency for Javalin and Spring Boot across the five-minute workload." loading="lazy" decoding="async"></a><figcaption>Nearest-rank p50 and p95 for each consecutive group of 300 scheduled requests, matching the workload analysis. One five-minute run per application; timings include the local SSH tunnel. Lines connect minute summaries, not individual requests.</figcaption></figure>
+<h2>Dashboard history</h2>
+<p>These operator screenshots were captured after measurement, before monitoring stopped. Application memory is a JVM metric, not process RSS; dashboard average latency differs from the external request percentiles above. Click an image to inspect the original.</p>
+<div class="screenshot-gallery" data-gallery data-preload-previews><div class="screenshot-tabs" role="tablist" aria-label="Application and host dashboards"><button type="button" class="screenshot-tab" role="tab" id="tab-javalin" aria-controls="panel-javalin" aria-selected="true" tabindex="0">Javalin</button>
+<button type="button" class="screenshot-tab" role="tab" id="tab-spring" aria-controls="panel-spring" aria-selected="false" tabindex="-1">Spring Boot</button>
+<button type="button" class="screenshot-tab" role="tab" id="tab-javalin-host" aria-controls="panel-javalin-host" aria-selected="false" tabindex="-1">Host metrics</button>
+</div>
+<div id="panel-javalin" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-javalin"><figure><a class="screenshot-link" href="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/javalin.png" aria-label="Open Javalin screenshot at full size"><img src="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/javalin-preview.webp" width="1440" height="866" alt="Javalin dashboard showing requests, no HTTP errors, average latency, JVM heap usage, and process CPU." loading="lazy" decoding="async"></a><figcaption>Javalin application history. Measurement ended at 14:37:55 PDT; later points and current cards belong to inspection. DB health is “Not reported” because this Javalin adapter does not expose a database-health signal. Successful SQL traffic and persisted-state checks provide separate database evidence.</figcaption></figure></div>
+<div id="panel-spring" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-spring" hidden><figure><a class="screenshot-link" href="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/spring.png" aria-label="Open Spring Boot screenshot at full size"><img src="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/spring-preview.webp" width="1440" height="873" alt="Spring Boot dashboard showing requests, no HTTP errors, average latency, JVM runtime memory, and process CPU." loading="lazy" decoding="async"></a><figcaption>Spring Boot application history. Workload ran 15:19:14–15:24:14 PDT; measurement ended at 15:26:14. Later points and current health cards belong to inspection.</figcaption></figure></div>
+<div id="panel-javalin-host" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-javalin-host" hidden><figure><a class="screenshot-link" href="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/javalin-host.png" aria-label="Open host metrics screenshot at full size"><img src="/java-performance/experiments/img/javalin-vs-spring-boot-256mb/javalin-host-preview.webp" width="1440" height="344" alt="Javalin guest dashboard showing RAM use rising during startup and traffic, host CPU, and disk usage." loading="lazy" decoding="async"></a><figcaption>Guest RAM, CPU, and disk history during the Javalin run, collected by StatLite self-monitoring.</figcaption></figure></div>
+</div>
+<dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox><button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button><figure class="screenshot-lightbox__content"><img class="screenshot-lightbox__image" data-lightbox-image alt=""><figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption></figure></dialog>
+<p>These dashboards were collected with <a href="/statlite/">StatLite</a>, a lightweight, self-hosted monitor I develop at PVR Labs. If you'd like similar JVM and HTTP metrics history for your own application, StatLite supports both Spring Boot and Javalin.</p>
+<h2>Limitations and conclusion</h2>
+<p>There was one recorded run per implementation: Javalin first and Spring second. Traffic was small and deterministic, rather than a throughput or high-concurrency benchmark. The environment was an Alpine Lima VM with disk swap enabled, not a provider VPS. Web servers and monitoring integrations differed. Paging volumes use sampled endpoints; original Javalin CPU records lack steal-time data, limiting exact busy-CPU accounting.</p>
+<p>The results do not establish production capacity, long-running leak behavior or suitability for complex application requirements. The <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/METHOD.md">method and execution notes</a> and <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/results/run-20261008T221334Z-spring/screenshots/README.md">screenshot captions</a> retain the evidence and qualifications.</p>
+<p>Direct JDBC keeps this experiment’s persistence baseline explicit, but it is not always the most practical choice for application development. Application code must manage connections and statements, bind parameters, map rows, and handle transactions. A separate follow-up will compare Jdbi, MyBatis, and jOOQ in the same Javalin application, looking at implementation responsibilities alongside startup, memory, and package size. That experiment is complete and will be published separately.</p>
+<p>As I expected, Javalin was noticeably lighter than Spring Boot in this experiment. It started faster, used less resident memory, and left more RAM available on the 256 MiB VM. Both applications handled the workload correctly.</p>
+<p>But I wouldn't read these results as a reason to replace Spring Boot with Javalin. Spring Boot provides a lot out of the box, including dependency injection, configuration, health checks, and integrations with the broader Java ecosystem. With Javalin, you'll need to choose and assemble more of these pieces yourself when your application requires them.</p>
+<p>For a small, focused application, I think that trade-off can make sense. For larger applications, Spring Boot's built-in functionality may easily justify its additional memory footprint. This experiment shows what you can save with a lightweight framework, not that a lightweight framework is always the better choice.</p>
+<h2>Sources</h2>
+<p>The public experiment package includes source, reproduction instructions, original OS and HTTP samples, final analyses and dashboard screenshots.</p>
+<p class="experiment-links">
+    <a href="https://github.com/PVRLabs/experiments/tree/main/javalin/vps-256mb" target="_blank" rel="noopener noreferrer">Experiment record</a>
+    <a href="https://github.com/PVRLabs/experiments/tree/main/javalin/vps-256mb/results" target="_blank" rel="noopener noreferrer">Recorded data</a>
+    <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/vps-256mb/METHOD.md" target="_blank" rel="noopener noreferrer">Methodology</a>
+</p>
+</div></article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260911"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body></html>

@@ -35,56 +35,56 @@
           {
             "@type": "ListItem",
             "position": 1,
-            "url": "https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html",
-            "name": "Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "url": "https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html",
-            "name": "Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "url": "https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html",
-            "name": "Spring Boot vs Quarkus on a 512 MB VPS"
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "url": "https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html",
-            "name": "Spring Boot on a 256 MiB VPS with JDK 25"
-          },
-          {
-            "@type": "ListItem",
-            "position": 5,
             "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html",
             "name": "Spring Boot JPA vs JDBC"
           },
           {
             "@type": "ListItem",
-            "position": 6,
+            "position": 2,
             "url": "https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html",
             "name": "Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?"
           },
           {
             "@type": "ListItem",
+            "position": 3,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html",
+            "name": "Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html",
+            "name": "Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM"
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "url": "https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html",
+            "name": "Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "url": "https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html",
+            "name": "Spring Boot vs Quarkus on a 512 MB VPS"
+          },
+          {
+            "@type": "ListItem",
             "position": 7,
-            "url": "https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html",
-            "name": "Spring Boot fat JAR vs extracted layout vs Gradle application distribution"
+            "url": "https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html",
+            "name": "Spring Boot on a 256 MiB VPS with JDK 25"
           },
           {
             "@type": "ListItem",
             "position": 8,
-            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html",
-            "name": "Spring Boot vs Quarkus on a 768 MiB VM"
+            "url": "https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html",
+            "name": "Can StatLite monitor a Pyronaut Python app?"
           },
           {
             "@type": "ListItem",
             "position": 9,
-            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html",
-            "name": "Spring Boot vs Quarkus at 1 GiB with swap disabled"
+            "url": "https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html",
+            "name": "Spring Boot fat JAR vs extracted layout vs Gradle application distribution"
           },
           {
             "@type": "ListItem",
@@ -95,8 +95,14 @@
           {
             "@type": "ListItem",
             "position": 11,
-            "url": "https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html",
-            "name": "Can StatLite monitor a Pyronaut Python app?"
+            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html",
+            "name": "Spring Boot vs Quarkus on a 768 MiB VM"
+          },
+          {
+            "@type": "ListItem",
+            "position": 12,
+            "url": "https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html",
+            "name": "Spring Boot vs Quarkus at 1 GiB with swap disabled"
           }
         ]
       }
@@ -135,7 +141,7 @@
         <div class="container">
             <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / Experiments</p>
             <h1>Java and JVM experiments</h1>
-            <p class="lab-lead">Small tests around Spring Boot, packaging, startup, memory, and deployment. One concrete question, the smallest useful run, and a public record of what happened. Longer write-ups live in Articles when a result needs more room.</p>
+            <p class="lab-lead">Small tests around Spring Boot, packaging, startup, memory, and deployment. One concrete question, the smallest useful run, and a public record of what happened. Experiments focus on reproducible measurements and technical comparisons. Articles explore broader engineering problems and practical lessons.</p>
             <p class="lab-community-note">Discuss results and suggest future experiments in the Java Experiments squad on <a class="lab-community-link" href="https://daily.dev/squads/javaexperiments" aria-label="Java Experiments squad on daily.dev"><span class="lab-community-icon" aria-hidden="true"></span>daily.dev <span aria-hidden="true">&#8599;</span></a>.</p>
         </div>
     </section>
@@ -150,23 +156,35 @@
                 <button type="button" class="lab-filter" data-filter="memory" aria-pressed="false">Memory <span data-experiment-count="memory"></span></button>
                 <button type="button" class="lab-filter" data-filter="packaging" aria-pressed="false">Packaging <span data-experiment-count="packaging"></span></button>
             </nav>
+            <!-- Curated fixed list of five featured experiments. New entries go in More experiments unless this selection is deliberately revised. -->
             <h2 class="lab-index-heading">Featured experiments</h2>
             <div class="lab-index">
-                <article class="lab-entry" data-tags="spring-boot micronaut memory persistence frameworks">
+                <article class="lab-entry" data-tags="spring-boot memory persistence">
                     <div class="lab-entry-tags" aria-label="Topics">
-                        <span>Frameworks</span>
                         <span>Persistence</span>
                         <span>Spring Boot</span>
-                        <span>Micronaut</span>
                         <span>Memory</span>
-                        <span>JDK</span>
                     </div>
-                    <h3><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-05">October 5, 2026</time></p>
-                    <p>Equivalent JDBC apps on Java 25, measured one at a time for startup, resident memory, and CPU. Quarkus had the lowest overall median RSS; its memory use converged with Micronaut’s near the end of this single run.</p>
+                    <h3><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
+                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
                     <p class="lab-entry-links">
-                        <a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Read the article</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                        <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry" data-tags="spring-boot packaging vps">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Spring Boot</span>
+                        <span>Packaging</span>
+                        <span>VPS</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-extracted-layout.html">Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-11">September 11, 2026</time> · Updated September 21, 2026</p>
+                    <p>The official extracted layout cut median Spring startup 23.3% and first-request latency 34.1% in six paired runs. Settled RSS and swap did not show a material winner.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-extracted-layout.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
                 <article class="lab-entry" data-tags="spring-boot memory jdbc postgresql persistence">
@@ -184,6 +202,34 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
+                <article class="lab-entry" data-tags="spring-boot micronaut memory persistence frameworks">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Frameworks</span>
+                        <span>Persistence</span>
+                        <span>Spring Boot</span>
+                        <span>Micronaut</span>
+                        <span>Memory</span>
+                        <span>JDK</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-10-05">October 5, 2026</time></p>
+                    <p>Equivalent JDBC apps on Java 25, measured one at a time for startup, resident memory, and CPU. Quarkus had the lowest overall median RSS; its memory use converged with Micronaut’s near the end of this single run.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry" data-tags="javalin spring-boot frameworks persistence vps memory">
+                    <div class="lab-entry-tags" aria-label="Topics"><span>Frameworks</span><span>Persistence</span><span>VPS</span><span>Memory</span></div>
+                    <h3><a href="/java-performance/experiments/javalin-vs-spring-boot-256mb.html">Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-10-13">October 13, 2026</time></p>
+                    <p>Equivalent JDBC APIs with H2 and monitoring on a 256 MiB Alpine VM. Both completed the workload; Javalin started faster, used less resident memory, and left more RAM available.</p>
+                    <p class="lab-entry-links"><a href="/java-performance/experiments/javalin-vs-spring-boot-256mb.html">Read the experiment</a><a href="https://github.com/PVRLabs/experiments/tree/main/javalin/vps-256mb">Experiment record</a></p>
+                </article>
+            </div>
+
+            <h2 class="lab-index-heading">More experiments</h2>
+            <div class="lab-index">
                 <article class="lab-entry" data-tags="spring-boot vps frameworks">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Frameworks</span>
@@ -213,10 +259,6 @@
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-boot-low-memory" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
-            </div>
-
-            <h2 class="lab-index-heading">Quick experiments</h2>
-            <div class="lab-index">
                 <article class="lab-entry" data-tags="micronaut jvm statlite">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Pyronaut</span>
@@ -229,34 +271,6 @@
                     <p class="lab-entry-links">
                         <a href="/java-performance/experiments/pyronaut-statlite.html">Read the result</a>
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/pyronaut-statlite" target="_blank" rel="noopener noreferrer">Experiment record</a>
-                    </p>
-                </article>
-                <article class="lab-entry" data-tags="spring-boot memory persistence">
-                    <div class="lab-entry-tags" aria-label="Topics">
-                        <span>Persistence</span>
-                        <span>Spring Boot</span>
-                        <span>Memory</span>
-                    </div>
-                    <h3><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
-                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
-                    <p class="lab-entry-links">
-                        <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Read the result</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
-                    </p>
-                </article>
-                <article class="lab-entry" data-tags="spring-boot packaging vps">
-                    <div class="lab-entry-tags" aria-label="Topics">
-                        <span>Spring Boot</span>
-                        <span>Packaging</span>
-                        <span>VPS</span>
-                    </div>
-                    <h3><a href="/articles/spring-boot-extracted-layout.html">Spring Boot Fat JAR vs Extracted Layout: Does It Actually Matter?</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-09-11">September 11, 2026</time> · Updated September 21, 2026</p>
-                    <p>The official extracted layout cut median Spring startup 23.3% and first-request latency 34.1% in six paired runs. Settled RSS and swap did not show a material winner.</p>
-                    <p class="lab-entry-links">
-                        <a href="/articles/spring-boot-extracted-layout.html">Read the result</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/extracted-layout" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
                 <article class="lab-entry" data-tags="spring-boot packaging">
@@ -321,7 +335,7 @@
     <section class="lab-section lab-section--alt">
         <div class="container">
             <h2>How these experiments work</h2>
-            <p>Quick experiments are designed to answer a practical question quickly. A run may use one environment and only a few samples, and each write-up should say so. Featured experiments use more controlled methodology and are documented as fuller studies, with articles when a result warrants more room.</p>
+            <p>These experiments answer practical engineering questions. A run may use one environment and only a few samples; each write-up explains its method and limitations. The five featured experiments are a curated starting point, selected for useful findings and a range of deployment and persistence questions. Experiments focus on reproducible measurements and technical comparisons. Articles explore broader engineering problems and practical lessons.</p>
             <p>Source, commands, supporting files, and selected raw evidence live in the public <a href="https://github.com/PVRLabs/experiments" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a>.</p>
             <p class="lab-context-note">For longer-running experiments, <a href="/statlite/">StatLite</a> provides lightweight Spring Boot and JVM monitoring without a separate Prometheus/Grafana stack.</p>
         </div>
