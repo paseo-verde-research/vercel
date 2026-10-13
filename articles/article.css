@@ -430,6 +430,38 @@
     outline-offset: 2px;
 }
 
+.statlite-pitch {
+    margin: 32px 0 40px;
+    padding: 24px 28px;
+    border-left: 4px solid var(--primary-green);
+    border-radius: 0 8px 8px 0;
+    background: var(--bg-light);
+}
+
+.statlite-pitch p {
+    margin-bottom: 0;
+}
+
+.statlite-pitch p + p {
+    margin-top: 12px;
+}
+
+.statlite-pitch .article-actions .btn {
+    justify-content: center;
+}
+
+.statlite-pitch .btn-github {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.statlite-pitch .btn-github:hover {
+    background: rgba(255, 255, 255, .06);
+    border-color: var(--primary-green);
+    color: var(--text-primary);
+}
+
 .badger-pitch {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -493,6 +525,10 @@
 }
 
 @media (max-width: 768px) {
+    .statlite-pitch {
+        padding: 20px;
+    }
+
     .article-page {
         padding: calc(var(--header-height) + 16px) 16px 60px;
     }
