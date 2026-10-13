@@ -14,15 +14,15 @@
     <meta property="og:description" content="Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.">
     <meta property="article:published_time" content="2026-10-09T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
-    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.png">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.jpg">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="20 versus 2 idle PostgreSQL connections and their accounted database memory">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections">
     <meta name="twitter:description" content="Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.">
-    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.png">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.jpg">
     <meta name="twitter:image:alt" content="Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,10 +123,10 @@
         <button type="button" class="screenshot-tab" role="tab" id="tab-pool-b" aria-controls="panel-pool-b" aria-selected="false" tabindex="-1">App B</button>
     </div>
     <div id="panel-pool-a" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-pool-a">
-        <figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/pool-a.png" aria-label="Open App A dashboard at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/pool-a.png" width="2982" height="1788" alt="StatLite dashboard for App A with short request-rate and latency plateaus." loading="lazy" decoding="async"></a><figcaption>App A’s short bursts appear as brief request-rate and latency plateaus across the six scenarios.</figcaption></figure>
+        <figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/pool-a.webp" aria-label="Open App A dashboard at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/pool-a.webp" width="2982" height="1788" alt="StatLite dashboard for App A with short request-rate and latency plateaus." loading="lazy" decoding="async"></a><figcaption>App A’s short bursts appear as brief request-rate and latency plateaus across the six scenarios.</figcaption></figure>
     </div>
     <div id="panel-pool-b" class="screenshot-panel" role="tabpanel" aria-labelledby="tab-pool-b" hidden>
-        <figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/pool-b.png" aria-label="Open App B dashboard at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/pool-b.png" width="2930" height="1754" alt="StatLite dashboard for App B with longer request-rate and latency plateaus." loading="lazy" decoding="async"></a><figcaption>App B’s longer bursts produce wider plateaus across the same six scenarios.</figcaption></figure>
+        <figure><a class="screenshot-link" href="/articles/img/spring-boot-jdbc-pool-reclaim/pool-b.webp" aria-label="Open App B dashboard at full size"><img src="/articles/img/spring-boot-jdbc-pool-reclaim/pool-b.webp" width="2930" height="1754" alt="StatLite dashboard for App B with longer request-rate and latency plateaus." loading="lazy" decoding="async"></a><figcaption>App B’s longer bursts produce wider plateaus across the same six scenarios.</figcaption></figure>
     </div>
 </div>
 <p>Screenshots show the recorded workload history; the live status cards belong to later inspection apps. <strong>DB health: Not reported</strong> reflects a deliberate fixture setting: Spring Boot’s DB-health check was disabled so monitoring would not borrow connections and disturb idle retirement. The apps verified database access at startup. The red 5xx spikes came from startup health checks returning HTTP 503 before the apps were ready; the measured JDBC workload requests all returned HTTP 200.</p>
