@@ -1040,3 +1040,9 @@ h1, h2, h3, h4 {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* Supplementary demo discovery beneath the usage introduction. */
+.codemap-mention { margin-top:8px; color:var(--text-secondary); font-size:.95rem; }
+.codemap-mention a { display:inline-flex; align-items:center; min-height:44px; color:var(--primary-green); text-decoration:none; }
+.codemap-mention a:hover { color:var(--terminal-green); }
+.codemap-mention a:focus-visible { outline:2px solid var(--primary-green); outline-offset:3px; }
