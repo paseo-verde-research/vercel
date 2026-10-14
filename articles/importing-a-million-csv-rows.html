@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY | PVR Labs</title>
+    <meta name="description" content="Batched Scriptella loaded a million typed CSV rows in about 15 seconds on PostgreSQL and 10 on MariaDB. JDBC was a few seconds faster, which may be worth a declarative ETL file.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html">
+    <meta property="og:title" content="Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Batched Scriptella loaded a million typed CSV rows in about 15 seconds on PostgreSQL and 10 on MariaDB. JDBC was a few seconds faster, which may be worth a declarative ETL file.">
+    <meta property="article:published_time" content="2026-10-13T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/importing-a-million-csv-rows/cover.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Local median import times for one million CSV rows with Scriptella, JDBC, csvsql, and PostgreSQL COPY">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY">
+    <meta name="twitter:description" content="Batched Scriptella loaded a million typed CSV rows in about 15 seconds on PostgreSQL and 10 on MariaDB. JDBC was a few seconds faster, which may be worth a declarative ETL file.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/importing-a-million-csv-rows/cover.jpg">
+    <meta name="twitter:image:alt" content="Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 480px) { .article-body th, .article-body td { padding: .5rem; } }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        .article-body figure a { display: block; min-height: 44px; }
+        .code-pair { display: grid; gap: 1.25rem; margin-bottom: 1.5rem; min-width: 0; }
+        .code-pair > div { min-width: 0; }
+        .code-label { margin-bottom: .4rem; font-weight: 600; font-size: .95rem; }
+        .code-pair pre { margin-bottom: 0; max-width: 100%; white-space: pre-wrap; }
+        @media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
+    <h1>Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-13">October 13, 2026</time></div>
+    <div class="article-body" data-gallery data-lightbox-scope>
+<p>With batching, Scriptella imported a million typed CSV rows in about 15 seconds on PostgreSQL and about 10 seconds on MariaDB. Handwritten JDBC was faster by about a second on PostgreSQL and about three seconds on MariaDB. For an ETL job that runs occasionally, those seconds may be worth a declarative workflow instead of custom Java import code.</p>
+<p>Those are medians of two local runs. On PostgreSQL the batched observations overlap, so the one-second gap is not stable. On MariaDB the runs stay apart. I maintain Scriptella, the Java ETL tool. The <a href="https://github.com/scriptella/scriptella-benchmarks" target="_blank" rel="noopener noreferrer">code and measurements are public</a>.</p>
+<p>The job was a million-row CSV into a typed table that already exists: an integer id, two strings, an exact decimal, and a timestamp. PostgreSQL stores that timestamp as <code>TIMESTAMP WITHOUT TIME ZONE</code>; MariaDB uses <code>DATETIME</code>. Clients and sessions use UTC. There are no nulls, transformations, or indexes.</p>
+<p>csvsql took roughly nine to ten minutes. COPY finished in under two seconds. csvsql builds a table in memory first. COPY loads a file that already matches a PostgreSQL table.</p>
+<h2>Local results</h2>
+<p>Each duration is the midpoint of two complete runs. All times are seconds; lower is faster. The slow Java bars and the fast Java bars use one commit for the whole file. The difference is batching, not a commit per row.</p>
+<figure>
+<a class="screenshot-link" href="/articles/img/importing-a-million-csv-rows/local-medians.svg" aria-label="Open the local median chart at full size"><img src="/articles/img/importing-a-million-csv-rows/local-medians.svg" width="640" height="760" alt="Logarithmic chart of local median import times. PostgreSQL: Scriptella unbatched 177.669 seconds, batch 1000 14.792 seconds; JDBC unbatched 176.834 seconds, batch 1000 13.631 seconds; csvsql 557.945 seconds; COPY 1.672 seconds. MariaDB: Scriptella unbatched 220.081 seconds, batch 1000 9.523 seconds; JDBC unbatched 205.926 seconds, batch 1000 6.649 seconds; csvsql 597.053 seconds." loading="lazy" decoding="async"></a>
+<figcaption>Logarithmic duration axis: the distance from 1 second to 10 seconds matches the distance from 10 seconds to 100 seconds. Batching pulls both Java importers left. csvsql stays near 10 minutes. COPY, measured on PostgreSQL only, sits near one second. Tap the chart to enlarge.</figcaption>
+</figure>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Local import durations in seconds">
+<table>
+<thead><tr><th scope="col">Import path</th><th scope="col">PostgreSQL 17.11</th><th scope="col">MariaDB 11.8.8</th></tr></thead>
+<tbody>
+<tr><td>Scriptella, unbatched</td><td class="num">177.669</td><td class="num">220.081</td></tr>
+<tr><td>Scriptella, batch 1000</td><td class="num">14.792</td><td class="num">9.523</td></tr>
+<tr><td>JDBC, unbatched</td><td class="num">176.834</td><td class="num">205.926</td></tr>
+<tr><td>JDBC, batch 1000</td><td class="num">13.631</td><td class="num">6.649</td></tr>
+<tr><td>csvsql, chunk 1000</td><td class="num">557.945</td><td class="num">597.053</td></tr>
+<tr><td>PostgreSQL COPY, native reference</td><td class="num">1.672</td><td class="num">Not measured</td></tr>
+</tbody>
+</table>
+</div>
+<p>The MariaDB COPY cell is blank because COPY is a PostgreSQL statement, not a result I skipped.</p>
+<p>The host was an Intel Core i9-9980HK Mac with 32 GiB RAM, x86_64 Colima with four CPUs and 6 GiB, Temurin 17.0.17, and csvsql 2.2.0 on Python 3.12.3. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/report.md" target="_blank" rel="noopener noreferrer">full local report</a> has the individual measurements.</p>
+<p>Batching was the large change. Scriptella's median fell from 177.7 to 14.8 seconds on PostgreSQL and from 220.1 to 9.5 seconds on MariaDB, about 12× and 23×. Every case used one transaction and one commit, including the unbatched cases. JDBC called <code>executeUpdate()</code> per row when unbatched, and <code>addBatch()</code> with <code>executeBatch()</code> every 1,000 rows when batched. Scriptella set <code>statement.batchSize=1000</code>. Driver defaults stayed in place: pgJDBC <code>reWriteBatchedInserts=false</code>, and MariaDB Connector/J <code>useBulkStmts=false</code> with <code>useBulkStmtsForInserts=true</code>.</p>
+<h2>The remaining gap</h2>
+<p>After batching, JDBC's median was about 1.16 seconds lower on PostgreSQL and 2.87 seconds lower on MariaDB. Two runs are too few to treat that gap as stable. On PostgreSQL the observations overlap: Scriptella took 13.376 and 16.208 seconds, JDBC 13.286 and 13.976. On MariaDB they separate: Scriptella 8.644 and 10.403, JDBC 6.818 and 6.480. The paths use different CSV parsers, and the clock includes process startup.</p>
+<figure>
+<a class="screenshot-link" href="/articles/img/importing-a-million-csv-rows/batched-runs.svg" aria-label="Open the individual batched-run chart at full size"><img src="/articles/img/importing-a-million-csv-rows/batched-runs.svg" width="640" height="618" alt="Linear chart of the two batched runs, from zero to 18 seconds. PostgreSQL Scriptella 13.376 and 16.208 seconds, JDBC 13.286 and 13.976 seconds. MariaDB Scriptella 8.644 and 10.403 seconds, JDBC 6.818 and 6.480 seconds." loading="lazy" decoding="async"></a>
+<figcaption>Linear scale, starting at zero. The logarithmic chart above hides this gap. On PostgreSQL the four observations share one band, and Scriptella's slower run is what lifts its median. On MariaDB both JDBC runs are shorter than both Scriptella runs. Tap the chart to enlarge.</figcaption>
+</figure>
+<h2>The insert</h2>
+<p>The query is the part that matches the batched insert. The connection and the CSV formats sit above it. <code>driver="postgresql"</code> is Scriptella's built-in adapter and still needs the JDBC driver. MariaDB uses <code>driver="mariadb"</code>. The published runs also set <code>autocommit=false</code> and <code>statement.batchSize=1000</code>. Commas, double quotes, and a header are CSV defaults.</p>
+<div class="code-pair">
+<div>
+<p class="code-label">Scriptella query</p>
+<pre data-lang="xml"><code>&lt;query connection-id="csv"&gt;
+  &lt;script connection-id="db"&gt;
+    INSERT INTO csv_import (id,<wbr>name,<wbr>category,<wbr>amount,<wbr>created_at)
+    VALUES (?id, ?name, ?category, ?amount, ?created_at);
+  &lt;/script&gt;
+&lt;/query&gt;</code></pre>
+</div>
+<div>
+<p class="code-label">JDBC batch</p>
+<pre data-lang="java"><code>for (var row : csv) {
+    insert.setLong(1, Long.parseLong(row.get("id")));
+    insert.setString(2, row.get("name"));
+    insert.setString(3, row.get("category"));
+    insert.setBigDecimal(4, new BigDecimal(row.get("amount")));
+    insert.setTimestamp(5, Timestamp.valueOf(
+            java.<wbr>time.<wbr>LocalDateTime.parse(row.get("created_at"),<wbr> Benchmark.CSV_TIME)), utc);
+    insert.addBatch();
+    if (++pending == 1000) {
+        insert.executeBatch();
+        insert.clearBatch();
+        pending = 0;
+    }
+}
+if (pending > 0) {
+    insert.executeBatch();
+}
+connection.commit();</code></pre>
+</div>
+</div>
+<p>The Java loop binds a <code>long</code> id, a <code>BigDecimal</code> amount, and a <code>Timestamp</code>. The number rules produce <code>Number</code> values. The timestamp rule produces a <code>Timestamp</code>. The published 1.6 runs used custom format classes and named the JDBC driver classes. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/scriptella-etl.md" target="_blank" rel="noopener noreferrer">current benchmark</a> uses the rules above and these adapter names. Neither change is a new timing. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/src/main/java/org/scriptella/benchmarks/Importer.java" target="_blank" rel="noopener noreferrer">importer source</a> has the connection settings used for measurement.</p>
+<p>For an occasional job, that query is what the seconds buy. Keeping it is a maintenance judgment, not a measured cost inside Scriptella.</p>
+<h2>csvsql</h2>
+<pre data-lang="bash"><code>csvsql --db '&lt;SQLAlchemy URL&gt;' \
+  --tables csv_import --no-create \
+  --insert --chunk-size 1000 fixture.csv</code></pre>
+<p>csvsql 2.2.0 reads the CSV into an <a href="https://github.com/wireservice/csvkit/blob/2.2.0/csvkit/utilities/csvsql.py" target="_blank" rel="noopener noreferrer">agate table</a>, then inserts through SQLAlchemy. Chunking the inserts does not make that table streaming. Building it is a fair cost for an unknown file. Here the table already existed. The median ratios versus batched Scriptella were 37.7× on PostgreSQL and 62.7× on MariaDB. Those describe these workflows, not a Python-versus-Java ranking.</p>
+<h2>Process memory</h2>
+<p>On the first local MariaDB run, approximate process high-water marks were 188 MiB for batched Scriptella, 146 MiB for batched JDBC, and 895 MiB for csvsql. Sampling was once a second, the second run had no sampler, and these are whole processes, not heap or database memory. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/memory-summary.md" target="_blank" rel="noopener noreferrer">collection notes</a> have the limits.</p>
+<figure>
+<a class="screenshot-link" href="/articles/img/importing-a-million-csv-rows/memory.svg" aria-label="Open the process-memory chart at full size"><img src="/articles/img/importing-a-million-csv-rows/memory.svg" width="640" height="340" alt="Linear chart of approximate process resident high-water marks from the first local MariaDB run: batched Scriptella about 188 MiB, batched JDBC about 146 MiB, and csvsql about 895 MiB." loading="lazy" decoding="async"></a>
+<figcaption>Linear axis. csvsql's importer process was several times larger than either Java importer. These are coarse high-water marks from one MariaDB run, not a memory benchmark. Tap the chart to enlarge.</figcaption>
+</figure>
+<h2>PostgreSQL COPY</h2>
+<p>COPY was the fastest measured path: 1.672 seconds locally, and 0.968 seconds on the CI run below. It streamed this file through pgJDBC, unchanged, into a matching table. There is no MariaDB number, and a MariaDB native loader was not timed. A filter or a transformation can use <code>COPY FROM ... WHERE</code>, a <code>BEFORE INSERT</code> trigger, a staging table, or application-side changes. None of those were measured.</p>
+<h2>GitHub Actions</h2>
+<p>I ran the same experiment once on a GitHub Actions Ubuntu 24.04 x86_64 runner. Times are seconds.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="GitHub Actions import durations in seconds">
+<table>
+<thead><tr><th scope="col">Import path</th><th scope="col">PostgreSQL</th><th scope="col">MariaDB</th></tr></thead>
+<tbody>
+<tr><td>Scriptella, batch 1000</td><td class="num">6.858</td><td class="num">4.446</td></tr>
+<tr><td>JDBC, batch 1000</td><td class="num">5.854</td><td class="num">2.998</td></tr>
+<tr><td>csvsql, chunk 1000</td><td class="num">221.805</td><td class="num">214.924</td></tr>
+<tr><td>PostgreSQL COPY, native reference</td><td class="num">0.968</td><td class="num">Not measured</td></tr>
+</tbody>
+</table>
+</div>
+<p>Same ordering, different times. The 0.968-second COPY row is the same direct load. It was not measured on MariaDB, and it does not cover a filter or a transformation. This run stays <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-13-ci" target="_blank" rel="noopener noreferrer">separate from the local results</a>. Hosted runners vary, and CI memory was not measured.</p>
+<h2>What the clock includes</h2>
+<p>Timings cover a fresh process from start through exit. They leave out container startup, fixture generation, table reset, verification, and an untimed 20,000-row warmup. That warmup does not warm the measured JVM. A 2,001-row prefix runs first and exercises a partial batch. After each import, a separate connection checks the row count and the first, middle, and last values. That check is not every cell.</p>
+<p>The <a href="https://github.com/scriptella/scriptella-benchmarks#run-the-comparison" target="_blank" rel="noopener noreferrer">benchmark repository</a> has the Docker Compose command and the published measurements. Keep the environment and the individual runs if you reproduce it.</p>
+<p class="experiment-links">
+    <a href="https://github.com/scriptella/scriptella-benchmarks#run-the-comparison" target="_blank" rel="noopener noreferrer">Benchmark repository</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/report.md" target="_blank" rel="noopener noreferrer">Local report</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-13-ci" target="_blank" rel="noopener noreferrer">CI results</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/src/main/java/org/scriptella/benchmarks/Importer.java" target="_blank" rel="noopener noreferrer">Importer source</a>
+</p>
+<dialog class="screenshot-lightbox" aria-label="Expanded chart" data-screenshot-lightbox>
+    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded chart" data-lightbox-close>&times;</button>
+    <figure class="screenshot-lightbox__content">
+        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+    </figure>
+</dialog>
+</div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261014"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="618" viewBox="0 0 640 618" role="img" aria-labelledby="title desc">
+<title id="title">Individual batched CSV import runs</title>
+<desc id="desc">Linear chart of the two batched local runs, from zero to 18 seconds. PostgreSQL Scriptella 13.376 and 16.208 seconds; JDBC 13.286 and 13.976 seconds. MariaDB Scriptella 8.644 and 10.403 seconds; JDBC 6.818 and 6.480 seconds.</desc>
+<rect width="640" height="618" fill="#101d16"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="28.0" y="40.0" fill="#f4faf6" font-size="22" font-weight="700" text-anchor="start">The two batched runs</text>
+<text x="28.0" y="66.0" fill="#9fb3a6" font-size="14" font-weight="400" text-anchor="start">Linear axis from zero  ·  seconds  ·  lower is faster</text>
+<text x="28.0" y="102.0" fill="#f4faf6" font-size="16" font-weight="700" text-anchor="start">PostgreSQL</text>
+<line x1="188.0" y1="118" x2="188.0" y2="278" stroke="#2c4036" stroke-width="1"/>
+<line x1="288.0" y1="118" x2="288.0" y2="278" stroke="#2c4036" stroke-width="1"/>
+<line x1="388.0" y1="118" x2="388.0" y2="278" stroke="#2c4036" stroke-width="1"/>
+<line x1="488.0" y1="118" x2="488.0" y2="278" stroke="#2c4036" stroke-width="1"/>
+<rect x="188" y="128" width="222.9" height="16" rx="3" fill="#2ECC71"/>
+<text x="28.0" y="141.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">Scriptella, run 1</text>
+<text x="418.9" y="141.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">13.376 s</text>
+<rect x="188" y="170" width="270.1" height="16" rx="3" fill="#1d9a56"/>
+<text x="28.0" y="183.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">Scriptella, run 2</text>
+<text x="466.1" y="183.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">16.208 s</text>
+<rect x="188" y="212" width="221.4" height="16" rx="3" fill="#5dade2"/>
+<text x="28.0" y="225.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">JDBC, run 1</text>
+<text x="417.4" y="225.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">13.286 s</text>
+<rect x="188" y="254" width="232.9" height="16" rx="3" fill="#2e86ab"/>
+<text x="28.0" y="267.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">JDBC, run 2</text>
+<text x="428.9" y="267.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">13.976 s</text>
+<text x="188.0" y="304.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">0</text>
+<text x="288.0" y="304.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">6</text>
+<text x="388.0" y="304.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">12</text>
+<text x="488.0" y="304.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">18</text>
+<text x="338.0" y="322.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">Seconds</text>
+<text x="28.0" y="346.0" fill="#f4faf6" font-size="16" font-weight="700" text-anchor="start">MariaDB</text>
+<line x1="188.0" y1="362" x2="188.0" y2="522" stroke="#2c4036" stroke-width="1"/>
+<line x1="288.0" y1="362" x2="288.0" y2="522" stroke="#2c4036" stroke-width="1"/>
+<line x1="388.0" y1="362" x2="388.0" y2="522" stroke="#2c4036" stroke-width="1"/>
+<line x1="488.0" y1="362" x2="488.0" y2="522" stroke="#2c4036" stroke-width="1"/>
+<rect x="188" y="372" width="144.1" height="16" rx="3" fill="#2ECC71"/>
+<text x="28.0" y="385.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">Scriptella, run 1</text>
+<text x="340.1" y="385.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">8.644 s</text>
+<rect x="188" y="414" width="173.4" height="16" rx="3" fill="#1d9a56"/>
+<text x="28.0" y="427.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">Scriptella, run 2</text>
+<text x="369.4" y="427.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">10.403 s</text>
+<rect x="188" y="456" width="113.6" height="16" rx="3" fill="#5dade2"/>
+<text x="28.0" y="469.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">JDBC, run 1</text>
+<text x="309.6" y="469.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">6.818 s</text>
+<rect x="188" y="498" width="108.0" height="16" rx="3" fill="#2e86ab"/>
+<text x="28.0" y="511.0" fill="#e7f2eb" font-size="14" font-weight="400" text-anchor="start">JDBC, run 2</text>
+<text x="304.0" y="511.0" fill="#f4faf6" font-size="13" font-weight="700" text-anchor="start">6.480 s</text>
+<text x="188.0" y="548.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">0</text>
+<text x="288.0" y="548.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">6</text>
+<text x="388.0" y="548.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">12</text>
+<text x="488.0" y="548.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">18</text>
+<text x="338.0" y="566.0" fill="#9fb3a6" font-size="12" font-weight="400" text-anchor="middle">Seconds</text>
+<text x="28.0" y="600.0" fill="#9fb3a6" font-size="13" font-weight="400" text-anchor="start">Run 1 is the earlier local run. These are the observations behind the medians.</text>
+</g>
+</svg>

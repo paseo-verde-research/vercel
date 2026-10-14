@@ -154,6 +154,12 @@
     <lastmod>2026-10-09</lastmod>
   </url>
   <url>
+    <loc>https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html</loc>
     <lastmod>2026-10-13</lastmod>
   </url>

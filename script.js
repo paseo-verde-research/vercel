@@ -598,6 +598,109 @@ document.addEventListener('DOMContentLoaded', () => {
         codeBlock.replaceChildren(highlightedCode);
     });
 
+    // Walk text nodes so a <wbr> used only for narrow-screen wrapping stays put.
+    function highlightArticleCode(codeBlock, tokenPattern, classForToken) {
+        const highlightedCode = document.createDocumentFragment();
+
+        function appendText(text) {
+            tokenPattern.lastIndex = 0;
+            let sourceIndex = 0;
+
+            for (const match of text.matchAll(tokenPattern)) {
+                const token = match[0];
+                const tokenIndex = match.index;
+
+                if (tokenIndex > sourceIndex) {
+                    highlightedCode.append(text.slice(sourceIndex, tokenIndex));
+                }
+
+                const tokenClass = classForToken(token);
+                if (tokenClass) {
+                    const tokenElement = document.createElement('span');
+                    tokenElement.className = tokenClass;
+                    tokenElement.textContent = token;
+                    highlightedCode.append(tokenElement);
+                } else {
+                    highlightedCode.append(token);
+                }
+
+                sourceIndex = tokenIndex + token.length;
+            }
+
+            highlightedCode.append(text.slice(sourceIndex));
+        }
+
+        codeBlock.childNodes.forEach(node => {
+            if (node.nodeName === 'WBR') {
+                highlightedCode.append(document.createElement('wbr'));
+                return;
+            }
+            appendText(node.textContent);
+        });
+
+        codeBlock.replaceChildren(highlightedCode);
+    }
+
+    const xmlTokenPattern = /<!--[\s\S]*?-->|<!DOCTYPE\b|<\/?[A-Za-z_][\w:.-]*|\/?>|[A-Za-z_:][\w:.-]*(?=\s*=)|=|"(?:[^"\n\\]|\\.)*"|'(?:[^'\n\\]|\\.)*'|\b(?:true|false)\b|(?<![\w.-])\d+(?:\.\d+)?\b|[,]/g;
+
+    function xmlTokenClass(token) {
+        if (token.startsWith('<!--')) {
+            return 'code-token-comment';
+        }
+        if (token.startsWith('<')) {
+            return 'code-token-keyword';
+        }
+        if (token === '>' || token === '/>' || token === '=' || token === ',') {
+            return 'code-token-punctuation';
+        }
+        if (token.startsWith('"') || token.startsWith("'")) {
+            return 'code-token-string';
+        }
+        if (token === 'true' || token === 'false') {
+            return 'code-token-literal';
+        }
+        if (/^\d/.test(token)) {
+            return 'code-token-number';
+        }
+        return 'code-token-key';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="xml"] > code').forEach(codeBlock => {
+        highlightArticleCode(codeBlock, xmlTokenPattern, xmlTokenClass);
+    });
+
+    const javaKeywords = new Set(['for', 'if', 'else', 'new', 'var', 'return', 'while']);
+    const javaOperators = new Set([
+        '++', '--', '==', '!=', '>=', '<=', '&&', '||', '=', '+', '-', '>', '<', '!'
+    ]);
+    const javaTokenPattern = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:[^"\n\\]|\\.)*"|'(?:[^'\n\\]|\\.)*'|(?<![\w.])\d+(?:\.\d+)?\b|\+\+|--|==|!=|>=|<=|&&|\|\||[{}[\]();,.:]|[=+\-><!]|[A-Za-z_$][A-Za-z0-9_$]*/g;
+
+    function javaTokenClass(token) {
+        if (token.startsWith('//') || token.startsWith('/*')) {
+            return 'code-token-comment';
+        }
+        if (token.startsWith('"') || token.startsWith("'")) {
+            return 'code-token-string';
+        }
+        if (/^\d/.test(token)) {
+            return 'code-token-number';
+        }
+        if (javaOperators.has(token)) {
+            return 'code-token-operator';
+        }
+        if (javaKeywords.has(token)) {
+            return 'code-token-keyword';
+        }
+        if (/^[{}[\]();,.:]$/.test(token)) {
+            return 'code-token-punctuation';
+        }
+        return '';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="java"] > code').forEach(codeBlock => {
+        highlightArticleCode(codeBlock, javaTokenPattern, javaTokenClass);
+    });
+
     const workflowTokenPattern = /AI\s+Badger|[↓→]|\b\d+\.(?=\s)|[A-Za-z_][A-Za-z0-9_-]*/g;
 
     document.querySelectorAll('.article-body pre[data-lang="workflow"] > code').forEach(codeBlock => {
