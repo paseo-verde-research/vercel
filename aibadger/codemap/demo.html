@@ -703,22 +703,17 @@ summary:focus-visible,textarea:focus-visible { outline:3px solid var(--accent); 
   render();
 })();
 </script>
-<!-- Default Statcounter code for PVR Labs
-https://pvrlabs.xyz/ -->
 <script>
-    var sc_project = 13137699;
-    var sc_invisible = 1;
-    var sc_security = "28f9c550";
+  // Track direct opens, including local files, without counting iframe embeds.
+  if (window.self === window.top) {
+    window.sc_project = 13137699;
+    window.sc_invisible = 1;
+    window.sc_security = "28f9c550";
+    const counter = document.createElement("script");
+    counter.src = "https://www.statcounter.com/counter/counter.js";
+    counter.async = true;
+    document.body.appendChild(counter);
+  }
 </script>
-<script src="https://www.statcounter.com/counter/counter.js" async></script>
-<noscript>
-    <div class="statcounter"><a title="Web Analytics"
-                                href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img
-            class="statcounter"
-            src="https://c.statcounter.com/13137699/0/28f9c550/1/"
-            alt="Web Analytics"
-            referrerPolicy="no-referrer-when-downgrade"></a></div>
-</noscript>
-<!-- End of Statcounter Code -->
 </body>
 </html>
