@@ -85,12 +85,11 @@
 <tr><td>JDBC, unbatched</td><td class="num">176.834</td><td class="num">205.926</td></tr>
 <tr><td>JDBC, batch 1000</td><td class="num">13.631</td><td class="num">6.649</td></tr>
 <tr><td>csvsql, chunk 1000</td><td class="num">557.945</td><td class="num">597.053</td></tr>
-<tr><td>PostgreSQL COPY, native reference</td><td class="num">1.672</td><td class="num">Not measured</td></tr>
+<tr><td>PostgreSQL COPY, native reference</td><td class="num">1.672</td><td class="num">Not available</td></tr>
 </tbody>
 </table>
 </div>
-<p>The MariaDB COPY cell is blank because COPY is a PostgreSQL statement, not a result I skipped.</p>
-<p>The host was an Intel Core i9-9980HK Mac with 32 GiB RAM, x86_64 Colima with four CPUs and 6 GiB, Temurin 17.0.17, and csvsql 2.2.0 on Python 3.12.3. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/report.md" target="_blank" rel="noopener noreferrer">full local report</a> has the individual measurements.</p>
+<p>The host was a Mac with 32 GiB RAM, x86_64 Colima with four CPUs and 6 GiB, Temurin 17.0.17, and csvsql 2.2.0 on Python 3.12.3. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/report.md" target="_blank" rel="noopener noreferrer">full local report</a> has the individual measurements.</p>
 <p>Batching was the large change. Scriptella's median fell from 177.7 to 14.8 seconds on PostgreSQL and from 220.1 to 9.5 seconds on MariaDB, about 12× and 23×. Every case used one transaction and one commit, including the unbatched cases. JDBC called <code>executeUpdate()</code> per row when unbatched, and <code>addBatch()</code> with <code>executeBatch()</code> every 1,000 rows when batched. Scriptella set <code>statement.batchSize=1000</code>. Driver defaults stayed in place: pgJDBC <code>reWriteBatchedInserts=false</code>, and MariaDB Connector/J <code>useBulkStmts=false</code> with <code>useBulkStmtsForInserts=true</code>.</p>
 <h2>The remaining gap</h2>
 <p>After batching, JDBC's median was about 1.16 seconds lower on PostgreSQL and 2.87 seconds lower on MariaDB. Two runs are too few to treat that gap as stable. On PostgreSQL the observations overlap: Scriptella took 13.376 and 16.208 seconds, JDBC 13.286 and 13.976. On MariaDB they separate: Scriptella 8.644 and 10.403, JDBC 6.818 and 6.480. The paths use different CSV parsers, and the clock includes process startup.</p>
@@ -132,7 +131,7 @@ if (pending > 0) {
 connection.commit();</code></pre>
 </div>
 </div>
-<p>The Java loop binds a <code>long</code> id, a <code>BigDecimal</code> amount, and a <code>Timestamp</code>. The number rules produce <code>Number</code> values. The timestamp rule produces a <code>Timestamp</code>. The published 1.6 runs used custom format classes and named the JDBC driver classes. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/scriptella-etl.md" target="_blank" rel="noopener noreferrer">current benchmark</a> uses the rules above and these adapter names. Neither change is a new timing. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/src/main/java/org/scriptella/benchmarks/Importer.java" target="_blank" rel="noopener noreferrer">importer source</a> has the connection settings used for measurement.</p>
+<p>The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/scriptella-etl.md" target="_blank" rel="noopener noreferrer">full ETL file</a> and the <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/src/main/java/org/scriptella/benchmarks/Importer.java" target="_blank" rel="noopener noreferrer">importer source</a> have the connection settings used for measurement.</p>
 <p>For an occasional job, that query is what the seconds buy. Keeping it is a maintenance judgment, not a measured cost inside Scriptella.</p>
 <h2>csvsql</h2>
 <pre data-lang="bash"><code>csvsql --db '&lt;SQLAlchemy URL&gt;' \
@@ -156,7 +155,7 @@ connection.commit();</code></pre>
 <tr><td>Scriptella, batch 1000</td><td class="num">6.858</td><td class="num">4.446</td></tr>
 <tr><td>JDBC, batch 1000</td><td class="num">5.854</td><td class="num">2.998</td></tr>
 <tr><td>csvsql, chunk 1000</td><td class="num">221.805</td><td class="num">214.924</td></tr>
-<tr><td>PostgreSQL COPY, native reference</td><td class="num">0.968</td><td class="num">Not measured</td></tr>
+<tr><td>PostgreSQL COPY, native reference</td><td class="num">0.968</td><td class="num">Not available</td></tr>
 </tbody>
 </table>
 </div>
