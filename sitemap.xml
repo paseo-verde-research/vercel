@@ -163,4 +163,8 @@
     <loc>https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html</loc>
     <lastmod>2026-10-13</lastmod>
   </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-256mb.html</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
 </urlset>
