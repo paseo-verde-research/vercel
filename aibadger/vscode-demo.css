@@ -420,10 +420,6 @@
     font-size: 0.88rem;
 }
 
-.next-step-note + .btn {
-    margin-top: 0.8rem;
-}
-
 .ai-chat-browser {
     min-width: 0;
     overflow: hidden;
@@ -447,50 +443,35 @@
     font-size: clamp(1.35rem, 3vw, 2rem);
 }
 
-.ai-chat-options {
+.ai-chat-instructions {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem;
-    margin-top: 1.4rem;
+    gap: 0.9rem;
+    margin: 1.4rem 0;
+    padding-left: 1.5rem;
+    color: #3c4148;
 }
 
-.ai-chat-options > div {
-    display: flex;
-    min-height: 44px;
-    gap: 0.7rem;
-    align-items: center;
-    padding: 0.7rem 0.8rem;
-    border: 1px solid #dedede;
-    border-radius: 0.45rem;
-    background: #fff;
-    color: #3c4148;
+.ai-chat-instructions li::marker {
+    color: #59616b;
+    font-weight: 600;
+}
+
+.ai-chat-examples {
+    color: #59616b;
     font-size: 0.9rem;
 }
 
-.ai-chat-options > div > b {
-    display: grid;
-    width: 1.7rem;
-    height: 1.7rem;
-    place-items: center;
-    border-radius: 0.35rem;
-    background: #eceef0;
-    color: #59616b;
-}
-
-.ai-chat-options > div > span {
-    display: flex;
-    flex-direction: column;
-    gap: 0.05rem;
-}
-
-.ai-chat-options small {
-    color: #777;
-    font-size: 0.72rem;
-}
-.ai-chat-browser-body > p:last-child {
+.ai-chat-note {
     margin-top: 1.4rem;
-    color: #6d737b;
+    color: #59616b;
     font-size: 0.82rem;
+}
+
+.ai-chat-next {
+    margin-top: 1.4rem;
+    min-height: 44px;
+    max-width: 100%;
+    white-space: normal;
 }
 
 .chat-mock {
@@ -609,5 +590,4 @@
     .vscode-demo-copy .btn, .copied-card .btn { width: 100%; justify-content: center; }
     .vscode-demo-footer div { flex-direction: column; gap: 0.5rem; }
     .chat-content { padding: 1.5rem 0; }
-    .ai-chat-options { grid-template-columns: 1fr; }
 }
