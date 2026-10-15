@@ -38,6 +38,11 @@
     font-size: 1.08rem;
 }
 
+.lab-hero--experiments .lab-lead,
+.lab-hero--experiments .lab-community-note {
+    max-width: none;
+}
+
 .lab-lead:last-child,
 .lab-lead:has(+ .lab-community-note) {
     margin-bottom: 0;
@@ -48,6 +53,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 0.35rem 1.25rem;
+}
+
+.lab-actions .lab-text-link {
+    min-height: 44px;
 }
 
 .lab-actions .btn {
