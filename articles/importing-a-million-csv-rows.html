@@ -162,9 +162,9 @@ connection.commit();</code></pre>
 <p>Same ordering, different times. The 0.968-second COPY row is the same direct load. It was not measured on MariaDB, and it does not cover a filter or a transformation. This run stays <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-13-ci" target="_blank" rel="noopener noreferrer">separate from the local results</a>. Hosted runners vary, and CI memory was not measured.</p>
 <h2>What the clock includes</h2>
 <p>Timings cover a fresh process from start through exit. They leave out container startup, fixture generation, table reset, verification, and an untimed 20,000-row warmup. That warmup does not warm the measured JVM. A 2,001-row prefix runs first and exercises a partial batch. After each import, a separate connection checks the row count and the first, middle, and last values. That check is not every cell.</p>
-<p>The <a href="https://github.com/scriptella/scriptella-benchmarks#run-the-comparison" target="_blank" rel="noopener noreferrer">benchmark repository</a> has the Docker Compose command and the published measurements. Keep the environment and the individual runs if you reproduce it.</p>
+<p>The <a href="https://github.com/scriptella/scriptella-benchmarks#reproduce" target="_blank" rel="noopener noreferrer">benchmark repository</a> has the Docker Compose command and the published measurements. Keep the environment and the individual runs if you reproduce it.</p>
 <p class="experiment-links">
-    <a href="https://github.com/scriptella/scriptella-benchmarks#run-the-comparison" target="_blank" rel="noopener noreferrer">Benchmark repository</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks#reproduce" target="_blank" rel="noopener noreferrer">Benchmark repository</a>
     <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/report.md" target="_blank" rel="noopener noreferrer">Local report</a>
     <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-13-ci" target="_blank" rel="noopener noreferrer">CI results</a>
     <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/src/main/java/org/scriptella/benchmarks/Importer.java" target="_blank" rel="noopener noreferrer">Importer source</a>
