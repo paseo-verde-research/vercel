@@ -162,9 +162,10 @@
                 <button type="button" class="lab-filter" data-filter="memory" aria-pressed="false">Memory <span data-experiment-count="memory"></span></button>
                 <button type="button" class="lab-filter" data-filter="packaging" aria-pressed="false">Packaging <span data-experiment-count="packaging"></span></button>
             </nav>
-            <!-- Curated fixed list of five featured experiments. New entries go in More experiments unless this selection is deliberately revised. -->
+            <!-- Curated featured experiments. New entries go in More experiments unless this selection is deliberately revised. -->
             <h2 class="lab-index-heading">Featured experiments</h2>
             <div class="lab-index">
+                <!-- Temporarily unlisted; restore this card when ready to feature the experiment.
                 <article class="lab-entry" data-tags="javalin persistence memory vps">
                     <div class="lab-entry-tags" aria-label="Topics"><span>Persistence</span><span>Memory</span><span>VPS</span></div>
                     <h3><a href="/java-performance/experiments/mybatis-jooq-jdbi-256mb.html">MyBatis vs. jOOQ vs. Jdbi: Java Persistence on 256 MB RAM</a></h3>
@@ -172,6 +173,7 @@
                     <p>Three Javalin persistence implementations with H2 and monitoring. All completed 1,500 requests; median workload RSS was similar, while paging, package sizes, and application code differed.</p>
                     <p class="lab-entry-links"><a href="/java-performance/experiments/mybatis-jooq-jdbi-256mb.html">Read the experiment</a><a href="https://github.com/PVRLabs/experiments/tree/main/javalin/sql-persistence-256mb">Experiment record</a></p>
                 </article>
+                -->
                 <article class="lab-entry" data-tags="javalin spring-boot frameworks vps memory">
                     <div class="lab-entry-tags" aria-label="Topics"><span>Frameworks</span><span>VPS</span><span>Memory</span></div>
                     <h3><a href="/java-performance/experiments/javalin-vs-spring-boot-256mb.html">Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment</a></h3>
@@ -345,7 +347,7 @@
     <section class="lab-section lab-section--alt">
         <div class="container">
             <h2>How these experiments work</h2>
-            <p>These experiments answer practical engineering questions. A run may use one environment and only a few samples; each write-up explains its method and limitations. The five featured experiments are a curated starting point, selected for useful findings and a range of deployment and persistence questions. Experiments focus on reproducible measurements and technical comparisons. Articles explore broader engineering problems and practical lessons.</p>
+            <p>These experiments answer practical engineering questions. A run may use one environment and only a few samples; each write-up explains its method and limitations. The featured experiments are a curated starting point, selected for useful findings and a range of deployment and persistence questions. Experiments focus on reproducible measurements and technical comparisons. Articles explore broader engineering problems and practical lessons.</p>
             <p>Source, commands, supporting files, and selected raw evidence live in the public <a href="https://github.com/PVRLabs/experiments" target="_blank" rel="noopener noreferrer">PVR Labs experiments repository</a>.</p>
             <p class="lab-context-note">For longer-running experiments, <a href="/statlite/">StatLite</a> provides lightweight Spring Boot and JVM monitoring without a separate Prometheus/Grafana stack.</p>
         </div>
