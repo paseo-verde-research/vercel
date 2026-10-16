@@ -13,6 +13,7 @@
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.">
     <meta property="article:published_time" content="2026-10-09T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-10-16T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -75,11 +76,12 @@
         <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
     </nav>
     <h1>Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-09">October 9, 2026</time></div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-09">October 9, 2026</time> · Updated <time datetime="2026-10-16">October 16, 2026</time></div>
     <div class="article-body" data-lightbox-scope>
 <p>Two quiet Spring Boot instances held <strong>20 PostgreSQL connections</strong> with Hikari’s default pool sizing. Allowing excess idle connections to retire brought that total to <strong>2</strong>, associated with approximately <strong>29 MiB lower PostgreSQL cgroup memory</strong>.</p>
 <p>I left HikariCP’s <code>minimumIdle</code> and <code>maximumPoolSize</code> unset. Both resolved to <strong>10</strong>: Hikari’s default idle target equals its maximum, so <code>idleTimeout</code> has no connections above the target to retire.</p>
-<p>For scale, ten application instances with Hikari’s default pool size of ten can demand 100 PostgreSQL connections even while idle. On a server configured with <code>max_connections=100</code>, that demand can exhaust ordinary application capacity before traffic returns: PostgreSQL <a href="https://www.postgresql.org/docs/16/runtime-config-connection.html#GUC-SUPERUSER-RESERVED-CONNECTIONS">reserves some slots for privileged connections</a>, so fewer than 100 may be available to application roles. This is a sizing example; the experiment below used two instances.</p>
+<p>This was a deliberately small experiment to isolate the effect. At my previous company, many application VMs connected to a shared PostgreSQL database, and shrinking idle pools across those instances produced substantial aggregate memory savings.</p>
+<p>As an illustrative example, 30 instances retaining 32 connections each means 960 persistent connections. If idle retirement reduces the average to 16 per instance, that leaves 480 fewer connections for PostgreSQL to maintain. The experiment below measures the effect with two instances; it does not establish a general memory saving per connection.</p>
 <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim">experiment record</a> includes the source, reproduction instructions, screenshots, and recorded data. This article uses Spring Boot 4.1.1, HikariCP 7.0.2, and PostgreSQL 16.15 on Java 25.</p>
 <h2>Testing the quiet period</h2>
 <p>I ran two copies of a tiny Spring Boot JDBC application using HikariCP against PostgreSQL. Instance A received a short burst; B started before A finished and stayed busy longer. That created three useful observations: both pools under demand, A idle while B remained busy, and both idle before the next burst.</p>
