@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-<title id="title">Spring Boot Connection Pools: 20 vs 2 Idle PostgreSQL Connections</title>
+<title id="title">Reducing PostgreSQL Memory Use by Shrinking Idle Connection Pools</title>
 <desc id="desc">Two Spring Boot instances retained 20 idle PostgreSQL connections with default pool sizing, or two with idle retirement enabled. PostgreSQL accounted memory was about 57.5 versus 28.5 MiB in this experiment.</desc>
 <defs>
 <radialGradient id="bg" cx="80%" cy="40%" r="90%"><stop stop-color="#123323"/><stop offset="1" stop-color="#080e0b"/></radialGradient>
@@ -9,11 +9,11 @@
 <g font-family="Arial, Helvetica, sans-serif">
 <text x="58" y="74" fill="#f4faf6" font-size="32" font-weight="800">PVR<tspan fill="#42dc84">Labs</tspan></text>
 <text x="58" y="105" fill="#8daf9a" font-size="13" letter-spacing="3">ENGINEERING EXPERIMENT</text>
-<text x="58" y="211" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Spring Boot</text>
-<text x="58" y="281" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Connection</text>
-<text x="58" y="351" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Pools</text>
-<text x="58" y="411" fill="#42dc84" font-size="33" font-weight="700">20 vs 2 idle connections</text>
-<text x="58" y="467" fill="#bdcec3" font-size="22">PostgreSQL · Two application instances</text>
+<text x="58" y="211" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Reducing</text>
+<text x="58" y="281" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">PostgreSQL</text>
+<text x="58" y="351" fill="#f4faf6" font-size="55" font-weight="800" letter-spacing="-1.6">Memory Use</text>
+<text x="58" y="411" fill="#42dc84" font-size="30" font-weight="700">Shrink idle connection pools</text>
+<text x="58" y="467" fill="#bdcec3" font-size="22">Spring Boot · HikariCP · Two instances</text>
 <text x="58" y="505" fill="#bdcec3" font-size="22">Idle retirement and the cost of reopening</text>
 <rect x="622" y="138" width="520" height="376" rx="16" fill="#101d16" stroke="#365441"/>
 <text x="654" y="184" fill="#e1ece4" font-size="20" font-weight="700">IDLE POSTGRESQL CONNECTIONS</text>
