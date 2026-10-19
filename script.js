@@ -669,11 +669,19 @@ document.addEventListener('DOMContentLoaded', () => {
         highlightArticleCode(codeBlock, xmlTokenPattern, xmlTokenClass);
     });
 
-    const javaKeywords = new Set(['for', 'if', 'else', 'new', 'var', 'return', 'while']);
+    const javaKeywords = new Set([
+        'abstract', 'assert', 'boolean', 'break', 'byte', 'case', 'catch', 'char',
+        'class', 'continue', 'default', 'do', 'double', 'else', 'enum', 'extends',
+        'final', 'finally', 'float', 'for', 'if', 'implements', 'import', 'instanceof',
+        'int', 'interface', 'long', 'native', 'new', 'package', 'private', 'protected',
+        'public', 'record', 'return', 'short', 'static', 'super', 'switch',
+        'synchronized', 'this', 'throw', 'throws', 'transient', 'try', 'var', 'void',
+        'volatile', 'while', 'yield'
+    ]);
     const javaOperators = new Set([
         '++', '--', '==', '!=', '>=', '<=', '&&', '||', '=', '+', '-', '>', '<', '!'
     ]);
-    const javaTokenPattern = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:[^"\n\\]|\\.)*"|'(?:[^'\n\\]|\\.)*'|(?<![\w.])\d+(?:\.\d+)?\b|\+\+|--|==|!=|>=|<=|&&|\|\||[{}[\]();,.:]|[=+\-><!]|[A-Za-z_$][A-Za-z0-9_$]*/g;
+    const javaTokenPattern = /"""[\s\S]*?"""|@[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*|\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:[^"\n\\]|\\.)*"|'(?:[^'\n\\]|\\.)*'|(?<![\w.])\d+(?:\.\d+)?\b|\+\+|--|==|!=|>=|<=|&&|\|\||[{}[\]();,.:]|[=+\-><!]|[A-Za-z_$][A-Za-z0-9_$]*/g;
 
     function javaTokenClass(token) {
         if (token.startsWith('//') || token.startsWith('/*')) {
@@ -688,7 +696,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (javaOperators.has(token)) {
             return 'code-token-operator';
         }
-        if (javaKeywords.has(token)) {
+        if (/^(?:true|false|null)$/.test(token)) {
+            return 'code-token-literal';
+        }
+        if (token.startsWith('@') || javaKeywords.has(token)) {
             return 'code-token-keyword';
         }
         if (/^[{}[\]();,.:]$/.test(token)) {
@@ -699,6 +710,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.article-body pre[data-lang="java"] > code').forEach(codeBlock => {
         highlightArticleCode(codeBlock, javaTokenPattern, javaTokenClass);
+    });
+
+    const sqlKeywords = new Set([
+        'SELECT', 'FROM', 'WHERE', 'ORDER', 'BY', 'ASC', 'DESC', 'LIMIT', 'OFFSET',
+        'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'JOIN', 'LEFT',
+        'RIGHT', 'INNER', 'OUTER', 'ON', 'AS', 'AND', 'OR', 'NOT', 'IN', 'IS',
+        'LIKE', 'BETWEEN', 'GROUP', 'HAVING', 'DISTINCT', 'UNION', 'ALL',
+        'CREATE', 'TABLE', 'PRIMARY', 'KEY', 'UNIQUE', 'INDEX', 'DEFAULT',
+        'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'EXISTS'
+    ]);
+    const sqlTokenPattern = /--[^\n]*|\/\*[\s\S]*?\*\/|'(?:[^']|'')*'|"(?:[^"]|"")*"|:[A-Za-z_][\w]*|\b\d+(?:\.\d+)?\b|[A-Za-z_][\w]*|<>|!=|<=|>=|[=<>+*/%-]|[(),.;?]/g;
+
+    function sqlTokenClass(token) {
+        if (token.startsWith('--') || token.startsWith('/*')) {
+            return 'code-token-comment';
+        }
+        if (token.startsWith("'") || token.startsWith('"')) {
+            return 'code-token-string';
+        }
+        if (token.startsWith(':') || token === '?') {
+            return 'code-token-variable';
+        }
+        if (/^\d/.test(token)) {
+            return 'code-token-number';
+        }
+        if (/^(?:NULL|TRUE|FALSE)$/i.test(token)) {
+            return 'code-token-literal';
+        }
+        if (sqlKeywords.has(token.toUpperCase())) {
+            return 'code-token-keyword';
+        }
+        if (/^[=<>!+*/%-]/.test(token)) {
+            return 'code-token-operator';
+        }
+        if (/^[(),.;]$/.test(token)) {
+            return 'code-token-punctuation';
+        }
+        return '';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="sql"] > code').forEach(codeBlock => {
+        highlightArticleCode(codeBlock, sqlTokenPattern, sqlTokenClass);
     });
 
     const workflowTokenPattern = /AI\s+Badger|[↓→]|\b\d+\.(?=\s)|[A-Za-z_][A-Za-z0-9_-]*/g;

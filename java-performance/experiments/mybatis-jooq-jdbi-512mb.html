@@ -73,13 +73,13 @@
 <h2>The application and workload</h2>
 <p>The application is a small market-quote API for three stock symbols. It serves the latest quote for each symbol, returns bounded quote history, and accepts transactional batches containing one new quote for each of the three symbols. Controllers, validation, domain records and the repository contract are shared in shape; persistence code uses each library&#x27;s own APIs.</p>
 <p>The initial dataset contains 1,170 rows: 390 quote batches across three symbols. The <code>quotes</code> table has an identity primary key, a unique constraint on <code>(batch_seq, symbol)</code> and an index on <code>(symbol, id DESC)</code>. Latest and history reads use a symbol predicate, descending ID order and a limit:</p>
-<pre><code class="language-sql">SELECT batch_seq, cycle, sample_index, market_time, symbol, price
+<pre data-lang="sql"><code class="language-sql">SELECT batch_seq, cycle, sample_index, market_time, symbol, price
 FROM quotes
 WHERE symbol = ?
 ORDER BY id DESC
 LIMIT ?</code></pre>
 <p>A latest-quotes request performs three indexed reads with limit 1. A history request reads 60 rows for one symbol and reverses them into ascending history order for the response. Writes batch this statement three times within one transaction:</p>
-<pre><code class="language-sql">INSERT INTO quotes(batch_seq, cycle, sample_index, market_time, symbol, price)
+<pre data-lang="sql"><code class="language-sql">INSERT INTO quotes(batch_seq, cycle, sample_index, market_time, symbol, price)
 VALUES (?, ?, ?, ?, ?, ?)</code></pre>
 <p>Each five-minute workload schedules 1,500 HTTP requests at five per second: 300 latest-quotes reads, 900 history reads and 300 writes. That is an 80/20 read/write mix, with at most four requests outstanding and no retries. The load generator runs outside the guest and checks response status and contents. A successful run ends with 2,070 rows, maximum batch sequence 689 and a price sum of 630374.22, calculated as <code>SUM(price)</code> across all persisted quote rows. This deterministic total is a final-state correctness check.</p>
 <p>H2 is a deliberate self-contained database choice: there is no separate database server to fit into the guest budget. Its runtime and cache contribute to the application&#x27;s RSS. Each application uses file-backed H2 2.4.240 with <code>CACHE_SIZE=4096</code>, a 4 MiB cache limit (<a href="https://h2database.github.io/html/features.html#cache_settings">H2 defines the setting in units of 1,024 bytes</a>), through HikariCP 7.0.2 with minimum idle 1 and maximum pool size 2. This keeps deployment small; it does not remove database variance or establish how these implementations would behave with PostgreSQL.</p>
@@ -106,7 +106,7 @@ VALUES (?, ?, ?, ?, ?, ?)</code></pre>
 <h2>What the repository code looks like</h2>
 <p>All three implementations keep an ordinary repository interface and domain records. The following excerpts show the same latest-quotes operation from the measured source. SQL constants, mapping setup and error translation are explained alongside the excerpts; complete source is linked for each implementation.</p>
 <h3>Jdbi: SQL and binding in the repository</h3>
-<pre><code class="language-java">return operation(() -&gt; jdbi.withHandle(handle -&gt; {
+<pre data-lang="java"><code class="language-java">return operation(() -&gt; jdbi.withHandle(handle -&gt; {
     var rows = new ArrayList&lt;Quote&gt;(QuoteBatch.SYMBOLS.size());
     for (var symbol : QuoteBatch.SYMBOLS) {
         handle.createQuery(SELECT).bind(&quot;symbol&quot;, symbol).bind(&quot;limit&quot;, 1)
@@ -116,7 +116,7 @@ VALUES (?, ?, ?, ?, ?, ?)</code></pre>
 }));</code></pre>
 <p><code>SELECT</code> is the explicit SQL above, using <code>:symbol</code> and <code>:limit</code> parameters. The constructor registers a row mapper reading named columns into a <code>Quote</code>. <code>withHandle</code> scopes the handle and pooled connection across all three queries. Writes use <code>useTransaction</code> and a closed <code>PreparedBatch</code>; transaction ownership is visible in repository code. See the <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/sql-persistence-256mb/apps-512mb/javalin-jdbi3/src/main/java/lab/JdbiQuoteRepository.java">Jdbi repository</a>.</p>
 <h3>MyBatis: annotated SQL behind mapper methods</h3>
-<pre><code class="language-java">return operation(() -&gt; withMapper(mapper -&gt; {
+<pre data-lang="java"><code class="language-java">return operation(() -&gt; withMapper(mapper -&gt; {
     var rows = new ArrayList&lt;Quote&gt;(QuoteBatch.SYMBOLS.size());
     for (var symbol : QuoteBatch.SYMBOLS) {
         var quote = mapper.selectQuotes(symbol, 1);
@@ -125,7 +125,7 @@ VALUES (?, ?, ?, ?, ?, ?)</code></pre>
     return rows;
 }));</code></pre>
 <p><code>withMapper</code> opens a SIMPLE, auto-commit <code>SqlSession</code> in try-with-resources, holding one pooled connection across the three reads. The corresponding declarations in <code>QuoteMapper</code> make the SQL, binding and mapping explicit:</p>
-<pre><code class="language-java">String LATEST_OR_HISTORY = &quot;&quot;&quot;
+<pre data-lang="java"><code class="language-java">String LATEST_OR_HISTORY = &quot;&quot;&quot;
     SELECT batch_seq,cycle,sample_index,market_time,symbol,price
     FROM quotes
     WHERE symbol=#{symbol}
@@ -146,7 +146,7 @@ Quote selectQuotes(@Param(&quot;symbol&quot;) String symbol, @Param(&quot;limit&
 <p>These two excerpts come from the repository and mapper interface respectively; the mapper excerpt omits intervening declarations. <code>@Select</code> references the SQL constant, <code>@Param</code> names the bound parameters, and <code>@ConstructorArgs</code> maps the six selected columns into the record. The short repository call depends on these separate declarations rather than eliminating SQL and mapping code.</p>
 <p>The application explicitly builds an environment and session factory and sets <code>localCacheScope=STATEMENT</code>. This overrides the <code>SESSION</code> default, preventing local-cache results from being shared across separate statements; it is not a general freshness guarantee across transactions. See the <a href="https://mybatis.org/mybatis-3/configuration#settings">MyBatis configuration documentation</a>. Writes use a BATCH session with explicit flush, commit and rollback on failure. See the <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/sql-persistence-256mb/apps-512mb/javalin-mybatis/src/main/java/lab/MyBatisQuoteRepository.java">repository</a>, <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/sql-persistence-256mb/apps-512mb/javalin-mybatis/src/main/java/lab/QuoteMapper.java">mapper</a> and <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/sql-persistence-256mb/apps-512mb/javalin-mybatis/src/main/java/lab/JavalinMybatisApp.java">application setup</a>.</p>
 <h3>jOOQ: queries expressed through schema types</h3>
-<pre><code class="language-java">return operation(() -&gt; {
+<pre data-lang="java"><code class="language-java">return operation(() -&gt; {
     var rows = new ArrayList&lt;Quote&gt;(QuoteBatch.SYMBOLS.size());
     for (String symbol : QuoteBatch.SYMBOLS) {
         var row = dsl.select(QUOTES.BATCH_SEQ, QUOTES.CYCLE, QUOTES.SAMPLE_INDEX,
@@ -195,7 +195,7 @@ Quote selectQuotes(@Param(&quot;symbol&quot;) String symbol, @Param(&quot;limit&
 </div></article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
 <script src="/screenshot-gallery.js?v=20261005b"></script>
-<script src="/script.js?v=20260911"></script>
+<script src="/script.js?v=20261019"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
 <script src="https://www.statcounter.com/counter/counter.js" async></script>
 </body></html>
