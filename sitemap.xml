@@ -15,7 +15,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-19</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
@@ -166,5 +166,9 @@
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-256mb.html</loc>
     <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-512mb.html</loc>
+    <lastmod>2026-10-19</lastmod>
   </url>
 </urlset>
