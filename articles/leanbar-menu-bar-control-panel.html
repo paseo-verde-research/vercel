@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeanBar: A Small Native Menu-Bar Control Panel | PVR Labs</title>
+    <meta name="description" content="How I built LeanBar, a small Swift and AppKit host that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html">
+    <meta property="og:title" content="LeanBar: Keeping a Menu-Bar Control Panel Small">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A small Swift and AppKit host that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
+    <meta property="article:published_time" content="2026-10-20">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LeanBar: Keeping a Menu-Bar Control Panel Small">
+    <meta name="twitter:description" content="A small Swift and AppKit host that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "LeanBar: Keeping a Menu-Bar Control Panel Small",
+      "description": "How I built LeanBar, a small Swift and AppKit host that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.",
+      "datePublished": "2026-10-20",
+      "author": {
+        "@type": "Person",
+        "name": "Ted Kupolov",
+        "url": "https://github.com/ejboy"
+      },
+      "image": "https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg",
+      "mainEntityOfPage": "https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html"
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261020">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
+    <h1>LeanBar: Keeping My Menu-Bar Control Panel Small</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-20">October 20, 2026</time></div>
+
+    <div class="article-body">
+        <p>My Mac's menu bar has become a small control panel: check which services are running, open a dashboard, run a job, or inspect a log. It saves me from remembering commands and finding the right terminal.</p>
+        <p>I built the menu with SwiftBar. A script prints labels and actions, and SwiftBar turns the output into a native menu. The setup worked well, but I wanted a smaller host for this one job.</p>
+        <p>So I built LeanBar, a small Swift and AppKit utility from PVR Labs. I kept my existing scripts. In one local comparison, the native host's physical footprint was 12 MB versus 59 MB for SwiftBar.</p>
+
+        <figure class="article-figure--narrow">
+            <img src="/articles/img/leanbar-portfolio-menu.png" width="582" height="1126" loading="lazy" decoding="async" alt="My existing portfolio menu migrated to LeanBar, with a plain LB menu-bar label">
+            <figcaption>My existing portfolio menu after migrating to LeanBar. The only visual change is the menu-bar label: the old PVR logo became plain “LB” text to keep the host minimal.</figcaption>
+        </figure>
+
+        <h2>Keep the script, shrink the host</h2>
+        <p>The useful logic was already in my scripts: how to check a service, start it, or launch a scheduled job. The host only needed to read their output, build a menu, and dispatch the selected action.</p>
+        <p>That boundary made the experiment manageable. I could replace the presentation layer without rebuilding the management tools.</p>
+        <p>I implemented the subset of SwiftBar's output format my menu used: flat labels, separators, colors, font sizes, and commands with numbered arguments. My existing menu script worked unchanged.</p>
+        <p>The limited format is a tradeoff. A plugin that needs submenus, images, cycling headers, or terminal actions will need a different host or changes to its output. Supporting my menu gave the project a concrete scope.</p>
+
+        <h2>A native menu with a small job</h2>
+        <p>LeanBar is written in Swift with AppKit. It uses an <code>NSStatusItem</code> and an <code>NSMenu</code>. One configured command produces one menu, and a plain <strong>LB</strong> label sits in the menu bar.</p>
+        <p>A menu can be much simpler than my portfolio controls. The example bundled with LeanBar shows battery status, free disk space, and a few everyday actions:</p>
+        <figure class="article-figure--narrow">
+            <img src="/articles/img/leanbar-menu.png" width="440" height="644" loading="lazy" decoding="async" alt="LeanBar's example desk menu showing battery status, free disk space, links, and actions">
+            <figcaption>The example desk menu included with LeanBar.</figcaption>
+        </figure>
+        <p>The host has no marketplace, settings interface, or animation. Keeping the feature set small also limits how much code I have to maintain.</p>
+
+        <h2>The tricky part was clicking the right command</h2>
+        <p>A small menu can still trigger real operational actions. Refreshing its contents while someone is using it deserves care.</p>
+        <p>Review caught a bug where a refresh could change which command a displayed item resolved to. Imagine opening a menu, seeing “Restart service A”, and having a refreshed command list change what that click would execute. Each item now retains the executable and arguments of the action it displayed.</p>
+        <p>Another bug could silently drop a click while a refresh was running. Explicit actions now queue behind active work. Submitting the same command again is blocked while it is queued or running, including through a rebuilt menu item.</p>
+        <p>Commands run off the UI thread, one invocation at a time. Arguments stay separate values instead of being joined into a shell command. A short-lived Python helper handles output limits, timeouts, and process cleanup. These are trusted local scripts running with my user permissions.</p>
+        <p>Opening the menu requests fresh status; closing and reopening shows the refreshed snapshot. Background refreshes stay quiet. Queued or running actions show progress, and failures remain visible.</p>
+
+        <h2>What the memory comparison showed</h2>
+        <p>In one recorded local comparison, the native host's physical footprint was 12 MB after opening the menu, compared with 59 MB for SwiftBar, about an 80% reduction in that observation.</p>
+        <p>Those figures come from my setup, not guaranteed memory limits. The scripts also have their own temporary cost when they run, and the packaged app has not been benchmarked as a separate build. The prototype was comfortably below the 20 MiB budget I wanted for this utility.</p>
+
+        <h2>A small utility to own</h2>
+        <p>LeanBar has now replaced SwiftBar on my Mac. It runs at login through a LaunchAgent, and I have uninstalled SwiftBar. Checks cover command arguments, failures, timeouts, repeated menu opening, and overlap between refreshes and actions. I am still evaluating longer-term reliability in daily use.</p>
+        <p>The useful design decision was keeping the management logic in scripts. That made the host replaceable. A narrow format and native menu were enough for my control panel, with a memory footprint I was happier to leave running.</p>
+        <p>LeanBar's <a href="https://github.com/PVRLabs/leanbar" target="_blank" rel="noopener noreferrer">source and build instructions are on GitHub</a>. If this kind of small utility is useful to you, consider giving the project a star.</p>
+    </div>
+</article></main>
+
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20260830"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
