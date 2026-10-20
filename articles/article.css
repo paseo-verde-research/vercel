@@ -432,6 +432,7 @@
     outline-offset: 2px;
 }
 
+.article-cta,
 .statlite-pitch {
     margin: 32px 0 40px;
     padding: 24px 28px;
@@ -440,10 +441,12 @@
     background: var(--bg-light);
 }
 
+.article-cta p,
 .statlite-pitch p {
     margin-bottom: 0;
 }
 
+.article-cta p + p,
 .statlite-pitch p + p {
     margin-top: 12px;
 }
@@ -527,6 +530,7 @@
 }
 
 @media (max-width: 768px) {
+    .article-cta,
     .statlite-pitch {
         padding: 20px;
     }
