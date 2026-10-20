@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeanBar: A Small Native Menu-Bar Control Panel | PVR Labs</title>
+    <title>LeanBar: Same Scripts, Less Memory | PVR Labs</title>
     <meta name="description" content="How I built LeanBar, a small Swift and AppKit host that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html">
-    <meta property="og:title" content="LeanBar: Keeping a Menu-Bar Control Panel Small">
+    <meta property="og:title" content="LeanBar: Same Scripts, Less Memory">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="A small Swift and AppKit host that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
     <meta property="article:published_time" content="2026-10-20">
     <meta property="article:author" content="Ted Kupolov">
-    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/leanbar-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="LeanBar: Same scripts. Less memory. A native macOS menu alongside its example desk menu.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="LeanBar: Keeping a Menu-Bar Control Panel Small">
+    <meta name="twitter:title" content="LeanBar: Same Scripts, Less Memory">
     <meta name="twitter:description" content="A small Swift and AppKit host that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
-    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/leanbar-og.jpg">
+    <meta name="twitter:image:alt" content="LeanBar: Same scripts. Less memory. A native macOS menu alongside its example desk menu.">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "headline": "LeanBar: Keeping a Menu-Bar Control Panel Small",
+      "headline": "LeanBar: Same Scripts, Less Memory",
       "description": "How I built LeanBar, a small Swift and AppKit host that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.",
       "datePublished": "2026-10-20",
       "author": {
@@ -31,7 +36,7 @@
         "name": "Ted Kupolov",
         "url": "https://github.com/ejboy"
       },
-      "image": "https://pvrlabs.xyz/articles/img/pvrlabs-articles-og.jpg",
+      "image": "https://pvrlabs.xyz/articles/img/leanbar-og.jpg",
       "mainEntityOfPage": "https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html"
     }
     </script>
@@ -54,12 +59,12 @@
     <nav class="article-product-nav" aria-label="Article links">
         <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
     </nav>
-    <h1>LeanBar: Keeping My Menu-Bar Control Panel Small</h1>
+    <h1>LeanBar: Same Scripts, Less Memory</h1>
     <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-20">October 20, 2026</time></div>
 
     <div class="article-body">
         <p>My Mac's menu bar has become a small control panel: check which services are running, open a dashboard, run a job, or inspect a log. It saves me from remembering commands and finding the right terminal.</p>
-        <p>I built the menu with SwiftBar. A script prints labels and actions, and SwiftBar turns the output into a native menu. The setup worked well, but I wanted a smaller host for this one job.</p>
+        <p>I built the menu with SwiftBar. A script prints labels and actions, and SwiftBar turns the output into a native menu. The setup worked well, but I wanted the menu host to use less memory.</p>
         <p>So I built LeanBar, a small Swift and AppKit utility from PVR Labs. I kept my existing scripts. In one local comparison, the native host's physical footprint was 12 MB versus 59 MB for SwiftBar.</p>
 
         <figure class="article-figure--narrow">
@@ -67,7 +72,7 @@
             <figcaption>My existing portfolio menu after migrating to LeanBar. The only visual change is the menu-bar label: the old PVR logo became plain “LB” text to keep the host minimal.</figcaption>
         </figure>
 
-        <h2>Keep the script, shrink the host</h2>
+        <h2>Keep the scripts, reduce memory use</h2>
         <p>The useful logic was already in my scripts: how to check a service, start it, or launch a scheduled job. The host only needed to read their output, build a menu, and dispatch the selected action.</p>
         <p>That boundary made the experiment manageable. I could replace the presentation layer without rebuilding the management tools.</p>
         <p>I implemented the subset of SwiftBar's output format my menu used: flat labels, separators, colors, font sizes, and commands with numbered arguments. My existing menu script worked unchanged.</p>
@@ -97,7 +102,7 @@
         <p>LeanBar has now replaced SwiftBar on my Mac. It runs at login through a LaunchAgent, and I have uninstalled SwiftBar. Checks cover command arguments, failures, timeouts, repeated menu opening, and overlap between refreshes and actions. I am still evaluating longer-term reliability in daily use.</p>
         <p>The useful design decision was keeping the management logic in scripts. That made the host replaceable. A narrow format and native menu were enough for my control panel, with a memory footprint I was happier to leave running.</p>
         <aside class="article-cta" aria-label="Explore LeanBar">
-            <p><strong>Like small tools that stay small?</strong></p>
+            <p><strong>Like tools that keep resource use low?</strong></p>
             <p>LeanBar's source and build instructions are on GitHub. If it looks useful to you, consider giving the project a star.</p>
             <div class="article-actions">
                 <a href="https://github.com/PVRLabs/leanbar" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star LeanBar on GitHub</a>
