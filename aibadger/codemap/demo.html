@@ -158,11 +158,22 @@ summary:focus-visible,textarea:focus-visible { outline:3px solid var(--accent); 
 @media(max-width:1100px) { .toolbar { flex-wrap:wrap; } #repository-stats { order:3; flex-basis:100%; margin:4px 0 0; padding:12px 0 0; border-left:0; border-top:1px solid var(--line); text-align:left; } }
 @media(max-width:900px) { header { padding:16px; } .workspace { padding:16px; } main { grid-template-columns:minmax(0,1fr) 270px; } .depth-label { display:none; } }
 @media(max-width:680px) { header { align-items:stretch; flex-direction:column; gap:12px; } .header-actions { gap:8px; } .search { width:auto; flex:1; min-width:0; } .toolbar { flex-wrap:wrap; } #crumbs { order:2; flex-basis:100%; } main { grid-template-columns:1fr; } #map { height:55vh; min-height:320px; } #details { border-left:0; border-top:1px solid var(--line); max-height:none; } }
+/* BEGIN hosted-demo-only customization. Reapply after regeneration; see README.md.
+   Keep this navigation out of the generic AI Badger report generator. */
+.hosted-demo-caption { display:flex; align-items:center; flex-wrap:wrap; column-gap:16px; }
+.hosted-demo-caption .subtitle { margin-top:0; }
+.hosted-demo-install { display:inline-flex; align-items:center; min-height:44px; max-width:100%; color:var(--accent); font-size:12px; text-decoration:none; }
+.hosted-demo-install:hover { text-decoration:underline; text-underline-offset:3px; }
+.hosted-demo-install:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+/* END hosted-demo-only customization. */
 </style>
 </head>
 <body>
 <header>
-  <div><div class="brand-line"><a class="brand" href="https://pvrlabs.xyz/aibadger" target="_blank" rel="noopener noreferrer">AI Badger</a><div class="feature-name">Codebase Map</div></div><div class="subtitle">A closer look at where your code lives.</div></div>
+  <div><div class="brand-line"><a class="brand" href="https://pvrlabs.xyz/aibadger" target="_blank" rel="noopener noreferrer">AI Badger</a><div class="feature-name">Codebase Map</div></div><!-- BEGIN hosted-demo-only customization. Reapply after regeneration; see README.md. -->
+<div class="hosted-demo-caption"><div class="subtitle">A closer look at where your code lives.</div>
+<a class="hosted-demo-install" href="/aibadger/install.html#cli" target="_blank" rel="noopener noreferrer">Map your own repo → Install CLI</a></div>
+<!-- END hosted-demo-only customization. --></div>
   <div class="header-actions"><div class="search"><input id="search" type="search" placeholder="Find a folder…" aria-label="Find a folder" autocomplete="off" aria-controls="search-results"><div id="search-results" aria-label="Matching folders"></div></div><button id="theme-toggle" class="control" type="button" aria-label="Switch to light mode">☀ Light mode</button></div>
 </header>
 <div class="workspace">
