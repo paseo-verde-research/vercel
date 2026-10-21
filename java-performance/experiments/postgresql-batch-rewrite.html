@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewriting batched inserts made PostgreSQL CSV import 1.7× faster | PVR Labs</title>
+    <meta name="description" content="Enabling reWriteBatchedInserts made a million-row Scriptella import 1.70× faster on PostgreSQL, from 15.995 to 9.409 seconds. Handwritten JDBC was 1.55× faster. Three local runs.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/postgresql-batch-rewrite.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/postgresql-batch-rewrite.html">
+    <meta property="og:title" content="Rewriting batched inserts made PostgreSQL CSV import 1.7× faster">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Enabling reWriteBatchedInserts made a million-row Scriptella import 1.70× faster on PostgreSQL, from 15.995 to 9.409 seconds. Handwritten JDBC was 1.55× faster.">
+    <meta property="article:published_time" content="2026-10-21T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/postgresql-batch-rewrite-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="PostgreSQL CSV import 1.7× faster with reWriteBatchedInserts. Scriptella 15.995 to 9.409 seconds. JDBC 11.333 to 7.290 seconds. MariaDB gap 7.307 to 0.722 seconds.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rewriting batched inserts made PostgreSQL CSV import 1.7× faster">
+    <meta name="twitter:description" content="Enabling reWriteBatchedInserts made a million-row Scriptella import 1.70× faster on PostgreSQL, from 15.995 to 9.409 seconds. Handwritten JDBC was 1.55× faster.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/postgresql-batch-rewrite-og.jpg">
+    <meta name="twitter:image:alt" content="PostgreSQL CSV import 1.7× faster with reWriteBatchedInserts. Scriptella 15.995 to 9.409 seconds. JDBC 11.333 to 7.290 seconds.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        .article-body figure a { display: block; min-height: 44px; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 600px) {
+            .table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .table-scroll tbody, .table-scroll tr, .table-scroll td { display: block; }
+            .table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; border: 0; text-align: right; }
+            .table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; text-align: left; }
+            .table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+        @media (max-width: 480px) {
+            .article-body th, .article-body td { padding: .5rem; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Rewriting batched inserts made PostgreSQL CSV import 1.7× faster", "description": "Enabling reWriteBatchedInserts made a million-row Scriptella import 1.70× faster on PostgreSQL, from 15.995 to 9.409 seconds. Handwritten JDBC was 1.55× faster. Three local runs.", "datePublished": "2026-10-21T00:00:00-07:00", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/postgresql-batch-rewrite.html", "image": "https://pvrlabs.xyz/java-performance/experiments/img/postgresql-batch-rewrite-og.jpg", "isPartOf": {"@type": "CollectionPage", "name": "Java Performance Experiments", "url": "https://pvrlabs.xyz/java-performance/experiments/"}}</script>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a>
+        <a href="/java-performance/" class="article-product-nav__link">Java Performance</a>
+    </nav>
+    <h1>Rewriting batched inserts made PostgreSQL CSV import 1.7× faster</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-21">October 21, 2026</time></div>
+    <div class="article-body" data-gallery data-lightbox-scope>
+<p>Turning on <code>reWriteBatchedInserts=true</code> made the Scriptella import <strong>1.70× faster</strong>, from <strong>15.995 seconds to 9.409</strong>. Handwritten JDBC went from <strong>11.333 to 7.290</strong>, about <strong>1.55×</strong>. Scriptella had been 7.307 seconds behind MariaDB. That gap is now 0.722 seconds on the unrounded medians, 9.409072 minus 8.687523. The rounded table values, 9.409 and 8.688, differ by 0.721.</p>
+<p>Medians of three runs, batch size 1000. MariaDB stayed on its usual defaults. This follows <a href="/articles/importing-a-million-csv-rows.html">Importing a million CSV rows</a>. COPY remains the fastest PostgreSQL path there. This retest only asks whether the driver-default gap was real. I maintain <a href="https://scriptella.org/" target="_blank" rel="noopener noreferrer">Scriptella</a>, and the only change here is that driver option.</p>
+<p>A reader of the earlier comparison noticed the defaults were not doing the same job. pgJDBC leaves rewriting off. MariaDB Connector/J 3.5.7 <a href="https://github.com/mariadb-corporation/mariadb-connector-j/blob/3.5.7/src/main/java/org/mariadb/jdbc/Configuration.java" target="_blank" rel="noopener noreferrer">turns <code>useBulkStmtsForInserts</code> on</a> when both bulk options are left unset. Scriptella and the JDBC code had both been using those defaults.</p>
+<figure>
+<a class="screenshot-link" href="/java-performance/experiments/img/postgresql-batch-rewrite/rewrite-comparison.svg" aria-label="Open the median import chart at full size"><img src="/java-performance/experiments/img/postgresql-batch-rewrite/rewrite-comparison.svg" width="760" height="482" alt="Median seconds for one million rows, three runs per configuration. Scriptella: PostgreSQL rewriting off 15.995, on 9.409, MariaDB 8.688. JDBC: PostgreSQL rewriting off 11.333, on 7.290, MariaDB 5.571. Linear axis from zero to 18. Lower is faster." loading="lazy" decoding="async"></a>
+</figure>
+<h2>The setting</h2>
+<p>Compatible batched inserts get rewritten into one multi-row <code>INSERT</code>. <a href="https://github.com/pgjdbc/pgjdbc/blob/REL42.7.13/pgjdbc/src/main/java/org/postgresql/PGProperty.java" target="_blank" rel="noopener noreferrer">pgJDBC 42.7.13</a> leaves that off. MariaDB's bulk protocol works differently:</p>
+<pre data-lang="xml"><code>&lt;connection id="db" driver="postgresql"
+            url="jdbc:postgresql://postgres:5432/benchmark"
+            user="benchmark" password="benchmark"&gt;
+  autocommit=false
+  statement.batchSize=1000
+  reWriteBatchedInserts=true
+&lt;/connection&gt;</code></pre>
+<p>The JDBC code sets the same property. Nothing changes on the server.</p>
+<h2>Medians</h2>
+<p>All 18 imports checked out. Versions were Scriptella 1.6, pgJDBC 42.7.13, PostgreSQL 17.11, MariaDB 11.8.8, MariaDB Connector/J 3.5.7, and Java 17. The cells are medians, in seconds. The clock runs from process start through exit, so parsing and the commit count. Warmup and the checks do not.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Median import times in seconds">
+<table>
+<thead><tr><th scope="col">Import</th><th scope="col">PostgreSQL, off</th><th scope="col">PostgreSQL, on</th><th scope="col">MariaDB</th></tr></thead>
+<tbody>
+<tr><td data-label="Import">Scriptella</td><td class="num" data-label="PostgreSQL, off">15.995</td><td class="num" data-label="PostgreSQL, on">9.409</td><td class="num" data-label="MariaDB">8.688</td></tr>
+<tr><td data-label="Import">JDBC</td><td class="num" data-label="PostgreSQL, off">11.333</td><td class="num" data-label="PostgreSQL, on">7.290</td><td class="num" data-label="MariaDB">5.571</td></tr>
+</tbody>
+</table>
+</div>
+<p>Both got faster on every run. Scriptella's time dropped 41.2%, JDBC's 35.7%. JDBC is still 1.719 seconds behind MariaDB, down from 5.762. MariaDB is still quicker.</p>
+<p>Scriptella is still slower than the handwritten JDBC, 1.41× with rewriting off and 1.29× with it on. Startup and a different CSV parser are inside that clock. The JDBC runs with rewriting off also drifted, from 12.845 seconds down to 10.952. Each round, the logs, and the rerun steps are in the <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-21-pg-rewrite" target="_blank" rel="noopener noreferrer">benchmark report</a>.</p>
+<p>The <a href="/articles/importing-a-million-csv-rows.html">earlier numbers</a> stay the record of the old defaults. I reran MariaDB in this same pass, so the gap is from this retest. The table has no generated keys or triggers, and this is not a general tuning result. Adoption caveats and failure-semantics notes are in the <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-21-pg-rewrite" target="_blank" rel="noopener noreferrer">benchmark report</a>.</p>
+<h2>What's next</h2>
+<p>Benchmark v4 turns <code>reWriteBatchedInserts</code> on for both Java importers. Profiling and feedback are still pushing the import further. <a href="https://github.com/scriptella/scriptella-etl/issues/71" target="_blank" rel="noopener noreferrer">Reusing the parsed plan for a repeated statement</a>, instead of parsing it on every row, is about 12.5% faster in early results.</p>
+<p class="experiment-links">
+    <a href="https://github.com/scriptella/scriptella-benchmarks/tree/main/docs/results/2026-10-21-pg-rewrite" target="_blank" rel="noopener noreferrer">Benchmark report</a>
+    <a href="/articles/importing-a-million-csv-rows.html">The million-row comparison</a>
+</p>
+<dialog class="screenshot-lightbox" aria-label="Expanded chart" data-screenshot-lightbox>
+    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded chart" data-lightbox-close>&times;</button>
+    <figure class="screenshot-lightbox__content">
+        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+    </figure>
+</dialog>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261019"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

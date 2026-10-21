@@ -15,7 +15,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-21</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
@@ -159,7 +159,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -174,5 +174,9 @@
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-512mb.html</loc>
     <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/postgresql-batch-rewrite.html</loc>
+    <lastmod>2026-10-21</lastmod>
   </url>
 </urlset>

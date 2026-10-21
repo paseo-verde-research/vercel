@@ -13,6 +13,7 @@
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Batched Scriptella loaded a million typed CSV rows in about 15 seconds on PostgreSQL and 10 on MariaDB. JDBC was a few seconds faster, which may be worth a declarative ETL file.">
     <meta property="article:published_time" content="2026-10-13T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-10-21T00:00:00-07:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/importing-a-million-csv-rows/cover.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -64,7 +65,7 @@
         <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
     </nav>
     <h1>Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-13">October 13, 2026</time></div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-13">October 13, 2026</time> · Updated <time datetime="2026-10-21">October 21, 2026</time></div>
     <div class="article-body" data-gallery data-lightbox-scope>
 <p>With batching, Scriptella imported a million typed CSV rows in about 15 seconds on PostgreSQL and about 10 seconds on MariaDB. Handwritten JDBC was faster by about a second on PostgreSQL and about three seconds on MariaDB. For an ETL job that runs occasionally, those seconds may be worth a declarative workflow instead of custom Java import code.</p>
 <p>Those are medians of two local runs. On PostgreSQL the batched observations overlap, so the one-second gap is not stable. On MariaDB the runs stay apart. I maintain <a href="https://scriptella.org/" target="_blank" rel="noopener noreferrer">Scriptella</a>, the Java ETL tool. The <a href="https://github.com/scriptella/scriptella-benchmarks" target="_blank" rel="noopener noreferrer">code and measurements are public</a>.</p>
@@ -91,6 +92,7 @@
 </div>
 <p>The host was a Mac with 32 GiB RAM, x86_64 Colima with four CPUs and 6 GiB, Temurin 17.0.17, and csvsql 2.2.0 on Python 3.12.3. The <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-10-12-local/report.md" target="_blank" rel="noopener noreferrer">full local report</a> has the individual measurements.</p>
 <p>Batching was the large change. Scriptella's median fell from 177.7 to 14.8 seconds on PostgreSQL and from 220.1 to 9.5 seconds on MariaDB, about 12× and 23×. Every case used one transaction and one commit, including the unbatched cases. JDBC called <code>executeUpdate()</code> per row when unbatched, and <code>addBatch()</code> with <code>executeBatch()</code> every 1,000 rows when batched. Scriptella set <code>statement.batchSize=1000</code>. Driver defaults stayed in place: pgJDBC <code>reWriteBatchedInserts=false</code>, and MariaDB Connector/J <code>useBulkStmts=false</code> with <code>useBulkStmtsForInserts=true</code>.</p>
+<p>A later retest on that machine turned <code>reWriteBatchedInserts</code> on and measured MariaDB again. Scriptella's median was 9.409 seconds with rewriting and 15.995 seconds without. That three-run dataset is separate from the table above: <a href="/java-performance/experiments/postgresql-batch-rewrite.html">PostgreSQL batch rewrite</a>.</p>
 <h2>The remaining gap</h2>
 <p>After batching, JDBC's median was about 1.16 seconds lower on PostgreSQL and 2.87 seconds lower on MariaDB. Two runs are too few to treat that gap as stable. On PostgreSQL the observations overlap: Scriptella took 13.376 and 16.208 seconds, JDBC 13.286 and 13.976. On MariaDB they separate: Scriptella 8.644 and 10.403, JDBC 6.818 and 6.480. The paths use different CSV parsers, and the clock includes process startup.</p>
 <figure>
