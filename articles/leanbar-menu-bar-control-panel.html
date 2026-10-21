@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeanBar: Same Scripts, Less Memory | PVR Labs</title>
-    <meta name="description" content="How I built LeanBar, a small Swift and AppKit host that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.">
+    <meta name="description" content="How I built LeanBar, a lightweight Swift and AppKit app that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.">
     <meta name="author" content="Ted Kupolov">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html">
     <meta property="og:title" content="LeanBar: Same Scripts, Less Memory">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="A small Swift and AppKit host that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
+    <meta property="og:description" content="A lightweight Swift and AppKit app that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
     <meta property="article:published_time" content="2026-10-20">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/leanbar-og-v2.jpg">
@@ -21,7 +21,7 @@
     <meta property="og:image:alt" content="LeanBar: Same scripts. Less memory. A native macOS menu alongside its example desk menu.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LeanBar: Same Scripts, Less Memory">
-    <meta name="twitter:description" content="A small Swift and AppKit host that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
+    <meta name="twitter:description" content="A lightweight Swift and AppKit app that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/leanbar-og-v2.jpg">
     <meta name="twitter:image:alt" content="LeanBar: Same scripts. Less memory. A native macOS menu alongside its example desk menu.">
     <script type="application/ld+json">
@@ -29,7 +29,7 @@
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": "LeanBar: Same Scripts, Less Memory",
-      "description": "How I built LeanBar, a small Swift and AppKit host that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.",
+      "description": "How I built LeanBar, a lightweight Swift and AppKit app that reuses existing SwiftBar scripts and recorded a 12 MB physical footprint in one local comparison.",
       "datePublished": "2026-10-20",
       "author": {
         "@type": "Person",
@@ -64,19 +64,19 @@
 
     <div class="article-body">
         <p>My Mac's menu bar has become a small control panel: check which services are running, open a dashboard, run a job, or inspect a log. It saves me from remembering commands and finding the right terminal.</p>
-        <p>I built the menu with SwiftBar. A script prints labels and actions, and SwiftBar turns the output into a native menu. The setup worked well, but I wanted the menu host to use less memory.</p>
-        <p>So I built LeanBar, a small Swift and AppKit utility from PVR Labs. I kept my existing scripts. In one local comparison, the native host's physical footprint was 12 MB versus 59 MB for SwiftBar.</p>
+        <p>I built the menu with SwiftBar. A script prints labels and actions, and SwiftBar turns the output into a native menu. The setup worked well, but I wanted the menu-bar app to use less memory.</p>
+        <p>So I built LeanBar, a small Swift and AppKit utility from PVR Labs. I kept my existing scripts. In one local comparison, LeanBar's physical footprint was 12 MB versus 59 MB for SwiftBar.</p>
 
         <figure class="article-figure--narrow">
             <img src="/articles/img/leanbar-portfolio-menu.png" width="582" height="1126" loading="lazy" decoding="async" alt="My existing portfolio menu migrated to LeanBar, with a plain LB menu-bar label">
-            <figcaption>My existing portfolio menu after migrating to LeanBar. The only visual change is the menu-bar label: the old PVR logo became plain “LB” text to keep the host minimal.</figcaption>
+            <figcaption>My existing portfolio menu after migrating to LeanBar. The only visual change is the menu-bar label: the old PVR logo became plain “LB” text for a simpler design.</figcaption>
         </figure>
 
         <h2>Keep the scripts, reduce memory use</h2>
-        <p>The useful logic was already in my scripts: how to check a service, start it, or launch a scheduled job. The host only needed to read their output, build a menu, and dispatch the selected action.</p>
+        <p>The useful logic was already in my scripts: how to check a service, start it, or launch a scheduled job. LeanBar only needed to read their output, build a menu, and dispatch the selected action.</p>
         <p>That boundary made the experiment manageable. I could replace the presentation layer without rebuilding the management tools.</p>
         <p>I implemented the subset of SwiftBar's output format my menu used: flat labels, separators, colors, font sizes, and commands with numbered arguments. My existing menu script worked unchanged.</p>
-        <p>The limited format is a tradeoff. A plugin that needs submenus, images, cycling headers, or terminal actions will need a different host or changes to its output. Supporting my menu gave the project a concrete scope.</p>
+        <p>The limited format is a tradeoff. A plugin that needs submenus, images, cycling headers, or terminal actions will need another menu-bar app or changes to its output. Supporting my menu gave the project a concrete scope.</p>
 
         <h2>A native menu with a small job</h2>
         <p>LeanBar is written in Swift with AppKit. It uses an <code>NSStatusItem</code> and an <code>NSMenu</code>. One configured command produces one menu, and a plain <strong>LB</strong> label sits in the menu bar.</p>
@@ -85,22 +85,17 @@
             <img src="/articles/img/leanbar-menu.png" width="440" height="644" loading="lazy" decoding="async" alt="LeanBar's example desk menu showing battery status, free disk space, links, and actions">
             <figcaption>The example desk menu included with LeanBar.</figcaption>
         </figure>
-        <p>The host has no marketplace, settings interface, or animation. Keeping the feature set small also limits how much code I have to maintain.</p>
+        <p>LeanBar has no marketplace, settings interface, or animation. Keeping the feature set small also limits how much code I have to maintain.</p>
 
-        <h2>The tricky part was clicking the right command</h2>
-        <p>A small menu can still trigger real operational actions. Refreshing its contents while someone is using it deserves care.</p>
-        <p>Review caught a bug where a refresh could change which command a displayed item resolved to. Imagine opening a menu, seeing “Restart service A”, and having a refreshed command list change what that click would execute. Each item now retains the executable and arguments of the action it displayed.</p>
-        <p>Another bug could silently drop a click while a refresh was running. Explicit actions now queue behind active work. Submitting the same command again is blocked while it is queued or running, including through a rebuilt menu item.</p>
-        <p>Commands run off the UI thread, one invocation at a time. Arguments stay separate values instead of being joined into a shell command. A short-lived Python helper handles output limits, timeouts, and process cleanup. These are trusted local scripts running with my user permissions.</p>
-        <p>Opening the menu requests fresh status; closing and reopening shows the refreshed snapshot. Background refreshes stay quiet. Queued or running actions show progress, and failures remain visible.</p>
+        <p>The menu also needs to handle clicks reliably. Commands run in the background, each menu item keeps the action it displayed, and repeated clicks cannot queue the same command twice. Status refreshes stay quiet, while action progress and failures remain visible.</p>
 
         <h2>What the memory comparison showed</h2>
-        <p>In one recorded local comparison, the native host's physical footprint was 12 MB after opening the menu, compared with 59 MB for SwiftBar, about an 80% reduction in that observation.</p>
+        <p>In one recorded local comparison, LeanBar's physical footprint was 12 MB after opening the menu, compared with 59 MB for SwiftBar, about an 80% reduction in that observation.</p>
         <p>Those figures come from my setup, not guaranteed memory limits. The scripts also have their own temporary cost when they run, and the packaged app has not been benchmarked as a separate build. The prototype was comfortably below the 20 MiB budget I wanted for this utility.</p>
 
         <h2>A small utility to own</h2>
         <p>LeanBar has now replaced SwiftBar on my Mac. It runs at login through a LaunchAgent, and I have uninstalled SwiftBar. Checks cover command arguments, failures, timeouts, repeated menu opening, and overlap between refreshes and actions. I am still evaluating longer-term reliability in daily use.</p>
-        <p>The useful design decision was keeping the management logic in scripts. That made the host replaceable. A narrow format and native menu were enough for my control panel, with a memory footprint I was happier to leave running.</p>
+        <p>The useful design decision was keeping the management logic in scripts. That let me switch menu-bar apps without rewriting those scripts. A narrow format and native menu were enough for my control panel, with a memory footprint I was happier to leave running.</p>
         <aside class="article-cta" aria-label="Explore LeanBar">
             <p><strong>A lighter home for your menu-bar scripts</strong></p>
             <p>You'll find LeanBar's source, supported script format, and build instructions on GitHub. If it fits your setup, a star is a welcome way to show your support.</p>
