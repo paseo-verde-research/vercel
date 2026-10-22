@@ -63,12 +63,8 @@
     <img class="article-cover" src="/articles/img/air-gapped-coding.webp" width="1536" height="1024" loading="eager" decoding="async" alt="Local-First AI Coding: keeping proprietary repositories local with AI Badger">
 
     <div class="article-body">
-        <p>AI coding agents often demand broad repository access. For enterprise developers, freelancers under NDA, and privacy-conscious engineers, that access is a non-starter.</p>
-        <p>The question isn’t whether AI can help. It’s whether you can use it <em>without</em> handing over unrestricted access to sensitive code, credentials, or customer data.</p>
-        <p>The answer is yes, <strong>if</strong> the architecture puts you in control.</p>
-
-        <h2>Recent Incidents Highlight the Risk</h2>
-        <p>Recent reports of repository uploads and prompt-injection vulnerabilities show why developers need visibility into exactly what leaves their machine. An agent’s stated file-access rules or a provider’s policy are not the same thing as a technical boundary around proprietary code.</p>
+        <p>An organization may approve an AI chat for development while restricting direct access to proprietary repositories. Developers can ask for help, but still need to decide which source files, internal interfaces, and customer details they are allowed to share.</p>
+        <p>A local-first workflow makes that decision explicit: inspect the repository locally, prepare the context needed for a task, and review it before pasting it into an approved chat. The repository stays under your control; the shared context still leaves your machine.</p>
 
         <h2>What “Air-Gapped AI Coding” Really Means</h2>
         <p>True air-gapping keeps both the model and codebase fully offline. Selectively sharing code with a cloud chat is a different arrangement. Here are three common setups:</p>
@@ -89,7 +85,8 @@
             <li><strong>Extract</strong> only the specific files or spans the AI requests.</li>
             <li><strong>Apply</strong> changes only after you review the write plan.</li>
         </ul>
-        <p><a href="/aibadger/"><strong>AI Badger</strong></a> implements this model as a local CLI with no network calls, telemetry, or cloud dependency. It acts as a strict buffer between your repository and an AI chat such as ChatGPT, Claude, or Grok.</p>
+        <p><a href="/aibadger/"><strong>AI Badger</strong></a>, built by PVR Labs, implements this model as a local CLI that prepares context without an AI service connection. You review what you share with an AI chat such as ChatGPT, Claude, or Grok.</p>
+        <p>The <a href="https://github.com/PVRLabs/aibadger/blob/main/docs/network-verification.md">source-level network verification guide</a> records the audited revision, release configurations, and reproducible checks. No reachable outbound networking operations were identified in Badger’s Go code in those configurations. This does not guarantee that Git, diagnostic tools, clipboard utilities, file managers, or network-backed filesystems remain offline; the guide explains those boundaries.</p>
 
         <h3>A Simple Workflow</h3>
         <pre data-lang="workflow"><code>1. Describe task → Badger generates a project map (no source code)
@@ -98,6 +95,14 @@
    ↓ You copy approved context to chat
 3. AI suggests changes → Badger shows a write plan → You confirm</code></pre>
         <p>This creates explicit gates on both outbound disclosure and inbound modifications.</p>
+
+        <h2>Find Your Starting Point with Codebase Map</h2>
+        <p>In a large repository, first identify the relevant modules and folders. AI Badger’s standalone <strong>Codebase Map</strong> is a portable HTML visualization generated with <code>badger map</code>. Explore the hierarchy and language totals to understand the codebase, locate relevant submodules, and focus AI-assisted work on a specific area.</p>
+        <figure>
+            <a href="/aibadger/codemap/"><img src="/aibadger/codemap/preview.webp" loading="lazy" decoding="async" alt="Codebase Map showing AI Badger’s folder hierarchy and language breakdown"></a>
+            <figcaption>Explore folders and language totals in the <a href="/aibadger/codemap/">interactive Codebase Map demo</a>.</figcaption>
+        </figure>
+        <p>This visualization is separate from the project map prepared for an AI chat in the Map → Extract → Apply workflow above. Folder selection guides task focus; it is not an enforced file-access boundary. Review the context you extract and share.</p>
 
         <h2>The Clipboard Is Part of the Boundary</h2>
         <p>Copy-paste feels less “agentic”, but that explicitness is the feature. Every transfer is deliberate. Endpoint security still matters, of course: clipboard managers and remote-access tools can observe content.</p>
