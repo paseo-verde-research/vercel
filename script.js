@@ -641,6 +641,32 @@ document.addEventListener('DOMContentLoaded', () => {
         codeBlock.replaceChildren(highlightedCode);
     }
 
+    const caddyDirectives = new Set(['metrics', 'per_host', 'reverse_proxy', 'admin', 'tls']);
+    const caddyTokenPattern = /#[^\n]*|"(?:[^"\\]|\\.)*"|\{[^{}\s]+\}|[{}]|[^\s{}"#]+/g;
+
+    function caddyTokenClass(token) {
+        if (token.startsWith('#')) {
+            return 'code-token-comment';
+        }
+        if (token === '{' || token === '}') {
+            return 'code-token-punctuation';
+        }
+        if (token.startsWith('{')) {
+            return 'code-token-variable';
+        }
+        if (caddyDirectives.has(token)) {
+            return 'code-token-keyword';
+        }
+        if (/^\d+(?:\.\d+)?$/.test(token)) {
+            return 'code-token-number';
+        }
+        return 'code-token-string';
+    }
+
+    document.querySelectorAll('.article-body pre[data-lang="caddyfile"] > code').forEach(codeBlock => {
+        highlightArticleCode(codeBlock, caddyTokenPattern, caddyTokenClass);
+    });
+
     const xmlTokenPattern = /<!--[\s\S]*?-->|<!DOCTYPE\b|<\/?[A-Za-z_][\w:.-]*|\/?>|[A-Za-z_:][\w:.-]*(?=\s*=)|=|"(?:[^"\n\\]|\\.)*"|'(?:[^'\n\\]|\\.)*'|\b(?:true|false)\b|(?<![\w.-])\d+(?:\.\d+)?\b|[,]/g;
 
     function xmlTokenClass(token) {

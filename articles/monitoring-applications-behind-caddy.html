@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring applications behind Caddy with StatLite | PVR Labs</title>
+    <meta name="author" content="Ted Kupolov">
+    <meta name="description" content="Monitor HTTP requests, errors and response latency for applications behind Caddy using per-host metrics and StatLite, without changing application code.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/monitoring-applications-behind-caddy.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/monitoring-applications-behind-caddy.html">
+    <meta property="og:title" content="Monitoring applications behind Caddy with StatLite">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Monitor HTTP requests, errors and response latency for applications behind Caddy using per-host metrics and StatLite, without changing application code.">
+    <meta property="article:published_time" content="2026-10-23T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-10-23T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/monitoring-applications-behind-caddy/cover.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Diagram of Caddy forwarding requests to Express and Spring Boot while StatLite polls Caddy for per-host HTTP metrics.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Monitoring applications behind Caddy with StatLite">
+    <meta name="twitter:description" content="Monitor HTTP requests, errors and response latency for applications behind Caddy using per-host metrics and StatLite, without changing application code.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/monitoring-applications-behind-caddy/cover.png">
+    <meta name="twitter:image:alt" content="Diagram of Caddy forwarding requests to Express and Spring Boot while StatLite polls Caddy for per-host HTTP metrics.">
+    <style>
+        .article-page h1 { font-size: clamp(1.65rem, 4.4vw, 2.2rem); }
+        .article-body figure a { display: block; min-height: 44px; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261023">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="StatLite article links">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+        <a href="/statlite/" class="article-product-nav__link article-product-nav__link--product">StatLite</a>
+    </nav>
+    <h1>Monitoring applications behind Caddy with StatLite</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-23">October 23, 2026</time></div>
+    <img class="article-cover" src="/articles/img/monitoring-applications-behind-caddy/cover.svg" width="1200" height="630" alt="Diagram of Caddy forwarding requests to Express and Spring Boot while StatLite polls Caddy for per-host HTTP metrics." decoding="async">
+    <div class="article-body" data-lightbox-scope>
+<p>You already run one or more applications behind Caddy. Now you want to know how much traffic they receive, whether HTTP errors are increasing, and whether responses are getting slower. For that first view, the reverse proxy is a useful place to collect metrics: Caddy already observes the requests passing through it.</p>
+<p>I develop <a href="/statlite/">StatLite</a>, which collects Caddy's per-host metrics and keeps a local dashboard history. This HTTP-level view requires no application changes or application-specific agents, and no separate Prometheus or Grafana deployment.</p>
+<p>This setup uses StatLite 0.7.0. Follow the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/install.md">installation guide</a> to install StatLite on the server where it can reach Caddy's metrics endpoint.</p>
+<h2>Enable Caddy metrics</h2>
+<p>For a conventional setup with two applications on the same server, enable <code>per_host</code> in Caddy's global metrics configuration:</p>
+<pre data-lang="caddyfile"><code>{
+    metrics {
+        per_host
+    }
+}
+
+api.example.com {
+    reverse_proxy 127.0.0.1:3000
+}
+
+orders.example.com {
+    reverse_proxy 127.0.0.1:8080
+}</code></pre>
+<p>Replace the example hostnames and upstream addresses with your existing sites. Keep their normal DNS and HTTPS configuration. Each named site proxies directly to one application; per-host metrics let the monitoring process distinguish their traffic.</p>
+<p>This same-server example uses Caddy's default loopback admin endpoint at <code>http://127.0.0.1:2019/metrics</code>. Keep it private. If Caddy and StatLite run in separate containers, use the private metrics-listener arrangement in the guide rather than exposing the writable admin endpoint.</p>
+<h2>Connect StatLite</h2>
+<p>Add one Caddy target per hostname to your StatLite configuration:</p>
+<pre data-lang="yaml"><code>polling:
+  interval: "30s"
+targets:
+  - name: api-via-caddy
+    type: caddy
+    url: http://127.0.0.1:2019/metrics
+    host: api.example.com
+  - name: orders-via-caddy
+    type: caddy
+    url: http://127.0.0.1:2019/metrics
+    host: orders.example.com</code></pre>
+<p>Both targets use the same metrics endpoint. The <code>host</code> field selects each application's series and must match Caddy's emitted host label exactly, without a scheme or path. Use your real hostnames consistently in both configurations.</p>
+<p>Keep polling at 30 seconds or longer. Send some requests through each site and allow two usable polls: the first establishes a counter baseline, and later polls produce request and error counts. Idle intervals show zero requests; there is no average response latency when no requests were observed.</p>
+<p>The <a href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/caddy.md">StatLite Caddy monitoring guide</a> covers supported routing shapes, listener configuration and troubleshooting.</p>
+<h2>What you can monitor</h2>
+<figure data-gallery><a class="screenshot-link" href="/articles/img/monitoring-applications-behind-caddy/express-recovery.webp" aria-label="Open the Express Caddy dashboard at full size"><img src="/articles/img/monitoring-applications-behind-caddy/express-recovery.webp" width="1440" height="1100" loading="lazy" decoding="async" alt="StatLite&#x27;s Express dashboard showing steady request counts, separate 404 and 500 bursts, and higher average response latency followed by recovery."></a><figcaption>StatLite monitoring an Express application through Caddy. Deliberate HTTP errors and slower responses are visible without metrics instrumentation in Express.</figcaption></figure>
+<aside class="article-note" aria-label="Runtime metrics"><p><strong>Why no CPU or memory chart?</strong> Caddy's per-host metrics describe HTTP traffic, not the upstream application's process CPU or runtime memory. <a href="#deeper-monitoring">Direct StatLite monitoring</a> can add these details for supported applications.</p></aside>
+<p>The dashboard brings request volume, 404 and 5xx responses, and average response latency into the same history. You can see whether an error increase coincides with a traffic change, or whether successful responses are getting slower.</p>
+<p>In this example, I deliberately introduced a burst of 404s, a separate burst of 500s, and then slower successful responses before returning to normal. Traffic remained steady through those changes. The final request-count drop marks the workload ending, not an application outage. The chart displays counts per polling interval, rather than requests per second.</p>
+<h2>Multiple applications behind Caddy</h2>
+<p>Each configured hostname gets its own monitoring history. The example paired Express with Spring Boot behind one Caddy instance. Spring's traffic stayed steady while Express showed the injected errors and latency change.</p>
+<p>The applications can use different languages or frameworks. For this HTTP view, Caddy supplies the metrics, so neither application needs an application-specific metrics helper. Separate hostnames are the boundary here; this configuration does not divide applications mounted under different paths on one hostname.</p>
+<h2 id="deeper-monitoring">When deeper monitoring is useful</h2>
+<p>Direct Spring Boot integration can add application health, database health when configured, JVM memory, process CPU, and startup/restart information. That is optional additional context, not a prerequisite for monitoring Spring's HTTP traffic through Caddy. See the <a href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/spring.md">Spring monitoring guide</a> for setup and the experiment's <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/caddy-app-monitoring/screenshots/spring-direct.png">direct Spring dashboard</a> for an example. Proxy and application latency measure different boundaries.</p>
+<p>Direct framework integrations also cover <a href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/quarkus.md">Quarkus</a> and <a href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/micronaut.md">Micronaut</a>. Application-side recipes are available for <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/node/express.md">Express</a>, <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/fastapi.md">FastAPI</a>, <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md">Django</a>, <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/go/net-http.md">Go net/http</a>, <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/go/gin.md">Gin</a>, and <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/java/javalin.md">Javalin</a>. These recipes add process CPU and runtime-memory visibility alongside HTTP metrics, and require integration code in the application. Follow each guide for its setup and deployment limits.</p>
+<h2>Limits and further reading</h2>
+<p>Caddy monitors HTTP traffic that passes through it. Bypass traffic and background jobs are outside this view. Average response latency describes what Caddy observes, not isolated application execution time or tail latency.</p>
+<p>A Caddy target marked <strong>UP</strong> means StatLite successfully collected Caddy metrics. It does not verify upstream application health. An application can return errors while Caddy continues reporting metrics successfully.</p>
+<p>Use the <a href="https://github.com/PVRLabs/statlite#documentation">StatLite documentation</a> to choose your monitoring setup. The <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/caddy-app-monitoring/report.md">detailed experiment report</a> contains the measured results, supporting dashboards, source and reproducible evidence behind this example.</p>
+<dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+    <figure class="screenshot-lightbox__content">
+        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+    </figure>
+</dialog>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261023"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

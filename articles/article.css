@@ -183,6 +183,19 @@
     background: var(--bg-light);
 }
 
+.article-body .article-note {
+    margin: 0 0 1.5rem;
+    padding: 16px 20px;
+    border-left: 4px solid var(--primary-green);
+    border-radius: 0 8px 8px 0;
+    background: var(--bg-light);
+    color: var(--text-secondary);
+}
+
+.article-body .article-note p:last-child {
+    margin-bottom: 0;
+}
+
 .article-body .code-token-brand {
     color: var(--primary-green);
 }
