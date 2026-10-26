@@ -51,13 +51,14 @@ h1, h2, h3, p { margin-top: 0; }
 .section-heading p { margin: 0; color: var(--muted); font-size: 13px; }
 .section-heading.compact { margin-bottom: 26px; }
 
-.integration-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.integration-grid { display: grid; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 12px; }
 .integration-card { position: relative; min-width: 0; cursor: pointer; }
 .integration-card input { position: absolute; opacity: 0; pointer-events: none; }
 .card-content {
   position: relative;
   display: flex;
   min-height: 132px;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
   padding: 19px;
@@ -208,3 +209,11 @@ code { font-family: var(--mono); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
 }
+
+.field small { display: block; margin-top: 7px; color: var(--muted); font-size: 12px; }
+.setup-code { overflow-x: auto; color: var(--soft); font-size: 12px; }
+
+.validation-message { margin: 0; color: #f5c66f; font-size: 12px; overflow-wrap: anywhere; }
+.field input[aria-invalid="true"] { border-color: #f5c66f; }
+.copy-button:disabled { opacity: .5; cursor: not-allowed; }
+.guide-intro code { overflow-wrap: anywhere; }

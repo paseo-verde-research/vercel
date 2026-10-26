@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta name="description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, Caddy, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta name="theme-color" content="#0A0A0A">
   <title>Configure StatLite - Lightweight Application Monitoring</title>
   <link rel="canonical" href="https://pvrlabs.xyz/statlite/configure.html">
@@ -11,17 +11,17 @@
   <meta property="og:url" content="https://pvrlabs.xyz/statlite/configure.html">
   <meta property="og:title" content="Configure StatLite - Lightweight Application Monitoring">
   <meta property="og:site_name" content="StatLite">
-  <meta property="og:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta property="og:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, Caddy, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta property="og:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Configure StatLite - Lightweight Application Monitoring">
-  <meta name="twitter:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
+  <meta name="twitter:description" content="Generate a StatLite configuration for Spring Boot, Quarkus, Micronaut, Caddy, FastAPI, Express, Django, Gin, or Go net/http. Get lightweight monitoring without a full Prometheus and Grafana stack.">
   <meta name="twitter:image" content="https://pvrlabs.xyz/img/statlite-dashboard.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="/statlite/style.css?v=20261009">
-  <link rel="stylesheet" href="/statlite/configure.css?v=20261005d">
+  <link rel="stylesheet" href="/statlite/configure.css?v=20261026c">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -47,7 +47,7 @@
     <header class="intro wizard-heading">
       <h1>Connect your application</h1>
       <p class="lede">Choose an integration and get a minimal configuration you can run right away.</p>
-      <p class="search-context">Connect Spring Boot, Quarkus, Micronaut, FastAPI, Express, Django, Gin, or Go net/http to lightweight self-hosted monitoring without deploying a full Prometheus and Grafana stack.</p>
+      <p class="search-context">Connect Spring Boot, Quarkus, Micronaut, Caddy, FastAPI, Express, Django, Gin, or Go net/http to lightweight self-hosted monitoring without deploying a full Prometheus and Grafana stack.</p>
     </header>
 
     <section aria-labelledby="integration-heading">
@@ -107,6 +107,15 @@
         </label>
 
         <label class="integration-card">
+          <input type="radio" name="integration" value="caddy">
+          <span class="card-content">
+            <span class="integration-mark caddy-mark" aria-hidden="true"><img src="/statlite/configure/assets/caddy.png" width="46" height="46" alt=""></span>
+            <span><strong>Caddy</strong><small>Per-host HTTP metrics</small></span>
+            <span class="selected-check" aria-hidden="true">✓</span>
+          </span>
+        </label>
+
+        <label class="integration-card">
           <input type="radio" name="integration" value="inspect">
           <span class="card-content">
             <span class="integration-mark inspect-mark" aria-hidden="true">?</span>
@@ -131,19 +140,44 @@
               <span>Application name</span>
               <input id="app-name" name="app-name" value="my-app" autocomplete="off" spellcheck="false">
             </label>
-            <label class="field">
+            <label class="field" data-app-endpoint>
               <span>Host</span>
               <input id="host" name="host" value="localhost" autocomplete="url" spellcheck="false">
             </label>
-            <label class="field">
+            <label class="field" data-app-endpoint>
               <span>Port</span>
               <input id="port" name="port" value="8080" inputmode="numeric" autocomplete="off" spellcheck="false">
             </label>
-            <label class="toggle full">
+            <label class="toggle full" data-app-endpoint>
               <input id="https" type="checkbox">
               <span class="toggle-track" aria-hidden="true"><span></span></span>
               <span><strong>Use HTTPS</strong><small>Keep the port you entered</small></span>
             </label>
+            <label class="field full" data-caddy-endpoint hidden>
+              <span>Caddy metrics URL</span>
+              <input id="caddy-url" value="http://127.0.0.1:2019/metrics" type="url" aria-describedby="caddy-validation" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="field full" data-caddy-endpoint hidden>
+              <span>Exact host label from Caddy metrics</span>
+              <input id="caddy-host" value="app.example.com" autocomplete="off" spellcheck="false" aria-describedby="caddy-host-help caddy-validation">
+              <small id="caddy-host-help">Copy the host label exactly, including case and any port. Omit the scheme and path.</small>
+            </label>
+            <p id="caddy-validation" class="validation-message full" role="status" hidden>Enter both the Caddy metrics URL and exact host label to generate and copy a configuration.</p>
+          </div>
+
+          <div id="caddy-guide" class="framework-guides" hidden>
+            <div class="guide-intro">
+              <p class="mini-label">Caddy setup required</p>
+              <h3>Monitor HTTP traffic through Caddy</h3>
+              <p>Requires StatLite 0.7.0+. No application instrumentation is required. Tested with Caddy 2.11.4, an explicit named HTTPS site, and one direct <code>reverse_proxy</code>. Add this inside Caddy’s existing global options block:</p>
+              <pre class="setup-code"><code>metrics {
+    per_host
+}</code></pre>
+              <p>Send a request to your site, then find <code>caddy_http_request_duration_seconds_count</code> in the metrics scrape and copy its exact <code>host</code> label. Configure one StatLite target per host. Keep the metrics endpoint private; the default admin listener should remain on loopback. For Docker, use a dedicated read-only metrics listener on a private network as described in the guide.</p>
+              <p>Charts show requests, HTTP errors, and average response time measured at Caddy. Application health, CPU, memory, and restart detection are unavailable. UP means metrics collection works, even when the upstream returns 502.</p>
+              <p>Wait for two usable polls after generating traffic. The first establishes a baseline. Caddy is not supported by <code>statlite inspect</code> or the CLI configuration writers; save the YAML generated here manually.</p>
+              <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/targets/caddy.md" target="_blank" rel="noreferrer">Read the Caddy setup guide <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
 
           <div id="spring-guide" class="framework-guides">
@@ -243,6 +277,7 @@
         </div>
         <p class="inspect-result">StatLite will try to detect a supported integration. If successful, it will show the available capabilities and print a suggested <code>statlite.yaml</code>.</p>
         <p class="inspect-result">For Micronaut, select the type explicitly: <code>statlite inspect --type micronaut 'http://localhost:8080'</code>.</p>
+        <p class="inspect-result">For Caddy, choose Caddy above and save the generated YAML manually. Inspect does not support Caddy.</p>
         <a class="guide-link" href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#discover-a-target-with-inspect" target="_blank" rel="noreferrer">Read the Inspect documentation <span aria-hidden="true">↗</span></a>
       </div>
     </section>
@@ -251,7 +286,7 @@
   <div id="copy-status" class="copy-status" role="status" aria-live="polite"></div>
   <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p></div></footer>
   <script src="/script.js?v=20260830"></script>
-  <script src="/statlite/configure.js?v=20261005b" defer></script>
+  <script src="/statlite/configure.js?v=20261026b" defer></script>
   <script>
     var sc_project = 13137699;
     var sc_invisible = 1;

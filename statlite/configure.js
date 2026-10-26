@@ -2,6 +2,7 @@
   "use strict";
 
   const integrations = {
+    caddy: { type: "caddy", path: "/metrics" },
     spring: { type: "spring", path: "/actuator" },
     micronaut: { type: "micronaut", path: "/prometheus" },
     quarkus: { type: "quarkus", path: "/q/metrics" },
@@ -19,7 +20,12 @@
     springGuide: document.querySelector("#spring-guide"),
     quarkusGuide: document.querySelector("#quarkus-guide"),
     micronautGuide: document.querySelector("#micronaut-guide"),
+    caddyGuide: document.querySelector("#caddy-guide"),
+    caddyUrl: document.querySelector("#caddy-url"),
+    caddyHost: document.querySelector("#caddy-host"),
     frameworkGuides: document.querySelector("#framework-guides"),
+    copyConfig: document.querySelector("#copy-config"),
+    caddyValidation: document.querySelector("#caddy-validation"),
     copyStatus: document.querySelector("#copy-status")
   };
 
@@ -40,6 +46,7 @@
   };
 
   const buildUrl = (integration) => {
+    if (integration === "caddy") return JSON.stringify(elements.caddyUrl.value.trim());
     const scheme = elements.https.checked ? "https" : "http";
     const host = urlHost(elements.host.value);
     const port = elements.port.value.trim() || "8080";
@@ -49,6 +56,18 @@
   const updateYaml = () => {
     const integration = selectedValue("integration");
     if (integration === "inspect") return;
+    const isCaddy = integration === "caddy";
+    const missingUrl = isCaddy && !elements.caddyUrl.value.trim();
+    const missingHost = isCaddy && !elements.caddyHost.value.trim();
+    const incomplete = missingUrl || missingHost;
+    elements.caddyUrl.setAttribute("aria-invalid", String(missingUrl));
+    elements.caddyHost.setAttribute("aria-invalid", String(missingHost));
+    elements.caddyValidation.hidden = !incomplete;
+    elements.copyConfig.disabled = incomplete;
+    if (incomplete) {
+      elements.output.textContent = "# Enter the Caddy metrics URL and exact host label to generate YAML.";
+      return;
+    }
     const target = integrations[integration];
     elements.output.textContent = `server:
   listen: 127.0.0.1:9090
@@ -62,7 +81,7 @@ polling:
 targets:
   - name: ${yamlScalar(elements.name.value)}
     type: ${target.type}
-    url: ${buildUrl(integration)}
+    url: ${buildUrl(integration)}${integration === "caddy" ? `\n    host: ${JSON.stringify(elements.caddyHost.value.trim())}` : ""}
 `;
   };
 
@@ -71,6 +90,9 @@ targets:
     const isInspect = integration === "inspect";
     elements.builder.hidden = isInspect;
     elements.inspect.hidden = !isInspect;
+    elements.caddyGuide.hidden = integration !== "caddy";
+    document.querySelectorAll("[data-app-endpoint]").forEach((field) => { field.hidden = integration === "caddy"; });
+    document.querySelectorAll("[data-caddy-endpoint]").forEach((field) => { field.hidden = integration !== "caddy"; });
     elements.springGuide.hidden = integration !== "spring";
     elements.quarkusGuide.hidden = integration !== "quarkus";
     elements.micronautGuide.hidden = integration !== "micronaut";
@@ -129,7 +151,7 @@ targets:
   document.querySelectorAll('input[name="integration"]').forEach((input) => {
     input.addEventListener("change", updateIntegration);
   });
-  [elements.name, elements.host, elements.port].forEach((input) => input.addEventListener("input", updateYaml));
+  [elements.name, elements.host, elements.port, elements.caddyUrl, elements.caddyHost].forEach((input) => input.addEventListener("input", updateYaml));
   elements.https.addEventListener("change", updateYaml);
   document.querySelector("#copy-config").addEventListener("click", (event) => copyText(elements.output.textContent, event.currentTarget));
   document.querySelector("#copy-command").addEventListener("click", (event) => copyText(document.querySelector("#inspect-command").textContent, event.currentTarget));
