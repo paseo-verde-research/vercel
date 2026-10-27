@@ -6,6 +6,10 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-jdk27-optimizations.html</loc>
+    <lastmod>2026-10-27</lastmod>
+  </url>
+  <url>
     <loc>https://pvrlabs.xyz/</loc>
     <lastmod>2026-09-17</lastmod>
   </url>
@@ -79,7 +83,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-27</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html</loc>
