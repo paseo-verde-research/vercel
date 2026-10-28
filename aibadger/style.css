@@ -1042,7 +1042,14 @@ h1, h2, h3, h4 {
 }
 
 /* Supplementary demo discovery beneath the usage introduction. */
-.codemap-mention { margin-top:8px; color:var(--text-secondary); font-size:.95rem; }
-.codemap-mention a { display:inline-flex; align-items:center; min-height:44px; color:var(--primary-green); text-decoration:none; }
-.codemap-mention a:hover { color:var(--terminal-green); }
+#choose .section-heading > p { text-align:left; }
+.codemap-mention { display:flex; align-items:center; justify-content:flex-start; gap:20px; margin-top:20px; color:var(--text-secondary); font-size:.95rem; text-align:left; }
+.codemap-thumbnail { display:block; flex:0 0 160px; max-width:100%; border-radius:8px; overflow:hidden; }
+.codemap-thumbnail img { display:block; width:100%; height:auto; aspect-ratio:16 / 9; object-fit:cover; }
+.codemap-copy { min-width:0; }
+.codemap-copy h3 { margin:0 0 4px; color:var(--text-primary); font-size:1.05rem; }
+.codemap-copy p { margin:0; }
+.codemap-copy a { display:inline-flex; align-items:center; min-height:44px; color:var(--primary-green); text-decoration:none; }
+.codemap-copy a:hover { color:var(--terminal-green); }
 .codemap-mention a:focus-visible { outline:2px solid var(--primary-green); outline-offset:3px; }
+@media(max-width:480px) { .codemap-mention { flex-direction:column; align-items:flex-start; gap:12px; } .codemap-thumbnail { flex-basis:auto; width:160px; } }
