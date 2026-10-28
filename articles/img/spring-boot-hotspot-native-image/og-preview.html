@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Lightweight Can Spring Boot Become?</title>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; width:1200px; height:630px; padding:42px 60px 32px; background:#0b110e; color:#f3f6f4; font-family:Arial,sans-serif; }
+header { display:flex; justify-content:space-between; align-items:center; color:#a6b5ac; font-size:17px; }
+.brand { color:#f3f6f4; font-size:24px; font-weight:700; }.brand span { color:#58df92; }
+h1 { margin:29px 0 10px; font-size:48px; line-height:1.08; letter-spacing:-1.3px; }
+.subtitle { margin:0; color:#b6c4bc; font-size:23px; }
+.chart { margin-top:29px; display:grid; grid-template-columns:270px 1fr 142px; gap:15px 20px; align-items:center; }
+.label { font-size:20px; font-weight:700; }.label small { display:block; margin-top:5px; color:#a6b5ac; font-size:15px; font-weight:400; }
+.track { height:36px; background:#17251d; border-radius:4px; overflow:hidden; }.bar { height:100%; background:#739b8b; }.optimized { background:#5ecb96; }.native { background:#b6f17b; }
+.value { font-size:27px; font-weight:700; text-align:right; }
+.caption { margin:23px 0 0; color:#a6b5ac; font-size:16px; }
+footer { margin-top:24px; padding-top:17px; border-top:1px solid #2d3b32; display:flex; justify-content:space-between; color:#a6b5ac; font-size:15px; }
+</style>
+</head>
+<body>
+<header><div class="brand"><span>PVR</span> Labs</div><div>512 MiB VM · No swap</div></header>
+<h1>How Lightweight Can<br>Spring Boot Become?</h1>
+<p class="subtitle">HotSpot 27 and Native Image</p>
+<div class="chart" role="img" aria-label="Median application RSS: ordinary JAR 212.0 MiB, optimized HotSpot 186.9 MiB, Oracle Native Image 107.0 MiB. Bars start at zero.">
+<div class="label">Ordinary JAR<small>HotSpot · JDK 27</small></div><div class="track"><div class="bar" style="width:100%"></div></div><div class="value">212.0 MiB</div>
+<div class="label">Optimized HotSpot<small>Extracted + Spring AOT + JDK cache</small></div><div class="track"><div class="bar optimized" style="width:88.1604%"></div></div><div class="value">186.9 MiB</div>
+<div class="label">Oracle Native Image<small>GraalVM · JDK 25</small></div><div class="track"><div class="bar native" style="width:50.4717%"></div></div><div class="value">107.0 MiB</div>
+</div>
+<p class="caption">Median application RSS under load · Same application, 5 requests/second</p>
+<footer><span>pvrlabs.xyz</span><span>One run per configuration · Different JVM/native toolchains and OS patches</span></footer>
+</body>
+</html>

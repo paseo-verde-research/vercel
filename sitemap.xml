@@ -6,8 +6,8 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
-    <loc>https://pvrlabs.xyz/articles/spring-boot-jdk27-optimizations.html</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-hotspot-native-image.html</loc>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/</loc>
@@ -15,11 +15,11 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
@@ -83,7 +83,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html</loc>

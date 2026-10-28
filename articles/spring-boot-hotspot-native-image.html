@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image | PVR Labs</title>
+    <meta name="author" content="Ted Kupolov">
+    <meta name="description" content="On a 512 MiB VM, the same Spring Boot service used 212 MiB as a JAR, 187 MiB with HotSpot 27 AOT, and 107 MiB as Oracle Native Image on JDK 25.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-hotspot-native-image.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-hotspot-native-image.html">
+    <meta property="og:title" content="How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="On a 512 MiB VM, the same Spring Boot service used 212 MiB as a JAR, 187 MiB with HotSpot 27 AOT, and 107 MiB as Oracle Native Image on JDK 25.">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-hotspot-native-image/og-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Median application RSS: ordinary JAR 212.0 MiB, optimized HotSpot 27 186.9 MiB, Oracle Native Image on JDK 25 107.0 MiB.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-hotspot-native-image/og-preview.png">
+    <meta name="twitter:image:alt" content="Median application RSS: ordinary JAR 212.0 MiB, optimized HotSpot 27 186.9 MiB, Oracle Native Image on JDK 25 107.0 MiB.">
+    <meta property="article:published_time" content="2026-10-28T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-10-28T00:00:00-07:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image">
+    <meta name="twitter:description" content="On a 512 MiB VM, the same Spring Boot service used 212 MiB as a JAR, 187 MiB with HotSpot 27 AOT, and 107 MiB as Oracle Native Image on JDK 25.">
+    <style>
+        .article-page h1 { font-size: clamp(1.65rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; font-size: .9rem; line-height: 1.5; }
+        .article-body th, .article-body td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+        .article-body thead { background: var(--bg-light); }
+        .article-body tbody th { font-weight: 500; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { min-width: 36rem; }
+        .article-body code { overflow-wrap: anywhere; }
+        .article-body picture { display: block; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 480px) {
+            .article-body picture img { aspect-ratio: 440 / 470; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261023">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+<nav class="article-product-nav" aria-label="Articles"><a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a></nav>
+<h1>How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image</h1>
+<div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-10-28">October 28, 2026</time></div>
+<div class="article-body">
+<p>On a 512 MiB server, an 80 MiB heap still leaves a Spring Boot process well above 80 MiB. The number I am tracking is resident memory, RSS: the heap, plus metaspace, the code cache, thread stacks, and other native memory. I ran the same database-backed application three ways.</p>
+<p>An ordinary executable JAR on JDK 27 used <strong>212.0 MiB</strong> median RSS under load and took <strong>11.91 seconds</strong> to become ready. Extracted layout, Spring AOT, and a trained JDK AOT cache brought that to <strong>186.9 MiB</strong> and <strong>3.79 seconds</strong>. Oracle Native Image on JDK 25 brought it to <strong>107.0 MiB</strong> and <strong>0.183 seconds</strong>. At five requests per second, latency stayed around 3.5 ms for all three.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">code and measurements are public</a>.</p>
+<figure>
+<a class="screenshot-link" href="/articles/img/spring-boot-hotspot-native-image/application-rss.svg" aria-label="Open chart at full size">
+<picture><source media="(max-width: 480px)" srcset="/articles/img/spring-boot-hotspot-native-image/application-rss-mobile.svg"><img src="/articles/img/spring-boot-hotspot-native-image/application-rss.svg" width="880" height="480" loading="lazy" decoding="async" alt="Median application RSS under load: ordinary HotSpot 27 JAR 212.0 MiB, optimized HotSpot 27 186.9 MiB, Oracle Native Image on JDK 25 107.0 MiB."></picture>
+</a>
+<figcaption>Median application RSS during the five-minute workload. One run each.</figcaption>
+</figure>
+
+<h2>The application and the budget</h2>
+<p>Market Replay polls a local quote feed once a minute, stores three quotes per batch, and serves latest-price and history endpoints plus a browser page. It uses Spring MVC, Tomcat, Jackson, Actuator, Spring JDBC, and HikariCP. There is no ORM in this application.</p>
+<p>The guest was a local Ubuntu 24.04 VM with one vCPU, 512 MiB of RAM, and no swap. MariaDB and the Python quote fixture shared that budget. Linux reported about 456 MiB. Spring Boot was 4.1.1. The HotSpot runs used OpenJDK 27 with <code>-Xmx80m</code> and G1. Hikari kept one idle connection and at most four. MariaDB used a 64 MiB InnoDB buffer pool.</p>
+<p>The native executable uses Oracle GraalVM 25.0.4, the current Native Image release, so that run is JDK 25 with the image's compiled Serial GC. It uses the same <code>-Xmx80m</code> heap cap.</p>
+<p>This is another reason to prefer LTS releases over chasing the newest JDK. The latest JDK may be available before essential tools and ecosystem integrations support it; choosing a release means checking the whole toolchain, not just the JVM. Here, JDK 25 LTS provides the available native deployment path.</p>
+
+<h2>What changed on HotSpot</h2>
+<p>The ordinary deployment is the executable JAR, already on that heap cap and those database settings. The optimized deployment keeps the application, SQL, pool, and heap, and changes the launch:</p>
+<ol>
+<li>Spring Boot's extracted layout, so the application and its dependencies sit on disk as ordinary JARs.</li>
+<li>Spring AOT, which generates initialization code at build time.</li>
+<li>A JDK AOT cache trained for this application and reused on the next start.</li>
+</ol>
+<p>That process is still a HotSpot JVM. I trained the cache on a separate builder, because training it inside the 512 MiB VM ran out of memory. I transferred it as an archive that kept JAR timestamps, and checked the JVM log to confirm the cache was used. A loose copy had changed those timestamps once. The JVM ignored the cache, and the application still started and passed its checks.</p>
+
+<h2>The same workload</h2>
+<p>Each configuration started after its own reboot, with MariaDB restarted and an empty schema. I stopped the startup clock when health reported UP and the first three quotes were stored. Schema setup had already touched the disk, so these are fresh processes on a prepared filesystem.</p>
+<p>After that: 60 seconds idle, 120 seconds of warm-up, five minutes of latest and history reads at five requests per second, and 60 seconds of recovery. At most four requests were in flight. The driver ran outside the guest. Quote ingestion kept its one-minute schedule.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Deployment measurements"><table>
+<thead><tr><th scope="col">Measurement</th><th scope="col">Ordinary JAR, JDK 27</th><th scope="col">Optimized HotSpot, JDK 27</th><th scope="col">Native Image, JDK 25</th></tr></thead>
+<tbody>
+<tr><th scope="row">Readiness</th><td>11.91 s</td><td>3.79 s</td><td>0.183 s</td></tr>
+<tr><th scope="row">Median application RSS</th><td>212.0 MiB</td><td>186.9 MiB</td><td>107.0 MiB</td></tr>
+<tr><th scope="row">Lowest available memory</th><td>25.6 MiB</td><td>66.0 MiB</td><td>204.9 MiB</td></tr>
+<tr><th scope="row">HTTP p50 / p95</th><td>3.61 / 5.34 ms</td><td>3.55 / 5.54 ms</td><td>3.46 / 4.84 ms</td></tr>
+<tr><th scope="row">Requests / errors</th><td>1,500 / 0</td><td>1,500 / 0</td><td>1,500 / 0</td></tr>
+</tbody>
+</table></div>
+<p>Available memory is Linux MemAvailable for the whole guest, including MariaDB and the fixture. Application RSS is the Java process during the five-minute run.</p>
+<figure>
+<a class="screenshot-link" href="/articles/img/spring-boot-hotspot-native-image/startup-readiness.svg" aria-label="Open chart at full size">
+<picture><source media="(max-width: 480px)" srcset="/articles/img/spring-boot-hotspot-native-image/startup-readiness-mobile.svg"><img src="/articles/img/spring-boot-hotspot-native-image/startup-readiness.svg" width="880" height="480" loading="lazy" decoding="async" alt="Time to health plus persisted quotes: ordinary HotSpot 27 JAR 11.91 seconds, optimized HotSpot 27 3.789 seconds, Oracle Native Image on JDK 25 0.183 seconds."></picture>
+</a>
+<figcaption>Readiness is HTTP health UP plus three stored quotes.</figcaption>
+</figure>
+<p>Native Image is 42.7% under the optimized HotSpot process. MariaDB stayed near 71 MiB in both of those runs, so that drop is in the application. Sampled application CPU over the five minutes was 6.28 seconds on optimized HotSpot and 1.67 seconds on the native executable.</p>
+<p>p50 stayed between 3.46 and 3.61 ms. All three finished 1,500 requests with no errors, and none of them swapped.</p>
+
+<h2>Changing the stack</h2>
+<p>Replacing Spring JDBC with MyBatis Core, and owning sessions in the application, showed no useful saving. Against the same first minute of the optimized HotSpot run, median RSS was 186.0 MiB versus 187.2 MiB, and startup was 3.78 seconds versus 3.79. Datasource health and pool metrics went away with Spring JDBC, and separate repository calls no longer joined one Spring transaction. I kept Spring JDBC.</p>
+<p>File-backed H2, on the same optimized HotSpot build, moved the database into the Java process. Application RSS rose to 202.9 MiB. With MariaDB stopped, the guest's lowest available memory rose from 66.0 MiB to 104.6 MiB. A smaller Java process and a smaller machine are different results. Request latency stayed in the same few milliseconds.</p>
+
+<h2>The native build</h2>
+<p>The 107.0 MiB run is a default Oracle GraalVM build of this application. On a separate two-vCPU builder with 6 GiB of RAM, that Maven build took 11 minutes 48 seconds and peaked at about 5,070 MiB RSS. The executable file is 107 MiB.</p>
+<p>Before measuring it, I ran the packaged binary through the behavior this service actually has: quote JSON, the API and the page, a restart with the rows still there, rollback of a failed insert, release of the connection, and recovery after the feed or MariaDB was down.</p>
+<p>HotSpot was measured on October 23 and the native executable on October 28. Each figure above is one run of this application, on its own JDK and collector.</p>
+
+<h2>Monitoring the optimized application with StatLite</h2>
+<p>I also ran a separate 15-minute check of the optimized Spring Boot deployment using <a href="/statlite/">StatLite</a>, a lightweight monitoring tool I develop and use in these experiments. StatLite collected application health and runtime metrics through Spring Boot Actuator while the application completed 4,500 requests without workload errors. StatLite itself used 11.9 MiB median RSS, with a sampled peak of 14.9 MiB, and the host retained at least 48.2 MiB MemAvailable. This was a separate observation with active health checks and a different warm-up schedule, not a controlled measurement of monitoring overhead.</p>
+<div class="screenshot-gallery" data-gallery>
+<figure>
+<a class="screenshot-link" href="/articles/img/spring-boot-jdk27-optimizations/statlite-optimized-f-stability.webp" aria-label="Open the StatLite dashboard at full size"><img src="/articles/img/spring-boot-jdk27-optimizations/statlite-optimized-f-stability.webp" width="2966" height="1814" loading="lazy" decoding="async" alt="StatLite dashboard for the optimized Spring Boot deployment, showing health, request counts, latency, and JVM heap history across the 15-minute run."></a>
+<figcaption>StatLite observing the optimized Spring Boot deployment. Traffic drops when the test ends. Status cards reflect post-run inspection. Runtime memory is JVM heap usage, not process RSS.</figcaption>
+</figure>
+</div>
+<h2>What I would carry forward</h2>
+<p>On HotSpot I would ship the extracted layout, Spring AOT, and the trained cache, and I would keep Spring JDBC. Startup falls to a few seconds, the process gives back about 25 MiB, and the MyBatis replacement did not improve on that.</p>
+<p>When the application and MariaDB have to share 512 MiB, I would use the native executable. The build needs a machine with several gigabytes free, and the binary needs a pass over the paths the service actually uses.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">experiment record</a> has the method, the measurements, and the reproduction notes. The Native Image follow-up is recorded separately.</p>
+<p class="experiment-links">
+    <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">Experiment record</a>
+    <a href="https://github.com/PVRLabs/experiments/blob/main/spring/boot-jdk27/results/comparison.json" target="_blank" rel="noopener noreferrer">HotSpot comparison</a>
+    <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27/oracle-native-image" target="_blank" rel="noopener noreferrer">Native Image record</a>
+    <a href="https://github.com/PVRLabs/experiments/blob/main/spring/boot-jdk27/reproduction-guide.md" target="_blank" rel="noopener noreferrer">Reproduction guide</a>
+</p>
+<dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
+    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
+    <figure class="screenshot-lightbox__content">
+        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+    </figure>
+</dialog>
+</div></article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261023"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

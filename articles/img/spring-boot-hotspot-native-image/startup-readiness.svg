@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="633.6pt" height="345.6pt" viewBox="0 0 633.6 345.6" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:description>Health and persistence readiness; zero-based bars; one run per configuration.</dc:description>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 345.6 
+L 633.6 345.6 
+L 633.6 0 
+L 0 0 
+z
+" style="fill: #101916"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 28.512 286.848 
+L 601.92 286.848 
+L 601.92 65.664 
+L 28.512 65.664 
+z
+" style="fill: #101916"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 28.512 286.848 
+L 28.512 65.664 
+" clip-path="url(#p7e5e0500eb)" style="fill: none; stroke: #304238; stroke-width: 0.7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2"/>
+     <g id="text_1">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #aabbb0" x="28.512" y="303.965187" transform="rotate(-0 28.512 303.965187)">0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 140.50575 286.848 
+L 140.50575 65.664 
+" clip-path="url(#p7e5e0500eb)" style="fill: none; stroke: #304238; stroke-width: 0.7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4"/>
+     <g id="text_2">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #aabbb0" x="140.50575" y="303.965187" transform="rotate(-0 140.50575 303.965187)">3</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 252.4995 286.848 
+L 252.4995 65.664 
+" clip-path="url(#p7e5e0500eb)" style="fill: none; stroke: #304238; stroke-width: 0.7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6"/>
+     <g id="text_3">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #aabbb0" x="252.4995" y="303.965187" transform="rotate(-0 252.4995 303.965187)">6</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 364.49325 286.848 
+L 364.49325 65.664 
+" clip-path="url(#p7e5e0500eb)" style="fill: none; stroke: #304238; stroke-width: 0.7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8"/>
+     <g id="text_4">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #aabbb0" x="364.49325" y="303.965187" transform="rotate(-0 364.49325 303.965187)">9</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 476.487 286.848 
+L 476.487 65.664 
+" clip-path="url(#p7e5e0500eb)" style="fill: none; stroke: #304238; stroke-width: 0.7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10"/>
+     <g id="text_5">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #aabbb0" x="476.487" y="303.965187" transform="rotate(-0 476.487 303.965187)">12</text>
+     </g>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #aabbb0" x="315.216" y="325.966125" transform="rotate(-0 315.216 325.966125)">Seconds</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2"/>
+   <g id="patch_3">
+    <path d="M 28.512 127.255237 
+L 473.127187 127.255237 
+L 473.127187 106.157686 
+L 28.512 106.157686 
+z
+" clip-path="url(#p7e5e0500eb)" style="fill: #8fb4c9"/>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #e3ebe6" x="28.512" y="93.846996" transform="rotate(-0 28.512 93.846996)">Ordinary JAR · HotSpot 27</text>
+   </g>
+   <g id="text_8">
+    <text style="font-weight: 700; font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #f2f5f3" x="481.190737" y="120.34318" transform="rotate(-0 481.190737 120.34318)">11.91 s</text>
+   </g>
+   <g id="patch_4">
+    <path d="M 28.512 195.311852 
+L 169.960106 195.311852 
+L 169.960106 174.214302 
+L 28.512 174.214302 
+z
+" clip-path="url(#p7e5e0500eb)" style="fill: #2ecc71"/>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #e3ebe6" x="28.512" y="161.903612" transform="rotate(-0 28.512 161.903612)">Optimized HotSpot 27</text>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #f2f5f3" x="178.023656" y="188.399796" transform="rotate(-0 178.023656 188.399796)">3.789 s</text>
+   </g>
+   <g id="patch_5">
+    <path d="M 28.512 263.368468 
+L 35.343619 263.368468 
+L 35.343619 242.270917 
+L 28.512 242.270917 
+z
+" clip-path="url(#p7e5e0500eb)" style="fill: #b6e77e"/>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #e3ebe6" x="28.512" y="229.960227" transform="rotate(-0 28.512 229.960227)">Oracle Native Image · JDK 25</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #f2f5f3" x="43.407169" y="256.456411" transform="rotate(-0 43.407169 256.456411)">0.183 s</text>
+   </g>
+  </g>
+  <g id="text_13">
+   <text style="font-weight: 700; font-size: 19px; font-family: Arial, sans-serif; text-anchor: start; fill: #f2f5f3" x="28.512" y="38.629031" transform="rotate(-0 28.512 38.629031)">Health and persistence readiness</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p7e5e0500eb">
+   <rect x="28.512" y="65.664" width="573.408" height="221.184"/>
+  </clipPath>
+ </defs>
+</svg>
