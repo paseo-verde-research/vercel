@@ -326,31 +326,169 @@
         const tabs = Array.from(document.querySelectorAll('.tab-btn'));
         const commandText = document.getElementById('command-text');
         const copyButton = document.getElementById('copy-btn');
+        let copyTimer;
+        let copyRevision = 0;
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const method = tab.dataset.method;
-                if (!commands[method] || !commandText) {
-                    return;
-                }
-                tabs.forEach(item => item.classList.toggle('active', item === tab));
-                commandText.textContent = commands[method];
-                copyButton?.classList.remove('copied');
-                ['curl', 'pwsh'].forEach(id => {
-                    const el = document.getElementById('note-' + id);
-                    if (el) el.style.display = id === method ? 'block' : 'none';
-                });
+        function selectMethod(method) {
+            if (!commands[method] || !commandText) {
+                return;
+            }
+            copyRevision++;
+            tabs.forEach(item => item.classList.toggle('active', item.dataset.method === method));
+            commandText.textContent = commands[method];
+            copyButton?.classList.remove('copied');
+            copyButton?.setAttribute('aria-label', 'Copy installation command');
+            window.clearTimeout(copyTimer);
+            ['curl', 'pwsh'].forEach(id => {
+                const el = document.getElementById('note-' + id);
+                if (el) el.style.display = id === method ? 'block' : 'none';
             });
-        });
+        }
 
-        copyButton?.addEventListener('click', async () => {
+        function markCopied() {
+            if (!copyButton) {
+                return;
+            }
+            copyButton.classList.add('copied');
+            copyButton.setAttribute('aria-label', 'Installation command copied');
+            window.clearTimeout(copyTimer);
+            copyTimer = window.setTimeout(() => {
+                copyButton.classList.remove('copied');
+                copyButton.setAttribute('aria-label', 'Copy installation command');
+            }, 1500);
+        }
+
+        function markFailed() {
+            if (!copyButton) {
+                return;
+            }
+            window.clearTimeout(copyTimer);
+            copyButton.classList.remove('copied');
+            selectCommandText();
+            copyButton.setAttribute('aria-label', 'Could not copy. The command is selected.');
+        }
+
+        // Attempt synchronous copying while the click's user activation is available.
+        function copyWithTextarea(text) {
+            const area = document.createElement('textarea');
+            area.value = text;
+            area.setAttribute('readonly', '');
+            area.setAttribute('aria-hidden', 'true');
+            area.tabIndex = -1;
+            area.style.position = 'fixed';
+            area.style.top = '0';
+            area.style.left = '0';
+            area.style.width = '2em';
+            area.style.height = '2em';
+            area.style.padding = '0';
+            area.style.border = 'none';
+            area.style.outline = 'none';
+            area.style.boxShadow = 'none';
+            area.style.background = 'transparent';
+            let copied = false;
+            try {
+                document.body.append(area);
+                try {
+                    area.focus({ preventScroll: true });
+                } catch (_) {
+                    area.focus();
+                }
+                area.select();
+                area.setSelectionRange(0, area.value.length);
+                copied = document.execCommand('copy');
+            } catch (_) {
+                copied = false;
+            } finally {
+                area.remove();
+            }
+            return copied === true;
+        }
+
+        function selectCommandText() {
             if (!commandText) {
                 return;
             }
-            await navigator.clipboard.writeText(commandText.textContent.trim());
-            copyButton.classList.add('copied');
-            window.setTimeout(() => copyButton.classList.remove('copied'), 1500);
+            try {
+                const range = document.createRange();
+                range.selectNodeContents(commandText);
+                const selection = window.getSelection();
+                if (!selection) {
+                    return;
+                }
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (_) {}
+        }
+
+        function isWindowsPlatform() {
+            try {
+                let platform = '';
+                const data = navigator.userAgentData;
+                if (data && typeof data.platform === 'string') {
+                    platform = data.platform;
+                } else if (typeof navigator.platform === 'string') {
+                    platform = navigator.platform;
+                }
+                return /^win/i.test(platform);
+            } catch (_) {
+                return false;
+            }
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => selectMethod(tab.dataset.method));
         });
+
+        copyButton?.addEventListener('click', () => {
+            let text = '';
+            try {
+                text = commandText ? commandText.textContent.trim() : '';
+            } catch (_) {
+                return;
+            }
+            if (!text || !copyButton) {
+                return;
+            }
+            const revision = ++copyRevision;
+
+            let copied = false;
+            try {
+                copied = copyWithTextarea(text) === true;
+            } catch (_) {
+                copied = false;
+            }
+            if (copied) {
+                markCopied();
+                return;
+            }
+
+            try {
+                const clipboard = navigator.clipboard;
+                if (clipboard && window.isSecureContext && typeof clipboard.writeText === 'function') {
+                    let pending;
+                    try {
+                        pending = clipboard.writeText(text);
+                    } catch (_) {
+                        markFailed();
+                        return;
+                    }
+                    Promise.resolve(pending).then(() => {
+                        if (revision === copyRevision) markCopied();
+                    }).catch(() => {
+                        if (revision === copyRevision) markFailed();
+                    });
+                    return;
+                }
+            } catch (_) {}
+
+            markFailed();
+        });
+
+        try {
+            if (isWindowsPlatform()) {
+                selectMethod('pwsh');
+            }
+        } catch (_) {}
     })();
 </script>
 <!-- Default Statcounter code for PVR Labs
