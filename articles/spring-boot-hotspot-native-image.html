@@ -129,7 +129,7 @@
 <h2>What I would carry forward</h2>
 <p>On HotSpot I would ship the extracted layout, Spring AOT, and the trained cache, and I would keep Spring JDBC. Startup falls to a few seconds, the process gives back about 25 MiB, and the MyBatis replacement did not improve on that.</p>
 <p>When the application and MariaDB have to share 512 MiB, I would use the native executable. The build needs a machine with several gigabytes free, and the binary needs a pass over the paths the service actually uses.</p>
-<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">experiment record</a> has the method, the measurements, and the reproduction notes. The Native Image follow-up is recorded separately.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">experiment record</a> has the method, the measurements, and the reproduction notes. The Native Image follow-up is recorded separately. See also the <a href="/articles/spring-boot-jdk27-optimizations.html">original article</a>.</p>
 <p class="experiment-links">
     <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">Experiment record</a>
     <a href="https://github.com/PVRLabs/experiments/blob/main/spring/boot-jdk27/results/comparison.json" target="_blank" rel="noopener noreferrer">HotSpot comparison</a>

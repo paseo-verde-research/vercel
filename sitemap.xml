@@ -6,6 +6,10 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
+    <loc>https://pvrlabs.xyz/articles/spring-boot-jdk27-optimizations.html</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://pvrlabs.xyz/articles/spring-boot-hotspot-native-image.html</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
