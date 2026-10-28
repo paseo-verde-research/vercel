@@ -84,7 +84,7 @@
 <li>Spring AOT, which generates initialization code at build time.</li>
 <li>A JDK AOT cache trained for this application and reused on the next start.</li>
 </ol>
-<p>That process is still a HotSpot JVM. I trained the cache on a separate builder, because training it inside the 512 MiB VM ran out of memory. I transferred it as an archive that kept JAR timestamps, and checked the JVM log to confirm the cache was used. A loose copy had changed those timestamps once. The JVM ignored the cache, and the application still started and passed its checks.</p>
+
 
 <h2>The same workload</h2>
 <p>Each configuration started after its own reboot, with MariaDB restarted and an empty schema. I stopped the startup clock when health reported UP and the first three quotes were stored. Schema setup had already touched the disk, so these are fresh processes on a prepared filesystem.</p>
@@ -113,8 +113,9 @@
 <p>Replacing Spring JDBC with MyBatis Core, and owning sessions in the application, showed no useful saving. Against the same first minute of the optimized HotSpot run, median RSS was 186.0 MiB versus 187.2 MiB, and startup was 3.78 seconds versus 3.79. Datasource health and pool metrics went away with Spring JDBC, and separate repository calls no longer joined one Spring transaction. I kept Spring JDBC.</p>
 <p>File-backed H2, on the same optimized HotSpot build, moved the database into the Java process. Application RSS rose to 202.9 MiB. With MariaDB stopped, the guest's lowest available memory rose from 66.0 MiB to 104.6 MiB. A smaller Java process and a smaller machine are different results. Request latency stayed in the same few milliseconds.</p>
 
-<h2>The native build</h2>
+<h2>The cost of Native Image</h2>
 <p>The 107.0 MiB run is a default Oracle GraalVM build of this application. On a separate two-vCPU builder with 6 GiB of RAM, that Maven build took 11 minutes 48 seconds and peaked at about 5,070 MiB RSS. The executable file is 107 MiB.</p>
+<p>The first Linux native binary compiled and started, but Jackson 2 could not deserialize the quote feed into <code>QuoteBatch</code>: native reflection metadata was missing. I added <code>@RegisterReflectionForBinding(QuoteBatch.class)</code> to <code>QuoteClient</code> and rebuilt. The generated metadata covered both <code>QuoteBatch</code> and its nested <code>FixtureQuote</code> type. Compilation and startup passed; exercising the quote feed exposed the failure.</p>
 <p>Before measuring it, I ran the packaged binary through the behavior this service actually has: quote JSON, the API and the page, a restart with the rows still there, rollback of a failed insert, release of the connection, and recovery after the feed or MariaDB was down.</p>
 <p>HotSpot was measured on October 23 and the native executable on October 28. Each figure above is one run of this application, on its own JDK and collector.</p>
 
@@ -128,7 +129,7 @@
 </div>
 <h2>What I would carry forward</h2>
 <p>On HotSpot I would ship the extracted layout, Spring AOT, and the trained cache, and I would keep Spring JDBC. Startup falls to a few seconds, the process gives back about 25 MiB, and the MyBatis replacement did not improve on that.</p>
-<p>When the application and MariaDB have to share 512 MiB, I would use the native executable. The build needs a machine with several gigabytes free, and the binary needs a pass over the paths the service actually uses.</p>
+<p>When the application and MariaDB have to share 512 MiB, I would use the native executable. Those runtime savings came with an almost 12-minute build, about 5 GiB of peak builder memory, and a Jackson reflection fix. The packaged binary also needed functional testing: compilation and startup alone missed a broken quote feed.</p>
 <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">experiment record</a> has the method, the measurements, and the reproduction notes. The Native Image follow-up is recorded separately. See also the <a href="/articles/spring-boot-jdk27-optimizations.html">original article</a>.</p>
 <p class="experiment-links">
     <a href="https://github.com/PVRLabs/experiments/tree/main/spring/boot-jdk27" target="_blank" rel="noopener noreferrer">Experiment record</a>
