@@ -114,7 +114,11 @@
 <h2>What I would carry forward</h2>
 <p>For this application, I would keep Spring JDBC and use the optimized deployment when the build pipeline can own cache training and validation. The observed startup and RSS savings justify that preparation work more clearly than the manual persistence replacement did.</p>
 <p>I would choose embedded H2 only when the application's lifecycle and single-instance requirements fit an embedded database. If the service needs independent database operations or a shared database for several app instances, I would budget for a separate service instead.</p>
-<p>These are short, sequential observations: one run per main configuration, a fixed ordinary-then-optimized order, and a five-minute measured workload at 5 rps. They do not quantify run-to-run variability, establish capacity or prove long-term safety. They do provide a practical reason to optimize the deployment before removing useful Spring infrastructure.</p></div></article></main>
+<p>These are short, sequential observations: one run per main configuration, a fixed ordinary-then-optimized order, and a five-minute measured workload at 5 rps. They do not quantify run-to-run variability, establish capacity or prove long-term safety. They do provide a practical reason to optimize the deployment before removing useful Spring infrastructure.</p></div>
+<div class="article-discussion">
+    <a class="article-discussion__link" href="https://daily.dev/posts/optimized-spring-boot-on-jdk-27-68-faster-startup-and-25-mib-less-ram-on-a-512-mib-vm-tested-spri-zmgtnvwbz"><span class="article-discussion__icon" aria-hidden="true"></span>Discuss this article on daily.dev</a>
+</div>
+</article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
 <script src="/script.js?v=20261023"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
