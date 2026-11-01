@@ -93,6 +93,7 @@ targets:
 <aside class="article-note" aria-label="Runtime metrics"><p><strong>Why no CPU or memory chart?</strong> Caddy's per-host metrics describe HTTP traffic, not the upstream application's process CPU or runtime memory. <a href="#deeper-monitoring">Direct StatLite monitoring</a> can add these details for supported applications.</p></aside>
 <p>The dashboard brings request volume, 404 and 5xx responses, and average response latency into the same history. You can see whether an error increase coincides with a traffic change, or whether successful responses are getting slower.</p>
 <p>In this example, I deliberately introduced a burst of 404s, a separate burst of 500s, and then slower successful responses before returning to normal. Traffic remained steady through those changes. The final request-count drop marks the workload ending, not an application outage. The chart displays counts per polling interval, rather than requests per second.</p>
+<p><a href="/statlite/demo.html">Explore the StatLite dashboard demo</a> with simulated data.</p>
 <h2>Multiple applications behind Caddy</h2>
 <p>Each configured hostname gets its own monitoring history. The example paired Express with Spring Boot behind one Caddy instance. Spring's traffic stayed steady while Express showed the injected errors and latency change.</p>
 <p>The applications can use different languages or frameworks. For this HTTP view, Caddy supplies the metrics, so neither application needs an application-specific metrics helper. Separate hostnames are the boundary here; this configuration does not divide applications mounted under different paths on one hostname.</p>
@@ -103,6 +104,7 @@ targets:
 <p>Caddy monitors HTTP traffic that passes through it. Bypass traffic and background jobs are outside this view. Average response latency describes what Caddy observes, not isolated application execution time or tail latency.</p>
 <p>A Caddy target marked <strong>UP</strong> means StatLite successfully collected Caddy metrics. It does not verify upstream application health. An application can return errors while Caddy continues reporting metrics successfully.</p>
 <p>Use the <a href="https://github.com/PVRLabs/statlite#documentation">StatLite documentation</a> to choose your monitoring setup. The <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/caddy-app-monitoring/report.md">detailed experiment report</a> contains the measured results, supporting dashboards, source and reproducible evidence behind this example.</p>
+<p><strong>Support StatLite:</strong> If you found this approach useful, consider <a href="https://github.com/PVRLabs/statlite">starring the repository on GitHub</a>.</p>
 <dialog class="screenshot-lightbox" aria-label="Expanded screenshot" data-screenshot-lightbox>
     <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded screenshot" data-lightbox-close>&times;</button>
     <figure class="screenshot-lightbox__content">
