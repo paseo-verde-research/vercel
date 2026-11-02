@@ -126,7 +126,7 @@
 <p>PgBouncer can help when PostgreSQL has too many connections, but it adds another component to operate. Its <a href="https://www.pgbouncer.org/features.html">transaction-pooling mode requires care with session-dependent features</a>, such as <code>LISTEN</code> and session-level advisory locks. Modern PgBouncer supports protocol-level prepared statements with <a href="https://www.pgbouncer.org/config.html#max_prepared_statements">a nonzero <code>max_prepared_statements</code> setting</a>. Before introducing a connection pooler, I’d check whether the application is retaining unnecessary idle connections and measure what happens when those connections are allowed to retire. This experiment did not test PgBouncer.</p>
 
 <h2>Monitoring with StatLite</h2>
-<p>I used <a href="/statlite/">StatLite</a> to watch request rate, latency, JVM runtime memory, and CPU during the run. These dashboards provide workload context; connection counts and PostgreSQL memory came from the independent measurements above.</p>
+<p>I used <a href="/statlite/">StatLite</a> to watch request rate, latency, JVM runtime memory, and CPU during the run. The screenshots below show that recorded workload; connection counts and PostgreSQL memory came from the independent measurements above. The separate <a href="/statlite/demo.html">StatLite dashboard demo</a> uses simulated data.</p>
 <div class="screenshot-gallery" data-gallery data-preload-previews>
     <div class="screenshot-tabs" role="tablist" aria-label="StatLite application dashboards">
         <button type="button" class="screenshot-tab" role="tab" id="tab-pool-a" aria-controls="panel-pool-a" aria-selected="true" tabindex="0">App A</button>
