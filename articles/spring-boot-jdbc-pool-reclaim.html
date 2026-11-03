@@ -126,7 +126,7 @@
 <p>PgBouncer can help when PostgreSQL has too many connections, but it adds another component to operate. Its <a href="https://www.pgbouncer.org/features.html">transaction-pooling mode requires care with session-dependent features</a>, such as <code>LISTEN</code> and session-level advisory locks. Modern PgBouncer supports protocol-level prepared statements with <a href="https://www.pgbouncer.org/config.html#max_prepared_statements">a nonzero <code>max_prepared_statements</code> setting</a>. Before introducing a connection pooler, I’d check whether the application is retaining unnecessary idle connections and measure what happens when those connections are allowed to retire. This experiment did not test PgBouncer.</p>
 
 <h2>Monitoring with StatLite</h2>
-<p>I used <a href="/statlite/">StatLite</a> to watch request rate, latency, JVM runtime memory, and CPU during the run. The screenshots below show that recorded workload; connection counts and PostgreSQL memory came from the independent measurements above. The separate <a href="/statlite/demo.html">StatLite dashboard demo</a> uses simulated data.</p>
+<p>I used <a href="/statlite/">StatLite</a> to watch request rate, latency, JVM runtime memory, and CPU during the run. The screenshots below show that recorded workload; connection counts and PostgreSQL memory came from the independent measurements above.</p>
 <div class="screenshot-gallery" data-gallery data-preload-previews>
     <div class="screenshot-tabs" role="tablist" aria-label="StatLite application dashboards">
         <button type="button" class="screenshot-tab" role="tab" id="tab-pool-a" aria-controls="panel-pool-a" aria-selected="true" tabindex="0">App A</button>
@@ -140,6 +140,7 @@
     </div>
 </div>
 <p>Screenshots show the recorded workload history; the live status cards belong to later inspection apps. <strong>DB health: Not reported</strong> reflects a deliberate fixture setting: Spring Boot’s DB-health check was disabled so monitoring would not borrow connections and disturb idle retirement. The apps verified database access at startup. The red 5xx spikes came from startup health checks returning HTTP 503 before the apps were ready; the measured JDBC workload requests all returned HTTP 200.</p>
+<p>Want to explore the dashboard yourself? The separate <a href="/statlite/demo.html">StatLite demo</a> uses simulated data.</p>
 <h2>Limits and takeaway</h2>
 <p>In both repetitions, releasing 18 idle connections was associated with about 29 MiB lower PostgreSQL cgroup memory. When traffic returned, the pools grew back to 20 connections, and the database memory footprint returned with them, at the cost of slower connection acquisition.</p>
 <p>These measurements describe idle PostgreSQL backends in one small-server setup, rather than a general memory cost per connection. Cgroup accounting includes cache as well as connection-private memory; sessions doing more substantial database work can have a different footprint.</p>
