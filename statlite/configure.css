@@ -44,6 +44,9 @@ h1, h2, h3, p { margin-top: 0; }
 .wizard-heading h1 { max-width: none; margin: 0; color: var(--green); font: 600 1.35rem/1.2 Sora, Inter, system-ui, sans-serif; letter-spacing: -.03em; }
 .wizard-heading .lede { max-width: none; margin: 2px 0 0; color: var(--muted); font-size: 13px; }
 .wizard-heading .search-context { max-width: 780px; margin: 7px 0 0; color: var(--soft); font-size: 13px; }
+.wizard-heading .demo-context { margin: 10px 0 4px; color: var(--soft); font-size: 13px; }
+.demo-context a { position: relative; color: var(--green-bright); text-decoration: underline; }
+.demo-context a::after { position: absolute; inset: -12px 0; content: ""; }
 
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
 .section-heading > div { display: flex; align-items: baseline; gap: 12px; }
