@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application | PVR Labs</title>
+    <meta name="author" content="Ted Kupolov">
+    <meta name="description" content="A database-backed service on a 512 MiB VM: comparing optimized Spring Boot with Javalin and Jdbi on HotSpot 27 and Oracle Native Image 25.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-vs-javalin-jdbi.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-vs-javalin-jdbi.html">
+    <meta property="og:title" content="Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A database-backed service on a 512 MiB VM: comparing optimized Spring Boot with Javalin and Jdbi on HotSpot 27 and Oracle Native Image 25.">
+    <meta property="article:published_time" content="2026-11-02T00:00:00-08:00">
+    <meta property="article:modified_time" content="2026-11-02T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-vs-javalin-jdbi/og-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="HotSpot 27 median application RSS: optimized Spring Boot 186.9 MiB; Javalin and Jdbi 159.1 MiB. Single-run observations.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-vs-javalin-jdbi/og-preview.png">
+    <meta name="twitter:image:alt" content="HotSpot 27 median application RSS: Spring Boot 186.9 MiB; Javalin and Jdbi 159.1 MiB. Single-run observations.">
+    <meta name="twitter:title" content="Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application">
+    <meta name="twitter:description" content="A database-backed service on a 512 MiB VM: comparing optimized Spring Boot with Javalin and Jdbi on HotSpot 27 and Oracle Native Image 25.">
+    <style>
+.article-page h1 { font-size: clamp(1.65rem, 4.4vw, 2.2rem); }
+.article-body table { width: 100%; border-collapse: collapse; font-size: .9rem; line-height: 1.5; }
+.article-body th, .article-body td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+.article-body thead { background: var(--bg-light); }
+.article-body tbody th { font-weight: 500; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+.table-scroll table { min-width: 36rem; }
+.article-body pre { overflow-x: auto; }
+.language-java .java-keyword { color: #c6a0f6; }
+.language-java .java-type { color: #8bd5ca; }
+.language-java .java-method { color: #8aadf4; }
+.language-java .java-string { color: #a6da95; }
+.language-java .java-comment { color: #a5adcb; }
+.language-java .java-constant { color: #f5a97f; }
+.article-body p code { overflow-wrap: anywhere; }
+.article-contents { padding: 1rem 1.25rem; background: var(--bg-light); border: 1px solid var(--border-color); margin: 1.5rem 0; }
+.article-contents ul { margin-bottom: 0; }
+.article-contents a { display: inline-flex; align-items: center; min-height: 44px; }
+.measurement-details { border: 1px solid var(--border-color); padding: .5rem 1rem; margin: 1.5rem 0; }
+.measurement-details summary { cursor: pointer; min-height: 44px; align-content: center; font-weight: 600; }
+.article-body h2 { scroll-margin-top: 6rem; }
+.article-body picture { display: block; }
+.article-body picture img { width: 100%; height: auto; }
+.experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 2rem; }
+.experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261023">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+<nav class="article-product-nav" aria-label="Articles"><a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a></nav>
+<h1>Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application</h1>
+<div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-02">November 2, 2026</time></div>
+<div class="article-body">
+<p>Replacing optimized Spring Boot with Javalin and Jdbi saved <strong>27.8 MiB of median application RSS (14.9%)</strong> in this small database-backed service. Readiness fell from <strong>3.79 to 2.72 seconds</strong>, while HTTP p95 stayed similar at five requests per second. These are single-run observations of complete application stacks.</p>
+<p>The saving comes with more application-owned wiring: repositories, transaction boundaries, scheduling, health responses and metrics. The useful question is how much memory that trade buys, and which integrations the application must maintain.</p>
+<p>This follows the <a href="/articles/spring-boot-jdk27-optimizations.html">Spring Boot optimization experiment</a>, which combined extracted deployment, Spring AOT and a trained JDK AOT cache. Here, optimized Spring Boot is the baseline. A separate comparison below covers both stacks as Oracle Native Image executables on JDK 25.</p>
+<nav class="article-contents" aria-label="On this page"><strong>On this page</strong><ul>
+<li><a href="#integrations">What the application takes over</a></li>
+<li><a href="#transactions">Repositories and transactions</a></li>
+<li><a href="#hotspot">HotSpot JDK 27 results</a></li>
+<li><a href="#native">Native Image results</a></li>
+<li><a href="#tradeoffs">Tradeoffs and limitations</a></li>
+<li><a href="#decision">When the smaller stack fits</a></li>
+</ul></nav>
+<h2 id="integrations">Replacing Boot means taking ownership of its integrations</h2>
+<p>Market Replay polls a deterministic HTTP quote feed once a minute, stores three quotes atomically, and serves latest-price and history JSON endpoints plus a browser UI. Spring Boot supplies MVC/Tomcat, Spring JDBC, transaction integration, Actuator/Micrometer and application wiring. This baseline already uses SQL directly, without an ORM.</p>
+<p>Javalin supplies the HTTP layer and Jetty integration. It does not supply the repository and transaction model used here. The application wires its JSON mapper, scheduler, pool, repositories, health responses and metrics. To preserve useful behavior, it needs more than routes calling ad hoc JDBC code: connection lifetimes must be bounded, failures must roll back writes, and service operations must be able to coordinate repositories.</p>
+<p>Javalin applications can organize handlers into controller-style classes, but Javalin does not provide Spring's integrated annotation-based MVC stack with its controller, request-binding, validation and error-handling facilities. This application uses direct route registration; the remaining conventions require explicit application code or additional libraries. Preserving endpoint behavior therefore does not mean preserving Spring's development experience.</p>
+<h2 id="transactions">Repositories and transactions with Jdbi</h2>
+<p><a href="https://jdbi.org/releases/3.55.0/">Jdbi</a> already provides SQL execution, parameter binding, mapping, managed handles and transaction callbacks. Its managed callbacks can share a handle across repository calls. The experimental adapter adds a repository base and context, convenient query callbacks, a service-level transaction callback and explicit rollback-only marking. It delegates transaction lifecycle to Jdbi rather than implementing a separate transaction system. Plain Jdbi is also a valid choice; the extra layer is a convenience and an API to maintain, not a prerequisite for transactions. The <a href="https://github.com/PVRLabs/experiments/tree/main/javalin/market-replay-jdk27/persistence-example">persistence source and focused tests</a> show the experiment-era core and measured quote repository.</p>
+<p>In the example, <code>db</code> is the experimental adapter around Jdbi. Its <code>transactional</code> and <code>useHandle</code> methods are adapter APIs; <code>createUpdate</code>, <code>bind</code> and <code>execute</code> are Jdbi calls.</p>
+<p>In the measured application, <code>QuoteRepository.insert</code> places the three quote inserts inside a repository-scoped transaction. The implementation uses a managed handle and Jdbi's named bindings for each insert:</p>
+<pre><code class="language-java">db.<span class="java-method">transactional</span>(() -&gt; {
+    <span class="java-keyword">for</span> (<span class="java-type">FixtureQuote</span> quote : batch.<span class="java-method">quotes</span>()) {
+        db.<span class="java-method">useHandle</span>(handle -&gt; handle.<span class="java-method">createUpdate</span>(<span class="java-constant">INSERT</span>)
+                .<span class="java-method">bind</span>(<span class="java-string">&quot;fetchedAt&quot;</span>, <span class="java-type">Timestamp</span>.<span class="java-method">from</span>(fetchedAt))
+                <span class="java-comment">// Other batch fields are bound here.</span>
+                .<span class="java-method">bind</span>(<span class="java-string">&quot;symbol&quot;</span>, quote.<span class="java-method">symbol</span>())
+                .<span class="java-method">bind</span>(<span class="java-string">&quot;price&quot;</span>, quote.<span class="java-method">price</span>())
+                .<span class="java-method">execute</span>());
+    }
+});</code></pre>
+<p>Jdbi manages the transaction; the prototype provides the explicit callback and handle conventions. A failed insert escaping the callback rolls back the batch. Reads use <code>db.query</code> and an explicit row mapper. This is the measured ingestion boundary, rather than a service coordinating several repositories.</p>
+<p>For a service that needs several repositories to participate in one operation, the same prototype also provides an explicit service-level callback. Participating calls must use the intended managed scope on the same thread and Jdbi instance. An exception escaping the boundary triggers rollback; a caught exception does not automatically mark the transaction rollback-only, although the prototype provides an explicit marker. These are focused callback semantics, not a claim of Spring transaction-propagation compatibility. The prototype is experimental, and its resource cost was not measured separately.</p>
+<h2 id="hotspot">Comparing complete application stacks on HotSpot JDK 27</h2>
+<p>The HotSpot comparison retains the same application behavior, quote SQL, UI, local MariaDB, heap policy and request schedule. Spring F is the optimized deployment from the previous article, not the slower ordinary JAR.</p>
+<figure><picture><source media="(max-width: 480px)" srcset="/articles/img/spring-boot-vs-javalin-jdbi/hotspot-mobile.svg"><img src="/articles/img/spring-boot-vs-javalin-jdbi/hotspot.svg" width="960" height="480" loading="lazy" decoding="async" alt="HotSpot 27: Spring Boot uses 186.9 MiB and takes 3.79 seconds to become ready; Javalin uses 159.1 MiB and takes 2.72 seconds."></picture><figcaption>Complete HotSpot JDK 27 stacks on the same 512 MiB / one-vCPU VM budget with colocated MariaDB. One run per stack; bars start at zero.</figcaption></figure>
+<p>The result: <strong>27.8 MiB (14.9%) less median application RSS</strong>, readiness of <strong>2.72 versus 3.79 seconds</strong>, and nearly identical HTTP p95 at five requests per second.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Component comparison"><table><thead><tr><th scope="col">Component</th><th scope="col">Optimized Spring Boot F</th><th scope="col">Javalin + repository prototype</th></tr></thead><tbody>
+<tr><th scope="row">Runtime</th><td>HotSpot <strong>27+35-2325</strong>, G1, <code>-Xmx80m</code></td><td>Same</td></tr>
+<tr><th scope="row">HTTP stack</th><td>Boot <strong>4.1.1</strong>, Framework <strong>7.0.9</strong>, Tomcat <strong>11.0.24</strong></td><td>Javalin <strong>7.2.4</strong>, Jetty <strong>12.1.14</strong></td></tr>
+<tr><th scope="row">Persistence</th><td>Spring JDBC</td><td>Jdbi Core <strong>3.55.0</strong>, <code>java-repository-poc</code> <strong>0.1.0-SNAPSHOT</strong></td></tr>
+<tr><th scope="row">Pool</th><td>HikariCP <strong>7.0.2</strong>, minimum/maximum <strong>1/4</strong></td><td>Same</td></tr>
+<tr><th scope="row">JDBC driver</th><td>MariaDB Connector/J <strong>3.5.10</strong></td><td>Same</td></tr>
+<tr><th scope="row">Deployment optimization</th><td>Extracted layout, Spring AOT, JDK AOT cache</td><td>Thin JAR plus dependency JARs, JDK AOT cache</td></tr>
+<tr><th scope="row">Metrics</th><td>Actuator/Micrometer Prometheus</td><td>Application JSON metrics</td></tr>
+</tbody></table></div>
+<p>The <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/market-replay-jdk27/results/experiment.json">public Javalin environment metadata</a> and <a href="https://github.com/PVRLabs/experiments/blob/main/spring/boot-jdk27/experiment-method.md">Spring method</a> record the deployment inputs. Boot 4.1.1's tagged support range ends at Java 26; these are empirical JDK 27 compatibility observations.</p>
+<p>Both applications shared a one-vCPU, 512 MiB Ubuntu VM with local MariaDB and no swap. Readiness required health UP and three stored quotes. After idle and warm-up phases, the driver offered five reads per second for five minutes, with at most four requests in flight and no retries.</p>
+<details class="measurement-details"><summary>Measurement protocol and cache training</summary>
+<p>Both applications ran in the same one-vCPU, 512 MiB Ubuntu 24.04 x86_64 local VM budget, without swap. Application, MariaDB and the deterministic Python quote fixture shared that budget. MariaDB used a 64 MiB InnoDB buffer pool, 8 MiB key buffer and 16 MiB Aria cache. These settings are not a limit on database RSS.</p>
+<p>Each accepted run followed a separate boot, database restart and empty-schema setup outside startup timing. Setup warmed storage. Readiness required health UP and three persisted quotes, polled about every 50 ms. Then came 60 seconds idle, 120 seconds warm-up, 300 seconds measured latest/history reads and 60 seconds recovery. Warm-up and load offered five requests per second, at most four in flight, with no retries. The scheduled ingestion ran alongside the reads.</p>
+<p>The external HTTP driver used SSH forwarding. OS sampling was approximately once per second, with transition samples excluded from steady summaries. Metrics were scraped every ten seconds. Javalin's startup-only cache training ran on a separate builder and exited before opening a database connection; it did not train request paths. Actual cache acceptance was checked. Neither primary run started StatLite or periodic DB-health probes. These details are in the <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/market-replay-jdk27/README.md">published Javalin method</a>.</p>
+</details>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Observation comparison"><table><thead><tr><th scope="col">Observation</th><th scope="col">Spring Boot F, HotSpot 27</th><th scope="col">Javalin + Jdbi prototype, HotSpot 27</th></tr></thead><tbody>
+<tr><th scope="row">HTTP and persistence readiness</th><td>3.79 s</td><td>2.72 s</td></tr>
+<tr><th scope="row">Idle application RSS, median</th><td>178.7 MiB</td><td>145.0 MiB</td></tr>
+<tr><th scope="row">Workload application RSS, median / sampled peak</th><td>186.9 / 189.3 MiB</td><td>159.1 / 160.1 MiB</td></tr>
+<tr><th scope="row">Workload MariaDB RSS, median</th><td>70.6 MiB</td><td>73.3 MiB</td></tr>
+<tr><th scope="row">Workload fixture RSS, median</th><td>19.1 MiB</td><td>21.4 MiB</td></tr>
+<tr><th scope="row">Workload host MemAvailable, minimum</th><td>66.0 MiB</td><td>93.2 MiB</td></tr>
+<tr><th scope="row">Workload HTTP p50 / p95</th><td>3.55 / 5.54 ms</td><td>3.98 / 5.59 ms</td></tr>
+<tr><th scope="row">Workload sampled application CPU</th><td>6.28 s</td><td>5.85 s</td></tr>
+<tr><th scope="row">Successful workload requests / errors</th><td>1,500 / 0</td><td>1,500 / 0</td></tr>
+<tr><th scope="row">Observed OOM / swap</th><td>None / none</td><td>None / none</td></tr>
+</tbody></table></div>
+<p>Sources: <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/market-replay-jdk27/results/comparison.json">Javalin comparison and calculated differences</a> and the canonical <a href="https://github.com/PVRLabs/experiments/blob/main/spring/boot-jdk27/results/comparison.json">Spring F record at <code>/runs/F</code></a>.</p>
+<p>Both ingested ten ordered batches and completed every offered workload request. These are single runs: Spring F was measured October 23 and Javalin October 28 UTC, on separate boots where package state and host activity could differ. The CPU difference is small in absolute terms. Javalin logged a timekeeping-watchdog delay and skipped clock-skew check; the cause and timing effect are unknown. Successful request and sampling checks do not certify clock accuracy.</p>
+<p>Five achieved requests per second is a property of the offered workload, not a throughput ceiling. Nor can the application RSS difference be assigned entirely to the HTTP framework or persistence layer. Tomcat versus Jetty, Spring JDBC versus Jdbi, logging, JSON libraries, training coverage and metrics implementation all contribute to the complete stacks. There is no Javalin-without-the-wrapper measurement isolating the prototype's overhead.</p>
+<p>Database-server memory is reported separately from Java RSS. Pool objects, connections and driver state contribute to application memory, but their share was not isolated. Both stacks use the same pool settings, so this is not evidence that Javalin has a cheaper pool. Host MemAvailable includes the database, fixture, kernel and other activity; its improvement cannot be derived simply by subtracting process medians or summing RSS.</p>
+<h2 id="native">Comparing Native Image deployments on Oracle GraalVM 25</h2>
+<p>Both applications also have validated native executables built with <strong>Oracle GraalVM 25.0.4+7.1</strong>, Java build <strong>25.0.4+7-LTS-jvmci-b01</strong>, using Serial GC, x86-64-v3 and a runtime <code>-Xmx80m</code> guard. These native results use JDK 25; the HotSpot results above use JDK 27.</p>
+<p>The native runs used the same VM budget, database settings and workload protocol. Each executable passed behavior checks before measurement, including transactions and recovery. Monitoring and periodic database-health probes stayed off.</p>
+<p>Spring used production-default <strong>O2</strong>. Javalin's published study selected the quick-build <strong>Ob</strong> run for its lower observed app RSS and comparable performance; its separately measured production-default <strong>O2</strong> run supplies the comparison at the same optimization level. Both are shown so the selection is visible.</p>
+<figure><picture><source media="(max-width: 480px)" srcset="/articles/img/spring-boot-vs-javalin-jdbi/native-mobile.svg"><img src="/articles/img/spring-boot-vs-javalin-jdbi/native.svg" width="960" height="480" loading="lazy" decoding="async" alt="Native O2 application RSS: Spring 107.0 MiB, Javalin 65.5 MiB; minimum host available memory: 204.9 and 204.1 MiB. Javalin Ob uses 59.4 MiB RSS with 202.7 MiB host available."></picture><figcaption>Oracle GraalVM 25 on a 512 MiB / one-vCPU VM with local MariaDB. One run per configuration. Application RSS and whole-host MemAvailable are separate measurements, not additive. The O2 runs retained almost identical host headroom.</figcaption></figure>
+<p>At O2, Javalin used <strong>38.8% less application RSS</strong>, while minimum host MemAvailable remained approximately <strong>205 MiB</strong> for both stacks.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Observation comparison"><table><thead><tr><th scope="col">Observation</th><th scope="col">Spring Boot native, O2</th><th scope="col">Javalin native, O2</th><th scope="col">Javalin native, selected Ob</th></tr></thead><tbody>
+<tr><th scope="row">HTTP and persistence readiness</th><td>0.183 s</td><td>0.113 s</td><td>0.112 s</td></tr>
+<tr><th scope="row">Idle application RSS, median</th><td>106.8 MiB</td><td>52.5 MiB</td><td>46.7 MiB</td></tr>
+<tr><th scope="row">Workload application RSS, median / sampled peak</th><td>107.0 / 107.6 MiB</td><td>65.5 / 65.7 MiB</td><td>59.4 / 59.8 MiB</td></tr>
+<tr><th scope="row">Workload MariaDB RSS, median</th><td>71.6 MiB</td><td>75.8 MiB</td><td>84.0 MiB</td></tr>
+<tr><th scope="row">Workload host MemAvailable, minimum</th><td>204.9 MiB</td><td>204.1 MiB</td><td>202.7 MiB</td></tr>
+<tr><th scope="row">Workload HTTP p50 / p95</th><td>3.46 / 4.84 ms</td><td>2.76 / 4.34 ms</td><td>2.88 / 4.03 ms</td></tr>
+<tr><th scope="row">Workload sampled application CPU</th><td>1.67 s</td><td>1.48 s</td><td>1.59 s</td></tr>
+<tr><th scope="row">Successful workload requests / errors</th><td>1,500 / 0</td><td>1,500 / 0</td><td>1,500 / 0</td></tr>
+<tr><th scope="row">Observed OOM / swap</th><td>None / none</td><td>None / none</td><td>None / none</td></tr>
+</tbody></table></div>
+<p>Sources: the <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/market-replay-native/results/comparison.json">Javalin native study and optimization comparison</a> and the <a href="https://github.com/PVRLabs/experiments/blob/main/spring/boot-jdk27/oracle-native-image/README.md">Spring Oracle native study</a>.</p>
+<p>At O2, Javalin used <strong>41.5 MiB less median application RSS</strong>, about <strong>38.8%</strong> below Spring native. That did not translate into equivalent additional host memory. Both O2 deployments retained approximately <strong>205 MiB minimum host MemAvailable</strong>. File-backed mappings overlap page-cache accounting, and the guests also started with different background memory usage. Process RSS alone can therefore overstate the practical memory savings from switching application stacks.</p>
+<p>The selected Javalin Ob run saved 47.6 MiB of application RSS, about 44.5%, but includes a different compiler setting. All three runs persisted ten ordered batches and completed every workload request. The small startup and latency differences from single runs do not establish a repeatable performance ranking or saturation capacity. Ob's result is not a general recommendation over production-default O2.</p>
+<p>Native deployment also adds build and compatibility work. Spring's complete Maven build took about <strong>11m 48s</strong>, with <strong>5.0 GiB</strong> peak builder RSS and a <strong>107 MiB</strong> executable plus six companion libraries. Javalin O2's native build took about <strong>6m 22s</strong> externally, with <strong>4.0 GiB</strong> peak builder RSS and a <strong>54 MiB</strong> executable plus a small management library. Exact byte counts are in the linked experiment records. Both used the retained six-GiB/two-vCPU builder, separate from the runtime VM. These timings cover different build workflows: Spring's Maven lifecycle versus Javalin compilation from retained JARs and metadata. Javalin also capped the compiler heap at 4 GiB; Spring used its default compiler budget. These figures describe practical build costs; the workflows do not isolate framework or compiler build speed.</p>
+<p>Native packaging required reachability metadata and static-resource inclusion for Javalin and a focused JSON-binding hint for Spring. The actual packages passed transaction, failure/recovery and persistence/restart checks; those checks validate the exercised paths, not every mapper, driver or database.</p>
+<p>These native observations were collected on October 28 in separate VM boots. Spring native used kernel <strong>6.8.0-147</strong> and libc <strong>2.39-0ubuntu8.9</strong>; the Javalin native capture records kernel <strong>6.8.0-134</strong>. Javalin O2 logged a timekeeping-watchdog delay and skipped clock-skew check during load; its timing effect is unknown. Package state, metrics implementations and ordinary host variation remain limitations. The native and HotSpot tables compare practical deployments: changes from HotSpot 27/G1 to Native Image 25/Serial cannot be attributed to compilation alone, and equal heap guards do not equate memory layouts.</p>
+<h2 id="tradeoffs">What the smaller stack gives up</h2>
+<p>The measured Javalin application preserves the quote behavior. The application-owned integrations described above must remain correct as requirements grow; the experiment does not establish Actuator-equivalent coverage. Schema migration, security integration and deployment conventions also need deliberate choices; the prototype does not provide a replacement for those parts of an application platform.</p>
+<p>Sampled RSS peaks may miss spikes, readiness precision is bounded by polling, and the short recovery window establishes neither a leak nor long-term safety.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/blob/main/javalin/market-replay-jdk27/reproduction-guide.md">public reanalysis guide</a> explains what the curated release can verify: projected sample statistics, request outcomes, percentiles and consistency with accepted summaries. It is not a complete source-and-runner package for rebuilding the experiment. These are local VM observations under a modest workload, not predictions for every VPS or Java application.</p>
+<h2 id="decision">A practical option, with a narrower contract</h2>
+<p>For this application, Javalin plus Jdbi and the repository prototype saved measurable application memory beyond optimized Spring Boot while retaining persistent SQL data, transactional ingestion and the same API/UI behavior. That makes it worth considering for a small service whose team wants explicit wiring and can own the missing integrations.</p>
+<p>For an application that already depends on Spring's MVC, transaction facilities and operational ecosystem, the observed saving may be less valuable than keeping those integrations. The experiment does not measure development effort or prove that assembling the smaller stack reduces total cost.</p>
+<p>Can we retain more of Spring Boot's development convenience without bringing back its full runtime footprint? That's the question I'll explore next by comparing five Java application stacks, including Micronaut and Jex.</p>
+<nav class="experiment-links" aria-label="Experiment records">
+<a href="https://github.com/PVRLabs/experiments/tree/main/javalin/market-replay-jdk27">HotSpot experiment</a>
+<a href="https://github.com/PVRLabs/experiments/tree/main/javalin/market-replay-native">Native Image study</a>
+<a href="https://github.com/PVRLabs/experiments/tree/main/javalin/market-replay-jdk27/persistence-example">Persistence example</a>
+<a href="https://github.com/PVRLabs/experiments/blob/main/javalin/market-replay-jdk27/reproduction-guide.md">Reanalysis guide</a>
+</nav>
+</div></article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261023"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
