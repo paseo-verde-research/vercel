@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders | PVR Labs</title>
+    <meta name="description" content="Scriptella 1.7.0, JDBC, Pandas + SQLAlchemy, and native loaders compared on one million CSV rows in PostgreSQL and MariaDB. Two local runs, with reproducible results.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html">
+    <meta property="og:title" content="Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Scriptella 1.7.0, JDBC, Pandas + SQLAlchemy, and native loaders compared on one million CSV rows in PostgreSQL and MariaDB. Two local runs, with reproducible results.">
+    <meta property="article:published_time" content="2026-11-03T00:00:00-08:00">
+    <meta property="article:modified_time" content="2026-11-03T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/scriptella-1-7-csv-import-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Median CSV import times for Scriptella and Pandas on PostgreSQL and MariaDB">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/scriptella-1-7-csv-import-og.jpg">
+    <meta name="twitter:image:alt" content="Median CSV import times for Scriptella and Pandas on PostgreSQL and MariaDB">
+    <meta name="twitter:title" content="Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders">
+    <meta name="twitter:description" content="Scriptella 1.7.0, JDBC, Pandas + SQLAlchemy, and native loaders compared on one million CSV rows in PostgreSQL and MariaDB. Two local runs, with reproducible results.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 480px) { .article-body th, .article-body td { padding: .5rem; } }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        .article-body figure a { display: block; min-height: 44px; }
+        .code-pair { display: grid; gap: 1.25rem; margin-bottom: 1.5rem; min-width: 0; }
+        .code-pair > div { min-width: 0; }
+        .code-label { margin-bottom: .4rem; font-weight: 600; font-size: .95rem; }
+        .code-pair pre { margin-bottom: 0; max-width: 100%; white-space: pre-wrap; }
+        @media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a>
+        <a href="/java-performance/" class="article-product-nav__link">Java Performance</a>
+    </nav>
+    <h1>Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders</h1>
+<div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-03">November 3, 2026</time></div>
+<div class="article-body"><p>Scriptella 1.7.0 caches binding plans for eligible static SQL, reducing repeated parsing and parameter setup. In this one-million-row CSV benchmark, Scriptella was <strong>3.61× faster than the tested Pandas + SQLAlchemy workflow on PostgreSQL and 2.56× on MariaDB</strong>. I maintain <a href="https://github.com/scriptella/scriptella-etl">Scriptella</a> and wanted to publish a reproducible release baseline. Scriptella is maintained by PVR Labs.</p>
+<p>This follows the <a href="/articles/importing-a-million-csv-rows.html">earlier CSV import experiment</a>. For v5, we replaced csvsql with Pandas + SQLAlchemy because csvsql took roughly nine to ten minutes, and added MariaDB&#x27;s native <code>LOAD DATA LOCAL</code> loader to give both databases a native bulk-loading reference alongside PostgreSQL COPY.</p>
+<p>The benchmark used PostgreSQL 17.11 and MariaDB 11.8.8, comparing Scriptella 1.7.0, handwritten JDBC, Pandas + SQLAlchemy, and each database&#x27;s native loader. Scriptella and JDBC used batches of 1,000. Pandas 2.3.3 read 10,000-row chunks and used <code>to_sql()</code> with 1,000-row insert chunks in one transaction. Both Java paths enabled PostgreSQL batch rewriting.</p>
+<p>All implementations used the same deterministic fixture and destination schema, with different parsing, conversion, and insertion paths. A 2,001-row smoke covered all eight cases; each measured import followed a verified 20,000-row warmup. Every import passed independent row-count and sample-value checks.</p>
+<figure><a href="/java-performance/experiments/img/scriptella-1-7-csv-import/overview.svg"><img src="/java-performance/experiments/img/scriptella-1-7-csv-import/overview.svg" alt="Median import times in seconds. PostgreSQL: Scriptella 8.747, JDBC 7.642, Pandas 31.551, COPY 1.750. MariaDB: Scriptella 7.950, JDBC 5.755, Pandas 20.377, LOAD DATA LOCAL 3.287." decoding="async"></a><figcaption>Median end-to-end durations from two local runs. Dots show individual runs; lower is faster.</figcaption></figure>
+<p>These are median seconds from two compatible local v5 runs on an Intel Mac, using Colima with four CPUs and 6 GiB of memory:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Median import durations"><table><thead><tr><th scope="col">Database</th><th scope="col">Scriptella 1.7.0</th><th scope="col">JDBC</th><th scope="col">Pandas + SQLAlchemy</th><th scope="col">Native load</th></tr></thead><tbody><tr><td>PostgreSQL</td><td>8.747 s</td><td>7.642 s</td><td>31.551 s</td><td>COPY: 1.750 s</td></tr><tr><td>MariaDB</td><td>7.950 s</td><td>5.755 s</td><td>20.377 s</td><td>LOAD DATA LOCAL: 3.287 s</td></tr></tbody></table></div>
+<p>Pandas took longer than Scriptella in both databases, while handwritten JDBC was faster in both. Scriptella provides a concise, declarative, SQL-first ETL approach without handwritten JDBC plumbing. PostgreSQL COPY and MariaDB LOAD DATA LOCAL were fastest: they are optimized direct bulk loaders, with parsing and error semantics that differ from batched inserts. This benchmark measures CSV import, not the broader ETL work of combining sources, transformations, and destinations.</p>
+<h2>Experiment details</h2>
+<p>The timings are end to end: they include fresh process startup, parsing, conversion, database writes, commit, and cleanup. The measured import includes 1.7.0&#x27;s cached binding-plan path, but does not isolate its contribution. Memory use was not measured.</p>
+<p>Pandas here is one specific Pandas + SQLAlchemy workflow, not the fastest possible Python importer. Results depend on workload and environment. These medians come from two sequential runs on one machine; case order, caches, startup costs, and host load can affect timings. The chart shows individual runs, not confidence intervals, so treat the results as a local reference rather than a universal ranking.</p>
+<p>Scriptella 1.7.0 also adds a JSON/JSONL driver, optional CLI progress, and execution reports. A useful next benchmark is database-to-database migration, where broader ETL functionality can be evaluated. See the <a href="https://github.com/scriptella/scriptella-etl/blob/master/docs/releases/1.7.0/release-notes.md">1.7.0 release notes</a> for details.</p>
+<p class="experiment-links">
+    <a href="https://scriptella.org/download.html">Download 1.7.0</a>
+    <a href="https://github.com/scriptella/scriptella-etl">Scriptella source</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks">Benchmark source</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/benchmark-guide.md">Reproduce</a>
+    <a href="https://github.com/scriptella/scriptella-benchmarks/blob/main/docs/results/2026-11-03-local-v5/README.md">Results</a>
+</p>
+</div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261014"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

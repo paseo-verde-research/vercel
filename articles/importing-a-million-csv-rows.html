@@ -13,7 +13,7 @@
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Batched Scriptella loaded a million typed CSV rows in about 15 seconds on PostgreSQL and 10 on MariaDB. JDBC was a few seconds faster, which may be worth a declarative ETL file.">
     <meta property="article:published_time" content="2026-10-13T00:00:00-07:00">
-    <meta property="article:modified_time" content="2026-10-21T00:00:00-07:00">
+    <meta property="article:modified_time" content="2026-11-03T00:00:00-08:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta property="og:image" content="https://pvrlabs.xyz/articles/img/importing-a-million-csv-rows/cover.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -65,8 +65,9 @@
         <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
     </nav>
     <h1>Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY</h1>
-    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-13">October 13, 2026</time> · Updated <time datetime="2026-10-21">October 21, 2026</time></div>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-10-13">October 13, 2026</time> · Updated <time datetime="2026-11-03">November 3, 2026</time></div>
     <div class="article-body" data-gallery data-lightbox-scope>
+<p><strong>November 3, 2026 update:</strong> A <a href="/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html">new Scriptella 1.7 benchmark</a> compares Pandas + SQLAlchemy, JDBC, and native loaders on both databases. It uses a separate dataset and configuration from the results below.</p>
 <p>With batching, Scriptella imported a million typed CSV rows in about 15 seconds on PostgreSQL and about 10 seconds on MariaDB. Handwritten JDBC was faster by about a second on PostgreSQL and about three seconds on MariaDB. For an ETL job that runs occasionally, those seconds may be worth a declarative workflow instead of custom Java import code.</p>
 <p>Those are medians of two local runs. On PostgreSQL the batched observations overlap, so the one-second gap is not stable. On MariaDB the runs stay apart. I maintain <a href="https://scriptella.org/" target="_blank" rel="noopener noreferrer">Scriptella</a>, the Java ETL tool. The <a href="https://github.com/scriptella/scriptella-benchmarks" target="_blank" rel="noopener noreferrer">code and measurements are public</a>.</p>
 <p>The job was a million-row CSV into a typed table that already exists: an integer id, two strings, an exact decimal, and a timestamp. PostgreSQL stores that timestamp as <code>TIMESTAMP WITHOUT TIME ZONE</code>; MariaDB uses <code>DATETIME</code>. Clients and sessions use UTC. There are no nulls, transformations, or indexes.</p>

@@ -27,7 +27,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-03</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</loc>
@@ -91,7 +91,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-03</lastmod>
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html</loc>
@@ -171,7 +171,7 @@
   </url>
   <url>
     <loc>https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -198,5 +198,9 @@
   <url>
     <loc>https://pvrlabs.xyz/articles/telegram-health-alerts-statlite.html</loc>
     <lastmod>2026-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html</loc>
+    <lastmod>2026-11-03</lastmod>
   </url>
 </urlset>
