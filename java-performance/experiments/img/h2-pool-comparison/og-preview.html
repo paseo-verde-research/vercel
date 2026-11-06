@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H2 pool comparison social preview</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; width: 1200px; height: 630px; padding: 48px 64px; color: #f3f5f3; font-family: Arial, sans-serif; background-color: #080e0a; background-image: linear-gradient(#ffffff04 1px, transparent 1px), linear-gradient(90deg, #ffffff04 1px, transparent 1px); background-size: 46px 46px; }
+.logo { width: 152px; height: 38px; background: linear-gradient(90deg, #31c779 49%, #f3f5f3 49%); mask: url('../../../../img/pvrlabs_alpha_bg.png') center / contain no-repeat; }
+.series { margin-top: 4px; color: #a5afa8; font-size: 13px; font-weight: 700; letter-spacing: 3px; }
+h1 { margin: 56px 0 16px; font-size: 54px; line-height: 1.12; letter-spacing: -1.5px; }
+h1 span { color: #31c779; }
+.subtitle { margin: 0; font-size: 23px; color: #bcc5be; }
+.results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+.result { padding: 21px 24px; border: 1px solid #384139; border-radius: 14px; background: #111812; }
+.result strong { display: block; margin-bottom: 8px; color: #31c779; font-size: 26px; letter-spacing: -0.5px; white-space: nowrap; }
+.result span { color: #c0c8c2; font-size: 18px; }
+footer { display: flex; justify-content: space-between; margin-top: 28px; color: #98a39b; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="logo" role="img" aria-label="PVR Labs"></div>
+<div class="series">JAVA PERFORMANCE EXPERIMENTS</div>
+<h1>H2’s built-in pool vs HikariCP<br><span>Is there a memory cost?</span></h1>
+<p class="subtitle">Embedded H2 · JDK 27 · 512 MiB Linux VM</p>
+<div class="results">
+<div class="result"><strong>About +2 MiB</strong><span>HikariCP idle RSS</span></div>
+<div class="result"><strong>Comparable RSS</strong><span>Under moderate load</span></div>
+<div class="result"><strong>30 requests/s</strong><span>All requests completed</span></div>
+</div>
+<footer><span>pvrlabs.xyz</span><span>Four runs · A/B/B/A · November 6, 2026</span></footer>
+</body>
+</html>

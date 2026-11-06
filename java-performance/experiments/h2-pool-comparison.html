@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2's Built-in Connection Pool vs HikariCP: Is There a Memory Cost? | PVR Labs</title>
+    <meta name="description" content="A Linux comparison of embedded H2's native pool and HikariCP measures idle and moderate-load memory and request latency.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/h2-pool-comparison.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/h2-pool-comparison.html">
+    <meta property="og:title" content="H2's Built-in Connection Pool vs HikariCP: Is There a Memory Cost?">
+    <meta property="og:description" content="A short Linux comparison of embedded H2's native pool and HikariCP.">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="article:published_time" content="2026-11-06T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/h2-pool-comparison-og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="H2's built-in pool versus HikariCP: about 2 MiB more at idle, comparable RSS under moderate load.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="H2's Built-in Connection Pool vs HikariCP: Is There a Memory Cost?">
+    <meta name="twitter:description" content="A Linux comparison of embedded H2's native pool and HikariCP measures idle and moderate-load memory and request latency.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/h2-pool-comparison-og.jpg">
+    <meta name="twitter:image:alt" content="H2's built-in pool versus HikariCP: about 2 MiB more at idle, comparable RSS under moderate load.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20260911">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        .article-body figure a { display: block; min-height: 44px; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 600px) {
+            .table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .table-scroll tbody, .table-scroll tr, .table-scroll td { display: block; }
+            .table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; border: 0; text-align: right; }
+            .table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; text-align: left; }
+            .table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+        @media (max-width: 480px) {
+            .article-body th, .article-body td { padding: .5rem; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "H2's Built-in Connection Pool vs HikariCP: Is There a Memory Cost?", "description": "A Linux comparison of embedded H2's native pool and HikariCP measures idle and moderate-load memory and request latency.", "datePublished": "2026-11-06T00:00:00-08:00", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/h2-pool-comparison.html", "image": "https://pvrlabs.xyz/java-performance/experiments/img/h2-pool-comparison-og.jpg", "isPartOf": {"@type": "CollectionPage", "name": "Java Performance Experiments", "url": "https://pvrlabs.xyz/java-performance/experiments/"}}</script>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a>
+        <a href="/java-performance/" class="article-product-nav__link">Java Performance</a>
+    </nav>
+    <h1>H2's Built-in Connection Pool vs HikariCP: Is There a Memory Cost?</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-06">November 6, 2026</time></div>
+    <div class="article-body">
+<p>H2 is an excellent embedded database, and its built-in connection pool is a reasonable choice for an application that only uses H2. I wanted to see whether using HikariCP with embedded H2 would introduce a meaningful memory or performance cost.</p>
+<p>In a short Linux comparison, HikariCP used about <strong>2 MiB more RSS at idle</strong>, while memory under moderate load was comparable. Its observed p95 and p99 latency was slightly lower in both runs. All scheduled requests completed without failures, missed slots, or timeouts. This is a result for one workload, not a general ranking of pools.</p>
+<h2>What I ran</h2>
+<p>The application used <a href="https://github.com/PVRLabs/coilbase">CoilBase</a> and <a href="https://github.com/avaje/avaje-jex">Avaje Jex</a>, a lightweight Java HTTP framework, with a file-based embedded H2 database. CoilBase is a Java framework I am currently developing at PVR Labs. Reads returned up to 100 rows; writes updated counters and inserted a history record in one transaction. The same application and SQL ran with H2's <code>JdbcConnectionPool</code> and HikariCP 7.0.2. Both pools were capped at four connections; Hikari's minimum idle setting was one. H2 ran in the application process, so its memory is included in RSS.</p>
+<p>The Ubuntu 24.04 VM had one vCPU, 512 MiB RAM and no swap. Java ran on JDK 27 with SerialGC, a 16 MiB initial heap and an 80 MiB maximum heap. I ran the pools in A/B/B/A order, starting a fresh JVM and database for each run. Filesystem caches were not reset. After idle and warm-up phases, the moderate phase offered a fixed 30 requests per second for 60 seconds, with four reads for every write. Each moderate phase completed 1,800 of 1,800 requests.</p>
+<p>This is a short, lightly contended workload, not a pool saturation test. The results describe embedded H2 in this application and environment; they do not establish how the pools compare with an external database, under heavier contention, or over a longer run.</p>
+<h2>Memory and latency</h2>
+<p>RSS includes the whole Java process, not just the pool or heap. The table shows the mean of one-second RSS samples within each phase, and request latency percentiles measured after dispatch. The two runs of each pool remain separate.</p>
+<figure><img src="/java-performance/experiments/img/h2-pool-comparison/moderate-rss.svg" width="400" height="310" alt="Moderate mean RSS: H2 native A1 111.05 MiB and A2 110.85 MiB; HikariCP B1 109.05 MiB and B2 109.80 MiB. The horizontal scale starts at 108 MiB." loading="lazy" decoding="async"><figcaption>Mean process RSS during the moderate phase. Each dot represents one run; the axis starts at 108 MiB.</figcaption></figure>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Memory and latency by run"><table><thead><tr><th scope="col">Run</th><th scope="col">Pool</th><th scope="col">Idle RSS, MiB</th><th scope="col">Moderate RSS, MiB</th><th scope="col">p95, ms</th><th scope="col">p99, ms</th></tr></thead><tbody>
+<tr><td data-label="Run">A1</td><td data-label="Pool">H2 native</td><td class="num" data-label="Idle RSS, MiB">85.30</td><td class="num" data-label="Moderate RSS, MiB">111.05</td><td class="num" data-label="p95, ms">6.82</td><td class="num" data-label="p99, ms">9.71</td></tr>
+<tr><td data-label="Run">B1</td><td data-label="Pool">HikariCP</td><td class="num" data-label="Idle RSS, MiB">87.98</td><td class="num" data-label="Moderate RSS, MiB">109.05</td><td class="num" data-label="p95, ms">5.84</td><td class="num" data-label="p99, ms">8.42</td></tr>
+<tr><td data-label="Run">B2</td><td data-label="Pool">HikariCP</td><td class="num" data-label="Idle RSS, MiB">87.85</td><td class="num" data-label="Moderate RSS, MiB">109.80</td><td class="num" data-label="p95, ms">6.23</td><td class="num" data-label="p99, ms">8.84</td></tr>
+<tr><td data-label="Run">A2</td><td data-label="Pool">H2 native</td><td class="num" data-label="Idle RSS, MiB">86.15</td><td class="num" data-label="Moderate RSS, MiB">110.85</td><td class="num" data-label="p95, ms">6.96</td><td class="num" data-label="p99, ms">10.21</td></tr>
+</tbody></table></div>
+<p>Hikari's idle means were about 1.7 to 2.7 MiB above the native observations. Under moderate load, all four means fell between 109.05 and 111.05 MiB. Those process-level measurements do not isolate the pool's own allocation. Hikari's p95 ranged from 5.84 to 6.23 ms, compared with 6.82 to 6.96 ms for the native pool. The corresponding p99 ranges were 8.42 to 8.84 ms and 9.71 to 10.21 ms. Two short runs per pool are not enough to turn these differences into a general speed claim.</p>
+<p><strong>Measurement note:</strong> After occasional scheduling delays on my actively used development Mac, I moved to a separate Linux host for more reliable tail-latency measurements. Diagnostics there revealed an approximately 43 ms latency tail associated with SSH forwarding; QEMU TCP forwarding eliminated it in the diagnostic fixture. The precise SSH mechanism was not established. The final Linux benchmark had no missed slots or timeouts.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/java/h2-pool-comparison">experiment data and method</a> contain the individual runs and their measurements.</p>
+<h2>Conclusion</h2>
+<p>Both pools were reasonable choices for this embedded-H2 application. H2's built-in pool is a perfectly good option for an H2-only application, and these measurements show no meaningful difference that would compel a switch. HikariCP was also lightweight in this test: it used slightly more memory at idle, had comparable moderate-load RSS, and showed slightly lower observed tail latency. The short, lightly contended workload does not establish a general performance advantage or predict results for external databases.</p>
+<p>HikariCP is a solid choice when an application uses different JDBC databases and benefits from a consistent pool lifecycle. That is why the latest CoilBase preview already uses it in its <a href="https://github.com/PVRLabs/coilbase/tree/main/examples/hello-coilbase">Hello example</a>. Its <code>AutoCloseable</code> support also simplified datasource cleanup in CoilBase.</p>
+    </div>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261019"></script>
+
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
