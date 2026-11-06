@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" role="img" aria-labelledby="title desc">
+<title id="title">Moderate-load mean resident memory</title>
+<desc id="desc">H2 native: A1 111.05 MiB, A2 110.85 MiB. HikariCP: B1 109.05 MiB, B2 109.80 MiB. Horizontal axis runs from 108 to 112 MiB, not zero.</desc>
+<rect width="400" height="230" rx="8" fill="#0b100d"/>
+<g font-family="Arial, sans-serif" fill="#e4eee7">
+<text x="16" y="28" font-size="18" font-weight="bold">Moderate-load mean RSS</text>
+<text x="16" y="48" font-size="12" fill="#c6d4ca">Each dot is one run · axis starts at 108 MiB</text>
+<g stroke="#526459" stroke-width="1"><path d="M95 68V188 M160 68V188 M225 68V188 M290 68V188 M355 68V188" opacity=".55"/><path d="M95 188H355"/></g>
+<g font-size="13"><text x="16" y="92">H2 native</text><text x="16" y="150">HikariCP</text></g>
+<g font-size="12" fill="#c6d4ca" text-anchor="middle"><text x="95" y="207">108</text><text x="160" y="207">109</text><text x="225" y="207">110</text><text x="290" y="207">111</text><text x="355" y="207">112</text><text x="225" y="226">Mean RSS (MiB), truncated scale</text></g>
+<g fill="#66d58b"><circle cx="293.25" cy="84" r="5"/><circle cx="280.25" cy="108" r="5"/></g>
+<g fill="#79b7f2"><circle cx="163.25" cy="142" r="5"/><circle cx="212" cy="166" r="5"/></g>
+<g font-size="12"><text x="302" y="88">A1 111.05</text><text x="289" y="112">A2 110.85</text><text x="172" y="146">B1 109.05</text><text x="221" y="170">B2 109.80</text></g>
+</g></svg>
