@@ -179,7 +179,8 @@
 }
 
 .lab-entry h2,
-.lab-entry h3 {
+.lab-entry h3,
+.lab-entry h4 {
     margin-bottom: 0.35rem;
     color: var(--text-primary);
     font-family: var(--font-heading);
@@ -188,12 +189,14 @@
 }
 
 .lab-entry h2 a,
-.lab-entry h3 a {
+.lab-entry h3 a,
+.lab-entry h4 a {
     color: var(--text-primary);
 }
 
 .lab-entry h2 a:hover,
-.lab-entry h3 a:hover {
+.lab-entry h3 a:hover,
+.lab-entry h4 a:hover {
     color: var(--primary-green);
 }
 

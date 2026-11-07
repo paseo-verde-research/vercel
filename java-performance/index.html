@@ -36,7 +36,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/java-performance/style.css?v=20261014a">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20261106a">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -104,53 +104,57 @@
 
     <section class="lab-section lab-section--alt" id="experiments">
         <div class="container">
-            <h2>Selected experiments</h2>
+            <h2>Featured experiments</h2>
             <p class="lab-section-intro">Measurements of Java memory, frameworks, connection pools, and persistence. Each write-up explains the workload, results, and limitations, with links to the experiment record.</p>
+            <h3 class="lab-index-heading">Frameworks and runtime</h3>
             <div class="lab-index">
                 <article class="lab-entry">
-                    <h3><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
-                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
-                </article>
-                <article class="lab-entry">
-                    <h3><a href="/articles/spring-boot-jdbc-pool-reclaim.html">Reducing PostgreSQL Memory Use by Shrinking Idle Connection Pools</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-09">October 9, 2026</time></p>
-                    <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with slower connection acquisition when traffic returned.</p>
-                </article>
-                <article class="lab-entry">
-                    <h3><a href="/articles/spring-boot-jdk27-optimizations.html">How Far Can You Optimize Spring Boot Without Overengineering It?</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-27">October 27, 2026</time></p>
-                    <p>Measured Spring Boot startup and memory changes with JDK 27, comparing practical JVM and application optimizations.</p>
-                </article>
-                <article class="lab-entry">
-                    <h3><a href="/articles/spring-boot-hotspot-native-image.html">How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-28">October 28, 2026</time></p>
-                    <p>Same service on a 512 MiB VM: 212 MiB as a JAR, 187 MiB on optimized HotSpot 27, 107 MiB as Oracle Native Image on JDK 25.</p>
-                </article>
-                <article class="lab-entry">
-                    <h3><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-05">October 5, 2026</time></p>
-                    <p>Equivalent JDBC apps on Java 25, measured one at a time for startup, resident memory, and CPU. Quarkus had the lowest overall median RSS; its memory use converged with Micronaut’s near the end of this single run.</p>
-                </article>
-                <article class="lab-entry">
-                    <h3><a href="/java-performance/experiments/mybatis-jooq-jdbi-512mb.html">Jdbi, MyBatis and jOOQ with Javalin on a 512 MiB VM</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-19">October 19, 2026</time></p>
-                    <p>Two runs per library with H2, 512 MiB RAM, and no swap. MyBatis used the least median workload RSS; Jdbi was competitive on latency. Includes repository code and a separate monitored MyBatis repeat.</p>
-                </article>
-                <article class="lab-entry">
-                    <h3><a href="/articles/spring-boot-vs-javalin-jdbi.html">Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application</a></h3>
+                    <h4><a href="/articles/spring-boot-vs-javalin-jdbi.html">Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application</a></h4>
                     <p class="lab-entry-meta"><time datetime="2026-11-02">November 2, 2026</time></p>
                     <p>Compare complete Spring Boot and Javalin stacks on a 512 MiB VM, including HotSpot and Native Image results.</p>
                 </article>
                 <article class="lab-entry">
-                    <h3><a href="/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html">Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders</a></h3>
+                    <h4><a href="/articles/spring-boot-hotspot-native-image.html">How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-10-28">October 28, 2026</time></p>
+                    <p>Same service on a 512 MiB VM: 212 MiB as a JAR, 187 MiB on optimized HotSpot 27, 107 MiB as Oracle Native Image on JDK 25.</p>
+                </article>
+                <article class="lab-entry">
+                    <h4><a href="/articles/spring-boot-jdk27-optimizations.html">How Far Can You Optimize Spring Boot Without Overengineering It?</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-10-27">October 27, 2026</time></p>
+                    <p>Measured Spring Boot startup and memory changes with JDK 27, comparing practical JVM and application optimizations.</p>
+                </article>
+                <article class="lab-entry">
+                    <h4><a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-10-05">October 5, 2026</time></p>
+                    <p>Equivalent JDBC apps on Java 25, measured one at a time for startup, resident memory, and CPU. Quarkus had the lowest overall median RSS; its memory use converged with Micronaut’s near the end of this single run.</p>
+                </article>
+                <article class="lab-entry">
+                    <h4><a href="/articles/spring-boot-256mb-jdk25.html">Spring Boot on a 256 MiB VPS with JDK 25</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-08-25">August 25, 2026</time></p>
+                    <p>A practical look at Spring Boot, compact object headers, and monitoring on a 256 MiB VPS.</p>
+                </article>
+            </div>
+            <h3 class="lab-index-heading">Database and persistence</h3>
+            <div class="lab-index">
+                <article class="lab-entry">
+                    <h4><a href="/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html">Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders</a></h4>
                     <p class="lab-entry-meta"><time datetime="2026-11-03">November 3, 2026</time></p>
                     <p>Two local runs compare Scriptella 1.7.0, handwritten JDBC, Pandas + SQLAlchemy, and native loaders on PostgreSQL and MariaDB.</p>
                 </article>
                 <article class="lab-entry">
-                    <h3><a href="/articles/spring-boot-256mb-jdk25.html">Spring Boot on a 256 MiB VPS with JDK 25</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-08-25">August 25, 2026</time></p>
-                    <p>A practical look at Spring Boot, compact object headers, and monitoring on a 256 MiB VPS.</p>
+                    <h4><a href="/java-performance/experiments/mybatis-jooq-jdbi-512mb.html">Jdbi, MyBatis and jOOQ with Javalin on a 512 MiB VM</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-10-19">October 19, 2026</time></p>
+                    <p>Two runs per library with H2, 512 MiB RAM, and no swap. MyBatis used the least median workload RSS; Jdbi was competitive on latency. Includes repository code and a separate monitored MyBatis repeat.</p>
+                </article>
+                <article class="lab-entry">
+                    <h4><a href="/articles/spring-boot-jdbc-pool-reclaim.html">Reducing PostgreSQL Memory Use by Shrinking Idle Connection Pools</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-10-09">October 9, 2026</time></p>
+                    <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with slower connection acquisition when traffic returned.</p>
+                </article>
+                <article class="lab-entry">
+                    <h4><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
+                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
                 </article>
             </div>
             <p class="lab-footer-note"><a href="/java-performance/experiments/">All Java experiments &rarr;</a></p>

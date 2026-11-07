@@ -192,6 +192,40 @@
                 <button type="button" class="lab-filter" data-filter="memory" aria-pressed="false">Memory <span data-experiment-count="memory"></span></button>
                 <button type="button" class="lab-filter" data-filter="packaging" aria-pressed="false">Packaging <span data-experiment-count="packaging"></span></button>
             </nav>
+            <!-- Update this selection manually using the pageviews CSV in .agent-logs, if available. -->
+            <h2 class="lab-index-heading">Most popular experiments</h2>
+            <div class="lab-index">
+                <article class="lab-entry" data-tags="spring-boot memory persistence">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Persistence</span>
+                        <span>Spring Boot</span>
+                        <span>Memory</span>
+                    </div>
+                    <h3><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
+                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
+                    <p class="lab-entry-links">
+                        <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Read the result</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+                <article class="lab-entry" data-tags="spring-boot memory jdbc postgresql persistence">
+                    <div class="lab-entry-tags" aria-label="Topics">
+                        <span>Persistence</span>
+                        <span>Spring Boot</span>
+                        <span>JDBC</span>
+                        <span>PostgreSQL</span>
+                    </div>
+                    <h3><a href="/articles/spring-boot-jdbc-pool-reclaim.html">Reducing PostgreSQL Memory Use by Shrinking Idle Connection Pools</a></h3>
+                    <p class="lab-entry-meta"><time datetime="2026-10-09">October 9, 2026</time></p>
+                    <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with slower connection acquisition when traffic returned.</p>
+                    <p class="lab-entry-links">
+                        <a href="/articles/spring-boot-jdbc-pool-reclaim.html">Read the article</a>
+                        <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim" target="_blank" rel="noopener noreferrer">Experiment record</a>
+                    </p>
+                </article>
+            </div>
+
             <!-- Curated featured experiments. New entries go in More experiments unless this selection is deliberately revised. -->
             <h2 class="lab-index-heading">Featured experiments</h2>
             <div class="lab-index">
@@ -209,21 +243,6 @@
                     <p>Equivalent JDBC APIs with H2 and monitoring on a 256 MiB Alpine VM. Both completed the workload; Javalin started faster, used less resident memory, and left more RAM available.</p>
                     <p class="lab-entry-links"><a href="/java-performance/experiments/javalin-vs-spring-boot-256mb.html">Read the experiment</a><a href="https://github.com/PVRLabs/experiments/tree/main/javalin/vps-256mb">Experiment record</a></p>
                 </article>
-                <article class="lab-entry" data-tags="spring-boot memory jdbc postgresql persistence">
-                    <div class="lab-entry-tags" aria-label="Topics">
-                        <span>Persistence</span>
-                        <span>Spring Boot</span>
-                        <span>JDBC</span>
-                        <span>PostgreSQL</span>
-                    </div>
-                    <h3><a href="/articles/spring-boot-jdbc-pool-reclaim.html">Reducing PostgreSQL Memory Use by Shrinking Idle Connection Pools</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-10-09">October 9, 2026</time></p>
-                    <p>Two pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with slower connection acquisition when traffic returned.</p>
-                    <p class="lab-entry-links">
-                        <a href="/articles/spring-boot-jdbc-pool-reclaim.html">Read the article</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbc-pool-reclaim" target="_blank" rel="noopener noreferrer">Experiment record</a>
-                    </p>
-                </article>
                 <article class="lab-entry" data-tags="spring-boot micronaut memory frameworks">
                     <div class="lab-entry-tags" aria-label="Topics">
                         <span>Frameworks</span>
@@ -236,20 +255,6 @@
                     <p class="lab-entry-links">
                         <a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">Read the article</a>
                         <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-quarkus-micronaut-jdbc" target="_blank" rel="noopener noreferrer">Experiment record</a>
-                    </p>
-                </article>
-                <article class="lab-entry" data-tags="spring-boot memory persistence">
-                    <div class="lab-entry-tags" aria-label="Topics">
-                        <span>Persistence</span>
-                        <span>Spring Boot</span>
-                        <span>Memory</span>
-                    </div>
-                    <h3><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h3>
-                    <p class="lab-entry-meta"><time datetime="2026-09-26">September 26, 2026</time></p>
-                    <p>A small stars app used about 90 MiB less RSS with JDBC than with JPA and Hibernate, and reached its dashboard about four seconds sooner.</p>
-                    <p class="lab-entry-links">
-                        <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Read the result</a>
-                        <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     </p>
                 </article>
             </div>
