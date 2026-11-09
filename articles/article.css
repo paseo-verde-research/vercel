@@ -126,6 +126,23 @@
     padding-top: 52px;
 }
 
+.article-body pre.has-copy-button:not([data-lang]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 8px;
+    padding: 16px 12px 16px 20px;
+}
+
+.article-body pre.has-copy-button:not([data-lang]) > code {
+    overflow-x: auto;
+}
+
+.article-body pre.has-copy-button:not([data-lang]) > .code-copy-button {
+    position: static;
+    align-self: start;
+    margin-top: -12px;
+}
+
 .code-copy-button {
     position: absolute;
     top: 4px;

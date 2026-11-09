@@ -822,8 +822,8 @@ document.addEventListener('DOMContentLoaded', () => {
         codeBlock.replaceChildren(highlightedCode);
     });
 
-    document.querySelectorAll('.article-body pre[data-lang]:not([data-no-copy])').forEach(codeContainer => {
-        if (codeContainer.dataset.lang.toLowerCase() === 'workflow') {
+    document.querySelectorAll('.article-body pre:not([data-no-copy])').forEach(codeContainer => {
+        if (codeContainer.dataset.lang?.toLowerCase() === 'workflow') {
             return;
         }
 
@@ -832,10 +832,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const language = codeContainer.dataset.lang || Array.from(codeBlock.classList)
+            .find(className => className.startsWith('language-'))?.slice('language-'.length);
+        const copyLabel = language ? `Copy ${language} example` : 'Copy code example';
         const copyButton = document.createElement('button');
         copyButton.type = 'button';
         copyButton.className = 'code-copy-button';
-        copyButton.setAttribute('aria-label', `Copy ${codeContainer.dataset.lang} example`);
+        copyButton.setAttribute('aria-label', copyLabel);
         copyButton.innerHTML = `
             <svg class="copy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="9" y="9" width="13" height="13" rx="2"></rect>
@@ -859,7 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             copyStatusTimer = window.setTimeout(() => {
                 copyButton.classList.remove('copied');
-                copyButton.setAttribute('aria-label', `Copy ${codeContainer.dataset.lang} example`);
+                copyButton.setAttribute('aria-label', copyLabel);
             }, 1800);
         });
 
