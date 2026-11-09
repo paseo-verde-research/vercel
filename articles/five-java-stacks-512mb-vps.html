@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shared Business Logic Across Java Frameworks: Five Stacks on a 512 MiB VPS | PVR Labs</title>
+    <title>Five Java Stacks on a 512 MiB VPS: Same Business Logic, Different Footprints | PVR Labs</title>
     <meta name="author" content="Ted Kupolov">
     <meta name="description" content="Shared services across Javalin, Jex and Micronaut, with Spring JDBC and Micronaut Data references: two HotSpot and native runs per stack on a 512 MiB VM.">
-    <link rel="canonical" href="https://pvrlabs.xyz/articles/java-framework-business-logic.html">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://pvrlabs.xyz/articles/java-framework-business-logic.html">
-    <meta property="og:title" content="Shared Business Logic Across Java Frameworks: Five Stacks on a 512 MiB VPS">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html">
+    <meta property="og:title" content="Five Java Stacks on a 512 MiB VPS: Same Business Logic, Different Footprints">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="Shared services across Javalin, Jex and Micronaut, with Spring JDBC and Micronaut Data references: two HotSpot and native runs per stack on a 512 MiB VM.">
     <meta property="article:published_time" content="2026-11-09T00:00:00-08:00">
     <meta property="article:modified_time" content="2026-11-09T00:00:00-08:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Shared Business Logic Across Java Frameworks: Five Stacks on a 512 MiB VPS">
+    <meta name="twitter:title" content="Five Java Stacks on a 512 MiB VPS: Same Business Logic, Different Footprints">
     <meta name="twitter:description" content="Shared services across Javalin, Jex and Micronaut, with Spring JDBC and Micronaut Data references: two HotSpot and native runs per stack on a 512 MiB VM.">
-<meta property="og:image" content="https://pvrlabs.xyz/articles/img/java-framework-business-logic/og-preview.png">
+<meta property="og:image" content="https://pvrlabs.xyz/articles/img/five-java-stacks-512mb-vps/og-preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Shared business logic across three HTTP hosts; five stacks measured on HotSpot and Native Image in a 512 MiB VM.">
-<meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/java-framework-business-logic/og-preview.png">
-<meta name="twitter:image:alt" content="Shared business logic across three HTTP hosts; five stacks measured on HotSpot and Native Image in a 512 MiB VM.">
+<meta property="og:image:alt" content="Five Java stacks on a 512 MiB VM: same business logic, different footprints. Spring Boot, Javalin, Jex and Micronaut compared on HotSpot and Native Image.">
+<meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/five-java-stacks-512mb-vps/og-preview.png">
+<meta name="twitter:image:alt" content="Five Java stacks on a 512 MiB VM: same business logic, different footprints. Spring Boot, Javalin, Jex and Micronaut compared on HotSpot and Native Image.">
     <style>
 .article-page h1 { font-size: clamp(1.65rem, 4.4vw, 2.2rem); }
 .article-body table { width: 100%; border-collapse: collapse; font-size: .9rem; line-height: 1.5; }
@@ -74,7 +74,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/articles/article.css?v=20261023">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Shared Business Logic Across Java Frameworks: Five Stacks on a 512 MiB VPS", "description": "Shared services across Javalin, Jex and Micronaut, with Spring JDBC and Micronaut Data references: two HotSpot and native runs per stack on a 512 MiB VM.", "url": "https://pvrlabs.xyz/articles/java-framework-business-logic.html", "mainEntityOfPage": "https://pvrlabs.xyz/articles/java-framework-business-logic.html", "image": "https://pvrlabs.xyz/articles/img/java-framework-business-logic/og-preview.png", "datePublished": "2026-11-09T00:00:00-08:00", "dateModified": "2026-11-09T00:00:00-08:00", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "publisher": {"@type": "Organization", "name": "PVR Labs", "url": "https://pvrlabs.xyz/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Five Java Stacks on a 512 MiB VPS: Same Business Logic, Different Footprints", "description": "Shared services across Javalin, Jex and Micronaut, with Spring JDBC and Micronaut Data references: two HotSpot and native runs per stack on a 512 MiB VM.", "url": "https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html", "mainEntityOfPage": "https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html", "image": "https://pvrlabs.xyz/articles/img/five-java-stacks-512mb-vps/og-preview.png", "datePublished": "2026-11-09T00:00:00-08:00", "dateModified": "2026-11-09T00:00:00-08:00", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "publisher": {"@type": "Organization", "name": "PVR Labs", "url": "https://pvrlabs.xyz/"}}</script>
 </head>
 <body>
 <header id="header"><nav class="navbar"><div class="container">
@@ -84,14 +84,14 @@
 </div></nav></header>
 <main><article class="article-page">
 <nav class="article-product-nav" aria-label="Articles"><a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a></nav>
-<h1>Shared Business Logic Across Java Frameworks: Five Stacks on a 512 MiB VPS</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-09">November 9, 2026</time></div><div class="article-body">
+<h1>Five Java Stacks on a 512 MiB VPS: Same Business Logic, Different Footprints</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-09">November 9, 2026</time></div><div class="article-body">
 <p>Spring Boot provides familiar architectural conventions: controllers, services, repositories and transaction boundaries. I wanted to preserve the useful parts of that programming model while keeping business logic independent of Spring Boot or any particular HTTP framework. Spring Boot supplied the architectural influence; the goal was not to reproduce its APIs.</p>
-<p>CoilBase emerged as a small, reusable foundation for repositories, services and explicit transactions. Three implementations reused the same CoilBase business logic across Javalin, Avaje Jex and Micronaut. Spring Boot and Micronaut Data served as independent references.</p>
+<p><a href="https://github.com/PVRLabs/coilbase">CoilBase</a> emerged as a small, reusable foundation for repositories, services and explicit transactions. Three implementations reused the same CoilBase business logic across Javalin, Avaje Jex and Micronaut. Spring Boot and Micronaut Data served as independent references.</p>
 <p>That led to two questions: <strong>How portable is the business logic, and what runtime costs do different frameworks introduce?</strong> To explore both, I compared all five implementations on a one-vCPU, 512 MiB VM with colocated MariaDB.</p>
 <p>There is an important scope limit: this application is a synthetic quote/status/audit fixture. It reads latest quotes, inserts quotes, and updates a record’s status with an audit event. It has no Portfolio users, holdings, valuation or holding-edit behavior. It answers a narrow deployment and portability question; it cannot establish the requirements of a realistic Portfolio application or the capacity of these frameworks in general.</p>
 <nav class="article-contents" aria-label="On this page"><strong>On this page</strong><ul><li><a href="#the-five-implementations">The five implementations</a></li><li><a href="#what-stayed-shared-and-what-changed">What stayed shared, and what changed</a></li><li><a href="#the-deployment-being-measured">The deployment being measured</a></li><li><a href="#hotspot-fit-and-remaining-headroom">HotSpot: fit and remaining headroom</a></li><li><a href="#native-image-smaller-runtime-more-preparation">Native Image: smaller runtime, more preparation</a></li><li><a href="#the-compilation-bill">The compilation bill</a></li><li><a href="#choosing-the-tradeoffs">Choosing the tradeoffs</a></li><li><a href="#what-s-next">What&#x27;s next?</a></li></ul></nav>
 <h2 id="the-five-implementations">The five implementations</h2>
-<p>The reference uses Spring Boot, Spring MVC and Spring JDBC. The alternatives are Javalin + CoilBase, Avaje Jex + CoilBase, Micronaut Data JDBC, and Micronaut + CoilBase.</p>
+<p>The reference uses Spring Boot, Spring MVC and Spring JDBC. The alternatives are Javalin + CoilBase, <a href="https://avaje.io/jex/">Avaje Jex</a> + CoilBase, Micronaut Data JDBC, and Micronaut + CoilBase.</p>
 <p>CoilBase is a PVR Labs project built around Jdbi, explicit SQL, constructor wiring and repository/service organization, currently available as <a href="https://github.com/PVRLabs/coilbase/releases/tag/0.1.0-preview3">0.1.0-preview3</a>. The experiment used an early CoilBase prototype; the API has since evolved, including making <code>RepositoryContext</code> an interface. Code excerpts here come from the measured version.</p>
 <p>Spring JDBC is a useful reference because it keeps SQL explicit. Micronaut Data provides generated repositories and mapping. CoilBase adds a reusable persistence context and repository conveniences around Jdbi; Jdbi itself already provides portable SQL and transaction facilities. This experiment does not isolate the incremental value or overhead of CoilBase against direct Jdbi.</p>
 <h2 id="what-stayed-shared-and-what-changed">What stayed shared, and what changed</h2>
