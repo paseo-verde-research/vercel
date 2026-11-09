@@ -167,7 +167,7 @@
 <h2 id="decision">A practical option, with a narrower contract</h2>
 <p>For this application, Javalin plus Jdbi and the repository prototype saved measurable application memory beyond optimized Spring Boot while retaining persistent SQL data, transactional ingestion and the same API/UI behavior. That makes it worth considering for a small service whose team wants explicit wiring and can own the missing integrations.</p>
 <p>For an application that already depends on Spring's MVC, transaction facilities and operational ecosystem, the observed saving may be less valuable than keeping those integrations. The experiment does not measure development effort or prove that assembling the smaller stack reduces total cost.</p>
-<p>Can we retain more of Spring Boot's development convenience without bringing back its full runtime footprint? That's the question I'll explore next by comparing five Java application stacks, including Micronaut and Jex.</p>
+<p>Can we retain more of Spring Boot's development convenience without bringing back its full runtime footprint? The <a href="/articles/java-framework-business-logic.html">five-stack comparison</a> explores that question with Micronaut, Jex and shared business logic.</p>
 <nav class="experiment-links" aria-label="Experiment records">
 <a href="https://github.com/PVRLabs/experiments/tree/main/javalin/market-replay-jdk27">HotSpot experiment</a>
 <a href="https://github.com/PVRLabs/experiments/tree/main/javalin/market-replay-native">Native Image study</a>
