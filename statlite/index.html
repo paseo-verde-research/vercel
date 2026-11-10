@@ -34,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
-    <link rel="stylesheet" href="/statlite/style.css?v=20261009">
+    <link rel="stylesheet" href="/statlite/style.css?v=20261110">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -145,7 +145,13 @@
 
     <section class="section integrations-section">
         <div class="container integration-grid">
-            <div class="integration-copy"><h2>Built for Spring Boot, usable beyond it</h2><p>Actuator already exposes useful metrics. StatLite adds focused history and charts without asking you to deploy a full Prometheus and Grafana stack. Quarkus and Micronaut are supported too.</p><p>Compare all three in the <a href="/articles/spring-boot-quarkus-micronaut-jdbc.html">JDBC experiment on a 1 GiB VM</a>, or see the earlier <a href="/articles/spring-boot-vs-quarkus-512mb.html">Spring Boot and Quarkus comparison on 512 MB</a>.</p><div class="hero-actions"><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a><a href="/articles/monitoring-fastapi-app-small-vps.html" class="button button-secondary">FastAPI monitoring</a><a href="/articles/lightweight-express-monitoring.html" class="button button-secondary">Express monitoring</a></div></div>
+            <div class="integration-copy">
+                <h2>Built for Spring Boot, usable beyond it</h2>
+                <p>Spring Boot Actuator already exposes useful metrics. StatLite turns them into a lightweight, self-hosted dashboard with history and charts, without requiring a full Prometheus and Grafana stack. Quarkus and Micronaut are supported through Micrometer metrics too.</p>
+                <p>For applications behind Caddy, StatLite can monitor HTTP requests, errors, and average response times without modifying individual applications. It's a practical option for small VPS deployments running multiple services.</p>
+                <p>Other integrations include Express, FastAPI, and Javalin, with guides and recipes for exposing useful application metrics. A simple JSON metrics profile also makes it possible to integrate additional applications without a heavyweight monitoring SDK.</p>
+                <div class="hero-actions"><a href="/articles/lightweight-spring-boot-monitoring.html" class="button button-primary">Read the Spring Boot guide</a><a href="/articles/monitoring-applications-behind-caddy.html" class="button button-secondary">Caddy monitoring guide</a></div>
+            </div>
             <div class="integration-details">
                 <div class="integration-list">
                     <div>
@@ -166,7 +172,7 @@
                     </div>
                     <div>
                         <h3><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#statlite-metrics-v1">StatLite Metrics v1</a></h3>
-                        <p>A fixed JSON profile for lightweight application integrations, with guides for <a href="https://github.com/PVRLabs/statlite/tree/main/examples/python-fastapi-demo/">FastAPI</a>, <a href="/articles/lightweight-express-monitoring.html">Express</a>, and <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md">Django</a>. The Express article shows how to expose <code>/statlite/metrics</code>, and <a href="/statlite/configure.html">Configure StatLite</a> generates the matching target configuration.</p>
+                        <p>A fixed JSON profile for lightweight application integrations, with guides for <a href="/articles/monitoring-fastapi-app-small-vps.html">FastAPI</a>, <a href="/articles/lightweight-express-monitoring.html">Express</a>, and <a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md">Django</a>. The Express article shows how to expose <code>/statlite/metrics</code>, and <a href="/statlite/configure.html">Configure StatLite</a> generates the matching target configuration.</p>
                     </div>
                     <div>
                         <h3><a href="https://github.com/PVRLabs/statlite/blob/main/docs/configuration.md#statlite-self-monitoring">Self-monitoring</a></h3>
