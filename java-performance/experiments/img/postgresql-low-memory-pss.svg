@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="310" viewBox="0 0 760 310" role="img" aria-labelledby="title desc">
+<title id="title">Peak PostgreSQL process memory</title>
+<desc id="desc">Peak sampled PSS on a 512 MiB VM, one run per configuration: default 180.1 MiB, Theory A 50.4 MiB, Theory B 79.7 MiB. Linear axis begins at zero; lower is smaller.</desc>
+<rect width="760" height="310" fill="#101d16"/>
+<g font-family="system-ui, Segoe UI, Arial, sans-serif">
+<text x="28" y="38" fill="#f4faf6" font-size="22" font-weight="700">Peak PostgreSQL process memory</text>
+<text x="28" y="62" fill="#9fb3a6" font-size="14">512 MiB VM · one run per configuration · lower is smaller</text>
+<g stroke="#2c4036"><line x1="185" y1="91" x2="185" y2="242"/><line x1="295" y1="91" x2="295" y2="242"/><line x1="405" y1="91" x2="405" y2="242"/><line x1="515" y1="91" x2="515" y2="242"/><line x1="625" y1="91" x2="625" y2="242"/></g>
+<g fill="#e7f2eb" font-size="16" text-anchor="end"><text x="170" y="123">Default</text><text x="170" y="173">Theory A</text><text x="170" y="223">Theory B</text></g>
+<rect x="185" y="104" width="396.22" height="25" rx="4" fill="#d08a4c"/><rect x="185" y="154" width="110.88" height="25" rx="4" fill="#2ecc71"/><rect x="185" y="204" width="175.34" height="25" rx="4" fill="#5dade2"/>
+<g fill="#f4faf6" font-size="15" font-weight="700"><text x="590" y="122">180.1 MiB</text><text x="305" y="172">50.4 MiB</text><text x="370" y="222">79.7 MiB</text></g>
+<g fill="#9fb3a6" font-size="13" text-anchor="middle"><text x="185" y="262">0</text><text x="295" y="262">50</text><text x="405" y="262">100</text><text x="515" y="262">150</text><text x="625" y="262">200</text><text x="405" y="289">Peak sampled PSS · MiB</text></g>
+</g></svg>
