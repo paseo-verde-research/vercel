@@ -150,6 +150,7 @@
 
         <h2>What about JDK 27?</h2>
         <p>JDK 27 enables Compact Object Headers by default. That removes one explicit tuning flag from this JDK 25 configuration, but it does not reproduce the experiment on JDK 27.</p>
+        <p>A later <a href="/articles/five-java-stacks-512mb-vps.html">five-stack comparison on a 512 MiB VPS</a> used JDK 27 for its HotSpot runs with MariaDB and no swap, while this 256 MB test used H2 and swap.</p>
         <p>I would still use 512 MiB as the practical starting point for this type of Spring Boot deployment until a comparable JDK 27 run shows otherwise.</p>
 
         <h2>Source</h2>
