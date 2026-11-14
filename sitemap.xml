@@ -6,6 +6,10 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
+    <loc>https://pvrlabs.xyz/java-performance/experiments/jpa-memory-experiment-revisited.html</loc>
+    <lastmod>2026-11-14</lastmod>
+  </url>
+  <url>
     <loc>https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html</loc>
     <lastmod>2026-11-09</lastmod>
   </url>

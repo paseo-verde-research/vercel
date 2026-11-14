@@ -226,6 +226,7 @@
             <section>
                 <h2>Evidence and limits</h2>
                 <p>This is two reversed-order runs on one macOS host, with a 30 second warmup and twelve RSS samples per variant. It compares two complete application variants. An isolated Hibernate measurement would need the same data model, UI, and surrounding code in both builds.</p>
+                <p><strong>Follow-up:</strong> <a href="/java-performance/experiments/jpa-memory-experiment-revisited.html">JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA</a> compares Jdbi with direct Hibernate using shared lightweight application code on a 512 MiB Linux VM. It addresses the surrounding-code differences in this experiment while retaining Spring Boot as a separate reference.</p>
                 <p class="experiment-links">
                     <a href="https://github.com/PVRLabs/experiments/tree/main/spring-boot/jpa-vs-jdbc-stars" target="_blank" rel="noopener noreferrer">Experiment record</a>
                     <a href="/articles/spring-boot-extracted-layout.html">Related packaging comparison</a>

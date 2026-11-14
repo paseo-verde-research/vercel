@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA | PVR Labs</title>
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/jpa-memory-experiment-revisited.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        .article-page { max-width: 60rem; }
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { min-width: 38rem; }
+        .table-scroll table.article-table--compact { min-width: 0; }
+        .article-body code { overflow-wrap: anywhere; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 480px) {
+            .article-body th, .article-body td { padding: .5rem; }
+            .experiment-links { flex-direction: column; }
+        }
+        .table-scroll table.comparison-table { min-width: 42rem; }
+        .implementation-comparison { table-layout: fixed; }
+        .article-body pre { max-width: 100%; overflow-x: auto; }
+    </style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="Ted Kupolov"><meta name="description" content="Jdbi used about 55–58 MiB less RSS than direct Hibernate in a shared demo app on a 512 MiB Linux VM. Method, results and limitations."><meta property="og:type" content="article"><meta property="og:title" content="JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA"><meta property="og:description" content="Jdbi used about 55–58 MiB less RSS than direct Hibernate in a shared demo app on a 512 MiB Linux VM. Method, results and limitations."><meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/jpa-memory-experiment-revisited.html"><meta name="twitter:card" content="summary_large_image"><meta property="article:published_time" content="2026-11-14T00:00:00-08:00"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA", "description": "Jdbi used about 55\u201358 MiB less RSS than direct Hibernate in a shared demo app on a 512 MiB Linux VM. Method, results and limitations.", "datePublished": "2026-11-14T00:00:00-08:00", "author": {"@type": "Person", "name": "Ted Kupolov"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/jpa-memory-experiment-revisited.html", "image": "https://pvrlabs.xyz/java-performance/experiments/img/jpa-memory-experiment-revisited/og-preview.png"}</script><style>.article-body figure { margin: 1.5rem 0; }.article-body figure img { display:block; max-width:100%; height:auto; margin:auto; }</style><style>.operational-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-block: 1.5rem; }.article-body .operational-charts figure { margin: 0; min-width: 0; } @media (max-width: 480px) { .operational-charts { grid-template-columns: minmax(0, 1fr); } }</style><meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/jpa-memory-experiment-revisited/og-preview.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="JPA memory experiment revisited: mixed-phase median RSS ranges for Jdbi, direct Hibernate and Spring Boot. Two accepted runs on a 512 MiB Linux VM."><meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/jpa-memory-experiment-revisited/og-preview.png"><meta name="twitter:image:alt" content="JPA memory experiment revisited: mixed-phase median RSS ranges for Jdbi, direct Hibernate and Spring Boot. Two accepted runs on a 512 MiB Linux VM."><style>
+.stack-comparison { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-block: 1.5rem; }
+.stack-shared, .stack-reference { min-width: 0; padding: 20px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-medium); }
+.stack-heading { color: var(--text-primary); font-size: 1rem; font-weight: 600; }
+.article-body .stack-comparison p { margin: 6px 0 0; font-size: .9rem; }
+.article-body .stack-comparison .stack-detail { color: var(--text-secondary); font-size: .8rem; line-height: 1.5; }
+.stack-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.stack-option { padding: 10px 12px; background: var(--bg-light); border-left: 3px solid #929eaa; font-size: .95rem; font-weight: 600; }
+.stack-option span { display: block; margin-top: 3px; color: var(--text-secondary); font-size: .8rem; font-weight: 400; }
+.stack-option--sql { border-color: #2ecc71; }
+.stack-option--orm { border-color: #79a8ff; }
+.stack-reference > .stack-option { margin-top: 16px; }
+@media (max-width: 600px) { .stack-comparison { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 360px) { .stack-options { grid-template-columns: minmax(0, 1fr); } }
+</style></head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+<nav class="article-product-nav" aria-label="Article navigation"><a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a><a href="/java-performance/" class="article-product-nav__link">Java Performance</a></nav>
+<h1>JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-14">November 14, 2026</time></div><div class="article-body">
+<p><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">My earlier Java memory experiment</a> compared two Spring Boot applications: one using Spring Data JPA/Hibernate, the other using Spring JDBC/JdbcTemplate. The JDBC implementation used approximately 90 MiB less memory.</p>
+<p>The measurement was real for the applications I tested, but the implementations also differed in their data model and application code. The difference therefore could not be attributed solely to Hibernate.</p>
+<p>So I built a follow-up experiment. This is <strong>not an exact rerun of the original setup</strong>. It is a new comparison designed to address that methodological objection, with a more useful control: Hibernate running directly in the same lightweight application infrastructure as Jdbi.</p>
+<h2>Three implementations, two different questions</h2>
+<p>I retained the original Spring Boot demo app as a reference, then implemented two lightweight versions with shared HTTP handling, rendering, polling logic and dashboard calculations.</p>
+<div class="table-scroll" role="region" aria-label="Comparison table" tabindex="0"><table><thead><tr><th scope="col">Variant</th><th scope="col">Application stack</th><th scope="col">Persistence</th></tr></thead><tbody><tr><td>Spring Boot reference</td><td>Spring Boot 4.1.1, Thymeleaf</td><td>Spring Data JPA and Hibernate 7.4.5.Final</td></tr><tr><td>Lightweight SQL</td><td>CoilBase, Avaje Jex 3.6, JTE 3.2.4</td><td>Jdbi 3.55.0, explicit SQL and mapping</td></tr><tr><td>Lightweight ORM</td><td>Same CoilBase/Jex/JTE application</td><td>Hibernate 7.4.5.Final, direct sessions and transactions</td></tr></tbody></table></div>
+<div class="stack-comparison" role="group" aria-label="Application infrastructure comparison">
+    <div class="stack-shared">
+        <div class="stack-heading">Shared application code</div>
+        <p class="stack-detail">HTTP handling, rendering, polling and dashboard calculations</p>
+        <div class="stack-options"><div class="stack-option stack-option--sql">Jdbi<span>Explicit SQL and mapping</span></div><div class="stack-option stack-option--orm">Direct Hibernate<span>Sessions and transactions</span></div></div>
+    </div>
+    <div class="stack-reference"><div class="stack-heading">Separate reference</div><p>Spring Boot · Thymeleaf</p><div class="stack-option">Spring Data JPA<span>Hibernate</span></div></div>
+</div>
+
+<p><strong>The Jdbi-versus-direct-Hibernate comparison is the main result.</strong> It holds the application infrastructure largely constant while changing the persistence implementation.</p>
+<p>The goal isn't to reproduce every Hibernate feature with Jdbi, but to use only the persistence capabilities this application needs. For this demo app, explicit SQL is sufficient.</p>
+<p>Comparisons with Spring Boot remain useful complete-stack measurements, but they cannot isolate the cost of Spring Boot, Spring Data JPA, the web server or the template engine.</p>
+<p>Hibernate is used without Spring or Spring Data repositories in the lightweight ORM variant. The Jdbi variant has no Hibernate runtime dependency. The Hibernate variant retains transitive Jdbi libraries through CoilBase, but checks confirmed that an unused Jdbi repository context was not initialized. Retained dependencies are disclosed, not assumed to have zero cost.</p>
+<p>Disclosure: I am the author of <a href="https://github.com/PVRLabs/coilbase">CoilBase</a>, a lightweight Java foundation that keeps SQL explicit and business logic portable across frameworks.</p>
+<h2>What stayed equivalent</h2>
+<p>The demo app polls GitHub repositories, records their star-count histories and renders a dashboard. The significant behavior includes ETags and 304 responses, per-repository transactions, failure isolation, updates to polling and pushed timestamps, and history records only when star counts change.</p>
+<p>The two lightweight implementations share the polling and presentation code. All three variants passed packaged HTTP contracts, restart checks and offline database verification. The measured harness independently validated committed project and history data against the commanded fixture generations.</p>
+<p>This demonstrates the tested behavior, not identical internal work. For example, the original-workload monitoring endpoints differ between Spring Boot and Jex.</p>
+<h2>Environment and workload</h2>
+<p>I used a dedicated Ubuntu 24.04 QEMU/KVM VM with <strong>1 vCPU, 512 MiB allocated RAM and no swap</strong>, running Temurin JDK 25.0.5. Every variant used embedded, file-backed H2 2.4.240, HikariCP with a maximum of four connections, and identical JVM flags, including <code>-Xmx80m</code> and Serial GC. Embedded H2 memory is included in application process RSS.</p>
+<p>I measured an original short workload and a longer mixed read/write workload, each with two accepted runs per variant and reversed execution order for the second repetition. The extended workload comprised 60 seconds idle, 120 seconds warmup, 300 seconds of paced reads and refresh writes, and 60 seconds recovery.</p>
+<p>The following RSS/PSS numbers are ranges of <strong>per-run median process memory during the extended mixed phase</strong>, not peak memory or independent per-second repetitions.</p>
+<h2>Measured results</h2>
+<p>Both workloads passed acceptance, but I focus on the extended mixed workload here because it includes sustained reads and writes. The original short-workload measurements remain available in the <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbi-hibernate-comparison">public experiment record</a>.</p>
+
+<div class="operational-charts"><figure><img src="/java-performance/experiments/img/jpa-memory-experiment-revisited/startup.svg" width="400" height="360" alt="Startup: CoilBase + Jdbi 1.05–1.16 seconds; CoilBase + direct Hibernate 2.31–2.32 seconds; Spring Boot + Spring Data JPA 6.80–7.10 seconds" loading="lazy" decoding="async"></figure><figure><img src="/java-performance/experiments/img/jpa-memory-experiment-revisited/dashboard-latency.svg" width="400" height="360" alt="Dashboard p95: CoilBase + Jdbi 7.7–7.9 milliseconds; CoilBase + direct Hibernate 15.1–15.6 milliseconds; Spring Boot + Spring Data JPA 29.5–31.1 milliseconds" loading="lazy" decoding="async"></figure><figure><img src="/java-performance/experiments/img/jpa-memory-experiment-revisited/deployment-size.svg" width="400" height="360" alt="Deployed JARs: CoilBase + Jdbi 6.8 MiB; CoilBase + direct Hibernate 27.7 MiB; Spring Boot + Spring Data JPA 58.2 MiB" loading="lazy" decoding="async"></figure><figure><img src="/java-performance/experiments/img/jpa-memory-experiment-revisited/process-rss.svg" width="400" height="360" alt="Application process RSS: Jdbi 95.2–96.4 MiB, direct Hibernate 151.8–153.6 MiB, Spring Boot 235.7–235.8 MiB" loading="lazy" decoding="async"></figure></div>
+<p><em>Jdbi and direct Hibernate use the shared CoilBase application; Spring Boot uses Spring Data JPA. Startup and latency labels show the two accepted runs, with bars at their midpoints. RSS labels show the two mixed-phase medians, including embedded H2; bars show their midpoints. These ranges are not confidence intervals. The accepted Hibernate rerun used different background timer settings. JAR sizes sum deployed JAR files and exclude other deployment files.</em></p>
+<div class="table-scroll" role="region" aria-label="Comparison table" tabindex="0"><table><thead><tr><th scope="col">Measurement</th><th scope="col">CoilBase + Jdbi</th><th scope="col">CoilBase + direct Hibernate</th><th scope="col">Spring Boot + Spring Data JPA</th></tr></thead><tbody><tr><td>Mixed-phase RSS</td><td>95.2–96.4 MiB</td><td>151.8–153.6 MiB</td><td>235.7–235.8 MiB</td></tr><tr><td>Mixed-phase PSS</td><td>92.8–94.0 MiB</td><td>149.3–151.2 MiB</td><td>233.4–233.5 MiB</td></tr><tr><td>Startup</td><td>1.05–1.16 s</td><td>2.31–2.32 s</td><td>6.80–7.10 s</td></tr><tr><td>Dashboard p50</td><td>4.4 ms</td><td>7.9 ms</td><td>12.3–12.4 ms</td></tr><tr><td>Dashboard p95</td><td>7.7–7.9 ms</td><td>15.1–15.6 ms</td><td>29.5–31.1 ms</td></tr><tr><td>Sum of deployed JAR files</td><td>6.8 MiB</td><td>27.7 MiB</td><td>58.2 MiB</td></tr></tbody></table></div>
+<p>Jdbi's deployed JARs total 6.8 MiB versus 27.7 MiB for direct Hibernate, a difference of approximately 20.9 MiB.</p>
+<p>The Jdbi implementation used approximately <strong>55–58 MiB less process RSS</strong> than direct Hibernate under the mixed workload, or approximately <strong>37% less RSS</strong>.</p>
+<p>That difference persists even after excluding Spring Data JPA from the Hibernate implementation. It is the central finding. It does <strong>not</strong> isolate the memory used by the Hibernate library: these are complete application processes running different persistence implementations, including their initialization and database interactions.</p>
+<p>The Spring Boot reference consumed about 236 MiB. The additional roughly 83 MiB compared with lightweight direct Hibernate cannot be attributed specifically to Spring Data JPA because the surrounding application stacks also differ.</p>
+<p>Dashboard request latencies followed the same ordering, but this is a paced, single-vCPU workload, not a maximum-throughput test or a general ORM ranking.</p>
+<h2>Why SQL counts deserve a separate look</h2>
+<p>Cumulative H2 statistics reported approximately 2,790 executions for each lightweight implementation and 1,894 for Spring. The first runs also recorded 1,088 COMMIT statements for the lightweight applications versus 186 for Spring.</p>
+<p>These are <strong>database engine counts</strong>, including bootstrap, diagnostics and transactions, not network roundtrips. They do not establish which approach is inherently more SQL-efficient. Transaction boundaries and differences in diagnostic work need to be understood before explaining the discrepancy.</p>
+<h2>One rejected run</h2>
+<p>All six original-workload runs passed automated acceptance. One extended Hibernate attempt was killed by the guest OOM killer during the mixed phase. A firmware refresh timer started shortly beforehand, and the firmware service appeared in the OOM evidence. This establishes a temporal correlation, <strong>not</strong> the cause of the memory pressure.</p>
+<p>I retained the failed run and repeated only that case after disabling automatic-update and firmware-refresh timers in the dedicated VM. The rerun passed with unchanged application artifact, JVM flags and workload. There are twelve accepted runs in total, but the replacement Hibernate measurement had different background conditions. Small differences between its two accepted readings should not be interpreted as meaningful.</p>
+<p>Both accepted Hibernate runs completed the extended workload within the 512 MiB VM. The rejected attempt demonstrates that this configuration can still encounter memory pressure under different guest conditions.</p>
+<p>There were only two accepted runs per variant and mode. Each mixed phase included 300 dashboard requests and 30 refresh requests, so refresh tail-latency statistics are particularly limited.</p>
+<h2>What I learned</h2>
+<p>Hibernate has capabilities that are worth paying for: managed entities, dirty checking, relationship mapping and a mature object-oriented persistence model. Those conveniences can save application code and development time.</p>
+<p>Jdbi keeps SQL, row mapping and query behavior visible. For this small backend, that was a workable choice and used less memory in the controlled lightweight-stack comparison. The price is owning more of the SQL, mapping and loading decisions directly.</p>
+<p>This experiment does not suggest that existing Spring Boot applications should generally be migrated, or that Hibernate is an unreasonable default. The earlier comparison established a difference between <strong>application implementations</strong>. This follow-up supports a narrower conclusion: <strong>with substantially the same lightweight HTTP and application code, the direct Hibernate implementation used materially more memory than the Jdbi implementation for this demo app under these conditions</strong>.</p>
+<p>For a memory-constrained Java service, that difference can matter. For a larger application, the benefits of Hibernate and Spring Data JPA may justify their costs.</p>
+
+<p class="experiment-links">
+    <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbi-hibernate-comparison">Experiment record</a>
+    <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Original JPA vs JDBC experiment</a>
+</p>
+</div></article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script src="/script.js?v=20261109"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body></html>
