@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+<title id="title">Experiment design</title><desc id="desc">Shared CoilBase, Jex and JTE application code for HTTP handling, rendering, polling and dashboard calculations branches into Jdbi and direct Hibernate implementations. A separate Spring Boot and Thymeleaf reference uses Spring Data JPA and Hibernate. All variants were measured on the same 512 MiB Linux VM.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M1 1 L5 4 L1 7" fill="none" stroke="#2ecc71" stroke-width="1.5"/></marker></defs>
+<rect width="960" height="470" fill="#141414"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="30" y="40" fill="#e0e0e0" font-size="25" font-weight="700">Experiment design</text>
+<text x="930" y="38" text-anchor="end" font-size="16" font-weight="700" fill="#2ecc71">PVR<tspan fill="#e0e0e0"> Labs</tspan></text>
+<rect x="30" y="73" width="570" height="135" rx="8" fill="#19251e" stroke="#2ecc71"/>
+<g fill="none" stroke="#2ecc71" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="52" y="105" width="52" height="47" rx="5"/><path d="M52 118H104 M69 130l-7 7 7 7 M88 130l7 7-7 7 M82 127l-7 20"/></g>
+<text x="125" y="113" fill="#e0e0e0" font-size="23" font-weight="700">Shared application code</text>
+<text x="125" y="142" fill="#b5beb8" font-size="19">HTTP handling, rendering, polling</text>
+<text x="125" y="168" fill="#b5beb8" font-size="19">and dashboard calculations</text>
+<text x="125" y="193" fill="#8dba9d" font-size="15">CoilBase · Jex · JTE</text>
+<path d="M315 208V228" fill="none" stroke="#2ecc71" stroke-width="2"/><path d="M315 228H163V253" fill="none" stroke="#2ecc71" stroke-width="2" marker-end="url(#arrow)"/><path d="M315 228H467V253" fill="none" stroke="#2ecc71" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="30" y="264" width="270" height="112" rx="8" fill="#18231d" stroke="#2ecc71"/>
+<text x="50" y="299" fill="#2ecc71" font-size="23" font-weight="700">Jdbi</text><text x="50" y="331" fill="#b5beb8" font-size="18">Explicit SQL</text><text x="50" y="356" fill="#b5beb8" font-size="18">and mapping</text>
+<rect x="330" y="264" width="270" height="112" rx="8" fill="#18231d" stroke="#2ecc71"/>
+<text x="350" y="299" fill="#2ecc71" font-size="23" font-weight="700">Direct Hibernate</text><text x="350" y="331" fill="#b5beb8" font-size="18">Sessions and</text><text x="350" y="356" fill="#b5beb8" font-size="18">transactions</text>
+<path d="M625 73V376" stroke="#59665d" stroke-width="1.5" stroke-dasharray="4 6"/>
+<rect x="650" y="73" width="280" height="303" rx="8" fill="#1f2220" stroke="#6f7d73"/>
+<text x="670" y="109" fill="#b5beb8" font-size="19" font-weight="700">Separate reference</text>
+<rect x="670" y="133" width="240" height="85" rx="5" fill="#282d29"/>
+<text x="690" y="168" fill="#e0e0e0" font-size="22" font-weight="700">Spring Boot</text><text x="690" y="197" fill="#b5beb8" font-size="19">Thymeleaf</text>
+<path d="M790 218V244" stroke="#929eaa" stroke-width="2"/>
+<rect x="670" y="244" width="240" height="110" rx="5" fill="#282d29"/>
+<text x="690" y="282" fill="#e0e0e0" font-size="22" font-weight="700">Spring Data JPA</text><text x="690" y="316" fill="#b5beb8" font-size="19">Hibernate</text>
+<path d="M30 408H930" stroke="#333333"/>
+<text x="480" y="443" text-anchor="middle" fill="#a0aaa3" font-size="18">All variants measured on the same 512 MiB Linux VM</text>
+</g></svg>
