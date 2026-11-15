@@ -99,7 +99,11 @@ shared_buffers = '16MB'
 work_mem = '1MB'
 maintenance_work_mem = '16MB'</code></pre>
 <p>Restart the cluster, for example <code>sudo systemctl restart postgresql@18-main</code>. Verify the effective values with <code>SHOW shared_buffers;</code>, <code>SHOW max_connections;</code> and the other settings, or query <code>pg_settings</code>. Five slots include the reserved superuser slot, leaving at most four ordinary connections when there are no other reservations. Account for every pool and operational connection. Low work memory can cause sorts to spill. Leave fsync, autovacuum and standard WAL enabled.</p>
-<p><a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">Experiment record: configurations, methodology and measurements</a></p></div></article></main>
+<p><a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">Experiment record: configurations, methodology and measurements</a></p>
+<div class="article-discussion">
+    <a class="article-discussion__link" href="https://daily.dev/posts/tested-two-postgresql-18-tuning-strategies-on-a-512-mib-vps-one-reduced-peak-process-memory-by-72--tsv4sb95e"><span class="article-discussion__icon" aria-hidden="true"></span>Discuss on daily.dev</a>
+</div>
+</div></article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
 <script src="/script.js?v=20261109"></script>
 <script src="/screenshot-gallery.js?v=20261005b"></script>
