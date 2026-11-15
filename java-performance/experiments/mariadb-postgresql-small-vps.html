@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MariaDB vs PostgreSQL on Small VPSes: What My Low-Memory Experiments Found | PVR Labs</title>
+    <meta name="description" content="Short database-only experiments compare MariaDB and PostgreSQL memory use and read workloads on 256 MiB and 512 MiB VMs.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/mariadb-postgresql-small-vps.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/mariadb-postgresql-small-vps.html">
+    <meta property="og:title" content="MariaDB vs PostgreSQL on Small VPSes: What My Low-Memory Experiments Found">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Short database-only experiments compare MariaDB and PostgreSQL memory use and read workloads on 256 MiB and 512 MiB VMs.">
+    <meta property="article:published_time" content="2026-11-15T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MariaDB vs PostgreSQL on Small VPSes: What My Low-Memory Experiments Found">
+    <meta name="twitter:description" content="Short database-only experiments compare MariaDB and PostgreSQL memory use and read workloads on 256 MiB and 512 MiB VMs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+        .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
+        .article-body th { background: var(--bg-light); }
+        .article-body td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-scroll table { margin-bottom: 0; }
+        .article-body td, .article-body th { overflow-wrap: anywhere; }
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        .article-body figure a { display: block; min-height: 44px; }
+        @media (max-width: 992px) { .article-page { max-width: 94%; } }
+        @media (max-width: 768px) { .article-body table { font-size: .85rem; } }
+        @media (max-width: 600px) {
+            .table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            .table-scroll tbody, .table-scroll tr, .table-scroll td { display: block; }
+            .table-scroll tr { margin-bottom: .75rem; padding: .35rem .8rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-light); }
+            .table-scroll td { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 0; border: 0; text-align: right; }
+            .table-scroll td::before { content: attr(data-label); color: var(--text-secondary); font-weight: 600; text-align: left; }
+            .table-scroll td:first-child { color: var(--text-primary); font-weight: 600; }
+        }
+        @media (max-width: 480px) {
+            .article-body th, .article-body td { padding: .5rem; }
+            .experiment-links { flex-direction: column; }
+        }
+    </style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "MariaDB vs PostgreSQL on Small VPSes: What My Low-Memory Experiments Found", "description": "Short database-only experiments compare MariaDB and PostgreSQL memory use and read workloads on 256 MiB and 512 MiB VMs.", "datePublished": "2026-11-15", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/mariadb-postgresql-small-vps.html", "isPartOf": {"@type": "CollectionPage", "name": "Java Performance Experiments", "url": "https://pvrlabs.xyz/java-performance/experiments/"}}</script>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a><a href="/java-performance/" class="article-product-nav__link">Java Performance</a></nav>
+<h1>MariaDB vs PostgreSQL on Small VPSes: What My Low-Memory Experiments Found</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-15">November 15, 2026</time></div><div class="article-body">
+<p>A small VPS can make a database's default configuration feel much larger than expected. I wanted to see how far ordinary, documented configuration changes could take MariaDB and PostgreSQL on machines with 256 MiB or 512 MiB of allocated RAM.</p>
+<p>The short answer: both databases completed a read workload at 512 MiB, but their process memory differed considerably. At 256 MiB, the stock MariaDB configuration and one lightweight profile were killed by the kernel. A smaller MariaDB profile completed, as did both lightweight PostgreSQL profiles in a separate experiment.</p>
+<ul><li>At 512 MiB, every configuration completed the workload. Peak process memory (PSS) ranged from 215.9 MiB for stock MariaDB down to 50.4 MiB for tuned PostgreSQL, and the leanest PostgreSQL profile also had the best throughput and p95s in its run.</li><li>At 256 MiB, stock MariaDB and one MariaDB tuning were OOM-killed; the 32 MiB-pool MariaDB profile and both tuned PostgreSQL profiles completed.</li><li>These are single short runs of a read-only workload, database-only, and the two databases did not execute identical work.</li></ul>
+<h2>Setup</h2>
+<p>Both experiments ran on local x86-64 virtual machines (Lima/VZ on macOS with Ubuntu 24.04 guests, Linux 6.8), each with one vCPU, no swap and about 456 MiB of usable RAM at the 512 MiB allocation. The MariaDB run used the Ubuntu MariaDB 10.11.14 package with a 520,000-row fixture of about 164 MiB; the PostgreSQL run used PostgreSQL 18.6 with a 222 MiB fixture. Each variant ran 20 seconds of warm-up and a 50-second measured window with four persistent connections, and memory counters were sampled about once per second. The tuned configurations are Profile A and Profile B in this article; the experiment repositories call them Theory A and Theory B.</p>
+<p>These are database-only experiments, not complete application deployments. They are short, single runs on local VMs, and the two databases did not execute identical work. The <a href="https://github.com/PVRLabs/experiments/tree/main/mariadb/light-memory-512">MariaDB experiment</a> and <a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">PostgreSQL experiment</a> contain the configurations, method and measurements.</p>
+<h2>What happened at 256 MiB</h2>
+<p>The 256 MiB guest had only about 204 MiB of usable memory and no swap. Stock MariaDB started, but the kernel killed it before the measured query phase. Profile A, which reduced several caches, was also killed during measurement. Profile B, with a smaller InnoDB buffer pool, completed the workload without an OOM kill or swap.</p>
+<p>In a separate PostgreSQL follow-up at 256 MiB, both lightweight profiles completed their measured workloads. The PostgreSQL stock configuration ran out of memory during a preparation smoke run, so it does not provide a completed stock comparison.</p>
+<p>This is a useful viability signal, not a recommendation to deploy either database alongside an application on 256 MiB. The database had the VM to itself. An application, connection pool, monitoring and operating system activity all need memory too.</p>
+<h2>At 512 MiB, MariaDB had room to trade memory for performance</h2>
+<p>All three MariaDB profiles completed on the 512 MiB guest. The Ubuntu package baseline used a 128 MiB InnoDB pool, 128 MiB MyISAM key cache, 128 MiB Aria cache and a 151-connection limit. Its peak sampled process PSS was 215.9 MiB.</p>
+<p>MariaDB Profile A reduced the InnoDB pool to 64 MiB, the key cache to 8 MiB and the Aria cache to 16 MiB, and capped connections at 10. It also used loopback binding and UTC. Peak PSS fell to 125.6 MiB, and A had the highest completion rate among the MariaDB configurations in this run. That saving belongs to the whole profile, not a single setting.</p>
+<p>Profile B kept A's settings but reduced the InnoDB pool to 32 MiB. It reached 93.6 MiB peak PSS, about 32 MiB below A, with lower throughput and higher query p95s in this workload. If memory is the immediate constraint, that headroom may be useful. If the machine has room, A is a reasonable starting point to test against the application's real queries.</p>
+<h2>PostgreSQL used less process memory in these runs</h2>
+<p>Both lightweight profiles set a five-connection limit, disabled JIT and parallel query workers, and retained fsync and autovacuum. PostgreSQL A used 16 MiB shared buffers and 1 MiB <code>work_mem</code> with the default worker I/O method. PostgreSQL B used 32 MiB shared buffers, default <code>work_mem</code> and synchronous I/O. They are different bundles; unlike MariaDB A and B, they do not differ by only one setting.</p>
+<figure><img src="/java-performance/experiments/img/mariadb-postgresql-512-pss.svg" width="800" height="400" alt="Peak process PSS on 512 MiB VMs: MariaDB stock 215.9 MiB, A 125.6, B 93.6; PostgreSQL stock 180.1, A 50.4, B 79.7."><figcaption>Peak sampled process PSS on 512 MiB VMs. The databases ran separate workloads, once per profile.</figcaption></figure>
+<p>In these runs PostgreSQL A peaked at 50.4 MiB PSS, compared with 125.6 MiB for MariaDB A and 93.6 MiB for MariaDB B. PostgreSQL Profile A used the least process memory of the six configurations measured at 512 MiB.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="512 MiB workload results"><table><thead><tr><th scope="col">Database</th><th scope="col">Profile</th><th scope="col">Queries/s</th><th scope="col">Point p95</th><th scope="col">Range p95</th><th scope="col">Aggregate p95</th></tr></thead><tbody><tr><td data-label="Database">MariaDB</td><td data-label="Profile">Stock</td><td data-label="Queries/s">788.3</td><td data-label="Point p95">3.15 ms</td><td data-label="Range p95">4.27 ms</td><td data-label="Aggregate p95">93.57 ms</td></tr><tr><td data-label="Database">MariaDB</td><td data-label="Profile">A</td><td data-label="Queries/s">933.6</td><td data-label="Point p95">3.05 ms</td><td data-label="Range p95">4.26 ms</td><td data-label="Aggregate p95">92.02 ms</td></tr><tr><td data-label="Database">MariaDB</td><td data-label="Profile">B</td><td data-label="Queries/s">873.2</td><td data-label="Point p95">3.36 ms</td><td data-label="Range p95">4.68 ms</td><td data-label="Aggregate p95">103.70 ms</td></tr><tr><td data-label="Database">PostgreSQL</td><td data-label="Profile">Stock</td><td data-label="Queries/s">863.2</td><td data-label="Point p95">2.90 ms</td><td data-label="Range p95">1.95 ms</td><td data-label="Aggregate p95">98.55 ms</td></tr><tr><td data-label="Database">PostgreSQL</td><td data-label="Profile">A</td><td data-label="Queries/s">1,056.2</td><td data-label="Point p95">2.64 ms</td><td data-label="Range p95">1.93 ms</td><td data-label="Aggregate p95">74.25 ms</td></tr><tr><td data-label="Database">PostgreSQL</td><td data-label="Profile">B</td><td data-label="Queries/s">860.8</td><td data-label="Point p95">2.92 ms</td><td data-label="Range p95">2.09 ms</td><td data-label="Aggregate p95">103.18 ms</td></tr></tbody></table></div>
+<p>The workloads had a similar shape: four active connections, mostly point lookups, some short ranges and a smaller share of sorts. The two experiments were built and run separately, each with its own fixture and query driver, rather than as a controlled head-to-head: MariaDB's table and indexes occupied about 164 MiB, versus about 222 MiB for PostgreSQL. The numbers are useful context, not proof that PostgreSQL is universally lighter or faster. Each result is one fixed-order run; cache carry and run-to-run variation can affect it.</p>
+<p>PSS accounts for shared process pages proportionally, but it is not total VM memory. In particular, filesystem cache and other operating-system memory also need room. Neither experiment included an application, and the read-only measured phases do not characterize write durability costs.</p>
+<h2>Copyable starting configurations</h2>
+<p>The two strongest profiles from these runs, as drop-in files. Both are starting points sized for this workload, not recommendations for every deployment; check your package for later overrides and measure your own workload afterwards.</p>
+<h3>MariaDB Profile A</h3>
+<p>Save as <code>/etc/mysql/mariadb.conf.d/99-light.cnf</code> and restart MariaDB:</p>
+<pre><code>[mariadbd]
+bind-address=127.0.0.1
+innodb_buffer_pool_size=64M
+default_time_zone=&#x27;+00:00&#x27;
+key_buffer_size=8M
+aria_pagecache_buffer_size=16M
+max_connections=10</code></pre>
+<p>Loopback binding matches this database-only setup; durability and all remaining settings stay at package defaults. Profile B is the same file with <code>innodb_buffer_pool_size=32M</code>.</p>
+<h3>PostgreSQL Profile A</h3>
+<p>Add to the active cluster configuration (find it with <code>SHOW config_file;</code> in <code>psql</code>) and restart the cluster; <code>max_connections</code> and <code>shared_buffers</code> require a restart:</p>
+<pre><code>max_connections = 5
+superuser_reserved_connections = 1
+jit = off
+max_parallel_workers_per_gather = 0
+max_parallel_workers = 0
+shared_buffers = &#x27;16MB&#x27;
+work_mem = &#x27;1MB&#x27;
+maintenance_work_mem = &#x27;16MB&#x27;</code></pre>
+<p>The five slots include the reserved superuser slot, leaving at most four client connections; size application pools and administration access accordingly. <code>work_mem</code> is per operation, not a global cap, and a low value can spill large sorts to disk. Profile B instead sets <code>shared_buffers = '32MB'</code>, keeps default <code>work_mem</code> and uses <code>io_method = 'sync'</code>.</p>
+<h2>What I would do on a small VPS</h2>
+<p>Start with the database your application needs, then measure the whole deployment under representative traffic. Check effective package settings, set a connection limit that accommodates the application pools and administration, and leave headroom for the operating system. Small caches can make a configuration viable, but they can also change latency and disk traffic.</p>
+<p>For a 512 MiB database-only starting point, MariaDB A balanced memory and throughput in this run, while B bought additional headroom. PostgreSQL A was notably compact on its separate workload. Neither result replaces a workload-specific test, especially when the database shares the VM with an application or handles writes.</p>
+<p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/mariadb/light-memory-512">MariaDB experiment record</a><a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">PostgreSQL experiment record</a></p>
+</div></article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261109"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

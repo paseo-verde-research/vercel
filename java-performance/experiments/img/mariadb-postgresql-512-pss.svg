@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" role="img" aria-labelledby="title desc">
+<title id="title">Peak database process PSS on 512 MiB VMs</title>
+<desc id="desc">MariaDB and PostgreSQL stock, A and B configurations in separate workloads; values in MiB.</desc>
+<rect width="800" height="400" fill="#0a0a0a"/><g font-family="Arial, Helvetica, sans-serif" fill="#ededed">
+<text x="50" y="30" font-size="20" font-weight="bold">Peak process PSS on 512 MiB VMs</text>
+<text x="50" y="53" font-size="13">MiB; separate workloads, one run each</text>
+<line x1="65" y1="310" x2="755" y2="310" stroke="#424b47"/><text x="55" y="315" text-anchor="end" font-size="13">0</text>
+<line x1="65" y1="260" x2="755" y2="260" stroke="#424b47"/><text x="55" y="265" text-anchor="end" font-size="13">50</text>
+<line x1="65" y1="210" x2="755" y2="210" stroke="#424b47"/><text x="55" y="215" text-anchor="end" font-size="13">100</text>
+<line x1="65" y1="160" x2="755" y2="160" stroke="#424b47"/><text x="55" y="165" text-anchor="end" font-size="13">150</text>
+<line x1="65" y1="110" x2="755" y2="110" stroke="#424b47"/><text x="55" y="115" text-anchor="end" font-size="13">200</text>
+<line x1="65" y1="60" x2="755" y2="60" stroke="#424b47"/><text x="55" y="65" text-anchor="end" font-size="13">250</text>
+<rect x="135" y="94.1" width="58" height="215.9" fill="#20c985"/><text x="164" y="86.1" text-anchor="middle" font-size="14">215.9</text>
+<rect x="207" y="129.9" width="58" height="180.1" fill="#88b6df"/><text x="236" y="121.9" text-anchor="middle" font-size="14">180.1</text>
+<text x="200" y="335" text-anchor="middle" font-size="15">Stock</text>
+<rect x="345" y="184.4" width="58" height="125.6" fill="#20c985"/><text x="374" y="176.4" text-anchor="middle" font-size="14">125.6</text>
+<rect x="417" y="259.6" width="58" height="50.4" fill="#88b6df"/><text x="446" y="251.6" text-anchor="middle" font-size="14">50.4</text>
+<text x="410" y="335" text-anchor="middle" font-size="15">Profile A</text>
+<rect x="555" y="216.4" width="58" height="93.6" fill="#20c985"/><text x="584" y="208.4" text-anchor="middle" font-size="14">93.6</text>
+<rect x="627" y="230.3" width="58" height="79.7" fill="#88b6df"/><text x="656" y="222.3" text-anchor="middle" font-size="14">79.7</text>
+<text x="620" y="335" text-anchor="middle" font-size="15">Profile B</text>
+<rect x="240" y="365" width="14" height="14" fill="#20c985"/><text x="261" y="377" font-size="14">MariaDB</text><rect x="380" y="365" width="14" height="14" fill="#88b6df"/><text x="401" y="377" font-size="14">PostgreSQL</text></g></svg>
