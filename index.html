@@ -179,12 +179,13 @@
                     </a>
                     <h3 class="product-title">Lightweight Spring Boot monitoring.</h3>
                     <p class="product-description">
-                        Turn Actuator health and metrics into a focused self-hosted dashboard with local history. Quarkus is also supported.
+                        Turn Actuator health and metrics into a focused self-hosted dashboard with local history. Monitor your application without running a separate observability stack.
                     </p>
                     <ul class="product-features">
-                        <li>One lightweight Go binary</li>
-                        <li>Local SQLite storage</li>
+                        <li>One lightweight Go binary (~15 MiB idle RSS)</li>
+                        <li>Local SQLite storage with 90-day default retention</li>
                         <li>No Prometheus or Grafana required</li>
+                        <li>No SaaS account or external database required</li>
                     </ul>
                     <div class="product-actions">
                         <a href="/statlite/" class="btn btn-primary">Explore StatLite</a>
@@ -222,33 +223,6 @@
                     </div>
                 </article>
 
-                <article class="product-card product-card--scriptella">
-                    <div class="product-wordmark product-wordmark--scriptella">
-                        <span class="product-wordmark-part product-wordmark-part--accent">Scriptella</span><span class="product-wordmark-part product-wordmark-part--light">ETL</span>
-                    </div>
-                    <div class="product-visual product-visual--scriptella">
-                        <img
-                            src="img/scriptella_hero.webp"
-                            alt="Scriptella ETL data pipeline illustration"
-                            width="800"
-                            height="451"
-                            loading="lazy"
-                            decoding="async">
-                    </div>
-                    <h3 class="product-title">Move data with the languages you already use.</h3>
-                    <p class="product-description">
-                        Build lightweight ETL and data migration workflows using SQL, XML, Java, and scripting languages without a heavyweight data platform.
-                    </p>
-                    <ul class="product-features">
-                        <li>SQL-first data pipelines</li>
-                        <li>Lightweight and embeddable</li>
-                        <li>Free and open source</li>
-                    </ul>
-                    <div class="product-actions">
-                        <a href="https://scriptella.org" class="btn btn-secondary">GET STARTED</a>
-                        <a href="https://github.com/scriptella/scriptella-etl/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">VIEW ON GITHUB</a>
-                    </div>
-                </article>
                 <article class="product-card product-card--coilbase">
                     <a class="product-wordmark" href="https://github.com/PVRLabs/coilbase" target="_blank" rel="noopener noreferrer" aria-label="Open CoilBase on GitHub">
                         <span class="product-wordmark-part product-wordmark-part--accent">Coil</span><span class="product-wordmark-part product-wordmark-part--light">Base</span>
@@ -274,6 +248,34 @@
                     <div class="product-actions">
                         <a href="https://github.com/PVRLabs/coilbase" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Explore CoilBase →</a>
                         <a href="https://github.com/PVRLabs/coilbase/blob/main/docs/benchmarks.md" class="btn-link" target="_blank" rel="noopener noreferrer">Benchmarks</a>
+                    </div>
+                </article>
+
+                <article class="product-card product-card--scriptella">
+                    <div class="product-wordmark product-wordmark--scriptella">
+                        <span class="product-wordmark-part product-wordmark-part--accent">Scriptella</span><span class="product-wordmark-part product-wordmark-part--light">ETL</span>
+                    </div>
+                    <div class="product-visual product-visual--scriptella">
+                        <img
+                            src="img/scriptella_hero.webp"
+                            alt="Scriptella ETL data pipeline illustration"
+                            width="800"
+                            height="451"
+                            loading="lazy"
+                            decoding="async">
+                    </div>
+                    <h3 class="product-title">Move data with the languages you already use.</h3>
+                    <p class="product-description">
+                        Build lightweight ETL and data migration workflows using SQL, XML, Java, and scripting languages without a heavyweight data platform.
+                    </p>
+                    <ul class="product-features">
+                        <li>SQL-first data pipelines</li>
+                        <li>Lightweight and embeddable</li>
+                        <li>Free and open source</li>
+                    </ul>
+                    <div class="product-actions">
+                        <a href="https://scriptella.org" class="btn btn-secondary">GET STARTED</a>
+                        <a href="https://github.com/scriptella/scriptella-etl/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">VIEW ON GITHUB</a>
                     </div>
                 </article>
             </div>
