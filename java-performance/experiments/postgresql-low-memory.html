@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="/articles/article.css?v=20261109">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
+        .article-cta.community-cta { margin: 24px 0; padding: 16px 20px; }
+        .article-body .community-cta h3 { margin: 0 0 6px; }
         .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
         .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
         .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
@@ -99,7 +101,11 @@ shared_buffers = '16MB'
 work_mem = '1MB'
 maintenance_work_mem = '16MB'</code></pre>
 <p>Restart the cluster, for example <code>sudo systemctl restart postgresql@18-main</code>. Verify the effective values with <code>SHOW shared_buffers;</code>, <code>SHOW max_connections;</code> and the other settings, or query <code>pg_settings</code>. Five slots include the reserved superuser slot, leaving at most four ordinary connections when there are no other reservations. Account for every pool and operational connection. Low work memory can cause sorts to spill. Leave fsync, autovacuum and standard WAL enabled.</p>
-<p><a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">Experiment record: configurations, methodology and measurements</a></p>
+<aside class="article-cta community-cta" aria-label="Efficient Self-Hosting Squad">
+    <h3>Interested in efficient self-hosting?</h3>
+    <p>Join the <a href="https://daily.dev/squads/efficientselfhosting">Efficient Self-Hosting Squad on daily.dev</a> to share experiments, configurations, and practical lessons for running applications on small servers.</p>
+</aside>
+<p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">Experiment record</a><a href="/java-performance/experiments/mariadb-postgresql-small-vps.html">Follow-up: MariaDB vs PostgreSQL</a></p>
 <div class="article-discussion">
     <a class="article-discussion__link" href="https://daily.dev/posts/tested-two-postgresql-18-tuning-strategies-on-a-512-mib-vps-one-reduced-peak-process-memory-by-72--tsv4sb95e"><span class="article-discussion__icon" aria-hidden="true"></span>Discuss on daily.dev</a>
 </div>

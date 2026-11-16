@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="/articles/article.css?v=20261109">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
+        .article-cta.community-cta { margin: 24px 0; padding: 16px 20px; }
+        .article-body .community-cta h3 { margin: 0 0 6px; }
         .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
         .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
         .article-body th, .article-body td { padding: 10px; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
@@ -74,6 +76,7 @@
 <h2>Setup</h2>
 <p>Both experiments ran on local x86-64 virtual machines (Lima/VZ on macOS with Ubuntu 24.04 guests, Linux 6.8), each with one vCPU, no swap and about 456 MiB of usable RAM at the 512 MiB allocation. The MariaDB run used the Ubuntu MariaDB 10.11.14 package with a 520,000-row fixture of about 164 MiB; the PostgreSQL run used PostgreSQL 18.6 with a 222 MiB fixture. Each variant ran 20 seconds of warm-up and a 50-second measured window with four persistent connections, and memory counters were sampled about once per second. The tuned configurations are Profile A and Profile B in this article; the experiment repositories call them Theory A and Theory B.</p>
 <p>These are database-only experiments, not complete application deployments. They are short, single runs on local VMs, and the two databases did not execute identical work. The <a href="https://github.com/PVRLabs/experiments/tree/main/mariadb/light-memory-512">MariaDB experiment</a> and <a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">PostgreSQL experiment</a> contain the configurations, method and measurements.</p>
+<p>For more detail on the PostgreSQL configurations and results, see <a href="/java-performance/experiments/postgresql-low-memory.html">PostgreSQL 18 on a Small VPS: Two Low-Memory Tuning Strategies</a>.</p>
 <h2>What happened at 256 MiB</h2>
 <p>The 256 MiB guest had only about 204 MiB of usable memory and no swap. Stock MariaDB started, but the kernel killed it before the measured query phase. Profile A, which reduced several caches, was also killed during measurement. Profile B, with a smaller InnoDB buffer pool, completed the workload without an OOM kill or swap.</p>
 <p>In a separate PostgreSQL follow-up at 256 MiB, both lightweight profiles completed their measured workloads. The PostgreSQL stock configuration ran out of memory during a preparation smoke run, so it does not provide a completed stock comparison.</p>
@@ -115,7 +118,14 @@ maintenance_work_mem = &#x27;16MB&#x27;</code></pre>
 <h2>What I would do on a small VPS</h2>
 <p>Start with the database your application needs, then measure the whole deployment under representative traffic. Check effective package settings, set a connection limit that accommodates the application pools and administration, and leave headroom for the operating system. Small caches can make a configuration viable, but they can also change latency and disk traffic.</p>
 <p>For a 512 MiB database-only starting point, MariaDB A balanced memory and throughput in this run, while B bought additional headroom. PostgreSQL A was notably compact on its separate workload. Neither result replaces a workload-specific test, especially when the database shares the VM with an application or handles writes.</p>
+<aside class="article-cta community-cta" aria-label="Efficient Self-Hosting Squad">
+    <h3>Interested in efficient self-hosting?</h3>
+    <p>Join the <a href="https://daily.dev/squads/efficientselfhosting">Efficient Self-Hosting Squad on daily.dev</a> to share experiments, configurations, and practical lessons for running applications on small servers.</p>
+</aside>
 <p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/mariadb/light-memory-512">MariaDB experiment record</a><a href="https://github.com/PVRLabs/experiments/tree/main/postgres/light-memory-p95">PostgreSQL experiment record</a></p>
+<div class="article-discussion">
+    <a class="article-discussion__link" href="https://daily.dev/posts/running-a-database-on-a-256-512-mib-vps-i-tested-mariadb-and-postgresql-with-default-and-low-memory-2qb32bru6"><span class="article-discussion__icon" aria-hidden="true"></span>Discuss on daily.dev</a>
+</div>
 </div></article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
 <script src="/script.js?v=20261109"></script>
