@@ -217,6 +217,7 @@
                 <p>This app has a simple data model and straightforward queries. The JDBC version is still small and readable, and its measured runtime footprint is substantially lower.</p>
                 <p>Saving about 90 MiB can be absorbed on a large server. On a 256 or 512 MiB VPS, the same difference can materially affect capacity. These runs were made on a Mac without a VPS memory limit, so that capacity claim still needs a measurement on the target machine.</p>
                 <p>The startup difference was also interesting. I expected the JDBC version to use less memory. It also reached the first dashboard response in about half the time in these runs.</p>
+                <p>This also makes persistence choice relevant to Spring Boot cold-start latency. In this small application, replacing Spring Data JPA and Hibernate with Spring JDBC roughly halved the time from process launch to the first successful response. The result reflects the complete application variants, not an isolated measurement of Hibernate initialization.</p>
             </section>
             <section>
                 <h2>The takeaway</h2>
