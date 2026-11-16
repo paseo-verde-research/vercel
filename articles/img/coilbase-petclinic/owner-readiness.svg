@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="270" viewBox="0 0 720 270" role="img" aria-labelledby="title desc">
+<title id="title">Time to first owner page</title><desc id="desc">Launch to complete owner page · median of three starts · seconds</desc>
+<rect width="720" height="270"  fill="#14201e"/>
+<g font-family="Arial, sans-serif" fill="#edf5f1">
+<text x="28" y="38" font-size="25" font-weight="700">Time to first owner page</text>
+<text x="28" y="65" font-size="15" fill="#bbc9c4">Launch to complete owner page · median of three starts · seconds</text>
+<rect x="28" y="85" width="13" height="13" fill="#91a9cc"/>
+<text x="49" y="97" font-size="16">Spring PetClinic</text>
+<rect x="263" y="85" width="13" height="13" fill="#65dfa4"/>
+<text x="284" y="97" font-size="16">CoilBase PetClinic</text>
+<path d="M240.0 120 V231" stroke="#34453f"/>
+<text x="240.0" y="254" text-anchor="middle" font-size="14" fill="#bbc9c4">0</text>
+<path d="M335.0 120 V231" stroke="#34453f"/>
+<text x="335.0" y="254" text-anchor="middle" font-size="14" fill="#bbc9c4">6</text>
+<path d="M430.0 120 V231" stroke="#34453f"/>
+<text x="430.0" y="254" text-anchor="middle" font-size="14" fill="#bbc9c4">12</text>
+<path d="M525.0 120 V231" stroke="#34453f"/>
+<text x="525.0" y="254" text-anchor="middle" font-size="14" fill="#bbc9c4">18</text>
+<path d="M620.0 120 V231" stroke="#34453f"/>
+<text x="620.0" y="254" text-anchor="middle" font-size="14" fill="#bbc9c4">24</text>
+<text x="28" y="151.0" font-size="17">Owner readiness</text>
+<rect x="240" y="132.0" width="312.87" height="17"  fill="#91a9cc"/>
+<text x="561.8666666666667" y="146.0" font-size="16">19.76</text>
+<rect x="240" y="157.0" width="41.64" height="17"  fill="#65dfa4"/>
+<text x="290.64166666666665" y="171.0" font-size="16">2.63</text>
+</g></svg>

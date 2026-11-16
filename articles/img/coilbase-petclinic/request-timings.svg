@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="820" viewBox="0 0 720 820" role="img" aria-labelledby="title desc">
+<title id="title">Lower medians on seven of eight paths</title><desc id="desc">20 serial requests per path after warmup · complete reads · milliseconds</desc>
+<rect width="720" height="820"  fill="#14201e"/>
+<g font-family="Arial, sans-serif" fill="#edf5f1">
+<text x="28" y="38" font-size="25" font-weight="700">Lower medians on seven of eight paths</text>
+<text x="28" y="65" font-size="15" fill="#bbc9c4">20 serial requests per path after warmup · complete reads · milliseconds</text>
+<rect x="28" y="85" width="13" height="13" fill="#91a9cc"/>
+<text x="49" y="97" font-size="16">Spring PetClinic</text>
+<rect x="263" y="85" width="13" height="13" fill="#65dfa4"/>
+<text x="284" y="97" font-size="16">CoilBase PetClinic</text>
+<path d="M240.0 120 V781" stroke="#34453f"/>
+<text x="240.0" y="804" text-anchor="middle" font-size="14" fill="#bbc9c4">0</text>
+<path d="M335.0 120 V781" stroke="#34453f"/>
+<text x="335.0" y="804" text-anchor="middle" font-size="14" fill="#bbc9c4">12.5</text>
+<path d="M430.0 120 V781" stroke="#34453f"/>
+<text x="430.0" y="804" text-anchor="middle" font-size="14" fill="#bbc9c4">25</text>
+<path d="M525.0 120 V781" stroke="#34453f"/>
+<text x="525.0" y="804" text-anchor="middle" font-size="14" fill="#bbc9c4">37.5</text>
+<path d="M620.0 120 V781" stroke="#34453f"/>
+<text x="620.0" y="804" text-anchor="middle" font-size="14" fill="#bbc9c4">50</text>
+<text x="28" y="151.0" font-size="17">Welcome</text>
+<rect x="240" y="132.0" width="59.13" height="17"  fill="#91a9cc"/>
+<text x="308.128" y="146.0" font-size="16">7.78</text>
+<rect x="240" y="157.0" width="21.66" height="17"  fill="#65dfa4"/>
+<text x="270.66" y="171.0" font-size="16">2.85</text>
+<text x="28" y="233.5" font-size="17">Owner search form</text>
+<rect x="240" y="214.5" width="78.81" height="17"  fill="#91a9cc"/>
+<text x="327.812" y="228.5" font-size="16">10.37</text>
+<rect x="240" y="239.5" width="13.76" height="17"  fill="#65dfa4"/>
+<text x="262.756" y="253.5" font-size="16">1.81</text>
+<text x="28" y="316.0" font-size="17">Search + redirect</text>
+<rect x="240" y="297.0" width="290.17" height="17"  fill="#91a9cc"/>
+<text x="539.168" y="311.0" font-size="16">38.18</text>
+<rect x="240" y="322.0" width="72.50" height="17"  fill="#65dfa4"/>
+<text x="321.504" y="336.0" font-size="16">9.54</text>
+<text x="28" y="398.5" font-size="17">Owner details</text>
+<rect x="240" y="379.5" width="175.03" height="17"  fill="#91a9cc"/>
+<text x="424.028" y="393.5" font-size="16">23.03</text>
+<rect x="240" y="404.5" width="38.84" height="17"  fill="#65dfa4"/>
+<text x="287.836" y="418.5" font-size="16">5.11</text>
+<text x="28" y="481.0" font-size="17">Owner edit form</text>
+<rect x="240" y="462.0" width="154.66" height="17"  fill="#91a9cc"/>
+<text x="403.66" y="476.0" font-size="16">20.35</text>
+<rect x="240" y="487.0" width="42.64" height="17"  fill="#65dfa4"/>
+<text x="291.636" y="501.0" font-size="16">5.61</text>
+<text x="28" y="563.5" font-size="17">New pet form</text>
+<rect x="240" y="544.5" width="350.36" height="17"  fill="#91a9cc"/>
+<text x="599.36" y="558.5" font-size="16">46.10</text>
+<rect x="240" y="569.5" width="54.19" height="17"  fill="#65dfa4"/>
+<text x="303.188" y="583.5" font-size="16">7.13</text>
+<text x="28" y="646.0" font-size="17">Vet HTML</text>
+<rect x="240" y="627.0" width="115.75" height="17"  fill="#91a9cc"/>
+<text x="364.748" y="641.0" font-size="16">15.23</text>
+<rect x="240" y="652.0" width="72.50" height="17"  fill="#65dfa4"/>
+<text x="321.504" y="666.0" font-size="16">9.54</text>
+<text x="28" y="728.5" font-size="17">Vet JSON</text>
+<rect x="240" y="709.5" width="44.38" height="17"  fill="#91a9cc"/>
+<text x="293.384" y="723.5" font-size="16">5.84</text>
+<rect x="240" y="734.5" width="70.00" height="17"  fill="#65dfa4"/>
+<text x="318.996" y="748.5" font-size="16">9.21</text>
+</g></svg>

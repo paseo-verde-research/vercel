@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Rewrote Spring PetClinic Without Spring Boot. It Used 59% Less RAM. | PVR Labs</title>
+    <meta name="author" content="Ted Kupolov">
+    <meta name="description" content="A Spring PetClinic rewrite with 59% lower measured application RSS: explicit SQL, familiar architecture, and more work around forms.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/coilbase-petclinic-rewrite.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/coilbase-petclinic-rewrite.html">
+    <meta property="og:title" content="Spring PetClinic, Rewritten Without Spring Boot or Hibernate">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Rewritten with CoilBase + Jex + Jdbi: 59% less application RSS and 85% smaller deployment in this experiment. Results measure the combined application-stack change.">
+    <meta property="article:published_time" content="2026-11-16T00:00:00-08:00">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring PetClinic, Rewritten Without Spring Boot or Hibernate">
+    <meta name="twitter:description" content="Rewritten with CoilBase + Jex + Jdbi: 59% less application RSS and 85% smaller deployment in this experiment. Results measure the combined application-stack change.">
+<meta property="og:image" content="https://pvrlabs.xyz/articles/img/coilbase-petclinic/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Spring PetClinic, Rewritten Without Spring Boot or Hibernate. CoilBase + Jex + Jdbi. 59% less application RSS; 85% smaller deployment. Combined application-stack comparison.">
+<meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/coilbase-petclinic/og-preview.png">
+<meta name="twitter:image:alt" content="Spring PetClinic, Rewritten Without Spring Boot or Hibernate. CoilBase + Jex + Jdbi. 59% less application RSS; 85% smaller deployment. Combined application-stack comparison.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+.article-page { max-width: 60rem; }
+.article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+@media (max-width: 992px) { .article-page { max-width: 94%; } }
+.article-body table { width: 100%; border-collapse: collapse; font-size: .9rem; line-height: 1.5; }
+.article-body th, .article-body td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+.article-body thead { background: var(--bg-light); }
+.article-body tbody th { font-weight: 500; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin-bottom: 1.5rem; }
+.table-scroll table { min-width: 36rem; }
+.article-body pre { overflow-x: auto; }
+.language-java .java-keyword { color: #c6a0f6; }
+.language-java .java-type { color: #8bd5ca; }
+.language-java .java-method { color: #8aadf4; }
+.language-java .java-string { color: #a6da95; }
+.language-java .java-comment { color: #a5adcb; }
+.language-java .java-constant { color: #f5a97f; }
+.article-body p code { overflow-wrap: anywhere; }
+.article-contents { padding: 1rem 1.25rem; background: var(--bg-light); border: 1px solid var(--border-color); margin: 1.5rem 0; }
+.article-contents ul { margin-bottom: 0; }
+.article-contents a { display: inline-flex; align-items: center; min-height: 44px; }
+.measurement-details { border: 1px solid var(--border-color); padding: .5rem 1rem; margin: 1.5rem 0; }
+.measurement-details summary { cursor: pointer; min-height: 44px; align-content: center; font-weight: 600; }
+.article-body h2 { scroll-margin-top: 6rem; }
+.article-body picture { display: block; }
+.article-body picture img { width: 100%; height: auto; }
+.experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+.experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+@media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+
+.article-body .petclinic-chart { width: 100%; max-width: 40rem; margin: 1.75rem auto; min-width: 0; }
+.article-body .petclinic-chart img { display: block; width: 100%; height: auto; border: 0; border-radius: 0; }
+.petclinic-chart figcaption { margin-top: .7rem; font-size: .9rem; line-height: 1.6; color: var(--text-secondary); }
+
+.petclinic-chart-scroll { max-width: 100%; overflow-x: auto; }
+.petclinic-chart-scroll:focus-visible { outline: 2px solid var(--primary-green); outline-offset: 3px; }
+@media (max-width: 768px) {
+    .article-body .petclinic-chart img { width: 720px; min-width: 720px; max-width: none; }
+}
+</style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Rewrote Spring PetClinic Without Spring Boot. It Used 59% Less RAM.</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-16">November 16, 2026</time></div><div class="article-body"><p>I like the way a conventional Spring application is organized. Controllers handle HTTP, repositories handle persistence, and business operations have somewhere sensible to live. Constructor dependencies make those relationships easy to follow.</p>
+<p>How much of that architecture actually requires the Spring Boot runtime?</p>
+<p>To explore that question, I rebuilt <a href="https://github.com/spring-projects/spring-petclinic">Spring PetClinic</a> without Spring Boot and Hibernate, using <a href="https://github.com/PVRLabs/coilbase">CoilBase</a>, a lightweight Java framework I developed for my performance experiments, where I often port applications between frameworks.</p>
+<p>In the measured PostgreSQL deployment, application process RSS fell from 304.4 MiB to 125.9 MiB: approximately 58.6%, rounded to 59% in the title. This measures the combined effect of replacing Spring Boot and Hibernate in this application, not the individual contribution of either component.</p>
+<figure class="petclinic-chart"><div class="petclinic-chart-scroll" role="region" aria-label="Scrollable benchmark chart" tabindex="0"><img src="/articles/img/coilbase-petclinic/application-rss.svg" width="720" height="270" alt="Median application process RSS: Spring 304.4 MiB; CoilBase 125.9 MiB." loading="lazy" decoding="async"></div><figcaption>Same 1 GiB VM and JVM heap settings. One short read workload per application, followed by ten quiet seconds. This measures complete application processes, excluding PostgreSQL.</figcaption></figure>
+<p>The more interesting discovery was where the work went. Replacing persistence was relatively straightforward. Replacing the conveniences around a form required more thought.</p>
+<h2>A recognizable application</h2>
+<p>PetClinic gives the experiment something more substantial than a JSON greeting. Owners have pets, pets have visits, and the application has search, pagination, editing, validation and veterinarian views.</p>
+<p>The rewrite uses CoilBase, Avaje Jex, generated HTTP routing adapters and precompiled JTE templates.</p>
+<p>The <a href="https://github.com/ejboy/coilbase-petclinic/tree/main">rewrite</a> keeps the Spring application patterns I find useful: controllers, services, repositories and constructor dependencies. The aim is to preserve that structure while replacing runtime dependency injection, auto-configuration and ORM persistence with explicit wiring and SQL. It does not preserve every upstream boundary mechanically: <code>ClinicService</code> provides an explicit home for write transactions and relationship loading.</p>
+<p>Here is an excerpt from the actual application wiring:</p>
+<pre data-lang="java"><code>var owners = new OwnerRepository(db());
+var pets = new PetRepository(db());
+var clinic = new ClinicService(db(), owners, pets, new VisitRepository(db()));
+var sessions = new Sessions(config.secureCookie(), Duration.ofMinutes(30), 10_000);
+var views = new Views();
+var ownerController = new OwnerController(clinic, sessions, views);
+var petController = new PetController(clinic, sessions, views);
+jex.routing(new OwnerController$Route(ownerController));</code></pre>
+<p>Dependencies are ordinary constructor arguments. Avaje generates the route adapter at compile time; the application constructs the controller and registers that adapter with Jex. There is no runtime dependency-injection container assembling this graph.</p>
+<p>Auto-configuration trades explicit setup for conventions and conditional behavior. Here, I prefer to see which components are created and how they fit together. That makes the startup path easy to inspect, but adding another component becomes an explicit wiring change. Spring&#x27;s automatic assembly remains useful when an application has many integrations and configuration combinations.</p>
+<h2>SQL and transactions stay visible</h2>
+<p>Spring PetClinic uses Spring Data JPA and Hibernate. The port uses CoilBase&#x27;s Jdbi-backed repositories, parameter binding and explicit row mapping. SQL replaces repository-derived persistence operations and ORM relationship management.</p>
+<p>The service&#x27;s owner-loading path fetches the owner, loads its pets, and loads visits for each pet. There is no persistence context deciding when relationships should be fetched. That is understandable code, but the query count is now clearly an application responsibility.</p>
+<p>The write boundary is equally visible. These are actual methods from <code>ClinicService</code>:</p>
+<pre data-lang="java"><code>int createOwner(OwnerForm form) {
+    return db.transactional(() -&gt; owners.insert(form));
+}
+
+void updateOwner(int id, OwnerForm form) {
+    db.transactional(() -&gt; owners.update(id, form));
+}</code></pre>
+<p>Repository operations inside the managed boundary participate in the transaction, and escaping failures roll it back. Developers must choose those boundaries and test failure behavior. A duplicate-pet precheck helps produce a useful field error; a database uniqueness constraint still arbitrates competing writes.</p>
+<p>This removes ORM mapping and implicit persistence behavior, while adding SQL, mapping and loading decisions. Whether that is simpler depends on the application and the team&#x27;s preferred way of reasoning about data.</p>
+<h2>The form was harder than the repository</h2>
+<p>A form submission carries more behavior than its controller method initially suggests: decoding, rejected input, validation messages, locale selection, status codes, redirects, CSRF and flash messages.</p>
+<p>Spring MVC and its surrounding integrations provide much of that machinery. In this port, the controller reads fields, verifies CSRF, validates an application form object, and either renders errors or calls the service and redirects. Invalid POST forms explicitly select status 200 because the generated POST adapter otherwise defaults to 201.</p>
+<p>JTE replaces Thymeleaf here. Templates are precompiled, so the runtime needs the JTE runtime rather than its compiler. This is an application choice; CoilBase does not require JTE.</p>
+<p>The application also configures its Hikari datasource and owns its lifecycle. Sessions are bounded and process-local, with CSRF tokens and one-use flash messages. They disappear on restart and do not support multiple application instances. English and Spanish are selected through <code>Accept-Language</code>.</p>
+<p>Those details are part of the engineering cost. Removing automatic infrastructure does not remove the underlying responsibilities. The <a href="https://github.com/ejboy/coilbase-petclinic/blob/main/docs/migration.md">migration notes</a> explain where this implementation makes them explicit.</p>
+<h2>Similar workflows, bounded compatibility</h2>
+<p>The two applications were exercised through a shared real-HTTP contract on H2 and PostgreSQL. Checks cover representative owner searches and edits, pets, visits, validation, redirects, veterinarian HTML and JSON, navigation and assets. Independent database queries inspect committed rows and selected invalid writes. Restart checks verify persistence without reinitializing the schema.</p>
+<p>The <a href="https://github.com/ejboy/coilbase-petclinic/blob/main/contract/README.md">contract documentation</a> describes reproduction using separately built applications and disposable databases. These checks support representative behavioral compatibility, not complete feature parity.</p>
+<p>Accepted differences include 404 responses for missing owners or pets, fewer locales, different flash-consumption behavior, and no Actuator, WebJar endpoints or Spring vet cache. The port has no authentication and has not undergone a production security audit. It is a reference application, not a deployment security blueprint.</p>
+<h2>What the measurements show</h2>
+<p>The measured Spring application used Spring Boot <strong>4.1.0</strong> and Hibernate <strong>7.4.1.Final</strong>. The rewrite used CoilBase <strong>0.1.0-preview4</strong>, Avaje Jex <strong>3.6</strong> and Jdbi <strong>3.55.0</strong>.</p>
+<p>Both applications ran sequentially on the same warm-host x86-64 Linux VM: one vCPU, 1 GiB allocated RAM, no swap, Temurin 25.0.4.1+1 and <code>-Xms64m -Xmx256m</code>. The JVM selected Serial GC for both. PostgreSQL 18.6 ran in the same VM with separate databases and matching pinned fixtures, <code>C.UTF-8</code> collation, 128 MiB shared buffers, 100 maximum connections and 4 MiB work memory.</p>
+<p>These are <strong>HotSpot</strong> results. No Native Image PetClinic measurement is included.</p>
+<div class="table-scroll" role="region" aria-label="Benchmark comparison" tabindex="0"><table><thead><tr><th scope="col">Measurement</th><th scope="col">Spring PetClinic</th><th scope="col">CoilBase PetClinic</th></tr></thead><tbody><tr><td>Median application RSS, workload plus quiet interval</td><td>304.4 MiB</td><td>125.9 MiB</td></tr><tr><td>Complete uncompressed deployment</td><td>65,607,443 bytes</td><td>9,775,305 bytes</td></tr><tr><td>Median first root response, three starts</td><td>15.26 s</td><td>1.18 s</td></tr><tr><td>Median database-backed owner response, three separate starts</td><td>19.76 s</td><td>2.63 s</td></tr></tbody></table></div>
+<p>The <a href="https://github.com/ejboy/coilbase-petclinic/tree/main/benchmark">benchmark record</a> includes raw workload captures, analysis scripts, JVM evidence and reproduction instructions. The curated evidence was published in commit <a href="https://github.com/ejboy/coilbase-petclinic/commit/8c2b656">8c2b656</a>, after the original measurements; no benchmarks were rerun.</p>
+<figure class="petclinic-chart"><div class="petclinic-chart-scroll" role="region" aria-label="Scrollable benchmark chart" tabindex="0"><img src="/articles/img/coilbase-petclinic/deployment-size.svg" width="720" height="270" alt="Complete deployment: Spring 62.6 MiB; CoilBase 9.3 MiB." loading="lazy" decoding="async"></div><figcaption>Both include application files and runtime libraries. Spring uses its extracted layout. JVM and database installations are excluded.</figcaption></figure>
+<p>The complete deployment was approximately 85% smaller (85.1% by uncompressed bytes). The deployment sizes include application files and runtime libraries. Spring used its extracted layout. They exclude the JVM and database installation; comparing only the small application JARs would miss most of either deployment.</p>
+<p>RSS was sampled once per second during one short read workload and ten subsequent quiet seconds. There were 13 samples for Spring and 11 for CoilBase, mostly quiet. These are samples within one run, not independent benchmark repetitions. The title describes application RSS; it does not describe heap usage, total server memory, or guaranteed minimum RAM. Summing PostgreSQL process RSS would double-count shared pages, so it should not be added to these values.</p>
+<figure class="petclinic-chart"><div class="petclinic-chart-scroll" role="region" aria-label="Scrollable benchmark chart" tabindex="0"><img src="/articles/img/coilbase-petclinic/owner-readiness.svg" width="720" height="270" alt="Median database-backed owner response: Spring 19.76 seconds; CoilBase 2.63 seconds." loading="lazy" decoding="async"></div><figcaption>Three separate starts per application, measured through a complete database-backed owner response. Spring ranged from 15.19 to 28.90 seconds; three starts do not establish a distribution.</figcaption></figure>
+<p>Readiness needs particular care. The root page can respond before CoilBase initializes its database pool. A separate follow-up measured launch to a complete <code>/owners/1</code> response containing Franklin, polling every 100 ms with a two-second request timeout. That follow-up occurred after a VM restart and fresh smoke checks; it is not paired with the root sequence. Spring&#x27;s three owner-readiness observations ranged from 15.19 to 28.90 seconds. Three starts do not characterize a startup-time distribution.</p>
+<p>After one warm-up cycle, each of eight paths received 20 serial requests. The client shared the VM, followed redirects and timed complete response reads. All recorded requests returned 200.</p>
+<figure class="petclinic-chart"><div class="petclinic-chart-scroll" role="region" aria-label="Scrollable benchmark chart" tabindex="0"><img src="/articles/img/coilbase-petclinic/request-timings.svg" width="720" height="820" alt="All eight request medians on a common zero-based scale. CoilBase is lower on seven paths. Spring vet JSON is 5.84 ms versus CoilBase 9.21 ms." loading="lazy" decoding="async"></div><figcaption>Every path uses the same zero-based scale. Spring wins on vet JSON, where it caches veterinarian data and the port does not. These serial requests measure neither concurrent throughput nor tail latency.</figcaption></figure>
+<p>CoilBase had the lower median on seven of eight paths. Spring won the veterinarian JSON path, where it caches veterinarian data and the port does not. Relationship queries also differ. The port&#x27;s owner-details HTML was 1,278 bytes compared with Spring&#x27;s 4,180 bytes. Rendering, payload sizes, caching and SQL all contribute to these timings.</p>
+<p>This comparison therefore cannot isolate the cost of Spring Boot, Jex, Hibernate or CoilBase individually. It also says nothing about concurrent throughput, sustained load, write performance, saturation or tail latency. Those require different experiments.</p>
+<p>This isn&#x27;t my first experiment with these tradeoffs. In an earlier <a href="/articles/five-java-stacks-512mb-vps.html">five-stack comparison</a>, Spring Boot with JDBC and without Hibernate used approximately 181–188 MiB RSS across two HotSpot runs, compared with approximately 116 MiB for Jex + CoilBase. In a separate <a href="/java-performance/experiments/jpa-memory-experiment-revisited.html">Hibernate versus Jdbi experiment</a>, direct Hibernate used approximately 152 MiB versus 96 MiB for Jdbi in a lightweight stack. These were different applications and workloads, so the savings cannot be added together or directly assigned to PetClinic. But they demonstrate that both framework and persistence choices can significantly affect memory usage.</p>
+<p>There were procedural limitations too. A collector shutdown race affected analysis after the first Spring start; its timing was retained, collection was corrected, and a pause and smoke run added host warming before subsequent observations. The measurements describe the original application builds; subsequent application changes were not remeasured. Build details are recorded with the benchmark results.</p>
+<h2>A foundation with a smaller scope</h2>
+<p>CoilBase provides repository conveniences, explicit transaction handling and optional Jex application integration around Jdbi. Core is independent of an HTTP framework and dependency-injection container. It does not try to become an ORM, reproduce every Spring integration, or provide automatic migration compatibility.</p>
+<p>That boundary matters. If every convenience removed from Spring were rebuilt as a general-purpose subsystem, the project would steadily recreate the framework it set out to avoid. Here, form handling and sessions remain concrete application decisions.</p>
+<p>For a smaller service or a resource-constrained deployment, visible SQL, explicit dependencies and a compact runtime may be attractive. The application owner must be comfortable maintaining infrastructure choices, query behavior and operational boundaries. CoilBase is also a preview, with APIs that may change.</p>
+<p>Spring Boot remains an excellent choice when its integrated ecosystem, established conventions and ready-made facilities save more work than explicit assembly would. This experiment does not measure the engineering cost of those capabilities or show what a tuned Spring JDBC version of PetClinic would consume.</p>
+<p>What it does show is that much of the familiar Java application structure can survive without Spring Boot and Hibernate. In this PetClinic rewrite, that came with substantially lower measured application RSS and a smaller deployment, together with more explicit responsibility for the details around the application. The useful decision is whether those responsibilities fit the service and the people maintaining it.</p><h2 id="experiment-data-and-related-resources">Experiment data and related resources</h2>
+<p>The benchmark record includes the methodology, measured build details, workload summaries and readiness observations. The implementation includes migration notes and instructions for running the shared application checks.</p>
+<p class="experiment-links">
+<a href="https://github.com/ejboy/coilbase-petclinic/tree/main/benchmark" target="_blank" rel="noopener noreferrer">Experiment results</a>
+<a href="https://github.com/ejboy/coilbase-petclinic/tree/main" target="_blank" rel="noopener noreferrer">PetClinic implementation</a>
+<a href="https://github.com/PVRLabs/coilbase" target="_blank" rel="noopener noreferrer">CoilBase on GitHub</a>
+</p></div></article></main><footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261109"></script>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

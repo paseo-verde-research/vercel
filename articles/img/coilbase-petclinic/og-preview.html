@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PetClinic social preview</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; width: 1200px; height: 630px; padding: 48px 60px 36px; background: #0b100e; color: #f1f5f2; font-family: Arial, sans-serif; }
+header { display: flex; align-items: center; justify-content: space-between; }
+.logo { width: 116px; height: 33px; background: linear-gradient(90deg, #2ecc71 49%, #f3f5f3 49%); mask: url('../../../img/pvrlabs_alpha_bg.png') center / contain no-repeat; }
+.series { color: #a9b9af; font-size: 16px; letter-spacing: 2px; }
+h1 { margin: 28px 0 12px; font-size: 48px; line-height: 1.08; letter-spacing: -1.6px; }
+.stack { margin: 0 0 24px; color: #a9b9af; font-size: 23px; }
+.deployment { margin-top: 17px; font-size: 23px; color: #65dfa4; }
+main { display: grid; grid-template-columns: 430px 1fr; gap: 45px; align-items: center; }
+.stat { font-size: 112px; line-height: .95; letter-spacing: -8px; font-weight: 700; color: #65dfa4; }
+.stat-label { margin-top: 15px; font-size: 27px; }
+.comparison { border-left: 1px solid #35483e; padding: 6px 0 8px 42px; }
+.row + .row { margin-top: 29px; }
+.label { display: flex; justify-content: space-between; font-size: 21px; margin-bottom: 12px; }
+.label strong { font-variant-numeric: tabular-nums; }
+.bar { height: 24px; background: #91a9cc; width: 100%; }
+.bar.port { width: 41.36%; background: #65dfa4; }
+footer { display: flex; justify-content: space-between; border-top: 1px solid #35483e; margin-top: 28px; padding-top: 20px; color: #a9b9af; font-size: 17px; }
+</style></head>
+<body>
+<header><div class="logo" role="img" aria-label="PVR Labs"></div><span class="series">JAVA PERFORMANCE EXPERIMENT</span></header>
+<h1>Spring PetClinic, Rewritten<br>Without Spring Boot or Hibernate</h1>
+<p class="stack">CoilBase + Jex + Jdbi</p>
+<main><div><div class="stat">59%</div><div class="stat-label">less application RSS</div><div class="deployment">85% smaller deployment</div></div><div class="comparison"><div class="row"><div class="label"><span>Spring PetClinic</span><strong>304.4 MiB</strong></div><div class="bar"></div></div><div class="row"><div class="label"><span>CoilBase PetClinic</span><strong>125.9 MiB</strong></div><div class="bar port"></div></div></div></main>
+<footer><span>pvrlabs.xyz</span><span>Median process RSS · Short PostgreSQL workload · HotSpot</span></footer>
+</body></html>
