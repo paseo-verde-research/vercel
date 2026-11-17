@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Java Persistence Frameworks: Approaches, Trade-offs, and Performance | PVR Labs</title>
+    <meta name="description" content="Compare JDBC, Jdbi, MyBatis, jOOQ, JPA, Hibernate, Spring Data, and Micronaut Data by SQL control, mapping, type safety, runtime behavior, and framework integration.">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/persistence/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/persistence/">
+    <meta property="og:title" content="Java Persistence Frameworks: Approaches, Trade-offs, and Performance">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="A practical guide to Java persistence approaches, their trade-offs, and measured PVR Labs experiments.">
+    <meta property="og:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Java Persistence Frameworks: Approaches, Trade-offs, and Performance">
+    <meta name="twitter:description" content="A practical guide to Java persistence approaches, their trade-offs, and measured PVR Labs experiments.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Java Persistence Frameworks: Approaches, Trade-offs, and Performance",
+      "url": "https://pvrlabs.xyz/java-performance/persistence/",
+      "description": "A practical guide to Java persistence approaches, their trade-offs, and measured PVR Labs experiments.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PVR Labs",
+        "url": "https://pvrlabs.xyz/"
+      },
+      "about": [
+        {"@type": "Thing", "name": "Java persistence"},
+        {"@type": "Thing", "name": "Java Database Connectivity"},
+        {"@type": "Thing", "name": "Jakarta Persistence"}
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/java-performance/style.css?v=20261116a">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="lab-page">
+    <section class="lab-hero lab-hero--experiments">
+        <div class="container">
+            <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / Persistence</p>
+            <h1>Java persistence frameworks</h1>
+            <p class="lab-lead">Java persistence approaches make different choices about SQL control, object mapping, type safety, runtime complexity, and framework integration. No option is universally best. The useful question is which responsibilities a particular application and team want the library to own.</p>
+        </div>
+    </section>
+
+    <section class="lab-section persistence-overview">
+        <div class="container">
+            <h2>Three overlapping approaches to Java persistence</h2>
+            <p>These groups describe the center of gravity of each tool, not hard boundaries. Framework integrations can use direct SQL or delegate to an ORM. A project can also combine approaches, such as jOOQ for reporting queries and Hibernate for transactional domain work.</p>
+            <div class="persistence-groups">
+                <article class="persistence-group">
+                    <h3><a href="#sql-centric">Direct SQL and SQL-centric</a></h3>
+                    <p><strong>JDBC, Jdbi, MyBatis, and jOOQ</strong> keep SQL or the SQL query model visible. They differ in how much binding, mapping, query construction, and compile-time checking they add.</p>
+                </article>
+                <article class="persistence-group">
+                    <h3><a href="#orm">ORM</a></h3>
+                    <p><strong>JPA, Hibernate, and EclipseLink</strong> center persistence on entities and an object model. JPA is a specification. Hibernate and EclipseLink are implementations, each with features beyond the specification.</p>
+                </article>
+                <article class="persistence-group">
+                    <h3><a href="#framework-integrated">Framework-integrated</a></h3>
+                    <p><strong>Spring JDBC, Spring Data JPA, Micronaut Data JDBC, and Micronaut Data JPA</strong> integrate persistence with a broader application framework, including configuration, repositories, and transactions.</p>
+                </article>
+            </div>
+            <p class="lab-context-note">Spring Data JPA commonly delegates to Hibernate, though another JPA provider can be used. Micronaut Data similarly offers distinct JDBC and JPA integrations.</p>
+        </div>
+    </section>
+
+    <section class="lab-section persistence-details">
+        <div class="container">
+            <h2>How the main persistence approaches differ</h2>
+
+            <h3 id="sql-centric">Direct SQL and SQL-centric tools</h3>
+            <div class="persistence-detail-grid">
+                <article class="persistence-detail"><h4>JDBC</h4><p><strong>Advantages:</strong> a standard API, direct access to SQL and driver behavior, and no additional persistence abstraction.</p><p><strong>Limitations:</strong> statement lifecycle, parameters, result-set mapping, errors, and transaction boundaries need application code or supporting utilities.</p><p><strong>Common uses:</strong> small data-access layers, specialized database operations, bulk work, and foundations for higher-level libraries.</p></article>
+                <article class="persistence-detail"><h4>Jdbi</h4><p><strong>Advantages:</strong> stays close to SQL while reducing JDBC ceremony through named parameters, row mappers, managed handles, SQL Objects, and transaction callbacks.</p><p><strong>Limitations:</strong> SQL strings have limited compile-time validation, and the application owns joins, loading strategies, and relationship assembly.</p><p><strong>Common uses:</strong> services with explicit SQL, modest data models, and teams that want a small abstraction over JDBC.</p></article>
+                <article class="persistence-detail"><h4>MyBatis</h4><p><strong>Advantages:</strong> maps explicit SQL to Java methods and objects, with flexible XML or annotation-based configuration and detailed result mapping.</p><p><strong>Limitations:</strong> mapper definitions add another artifact to maintain, and SQL changes can drift from mappings without integration tests.</p><p><strong>Common uses:</strong> SQL-led applications, existing schemas, stored procedures, and teams that prefer mapper interfaces.</p></article>
+                <article class="persistence-detail"><h4>jOOQ</h4><p><strong>Advantages:</strong> models SQL as a composable Java DSL. Optional schema code generation gives compiler-visible tables, columns, and types, while jOOQ can also be used without generated code.</p><p><strong>Limitations:</strong> the DSL and generation workflow have a learning and build cost. The Open Source Edition is Apache 2.0, including its runtime and code generator, but supports a defined set of databases. Other databases and advanced features require an appropriate commercial edition.</p><p><strong>Common uses:</strong> applications with sophisticated SQL, dynamic query construction, database-first schemas, or a strong preference for typed query composition. Check the current <a href="https://www.jooq.org/download/">edition matrix</a> and <a href="https://www.jooq.org/legal/licensing">licensing terms</a> for the target database.</p></article>
+            </div>
+
+            <h3 id="orm">Object-relational mapping</h3>
+            <div class="persistence-detail-grid">
+                <article class="persistence-detail"><h4>JPA</h4><p><strong>Advantages:</strong> standard entity, relationship, query, and lifecycle APIs that allow a degree of provider portability.</p><p><strong>Limitations:</strong> it is a specification rather than a complete runtime. Applications still need a provider and must understand fetching, transactions, generated SQL, and provider-specific behavior.</p><p><strong>Common uses:</strong> domain-oriented applications that value standard persistence contracts and managed entity lifecycles.</p></article>
+                <article class="persistence-detail"><h4>Hibernate</h4><p><strong>Advantages:</strong> a mature JPA implementation with extensive mapping options, relationship management, dirty checking, caching, HQL, and a large ecosystem.</p><p><strong>Limitations:</strong> the persistence context, proxies, fetching, cascading, flushing, and dirty checking create runtime behavior that developers must understand and observe.</p><p><strong>Common uses:</strong> applications with substantial object graphs, relationship-heavy domain models, and teams that benefit from managed entity state.</p></article>
+                <article class="persistence-detail"><h4>EclipseLink</h4><p><strong>Advantages:</strong> a complete JPA implementation with its own mapping, caching, query, and extensibility features.</p><p><strong>Limitations:</strong> provider differences still matter, and fewer teams and integrations default to EclipseLink than to Hibernate.</p><p><strong>Common uses:</strong> Jakarta EE environments, Eclipse-centered stacks, and projects that prefer EclipseLink-specific capabilities.</p></article>
+            </div>
+
+            <h3 id="framework-integrated">Framework-integrated persistence</h3>
+            <p>Spring also offers Spring Data JDBC, which maps aggregates through JDBC without requiring JPA. It has not been included in the experiments collected here.</p>
+            <div class="persistence-detail-grid">
+                <article class="persistence-detail"><h4>Spring JDBC</h4><p><strong>Advantages:</strong> <code>JdbcTemplate</code> and related APIs handle repetitive JDBC resource work while integrating with Spring transactions and exception translation.</p><p><strong>Limitations:</strong> SQL, mappings, query composition, and relationship loading remain explicit.</p><p><strong>Common uses:</strong> Spring applications that want SQL control without an ORM.</p></article>
+                <article class="persistence-detail"><h4>Spring Data JPA</h4><p><strong>Advantages:</strong> repository interfaces, derived queries, specifications, pagination, auditing, and Spring transaction integration over JPA.</p><p><strong>Limitations:</strong> repository convenience sits on top of the ORM model. Fetching, entity state, flush behavior, and generated SQL still need attention.</p><p><strong>Common uses:</strong> Spring applications whose domain model benefits from JPA and whose teams value repository conventions.</p></article>
+                <article class="persistence-detail"><h4>Micronaut Data JDBC</h4><p><strong>Advantages:</strong> generates repository implementations and query metadata at compile time while executing through JDBC.</p><p><strong>Limitations:</strong> it follows Micronaut Data's mapping and repository model, without JPA entity management or dirty checking.</p><p><strong>Common uses:</strong> Micronaut applications that want repositories, direct JDBC behavior, and compile-time generation.</p></article>
+                <article class="persistence-detail"><h4>Micronaut Data JPA</h4><p><strong>Advantages:</strong> combines compile-time generated repositories with a JPA provider and ORM capabilities.</p><p><strong>Limitations:</strong> compile-time repository generation does not remove provider runtime behavior or ORM loading decisions.</p><p><strong>Common uses:</strong> Micronaut applications that need JPA mappings and relationships with generated repository infrastructure.</p></article>
+            </div>
+        </div>
+    </section>
+
+    <section class="lab-section lab-section--alt" id="research">
+        <div class="container">
+            <h2>PVR Labs Java persistence experiments</h2>
+            <p class="lab-section-intro">These experiments measure complete applications under stated workloads. Process RSS includes the JVM, application code, persistence implementation, drivers, embedded databases where used, and instrumentation. It is not an intrinsic memory measurement of a library.</p>
+            <h3 class="lab-index-heading">Focused persistence comparisons</h3>
+            <div class="lab-index">
+                <article class="lab-entry"><h4><a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Spring Boot JPA vs JDBC</a></h4><p>Two complete Spring Boot variants on one Mac. The Spring JDBC application used about 90 to 91 MiB less median RSS and reached its first dashboard roughly four seconds sooner than the Spring Data JPA and Hibernate variant.</p></article>
+                <article class="lab-entry"><h4><a href="/java-performance/experiments/jpa-memory-experiment-revisited.html">JPA Memory Experiment Revisited</a></h4><p>A follow-up on a 512 MiB Linux VM using substantially shared lightweight application code. Jdbi used about 55 to 58 MiB less process RSS than direct Hibernate in the measured mixed workload. The result compares implementations, not isolated libraries.</p></article>
+                <article class="lab-entry"><h4><a href="/java-performance/experiments/mybatis-jooq-jdbi-512mb.html">Jdbi, MyBatis, and jOOQ on 512 MiB</a></h4><p>Two runs per SQL-centric implementation with Javalin, H2, and no swap. MyBatis had the lowest median workload RSS in both rounds, while Jdbi was competitive on latency. The narrow workload does not establish a universal ranking.</p></article>
+                <article class="lab-entry"><h4><a href="/java-performance/experiments/mybatis-jooq-jdbi-256mb.html">MyBatis, jOOQ, and Jdbi on 256 MiB</a></h4><p>The earlier one-run comparison recorded startup, RSS, paging, package size, and HTTP latency under tighter memory. Swap activity complicates cross-library RSS interpretation, which motivated the 512 MiB follow-up.</p></article>
+            </div>
+
+            <h3 class="lab-index-heading">Broader application-stack comparisons</h3>
+            <p>These studies change the web framework, application infrastructure, or overall implementation as well as persistence. Their results cannot be assigned to the persistence library alone.</p>
+            <div class="lab-index">
+                <article class="lab-entry"><h4><a href="/articles/coilbase-petclinic-rewrite.html">Rewriting Spring PetClinic with CoilBase</a></h4><p>A rewrite preserving key PetClinic workflows, covering application RSS, deployment size, readiness, request timing, and the integration work required when replacing a Spring Boot and Hibernate stack.</p></article>
+                <article class="lab-entry"><h4><a href="/articles/spring-boot-vs-javalin-jdbi.html">Spring Boot vs Javalin and Jdbi</a></h4><p>A database-backed service on a 512 MiB VM, comparing complete Spring Boot and Javalin stacks on HotSpot and Native Image. HTTP, persistence, logging, JSON, metrics, and other components all differ.</p></article>
+            </div>
+            <aside class="persistence-callout" aria-label="About CoilBase">
+                <p><strong>About CoilBase.</strong> CoilBase is a framework developed by PVR Labs. It uses Jdbi and adds repository conventions, explicit transaction handling, and optional Jex integration. It is an application library built on a SQL-centric persistence tool, not a separate persistence category.</p>
+                <div class="persistence-callout-actions">
+                    <a href="/articles/coilbase-petclinic-rewrite.html" class="btn btn-primary">Read the CoilBase PetClinic comparison</a>
+                    <a href="https://github.com/PVRLabs/coilbase" class="btn btn-github" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">⭐</span>&nbsp; CoilBase on GitHub</a>
+                </div>
+            </aside>
+            <p class="lab-footer-note"><a href="/java-performance/experiments/">Browse all Java performance experiments &rarr;</a></p>
+        </div>
+    </section>
+</main>
+
+<footer id="footer">
+    <div class="container">
+        <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+        <p>Java performance, systems engineering, and local-first developer tools.</p>
+    </div>
+</footer>
+<script src="/script.js?v=20261109"></script>
+<!-- Default Statcounter code for PVR Labs -->
+<script>
+    var sc_project = 13137699;
+    var sc_invisible = 1;
+    var sc_security = "28f9c550";
+</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript>
+    <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer"><img class="statcounter" src="https://c.statcounter.com/13137699/0/28f9c550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div>
+</noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>

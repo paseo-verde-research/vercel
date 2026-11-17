@@ -221,4 +221,10 @@
   <url><loc>https://pvrlabs.xyz/java-performance/experiments/postgresql-low-memory.html</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://pvrlabs.xyz/java-performance/experiments/mariadb-postgresql-small-vps.html</loc><lastmod>2026-11-15</lastmod></url>
 <url><loc>https://pvrlabs.xyz/articles/coilbase-petclinic-rewrite.html</loc><lastmod>2026-11-16</lastmod></url>
+  <url>
+    <loc>https://pvrlabs.xyz/java-performance/persistence/</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
