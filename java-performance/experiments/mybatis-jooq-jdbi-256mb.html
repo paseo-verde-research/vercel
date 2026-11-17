@@ -248,10 +248,15 @@
 <h2>Limitations and conclusion</h2>
 <p>All three implementations completed the same workload with similar resident memory. The clearest differences were in paging, package size, and application code. Jdbi required the fewest handwritten Java lines here; MyBatis kept SQL in annotated mappers; jOOQ provided generated, typed schema references with an additional build step.</p>
 <p>These are observations from one small, deterministic workload on a local VM, with one run per implementation. They do not isolate intrinsic library overhead or establish a performance ranking. The jOOQ figures describe the original measured build; the fixture-initialization correction was tested separately and remains unmeasured in the VM.</p>
-<p>See the <a href="https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html">original Javalin vs. Spring Boot experiment</a>.</p>
+<p>Working with Jdbi also helped shape <a href="https://github.com/PVRLabs/coilbase">CoilBase</a>, a small Java application foundation I’ve created based on running these and other performance experiments. It builds on Jdbi with repository and transaction conventions.</p>
 <h2>Sources and reproduction</h2>
+<p>This comparison follows the <a href="/java-performance/experiments/javalin-vs-spring-boot-256mb.html">Javalin vs. Spring Boot experiment</a>, which used direct JDBC as the persistence baseline.</p>
 <p>The public package includes the application sources, original OS and HTTP samples, measured-source provenance, dependency and code inventories, and the separate jOOQ fixture correction.</p>
 <p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/javalin/sql-persistence-256mb">Experiment record</a><a href="https://github.com/PVRLabs/experiments/tree/main/javalin/sql-persistence-256mb/results">Recorded data</a><a href="https://github.com/PVRLabs/experiments/blob/main/javalin/sql-persistence-256mb/reproduction-guide.md">Reproduce and reanalyze</a></p>
+
+<div class="article-discussion">
+    <a class="article-discussion__link" href="https://daily.dev/posts/which-sql-persistence-library-would-you-choose-for-a-small-java-app-i-compared-jdbi-mybatis-and-j-zolmrtnoj"><span class="article-discussion__icon" aria-hidden="true"></span>Discuss on daily.dev</a>
+</div>
 
 </div></article></main>
 <footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
