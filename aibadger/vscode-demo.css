@@ -3,6 +3,8 @@
     --demo-panel-light: #191919;
     --demo-border: #292929;
     --demo-muted: #a8a8a8;
+    background: radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.08) 0%, rgba(46, 204, 113, 0) 80%),
+        #050505 url('../img/carbon-fibre-v2.png');
 }
 
 .vscode-demo-hero {
@@ -564,7 +566,7 @@
 }
 
 .vscode-demo-footer div { display: flex; gap: 1rem; }
-.vscode-demo-note { margin-top: 0.8rem; color: #888; font-size: 0.78rem; }
+.vscode-demo-note { margin: 0.8rem auto 0; max-width: 70rem; color: #888; font-size: 0.78rem; text-align: center; }
 
 @media (max-width: 992px) {
     .vscode-demo-step { grid-template-columns: 1fr; }

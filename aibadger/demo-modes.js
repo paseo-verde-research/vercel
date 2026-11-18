@@ -258,7 +258,7 @@
         design: {
             title: 'Design with codebase context',
             subtitle: 'Explore architecture and plan changes without uploading your repository.',
-            note: '<strong>You control what leaves your machine.</strong> The first prompt contains structure only; source is included only when you copy focused context.',
+            note: '<strong>You control what leaves your machine.</strong> The first prompt includes your design goal and project structure, but no source code. Source is shared only when you copy it.',
             steps: designSteps
         }
     };
