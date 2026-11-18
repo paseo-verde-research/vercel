@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenJ9 vs. HotSpot on a 256 MiB Debian VM | PVR Labs</title>
+<meta name="description" content="A short exploratory comparison of Java 25 runtimes, memory and startup on a 256 MiB Debian VM.">
+<link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/openj9-vs-hotspot-256mb.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenJ9 vs. HotSpot on a 256 MiB Debian VM">
+<meta property="og:description" content="A short exploratory comparison of Java 25 runtimes, memory and startup on a 256 MiB Debian VM.">
+<meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/openj9-vs-hotspot-256mb.html">
+<meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/openj9-vs-hotspot-256mb-og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Under read load, process RSS plus swap was 189 MiB for Spring Boot on HotSpot and 141 MiB on OpenJ9; CoilBase on HotSpot was 96 MiB lower than Spring Boot on HotSpot. One exploratory run per configuration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/openj9-vs-hotspot-256mb-og.jpg">
+<meta name="twitter:image:alt" content="Under read load, process RSS plus swap was 189 MiB for Spring Boot on HotSpot and 141 MiB on OpenJ9; CoilBase on HotSpot was 96 MiB lower than Spring Boot on HotSpot. One exploratory run per configuration.">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/articles/article.css?v=20261109">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "OpenJ9 vs. HotSpot on a 256 MiB Debian VM", "description": "A short exploratory comparison of Java 25 runtimes, memory and startup on a 256 MiB Debian VM.", "datePublished": "2026-11-17", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/openj9-vs-hotspot-256mb.html", "image": "https://pvrlabs.xyz/java-performance/experiments/img/openj9-vs-hotspot-256mb-og.jpg"}</script>
+<style>
+        .table-scroll{overflow-x:auto}
+        table{border-collapse:collapse;width:100%;min-width:38rem}
+        th,td{padding:.6rem;border:1px solid var(--border-color);text-align:left}
+        .experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+        .experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+        @media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style></head>
+<body>
+<header id="header">
+<nav class="navbar">
+<div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/java-performance/" class="nav-link active">Java Performance</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main>
+<article class="article-page">
+<nav class="article-product-nav"><a href="/java-performance/experiments/">&larr; Back to Experiments</a></nav>
+<h1>OpenJ9 vs. HotSpot on a 256 MiB Debian VM</h1>
+<div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-17">November 17, 2026</time></div>
+<div class="article-body">
+<p>An early RSS reading suggested OpenJ9 was heavier than HotSpot; later, settled measurements showed the opposite for CoilBase. How do the two JVMs behave across applications on a tiny VM? I ran two Java 25 quote APIs on a 256 MiB Debian guest. This is a short exploratory capture, not a benchmark.</p>
+<p>After my earlier Java memory experiments, several readers suggested including Eclipse OpenJ9. I’m also considering it for upcoming comparisons across JVMs and Java frameworks, so I wanted to start with a small exploratory run to understand its memory and startup behavior before committing to a larger experiment.</p>
+<h2>Setup</h2>
+<p>The local Lima VM had one vCPU, 256 MiB allocated RAM (211 MiB guest MemTotal), a 6 GiB disk and a 512 MiB swapfile. I used Temurin 25.0.5+8 (HotSpot) and IBM Semeru Open Edition 25.0.5.0 (OpenJ9 0.63.0), both with <code>-Xms16m -Xmx80m -Xss512k</code> and no explicit collector. The applications were Spring Boot 4.1.1 with Spring JDBC, a familiar baseline, and <a href="https://github.com/PVRLabs/coilbase">CoilBase</a>, a lightweight Java foundation I developed to retain Spring-like application patterns with less framework overhead. CoilBase uses Avaje Jex and Jdbi. Both applications expose the same quote API and use file-backed H2 inside the process. Using both helps explore whether JVM memory behavior depends on application footprint.</p>
+<p>Before each run I reset swap and dropped the page cache; the guest was not rebooted. After readiness, each phase had nine samples, five seconds apart, over about 45 seconds. The load phase used a read-only endpoint at about 4.5 requests per second; all 198 to 206 requests per run succeeded. The warm Semeru CoilBase run covered idle only.</p>
+<h2>Results</h2>
+<p>Memory figures are MiB, medians of nine samples. Ready is the one-second poll count until the first successful read. RSS and swap are the JVM process's <code>VmRSS</code> and <code>VmSwap</code>; available is guest-wide <code>MemAvailable</code>.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Results">
+<table>
+<thead>
+<tr><th>Run</th><th>Ready (s)</th><th>Idle RSS</th><th>Idle swap</th><th>Idle available</th><th>Load RSS</th><th>Load swap</th></tr></thead>
+<tbody>
+<tr><td>Temurin CoilBase</td><td>3</td><td>90.6</td><td>0</td><td>62.7</td><td>92.8</td><td>0</td></tr>
+<tr><td>Semeru CoilBase, cold</td><td>8</td><td>74.9</td><td>4.6</td><td>102.3</td><td>81.1</td><td>8.8</td></tr>
+<tr><td>Semeru CoilBase, warm</td><td>3</td><td>73.7</td><td>0</td><td>90.1</td><td>—</td><td>—</td></tr>
+<tr><td>Temurin Spring</td><td>10</td><td>126.6</td><td>58.2</td><td>37.9</td><td>118.6</td><td>70.6</td></tr>
+<tr><td>Semeru Spring, cold</td><td>21</td><td>88.5</td><td>14.8</td><td>86.8</td><td>121.9</td><td>19.4</td></tr></tbody></table></div>
+<h2>Early RSS can change the apparent ranking</h2>
+<p>A separate initial smoke observation at first successful request showed Semeru CoilBase at 100.1 MiB and Temurin at 89.3 MiB. The smoke had no swap reset and is not directly comparable to the later capture. In the later cold Semeru capture, RSS was 97.2 MiB at the first sample, 102.2 MiB at five seconds, and roughly 70 to 77 MiB for the remaining idle samples. Its nine-sample median was 74.9 MiB versus Temurin's 90.6 MiB.</p>
+<h2>Memory behavior differed by application and workload</h2>
+<figure><img src="/java-performance/experiments/img/openj9-vs-hotspot-256mb/memory-load.svg" alt="Under load, CoilBase Temurin used 92.8 MiB RSS and no swap; Semeru used 81.1 MiB RSS and 8.8 MiB swap. Spring Temurin used 118.6 MiB RSS and 70.6 MiB swap; Semeru used 121.9 MiB RSS and 19.4 MiB swap.">
+<figcaption>Process RSS and swap under read load, shown as separate nine-sample medians from one run per configuration. Swap is nonresident; the combined bars are a rough accounting indicator, not physical RAM occupied.</figcaption></figure>
+<p>Under load, CoilBase on Temurin had 92.8 MiB RSS and no swap; Semeru had 81.1 MiB RSS and 8.8 MiB swap. Summing the separate medians gives 92.8 and 89.9 MiB, a 2.9 MiB difference. For Spring, the corresponding sums were 189.2 MiB (118.6 RSS and 70.6 swap) and 141.3 MiB (121.9 RSS and 19.4 swap). The difference was much larger for Spring in this capture.</p>
+<p>RSS represents resident pages; swapped pages are nonresident. These sums are rough accounting indicators, not exact process footprints or unique physical RAM consumption. The CoilBase and Spring comparison includes differences across their application stacks, so it does not isolate framework overhead. Guest MemAvailable is a separate measure of system pressure: at idle it was 62.7 MiB for Temurin CoilBase and 102.3 MiB for cold Semeru CoilBase.</p>
+<h2>Cold and warm startup</h2>
+<p>Cold Semeru readiness was about 8 seconds for CoilBase and 21 seconds for Spring, compared with 3 and 10 seconds for Temurin. A second Semeru CoilBase run reused the 22 MiB shared class cache and reached readiness in about 3 seconds, matching Temurin. Cache reuse is a plausible contributor, but this single observation does not isolate its effect. Spring's cache occupied 43 MiB on disk.</p>
+<h2>Limits</h2>
+<p>There was one run per configuration, no guest reboot between runs, and a short, light, read-only workload. Readiness was measured coarsely. The measured processes did not record collector behavior; a separate Temurin process selected Serial GC. Swap activity was not evaluated for its effect on request latency. The shared class caches consume disk space. These observations do not establish a general runtime ranking.</p>
+<p>The <a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase-vps-256mb">earlier Alpine experiment</a> used the same packaged apps with HotSpot, a different guest and a longer method.</p>
+<h2>Takeaway</h2>
+<p>OpenJ9 showed lower settled idle RSS in this capture, while the under-load difference depended on the application and swap. Cold startup was slower; one warm CoilBase run matched HotSpot’s observed readiness. A single RSS sample can be misleading, especially early in a run.</p>
+<h2>Sources</h2>
+<p>The public experiment record includes the method and recorded measurements.</p>
+<p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase-debian-256" target="_blank" rel="noopener noreferrer">Experiment record</a><a href="https://github.com/PVRLabs/experiments/blob/main/java/coilbase-debian-256/capture.txt" target="_blank" rel="noopener noreferrer">Recorded data</a></p></div></article></main>
+<footer id="footer">
+<div class="container">
+<p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
+<p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261109"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script></body>
+</html>
