@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Rewrote Spring PetClinic Without Spring Boot. It Used 59% Less RAM. | PVR Labs</title>
+    <title>I Rewrote Spring PetClinic Without Spring Boot. It Used 59% Less RAM | PVR Labs</title>
     <meta name="author" content="Ted Kupolov">
     <meta name="description" content="A Spring PetClinic rewrite with 59% lower measured application RSS: explicit SQL, familiar architecture, and more work around forms.">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/coilbase-petclinic-rewrite.html">
@@ -80,7 +80,7 @@
     <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
     <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
 </div></nav></header>
-<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Rewrote Spring PetClinic Without Spring Boot. It Used 59% Less RAM.</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-16">November 16, 2026</time></div><div class="article-body"><p>I like the way a conventional Spring application is organized. Controllers handle HTTP, repositories handle persistence, and business operations have somewhere sensible to live. Constructor dependencies make those relationships easy to follow.</p>
+<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Rewrote Spring PetClinic Without Spring Boot. It Used 59% Less RAM</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-16">November 16, 2026</time></div><div class="article-body"><p>I like the way a conventional Spring application is organized. Controllers handle HTTP, repositories handle persistence, and business operations have somewhere sensible to live. Constructor dependencies make those relationships easy to follow.</p>
 <p>How much of that architecture actually requires the Spring Boot runtime?</p>
 <p>To explore that question, I rebuilt <a href="https://github.com/spring-projects/spring-petclinic">Spring PetClinic</a> without Spring Boot and Hibernate, using <a href="https://github.com/PVRLabs/coilbase">CoilBase</a>, a lightweight Java framework I developed for my performance experiments, where I often port applications between frameworks.</p>
 <p>In the measured PostgreSQL deployment, application process RSS fell from 304.4 MiB to 125.9 MiB: approximately 58.6%, rounded to 59% in the title. This measures the combined effect of replacing Spring Boot and Hibernate in this application, not the individual contribution of either component.</p>
