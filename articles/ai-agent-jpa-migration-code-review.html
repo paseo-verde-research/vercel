@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs. | PVR Labs</title>
+    <title>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs | PVR Labs</title>
     <meta name="author" content="Ted Kupolov">
     <meta name="description" content="An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html">
-    <meta property="og:title" content="I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs.">
+    <meta property="og:title" content="I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.">
     <meta property="article:published_time" content="2026-11-19T00:00:00-08:00">
     <meta property="article:modified_time" content="2026-11-19T00:00:00-08:00">
     <meta property="article:author" content="Ted Kupolov">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs.">
+    <meta name="twitter:title" content="I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs">
     <meta name="twitter:description" content="An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
     <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
     <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
 </div></nav></header>
-<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs.</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-19">November 19, 2026</time></div><div class="article-body">
+<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-19">November 19, 2026</time></div><div class="article-body">
 <p>Visit booking in Spring PetClinic ends with a call to save an owner. Hibernate merges the owner and cascades persistence through its pets and their visits. Replacing JPA means deciding which parts of that behavior the new SQL needs to preserve.</p>
 <p>I gave a coding agent a PetClinic checkout at a fixed revision and a migration skill. Its first patch passed all 17 packaged H2 checks. Independent code review then found two bugs in the owner repository, both outside the paths those checks exercised.</p>
 
