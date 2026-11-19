@@ -3,21 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs | PVR Labs</title>
+    <title>I Used an AI Agent Skill to Migrate Spring PetClinic Persistence From JPA to SQL | PVR Labs</title>
     <meta name="author" content="Ted Kupolov">
     <meta name="description" content="An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html">
-    <meta property="og:title" content="I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs">
+    <meta property="og:title" content="I Used an AI Agent Skill to Migrate Spring PetClinic Persistence From JPA to SQL">
     <meta property="og:site_name" content="PVR Labs">
     <meta property="og:description" content="An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.">
     <meta property="article:published_time" content="2026-11-19T00:00:00-08:00">
     <meta property="article:modified_time" content="2026-11-19T00:00:00-08:00">
     <meta property="article:author" content="Ted Kupolov">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="I Used an AI Agent Skill to Migrate Spring PetClinic Persistence From JPA to SQL">
     <meta name="twitter:description" content="An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/ai-agent-jpa-migration/og-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="17 packaged H2 checks passed. Code review found two repository bugs outside those paths: a zero-row UPDATE still reported success, and a Pageable sort was accepted and ignored.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/ai-agent-jpa-migration/og-preview.png">
+    <meta name="twitter:image:alt" content="17 packaged H2 checks passed. Code review found two repository bugs outside those paths: a zero-row UPDATE still reported success, and a Pageable sort was accepted and ignored.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +33,6 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/articles/article.css?v=20261109">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-
 </head>
 <body>
 <header id="header"><nav class="navbar"><div class="container">
@@ -34,9 +40,9 @@
     <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
     <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
 </div></nav></header>
-<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-19">November 19, 2026</time></div><div class="article-body">
-<p>Visit booking in Spring PetClinic ends with a call to save an owner. Hibernate merges the owner and cascades persistence through its pets and their visits. Replacing JPA means deciding which parts of that behavior the new SQL needs to preserve.</p>
-<p>I gave a coding agent a PetClinic checkout at a fixed revision and a migration skill. Its first patch passed all 17 packaged H2 checks. Independent code review then found two bugs in the owner repository, both outside the paths those checks exercised.</p>
+<main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Used an AI Agent Skill to Migrate Spring PetClinic Persistence From JPA to SQL</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-19">November 19, 2026</time></div><div class="article-body">
+<p>Visit booking in Spring PetClinic ends with a call to save the owner. Hibernate merges the owner and cascades persistence through its pets and their visits. Replacing JPA means deciding which parts of that behavior the new SQL needs to preserve.</p>
+<p>I gave a coding agent a PetClinic checkout at a fixed revision and a migration skill. Its first patch passed all 17 packaged checks, which drive the application over real HTTP and inspect committed rows in H2. Independent code review then found two bugs in the owner repository, both outside the paths those checks exercised.</p>
 
 <h2>Keep the migration boundary small</h2>
 <p>The agent moved owner, pet, and visit persistence from JPA to CoilBase and Jdbi. Spring Boot still managed the datasource and schema initialization, Spring MVC still handled the routes and validation, and Thymeleaf still rendered the views. The vet repositories continued to use JPA. The trial started from a <a href="https://github.com/spring-projects/spring-petclinic/commit/500158f732419217507c7656904b8e6aa1bcc0d6">specific upstream commit</a>. The <a href="/articles/coilbase-petclinic-rewrite.html">earlier full PetClinic rewrite</a> was outside the agent’s trial inputs.</p>
@@ -69,13 +75,19 @@ where id = :pet and owner_id = :owner</code></pre>
 <li>Use the <a href="https://github.com/ejboy/agent-scripts/blob/main/skills/coilbase-jpa-migration/SKILL.md">CoilBase JPA Migration Skill</a> to move JPA/Hibernate persistence to explicit SQL while keeping Spring Boot.</li>
 <li>Use the <a href="https://github.com/ejboy/agent-scripts/blob/main/skills/coilbase-spring-migration/SKILL.md">CoilBase Spring Migration Skill</a> to replace Spring Boot application infrastructure with CoilBase and Avaje Jex.</li>
 </ul>
-<p>In a separate follow-up on the same PetClinic revision, the agent migrated all three Spring Data JPA repository groups, including vets, before replacing Spring Boot and Spring MVC with Jex. The Jex phase reused the follow-up’s SQL repositories unchanged. The final application passed 28 Maven tests and the packaged H2 checks. The published record notes that its owner and vet pagination still ignores caller-supplied sorting, which the exercised controllers did not request. <a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase/petclinic-combined">See the combined experiment and its results</a>.</p>
-
-<p>To try explicit SQL and transaction handling in a smaller application, <a href="https://github.com/PVRLabs/coilbase/tree/main/examples/hello-coilbase">run the Hello CoilBase example</a>.</p>
+<p>A second trial on the same PetClinic revision went further. The agent migrated all three Spring Data JPA repository groups, including vets, then replaced Spring Boot and Spring MVC with Jex. The Jex application reused those SQL repositories unchanged and passed 28 Maven tests and the packaged checks. The <a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase/petclinic-combined" target="_blank" rel="noopener noreferrer">published record</a> notes that its owner and vet pagination still ignores caller-supplied sorting, which the exercised controllers did not request.</p>
 
 <h2>Review the contract as well as the journey</h2>
 <p>Both trials were verified on H2 only. PostgreSQL and MySQL were outside their scope. There was no controlled run with an agent working without the skill, so the result cannot establish whether the skill improved coding quality.</p>
 <p>When reviewing a persistence migration, trace what callers can ask a repository to do and how it reports failure. Here, checking the affected row count and tracing the sort argument exposed gaps that successful HTTP journeys left open. Passing tests are not a complete migration contract, and independent review remains essential.</p>
+<aside class="article-cta" aria-label="Explore CoilBase">
+    <p><strong>Try the migration skill on your own code</strong></p>
+    <p>The CoilBase JPA Migration Skill encodes the tracing discipline from this trial: follow requests through to committed rows and check the persistence API against the versions you run. If the framework itself looks useful, a star is a welcome way to follow the project.</p>
+    <div class="article-actions">
+        <a href="https://github.com/PVRLabs/coilbase" class="btn btn-primary" target="_blank" rel="noopener noreferrer">⭐ Star CoilBase on GitHub</a>
+        <a href="https://github.com/ejboy/agent-scripts/blob/main/skills/coilbase-jpa-migration/SKILL.md" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Read the JPA migration skill</a>
+    </div>
+</aside>
 </div></article></main><footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
 <script src="/script.js?v=20261109"></script>
 <script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>

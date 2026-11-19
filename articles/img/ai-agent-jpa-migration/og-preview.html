@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI agent JPA migration social preview</title>
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+body { display: flex; flex-direction: column; padding: 48px 60px 36px; background: #0b100e; color: #f1f5f2; font-family: Arial, sans-serif; }
+header { display: flex; align-items: center; justify-content: space-between; }
+.logo { width: 116px; height: 33px; background: linear-gradient(90deg, #2ecc71 49%, #f3f5f3 49%); mask: url('../../../img/pvrlabs_alpha_bg.png') center / contain no-repeat; -webkit-mask: url('../../../img/pvrlabs_alpha_bg.png') center / contain no-repeat; }
+.series { color: #a9b9af; font-size: 16px; letter-spacing: 2px; }
+h1 { margin: 32px 0 14px; font-size: 46px; line-height: 1.08; letter-spacing: -1.4px; font-weight: 700; }
+.stack { margin: 0; color: #a9b9af; font-size: 23px; }
+main { display: grid; grid-template-columns: 280px 1fr; gap: 36px; align-items: center; flex: 1; border-top: 1px solid #35483e; margin-top: 28px; }
+.stat { font-size: 72px; line-height: .9; letter-spacing: -3px; font-weight: 700; color: #65dfa4; }
+.stat-label { margin-top: 14px; font-size: 22px; color: #f1f5f2; }
+.bugs { border-left: 1px solid #35483e; padding: 4px 0 4px 42px; }
+.bug { display: grid; grid-template-columns: 40px 1fr; column-gap: 8px; align-items: start; }
+.bug + .bug { margin-top: 26px; }
+.bug .n { color: #e5aa73; font-size: 32px; font-weight: 700; line-height: 1.05; letter-spacing: -1px; }
+.bug strong { display: block; font-size: 26px; font-weight: 700; line-height: 1.15; }
+.bug span { display: block; margin-top: 4px; color: #a9b9af; font-size: 20px; }
+footer { display: flex; justify-content: space-between; border-top: 1px solid #35483e; margin-top: auto; padding-top: 20px; color: #a9b9af; font-size: 17px; }
+</style></head>
+<body>
+<header><div class="logo" role="img" aria-label="PVR Labs"></div><span class="series">AI CODING EXPERIMENT</span></header>
+<h1>17 checks passed.<br>Review found 2 bugs.</h1>
+<p class="stack">Spring PetClinic &middot; JPA to CoilBase + Jdbi</p>
+<main>
+<div><div class="stat">17/17</div><div class="stat-label">packaged H2 checks</div></div>
+<div class="bugs">
+<div class="bug"><span class="n">1</span><div><strong>Zero-row UPDATE</strong><span>still reported success</span></div></div>
+<div class="bug"><span class="n">2</span><div><strong>Pageable sort was</strong><span>accepted and ignored</span></div></div>
+</div>
+</main>
+<footer><span>pvrlabs.xyz</span><span>Outside the paths those checks exercised</span></footer>
+</body></html>
