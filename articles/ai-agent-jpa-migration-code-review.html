@@ -21,8 +21,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/articles/article.css?v=20261109">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -36,10 +36,10 @@
 </div></nav></header>
 <main><article class="article-page"><nav class="article-product-nav" aria-label="Article navigation"><a href="/articles/" class="article-product-nav__link">&larr; All articles</a></nav><h1>I Gave an AI Agent a JPA Migration Skill. 17 Checks Passed. Code Review Found 2 Bugs.</h1><div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-19">November 19, 2026</time></div><div class="article-body">
 <p>Visit booking in Spring PetClinic ends with a call to save an owner. Hibernate merges the owner and cascades persistence through its pets and their visits. Replacing JPA means deciding which parts of that behavior the new SQL needs to preserve.</p>
-<p>I gave a coding agent a pinned PetClinic checkout and a migration skill. Its first patch passed all 17 packaged H2 checks. Independent code review then found two bugs in the owner repository, both outside the paths those checks exercised.</p>
+<p>I gave a coding agent a PetClinic checkout at a fixed revision and a migration skill. Its first patch passed all 17 packaged H2 checks. Independent code review then found two bugs in the owner repository, both outside the paths those checks exercised.</p>
 
 <h2>Keep the migration boundary small</h2>
-<p>The agent moved owner, pet, and visit persistence from JPA to CoilBase and Jdbi. Spring Boot still managed the datasource and schema initialization, Spring MVC still handled the routes and validation, and Thymeleaf still rendered the views. The vet repositories continued to use JPA. The trial started from a <a href="https://github.com/spring-projects/spring-petclinic/commit/500158f732419217507c7656904b8e6aa1bcc0d6">pinned upstream revision</a>. The <a href="/articles/coilbase-petclinic-rewrite.html">earlier full PetClinic rewrite</a> was outside the agent’s trial inputs.</p>
+<p>The agent moved owner, pet, and visit persistence from JPA to CoilBase and Jdbi. Spring Boot still managed the datasource and schema initialization, Spring MVC still handled the routes and validation, and Thymeleaf still rendered the views. The vet repositories continued to use JPA. The trial started from a <a href="https://github.com/spring-projects/spring-petclinic/commit/500158f732419217507c7656904b8e6aa1bcc0d6">specific upstream commit</a>. The <a href="/articles/coilbase-petclinic-rewrite.html">earlier full PetClinic rewrite</a> was outside the agent’s trial inputs.</p>
 <p>The skill asked the agent to trace requests through to committed rows and check the APIs against the selected versions. The migration used CoilBase Core 0.1.0-preview5 and Jdbi 3.55.0.</p>
 
 <h2>Make the visit write explicit</h2>
@@ -69,7 +69,9 @@ where id = :pet and owner_id = :owner</code></pre>
 <li>Use the <a href="https://github.com/ejboy/agent-scripts/blob/main/skills/coilbase-jpa-migration/SKILL.md">CoilBase JPA Migration Skill</a> to move JPA/Hibernate persistence to explicit SQL while keeping Spring Boot.</li>
 <li>Use the <a href="https://github.com/ejboy/agent-scripts/blob/main/skills/coilbase-spring-migration/SKILL.md">CoilBase Spring Migration Skill</a> to replace Spring Boot application infrastructure with CoilBase and Avaje Jex.</li>
 </ul>
-<p>In a separate follow-up on the same pinned PetClinic revision, the agent migrated all three Spring Data JPA repository groups, including vets, before replacing Spring Boot and Spring MVC with Jex. The Jex phase reused the follow-up’s SQL repositories unchanged. The final application passed 28 Maven tests and the packaged H2 checks. The published record notes that its owner and vet pagination still ignores caller-supplied sorting, which the exercised controllers did not request. <a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase/petclinic-combined">See the combined experiment and its results</a>.</p>
+<p>In a separate follow-up on the same PetClinic revision, the agent migrated all three Spring Data JPA repository groups, including vets, before replacing Spring Boot and Spring MVC with Jex. The Jex phase reused the follow-up’s SQL repositories unchanged. The final application passed 28 Maven tests and the packaged H2 checks. The published record notes that its owner and vet pagination still ignores caller-supplied sorting, which the exercised controllers did not request. <a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase/petclinic-combined">See the combined experiment and its results</a>.</p>
+
+<p>To try explicit SQL and transaction handling in a smaller application, <a href="https://github.com/PVRLabs/coilbase/tree/main/examples/hello-coilbase">run the Hello CoilBase example</a>.</p>
 
 <h2>Review the contract as well as the journey</h2>
 <p>Both trials were verified on H2 only. PostgreSQL and MySQL were outside their scope. There was no controlled run with an agent working without the skill, so the result cannot establish whether the skill improved coding quality.</p>
