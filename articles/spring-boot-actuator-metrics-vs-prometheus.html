@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Actuator Metrics vs. Prometheus: Which Endpoint Should You Use? | PVR Labs</title>
+    <meta name="author" content="Ted Kupolov">
+    <meta name="description" content="Use Spring Boot Actuator’s JSON endpoint to inspect a meter and its Prometheus endpoint for ongoing collection. Includes setup and troubleshooting for both.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/spring-boot-actuator-metrics-vs-prometheus.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/spring-boot-actuator-metrics-vs-prometheus.html">
+    <meta property="og:title" content="Spring Boot Actuator Metrics vs. Prometheus: Which Endpoint Should You Use?">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Use Spring Boot Actuator’s JSON endpoint to inspect a meter and its Prometheus endpoint for ongoing collection. Includes setup and troubleshooting for both.">
+    <meta property="article:published_time" content="2026-11-19T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/spring-boot-actuator-metrics-vs-prometheus/og-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spring Boot Actuator Metrics vs. Prometheus. Inspect a meter with /actuator/metrics or scrape metrics over time with /actuator/prometheus.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spring Boot Actuator Metrics vs. Prometheus: Which Endpoint Should You Use?">
+    <meta name="twitter:description" content="Use Spring Boot Actuator’s JSON endpoint to inspect a meter and its Prometheus endpoint for ongoing collection. Includes setup and troubleshooting for both.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/spring-boot-actuator-metrics-vs-prometheus/og-preview.png">
+    <meta name="twitter:image:alt" content="Spring Boot Actuator Metrics vs. Prometheus. Inspect a meter with /actuator/metrics or scrape metrics over time with /actuator/prometheus.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main>
+<article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/articles/" class="article-product-nav__link">&larr; All articles</a>
+    </nav>
+    <h1>Spring Boot Actuator Metrics vs. Prometheus: Which Endpoint Should You Use?</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-19">November 19, 2026</time></div>
+    <div class="article-body">
+        <p>Use <code>/actuator/metrics</code> to inspect individual measurements; use <code>/actuator/prometheus</code> when setting up ongoing collection with a compatible monitoring system.</p>
+        <p>Spring Boot exposes these two endpoints for different jobs. Both rely on Micrometer instrumentation and can report JVM and HTTP measurements, but one is optimized for diagnostics while the other publishes metric series for collectors. Here's how to configure them and decide which to use.</p>
+        <h2>How Actuator, Micrometer, and Prometheus fit together</h2>
+        <p>The names are easy to mix up:</p>
+        <ul>
+            <li><strong>Spring Boot Actuator</strong> adds production-oriented management features, including health and metrics endpoints.</li>
+            <li><strong>Micrometer</strong> is the metrics instrumentation facade used by Spring Boot. It records measurements such as JVM memory use, HTTP requests, and request durations.</li>
+            <li><strong>A Micrometer registry</strong> exports those measurements to a particular monitoring system or format. The Prometheus registry makes them available in Prometheus-compatible exposition format.</li>
+            <li><strong>Prometheus</strong> is also the name of a separate monitoring server that can scrape, store, and query those metrics. Exporting in its format does not require running that server.</li>
+        </ul>
+        <p>Spring Boot's <a href="https://docs.spring.io/spring-boot/reference/actuator/metrics.html">official metrics documentation</a> covers the available registry integrations in detail.</p>
+        <h2><code>/actuator/metrics</code>: inspect a meter</h2>
+        <p>The JSON metrics endpoint is useful when you want to answer a specific diagnostic question:</p>
+        <pre data-lang="bash"><code>curl -s http://127.0.0.1:8080/actuator/metrics
+curl -s http://127.0.0.1:8080/actuator/metrics/jvm.memory.used</code></pre>
+        <p>The first request lists available meter names. The second returns measurements and available tags for <code>jvm.memory.used</code>. You can narrow the result by tag:</p>
+        <pre data-lang="bash"><code>curl -s 'http://127.0.0.1:8080/actuator/metrics/jvm.memory.used?tag=area:heap'</code></pre>
+        <p>This query narrows the result to heap memory pools. The JSON endpoint aggregates matching meter values, so add an <code>id</code> tag to inspect a specific pool.</p>
+        <p>The endpoint does not provide a time-series database or historical graphs. A monitoring tool that uses its JSON interface must select meters, query them, and maintain its own history. That's possible, but it is a different workflow from scraping a metrics exposition endpoint.</p>
+        <h2><code>/actuator/prometheus</code>: expose metrics for collection</h2>
+        <p>The Prometheus endpoint returns multiple metric series in a standard text exposition format. A collector can retrieve a snapshot with one HTTP request and retain observations over time.</p>
+        <p>For example:</p>
+        <pre data-lang="bash"><code>curl -s http://127.0.0.1:8080/actuator/prometheus | grep '^jvm_memory_used_bytes'</code></pre>
+        <p>Depending on your runtime, the output contains series for JVM memory pools with labels such as <code>area</code> and <code>id</code>. The exact meters present depend on your application, dependencies, configuration, and traffic.</p>
+        <p>A monitoring system can periodically collect these samples, calculate changes in counters, and build charts or alerts. The endpoint does not itself store history or render dashboards.</p>
+        <p>One naming detail can be surprising: a meter named <code>jvm.memory.used</code> in Actuator JSON typically appears as <code>jvm_memory_used_bytes</code> in Prometheus format. Micrometer applies Prometheus naming conventions and adds the base unit to the metric name.</p>
+        <h2>Enable both endpoints in Spring Boot</h2>
+        <p>For an existing Spring Boot application, add Actuator if it isn't already present, plus the Prometheus Micrometer registry. With Spring Boot's dependency management, you ordinarily don't need to specify versions for these dependencies.</p>
+        <p><strong>Maven (<code>pom.xml</code>):</strong></p>
+        <pre data-lang="xml"><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
+    &lt;artifactId&gt;micrometer-registry-prometheus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+        <p><strong>Gradle (Groovy DSL):</strong></p>
+        <pre data-lang="groovy"><code>implementation 'org.springframework.boot:spring-boot-starter-actuator'
+implementation 'io.micrometer:micrometer-registry-prometheus'</code></pre>
+        <p>For a local comparison, expose both endpoints in <code>application.properties</code>:</p>
+        <pre data-lang="properties"><code>management.endpoints.web.exposure.include=health,metrics,prometheus</code></pre>
+        <p>Or use the equivalent <code>application.yml</code>:</p>
+        <pre data-lang="yaml"><code>management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus</code></pre>
+        <p>Restart the application, then try:</p>
+        <pre data-lang="bash"><code>curl -s http://127.0.0.1:8080/actuator/metrics/jvm.memory.used
+curl -s http://127.0.0.1:8080/actuator/prometheus</code></pre>
+        <p>These examples assume Actuator runs on the application port with the default <code>/actuator</code> base path and that you're accessing it locally. Use your configured management host, port, and path if they differ.</p>
+        <p>For production, expose only the endpoints your monitoring or operations actually need. If you collect Prometheus-format metrics and have no reason to expose the JSON metrics endpoint, you can use:</p>
+        <pre data-lang="properties"><code>management.endpoints.web.exposure.include=health,prometheus</code></pre>
+        <p>Configure access control separately from endpoint exposure. Protect management endpoints with appropriate authentication and/or private network access; don't expose metrics publicly by accident. If your application defines its own Spring Security filter chains, check the rules for Actuator explicitly rather than assuming Spring Boot will secure them for you. See the <a href="https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.security">Actuator endpoint security documentation</a>.</p>
+        <h2>Which endpoint should you choose?</h2>
+        <p><strong>Use <code>/actuator/metrics</code> when:</strong></p>
+        <ul>
+            <li>You're debugging a specific metric or checking which meters exist.</li>
+            <li>You want to inspect measurements filtered by a particular tag.</li>
+            <li>An existing diagnostic tool or integration explicitly relies on Actuator JSON.</li>
+        </ul>
+        <p><strong>Prefer <code>/actuator/prometheus</code> when:</strong></p>
+        <ul>
+            <li>You're configuring ongoing metrics collection from a Spring Boot service.</li>
+            <li>Your monitoring tool consumes Prometheus/OpenMetrics exposition.</li>
+            <li>You want a conventional scrape interface that other compatible monitoring systems can use later.</li>
+        </ul>
+        <p>Actuator JSON can still be collected periodically, and Prometheus exposition can be inspected manually. Choose the interface that fits your collector or diagnostic workflow.</p>
+        <h2>Common problems</h2>
+        <p><strong><code>/actuator/prometheus</code> returns 404.</strong> Check that <code>micrometer-registry-prometheus</code> is on the runtime classpath, that <code>prometheus</code> is included in HTTP endpoint exposure, and that the application was restarted after the change. Confirm the management port and base path. An unavailable or disabled endpoint may also be absent because of access configuration.</p>
+        <p><strong><code>/actuator/metrics</code> returns 404.</strong> The JSON metrics endpoint must be exposed separately. Enabling <code>prometheus</code> does not automatically expose <code>metrics</code>.</p>
+        <p><strong>A specific HTTP request meter is missing.</strong> Metrics such as <code>http.server.requests</code> may not appear until the application has actually handled requests. Make a few requests to an application route and check again. Instrumentation and naming can differ across application stacks.</p>
+        <p><strong>The endpoint returns 401 or 403.</strong> Check whether the client is authenticated and allowed to reach the endpoint. Configure the scraper credentials or network access as appropriate for your setup.</p>
+        <h2>From metrics endpoints to a dashboard</h2>
+        <p>Once an endpoint is configured, you still need something to collect and visualize its measurements. For a few Spring Boot applications, that doesn't have to mean deploying both Prometheus and Grafana.</p>
+        <p>I built StatLite to monitor a few Spring Boot applications from one self-hosted binary. It stores history in SQLite and charts request rates, errors, latency, and JVM memory. It reads either Actuator JSON or Micrometer’s Prometheus format and prefers a compatible Prometheus endpoint by default. For PromQL or arbitrary custom-metric queries, use a general-purpose backend such as Prometheus.</p>
+        <aside class="article-cta" aria-label="Try StatLite">
+            <p><strong>Monitor your Spring Boot app with StatLite</strong></p>
+            <p>Point StatLite at your Actuator URL to start tracking request rates, errors, and JVM memory.</p>
+            <div class="article-actions">
+                <a href="/statlite/" class="btn btn-primary">Get started with StatLite</a>
+            </div>
+        </aside>
+        <p>For a step-by-step setup, see <a href="/articles/lightweight-spring-boot-monitoring.html">Lightweight Spring Boot Monitoring Without Prometheus and Grafana</a>.</p>
+        <p><em>Further reading: <a href="https://docs.spring.io/spring-boot/reference/actuator/metrics.html">Spring Boot Metrics</a> · <a href="https://docs.spring.io/spring-boot/reference/actuator/endpoints.html">Spring Boot Actuator Endpoints</a> · <a href="https://docs.micrometer.io/micrometer/reference/implementations/prometheus.html">Micrometer Prometheus Registry</a>.</em></p>
+    </div>
+</article>
+</main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261109"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
