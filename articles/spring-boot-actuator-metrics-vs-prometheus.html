@@ -144,7 +144,9 @@ curl -s http://127.0.0.1:8080/actuator/prometheus</code></pre>
         <p><strong>The endpoint returns 401 or 403.</strong> Check whether the client is authenticated and allowed to reach the endpoint. Configure the scraper credentials or network access as appropriate for your setup.</p>
         <h2>From metrics endpoints to a dashboard</h2>
         <p>Once an endpoint is configured, you still need something to collect and visualize its measurements. For a few Spring Boot applications, that doesn't have to mean deploying both Prometheus and Grafana.</p>
-        <p>I built StatLite to monitor a few Spring Boot applications from one self-hosted binary. It stores history in SQLite and charts request rates, errors, latency, and JVM memory. It reads either Actuator JSON or Micrometer’s Prometheus format and prefers a compatible Prometheus endpoint by default. For PromQL or arbitrary custom-metric queries, use a general-purpose backend such as Prometheus.</p>
+        <p>I built <a href="/statlite/">StatLite</a> for exactly this job: a self-hosted monitoring tool using about 15 MiB of idle RAM.
+        It stores history in SQLite, charts request rates, errors, latency, and JVM memory, and supports both Actuator JSON and
+        Micrometer's Prometheus format. For PromQL or arbitrary custom metrics, use a general-purpose backend like Prometheus.</p>
         <aside class="article-cta" aria-label="Try StatLite">
             <p><strong>Monitor your Spring Boot app with StatLite</strong></p>
             <p>Point StatLite at your Actuator URL to start tracking request rates, errors, and JVM memory.</p>
