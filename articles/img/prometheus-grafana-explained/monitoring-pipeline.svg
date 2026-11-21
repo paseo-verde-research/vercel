@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 466" width="320" height="466" role="img" aria-labelledby="title description">
+  <title id="title">Application monitoring with Prometheus and optional Grafana</title>
+  <desc id="description">Prometheus requests metrics from the application and receives metric samples. Grafana sends a PromQL query to Prometheus and receives query results.</desc>
+  <defs>
+    <marker id="request" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#aab5c1"/>
+    </marker>
+    <marker id="response" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#2ecc71"/>
+    </marker>
+  </defs>
+  <path fill="#0a0a0a" d="M0 0h320v466H0z"/>
+  <g stroke-width="1">
+    <rect x="12" y="12" width="296" height="112" rx="10" fill="#171b21" stroke="#424c58"/>
+    <rect x="12" y="199" width="296" height="94" rx="10" fill="#122019" stroke="#38634b"/>
+    <rect x="12" y="368" width="296" height="86" rx="10" fill="#1e1921" stroke="#53455a"/>
+  </g>
+  <g fill="none" stroke-width="2">
+    <path d="M54 199V124" stroke="#aab5c1" marker-end="url(#request)"/>
+    <path d="M54 368V293" stroke="#aab5c1" marker-end="url(#request)"/>
+    <path d="M266 124V199" stroke="#2ecc71" marker-end="url(#response)"/>
+    <path d="M266 293V368" stroke="#2ecc71" marker-end="url(#response)"/>
+  </g>
+  <g font-family="system-ui, sans-serif" text-anchor="middle" fill="#eef1f4">
+    <g font-size="19" font-weight="700">
+      <text x="160" y="40">Web application</text>
+      <text x="160" y="228">Prometheus</text>
+      <text x="160" y="404">Grafana (optional)</text>
+    </g>
+    <g font-size="15" fill="#c9ced5">
+      <text x="160" y="65">Express / FastAPI / Django /</text>
+      <text x="160" y="84">Spring Boot</text>
+      <text x="160" y="107">Instrumentation exposes /metrics</text>
+      <text x="160" y="252">Scrape · Store · PromQL</text>
+      <text x="160" y="274">Alerting rules</text>
+      <text x="160" y="430">Dashboards</text>
+    </g>
+    <g font-size="14">
+      <text x="104" y="165">GET /metrics</text>
+      <text x="214" y="165" fill="#73df9e">Metric samples</text>
+      <text x="104" y="334">PromQL query</text>
+      <text x="214" y="334" fill="#73df9e">Query results</text>
+    </g>
+  </g>
+</svg>

@@ -5,6 +5,15 @@
     <link>https://pvrlabs.xyz/</link>
     <description>Java performance experiments, engineering articles, and developer tools from PVR Labs.</description>
     <item>
+      <title>What Prometheus and Grafana Actually Do for Your Web App</title>
+      <link>https://pvrlabs.xyz/articles/prometheus-grafana-explained.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/prometheus-grafana-explained.html</guid>
+      <description>Understand how Prometheus and Grafana collect and visualize application metrics, how they work with Express, FastAPI, Django, and Spring Boot, and when simpler monitoring is enough.</description>
+      <pubDate>Sat, 21 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/prometheus-grafana-explained/og-preview.jpg" />
+    </item>
+    <item>
       <title>I Used an AI Agent Skill to Migrate Spring PetClinic Persistence From JPA to SQL</title>
       <link>https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html</link>
       <guid isPermaLink="true">https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html</guid>
@@ -352,15 +361,6 @@
       <pubDate>Fri, 14 Aug 2026 00:00:00 -0700</pubDate>
       <category>Article</category>
       <media:thumbnail url="https://pvrlabs.xyz/articles/img/reviewing-ai-generated-code-vscode-aibadger/cover.webp" />
-    </item>
-    <item>
-      <title>I Taught Maven to Be an Introvert</title>
-      <link>https://pvrlabs.xyz/articles/introverted-maven.html</link>
-      <guid isPermaLink="true">https://pvrlabs.xyz/articles/introverted-maven.html</guid>
-      <description>A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</description>
-      <pubDate>Thu, 30 Jul 2026 15:45:00 -0700</pubDate>
-      <category>Article</category>
-      <media:thumbnail url="https://pvrlabs.xyz/articles/img/mvnlite_cover.webp" />
     </item>
   </channel>
 </rss>

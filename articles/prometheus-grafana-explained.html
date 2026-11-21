@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Prometheus and Grafana Actually Do for Your Web App | PVR Labs</title>
+    <meta name="author" content="Ted Kupolov">
+    <meta name="description" content="Understand how Prometheus and Grafana collect and visualize application metrics, how they work with Express, FastAPI, Django, and Spring Boot, and when simpler monitoring is enough.">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/prometheus-grafana-explained.html">
+    <link rel="alternate" type="application/rss+xml" title="PVR Labs" href="/rss.xml">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/prometheus-grafana-explained.html">
+    <meta property="og:title" content="What Prometheus and Grafana Actually Do for Your Web App">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Understand how Prometheus and Grafana collect and visualize application metrics, how they work with Express, FastAPI, Django, and Spring Boot, and when simpler monitoring is enough.">
+    <meta property="article:published_time" content="2026-11-21T00:00:00-08:00">
+    <meta property="article:section" content="Monitoring / StatLite">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/prometheus-grafana-explained/og-preview.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1731">
+    <meta property="og:image:height" content="909">
+    <meta property="og:image:alt" content="What Prometheus and Grafana actually do. Prometheus pulls metrics from the application, and optional Grafana queries Prometheus for dashboards.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="What Prometheus and Grafana Actually Do for Your Web App">
+    <meta name="twitter:description" content="Understand how Prometheus and Grafana collect and visualize application metrics, how they work with Express, FastAPI, Django, and Spring Boot, and when simpler monitoring is enough.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/prometheus-grafana-explained/og-preview.jpg">
+    <meta name="twitter:image:alt" content="What Prometheus and Grafana actually do. Prometheus pulls metrics from the application, and optional Grafana queries Prometheus for dashboards.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "What Prometheus and Grafana Actually Do for Your Web App",
+      "description": "Understand how Prometheus and Grafana collect and visualize application metrics, how they work with Express, FastAPI, Django, and Spring Boot, and when simpler monitoring is enough.",
+      "url": "https://pvrlabs.xyz/articles/prometheus-grafana-explained.html",
+      "datePublished": "2026-11-21",
+      "articleSection": "Monitoring / StatLite",
+      "author": {
+        "@type": "Person",
+        "name": "Ted Kupolov",
+        "url": "https://github.com/ejboy"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PVR Labs",
+        "url": "https://pvrlabs.xyz/"
+      },
+      "image": "https://pvrlabs.xyz/articles/img/prometheus-grafana-explained/og-preview.jpg"
+    }
+    </script>
+    <style>
+        .framework-integrations {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-collapse: collapse;
+            font-size: .92rem;
+            overflow-wrap: anywhere;
+        }
+
+        .framework-integrations th,
+        .framework-integrations td {
+            padding: .5rem .65rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .framework-integrations th {
+            background: var(--bg-light);
+        }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main>
+<article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
+    <h1>What Prometheus and Grafana Actually Do for Your Web App</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-21">November 21, 2026</time></div>
+    <div class="article-body">
+        <p><em>How metrics move from Express, FastAPI, Django, or Spring Boot into monitoring dashboards, and when you don't need the full stack.</em></p>
+        <p>You've deployed a web application. It responds to requests, connects to the database, and appears to be running fine.</p>
+        <p>But how do you know whether it's getting slower? Whether HTTP 500 errors are increasing? Or whether memory usage has been climbing for the past week?</p>
+        <p>Search for application monitoring tutorials and you'll quickly encounter Prometheus and Grafana. Many guides tell you how to install both, but it's not always clear what each component actually does or why you might need two additional services to monitor one application.</p>
+        <p>The key is understanding three separate jobs: <strong>producing metrics, collecting and storing them, and making them useful.</strong></p>
+
+        <h2>How the monitoring pipeline works</h2>
+        <p>The important distinction is that <strong>Prometheus pulls metrics from your application</strong>, rather than the application continuously sending data to Prometheus.</p>
+        <figure class="article-figure--narrow">
+            <img src="/articles/img/prometheus-grafana-explained/monitoring-pipeline.svg" width="320" height="466" alt="Prometheus sends a scrape request to the application and receives metric samples. Optional Grafana sends Prometheus a query and receives the results.">
+            <figcaption>Prometheus pulls metrics from the application and stores their history. Grafana optionally queries Prometheus to build dashboards.</figcaption>
+        </figure>
+        <p>Let's look at each part.</p>
+
+        <h3>1. Your application produces metrics</h3>
+        <p>Web frameworks handle HTTP requests, but they don't all expose operational metrics automatically.</p>
+        <p>To monitor an Express application, for example, you typically add middleware or instrumentation that records:</p>
+        <ul>
+            <li>The number of HTTP requests.</li>
+            <li>Response status codes, including 4xx and 5xx errors.</li>
+            <li>Request durations.</li>
+            <li>Process CPU and memory usage.</li>
+        </ul>
+        <p>A Prometheus instrumentation library can expose these measurements through an HTTP endpoint, usually <code>/metrics</code>.</p>
+        <p>An illustrative measurement might look like this:</p>
+        <pre><code>http_requests_total{method="GET",status="500"} 12</code></pre>
+        <p>This means the application has recorded 12 matching requests since the counter began. The metric name and labels depend on the instrumentation library. Express doesn't prescribe them.</p>
+        <p>The application typically keeps its current counters and gauges in memory. But that alone doesn't give you weeks of history, comparisons across instances, or a convenient way to investigate trends after a process restarts.</p>
+        <p>That's where Prometheus comes in.</p>
+
+        <h3>2. Prometheus collects, stores, and queries metrics</h3>
+        <p><a href="https://prometheus.io/docs/introduction/overview/" target="_blank" rel="noopener">Prometheus</a> is an open-source monitoring and alerting system with a built-in time-series database.</p>
+        <p>You configure it to periodically scrape your application's metrics endpoint, perhaps every 15 seconds.</p>
+        <p>Each scrape captures the current values. Prometheus stores the measurements with timestamps and labels, allowing you to analyze how they change over time.</p>
+        <p>For example, if an HTTP request counter increases from 1,000 to 1,060 between two scrapes 15 seconds apart, that works out to an average of four requests per second over that interval, assuming the counter didn't reset.</p>
+        <p>Its query language, <strong>PromQL</strong>, lets you do considerably more:</p>
+        <ul>
+            <li>Calculate request and error rates.</li>
+            <li>Compare traffic across application instances.</li>
+            <li>Aggregate measurements by status code or route.</li>
+            <li>Analyze latency distributions from properly instrumented histograms.</li>
+            <li>Detect unusual trends.</li>
+        </ul>
+        <p>Prometheus also evaluates alerting rules written using PromQL. For example, a rule could fire when an application's HTTP 5xx error rate remains above a threshold for several minutes. Alertmanager can handle notification routing and delivery.</p>
+        <p>Prometheus isn't merely a database. It provides the collection, storage, querying, and rule-evaluation machinery that turns application measurements into useful monitoring data.</p>
+        <p>It even includes its own web interface for queries and basic graphs.</p>
+        <p>So why do people install Grafana?</p>
+
+        <h3>3. Grafana turns metrics into dashboards</h3>
+        <p><a href="https://grafana.com/docs/grafana/latest/datasources/prometheus/" target="_blank" rel="noopener">Grafana</a> is a separate observability and visualization platform.</p>
+        <p>In a conventional Prometheus setup, Grafana connects to Prometheus as a data source. It runs queries and presents the results as dashboards.</p>
+        <p>Instead of manually querying individual metrics, you can build a dashboard showing request rates, error percentages, latency, CPU, and memory together.</p>
+        <p>Grafana adds reusable panels, dashboard variables, automatic refresh, and the ability to combine information from different data sources. It also has its own alerting capabilities.</p>
+        <p><strong>Grafana is optional.</strong> Prometheus works without it, and Grafana can work with data sources other than Prometheus.</p>
+        <p>In this architecture, Grafana does not collect metrics directly from your Express application or replace Prometheus's time-series storage. It queries data that Prometheus has already collected.</p>
+        <p>That's why tutorials frequently install both: Prometheus provides the metrics platform, while Grafana provides a richer dashboard experience.</p>
+
+        <h2>The pipeline is universal. Instrumentation isn't.</h2>
+        <p>The overall architecture works with almost any web framework. What differs is how your application exposes its metrics.</p>
+        <table class="framework-integrations" aria-label="Common Prometheus instrumentation by framework">
+            <thead>
+                <tr><th scope="col">Framework</th><th scope="col">Common instrumentation</th></tr>
+            </thead>
+            <tbody>
+                <tr><th scope="row">Express.js</th><td><code>prom-client</code> or Express metrics middleware</td></tr>
+                <tr><th scope="row">FastAPI</th><td><code>prometheus-fastapi-instrumentator</code></td></tr>
+                <tr><th scope="row">Django</th><td><code>django-prometheus</code></td></tr>
+                <tr><th scope="row">Spring Boot</th><td>Micrometer + Actuator</td></tr>
+            </tbody>
+        </table>
+        <p>Spring Boot has a more established metrics integration. Actuator and Micrometer provide common instrumentation conventions, including HTTP requests, JVM memory, and process metrics. With the Prometheus registry dependency and endpoint exposure configured, Spring Boot can publish metrics through <code>/actuator/prometheus</code>.</p>
+        <p>Express, FastAPI, and Django generally rely on additional libraries or middleware. Different libraries may produce different metric names and labels, even when they use the same Prometheus exposition format.</p>
+        <p>That distinction matters. <strong>Prometheus standardizes how metrics are collected and queried, but it doesn't guarantee that every framework exposes the same application measurements.</strong></p>
+        <p>Regardless of the framework, the essential pipeline remains the same: instrument the application, collect measurements, store their history, and visualize the results.</p>
+
+        <h2>When Prometheus and Grafana are worth the complexity</h2>
+        <p>There's a reason Prometheus and Grafana are so widely used. They solve problems that become increasingly important as applications grow.</p>
+        <p>Imagine monitoring 20 services, multiple database instances, background workers, and dynamically created containers.</p>
+        <p>You may need to combine measurements across instances, filter them by labels, build custom business metrics, investigate p95 and p99 response times, and configure sophisticated alerting rules.</p>
+        <p>Prometheus is particularly strong in these situations. PromQL gives you a flexible way to analyze metrics without being limited to a predefined dashboard.</p>
+        <p>Grafana adds a convenient interface for exploring and sharing that information across a team.</p>
+        <p>But that flexibility introduces operational responsibilities.</p>
+        <p>A self-hosted Prometheus deployment needs scrape configuration, storage, retention settings, upgrades, and secured access to its endpoints. Adding Grafana means another service to configure, maintain, and secure, along with its dashboards and data-source connections.</p>
+        <p>These services can run on the same host as your application. Prometheus itself is a standalone binary, and neither Kubernetes nor Grafana is required.</p>
+        <p>The software is free, and a small Prometheus deployment can be perfectly reasonable. Managed monitoring services can also reduce the operational burden.</p>
+        <p>The real question is whether the additional capabilities justify the configuration, resources, and maintenance for your particular application.</p>
+        <p>For many teams, they do. For one small application, they may not.</p>
+
+        <h2>What if you just want to monitor a small app on a VPS?</h2>
+        <p>Suppose you're running a single Express, FastAPI, Django, or Spring Boot application on a VPS with 512 MB or 1 GB of RAM.</p>
+        <p>You probably don't need arbitrary custom metrics or a sophisticated query language just to answer:</p>
+        <ul>
+            <li>Is my application healthy?</li>
+            <li>How many requests is it receiving?</li>
+            <li>Are HTTP errors increasing?</li>
+            <li>Is average response latency getting worse?</li>
+            <li>Is CPU or memory usage climbing?</li>
+        </ul>
+        <p>You need instrumentation, historical measurements, and charts. But you don't necessarily need a general-purpose metrics platform.</p>
+
+        <h3>A smaller monitoring setup with StatLite</h3>
+        <p><a href="https://github.com/PVRLabs/statlite">StatLite</a> is an open-source monitoring tool I developed at PVR Labs. It's designed for small applications and VPS deployments. One lightweight Go binary collects measurements from applications, stores their history in SQLite, and provides built-in dashboards. Measured idle memory usage is approximately 15 MiB in small-server configurations.</p>
+        <p>For Express, FastAPI, and Django, StatLite provides integration helpers using a fixed JSON metrics profile. For Spring Boot, it can use Actuator and Micrometer metrics directly.</p>
+        <p>StatLite focuses on request counts, HTTP errors, average latency, and runtime resource measurements, with optional application health and host monitoring where supported.</p>
+        <p>The tradeoff is deliberate: it doesn't support arbitrary custom metrics, PromQL, or histogram-based latency percentiles. Alerting can be implemented using its read-only API and automation recipes rather than built-in alert rules.</p>
+        <p>If you need those advanced capabilities, Prometheus may be the better choice.</p>
+        <p>But if you're running a small application and mostly want to see whether it's working, how it's performing, and what has changed, a simpler monitoring setup can be enough.</p>
+
+        <h3>Integration guides</h3>
+        <p>For practical setup instructions, see:</p>
+        <ul>
+            <li><strong><a href="/articles/lightweight-express-monitoring.html">Express.js monitoring without Prometheus and Grafana</a></strong> (complete Node.js integration and runnable example).</li>
+            <li><strong><a href="/articles/monitoring-fastapi-app-small-vps.html">Monitoring a FastAPI app on a small VPS</a></strong> (lightweight Python integration).</li>
+            <li><strong><a href="https://github.com/PVRLabs/statlite/blob/main/docs/integrate/python/django.md">Django monitoring</a></strong> (Django middleware and metrics endpoint).</li>
+            <li><strong><a href="/articles/lightweight-spring-boot-monitoring.html">Spring Boot monitoring</a></strong> (using Actuator metrics with StatLite).</li>
+        </ul>
+
+        <h2>The bottom line</h2>
+        <p>Application monitoring has several responsibilities: measuring what's happening, collecting and storing the measurements, and presenting them in a useful form.</p>
+        <p>Prometheus handles collection, time-series storage, queries, and alerting rules. Grafana adds richer dashboards and visualization. Your application provides the measurements through instrumentation.</p>
+        <p>These are separate responsibilities, which is why the tools are separate.</p>
+        <p><strong>If you need flexible metrics, powerful queries, and monitoring across many services, Prometheus and Grafana are excellent choices.</strong></p>
+        <p>If you only need a few essential metrics for a small application, you can choose a simpler setup that combines collection, storage, and dashboards.</p>
+        <p>The goal isn't to run fewer tools at any cost. It's to have enough visibility to understand your application without operating more monitoring infrastructure than you need.</p>
+    </div>
+</article>
+</main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261109"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>
