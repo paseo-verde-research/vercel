@@ -1,0 +1,366 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+  <channel>
+    <title>PVR Labs</title>
+    <link>https://pvrlabs.xyz/</link>
+    <description>Java performance experiments, engineering articles, and developer tools from PVR Labs.</description>
+    <item>
+      <title>I Used an AI Agent Skill to Migrate Spring PetClinic Persistence From JPA to SQL</title>
+      <link>https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/ai-agent-jpa-migration-code-review.html</guid>
+      <description>An AI agent migrated Spring PetClinic persistence to SQL. All 17 packaged H2 checks passed, but independent code review found two repository bugs.</description>
+      <pubDate>Thu, 19 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/ai-agent-jpa-migration/og-preview.png" />
+    </item>
+    <item>
+      <title>Spring Boot Actuator Metrics vs. Prometheus: Which Endpoint Should You Use?</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-actuator-metrics-vs-prometheus.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-actuator-metrics-vs-prometheus.html</guid>
+      <description>Use Spring Boot Actuator’s JSON endpoint to inspect a meter and its Prometheus endpoint for ongoing collection. Includes setup and troubleshooting for both.</description>
+      <pubDate>Thu, 19 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-actuator-metrics-vs-prometheus/og-preview.jpg" />
+    </item>
+    <item>
+      <title>OpenJ9 vs. HotSpot on a 256 MiB Debian VM</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/openj9-vs-hotspot-256mb.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/openj9-vs-hotspot-256mb.html</guid>
+      <description>A short exploratory comparison of Java 25 runtimes, memory and startup on a 256 MiB Debian VM.</description>
+      <pubDate>Tue, 17 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/openj9-vs-hotspot-256mb-og.jpg" />
+    </item>
+    <item>
+      <title>Spring PetClinic, Rewritten Without Spring Boot or Hibernate</title>
+      <link>https://pvrlabs.xyz/articles/coilbase-petclinic-rewrite.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/coilbase-petclinic-rewrite.html</guid>
+      <description>Rewritten with CoilBase + Jex + Jdbi: 59% less application RSS and 85% smaller deployment in this experiment. Results measure the combined application-stack change.</description>
+      <pubDate>Mon, 16 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/coilbase-petclinic/og-preview.png" />
+    </item>
+    <item>
+      <title>MariaDB vs PostgreSQL on Small VPSes: What My Low-Memory Experiments Found</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/mariadb-postgresql-small-vps.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/mariadb-postgresql-small-vps.html</guid>
+      <description>Short database-only experiments compare MariaDB and PostgreSQL memory use and read workloads on 256 MiB and 512 MiB VMs.</description>
+      <pubDate>Sun, 15 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/mariadb-postgresql-small-vps-og.jpg" />
+    </item>
+    <item>
+      <title>JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/jpa-memory-experiment-revisited.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/jpa-memory-experiment-revisited.html</guid>
+      <description>Jdbi used about 55–58 MiB less RSS than direct Hibernate in a shared demo app on a 512 MiB Linux VM. Method, results and limitations.</description>
+      <pubDate>Sat, 14 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/jpa-memory-experiment-revisited/og-preview.png" />
+    </item>
+    <item>
+      <title>PostgreSQL 18 on a Small VPS: Two Low-Memory Tuning Strategies</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/postgresql-low-memory.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/postgresql-low-memory.html</guid>
+      <description>A short PostgreSQL 18 comparison on a 512 MiB VM: two low-memory configurations, four active connections, and measured memory and query latency.</description>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/postgresql-low-memory-og.jpg" />
+    </item>
+    <item>
+      <title>Five Java Stacks on a 512 MiB VPS: Same Business Logic, Different Footprints</title>
+      <link>https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/five-java-stacks-512mb-vps.html</guid>
+      <description>Shared services across Javalin, Jex and Micronaut, with Spring JDBC and Micronaut Data references: two HotSpot and native runs per stack on a 512 MiB VM.</description>
+      <pubDate>Mon, 09 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/five-java-stacks-512mb-vps/og-preview.png" />
+    </item>
+    <item>
+      <title>H2's Built-in Connection Pool vs HikariCP: Is There a Memory Cost?</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/h2-pool-comparison.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/h2-pool-comparison.html</guid>
+      <description>A short Linux comparison of embedded H2's native pool and HikariCP.</description>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/h2-pool-comparison-og.jpg" />
+    </item>
+    <item>
+      <title>Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html</guid>
+      <description>Scriptella 1.7.0, JDBC, Pandas + SQLAlchemy, and native loaders compared on one million CSV rows in PostgreSQL and MariaDB. Two local runs, with reproducible results.</description>
+      <pubDate>Tue, 03 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/scriptella-1-7-csv-import-og.jpg" />
+    </item>
+    <item>
+      <title>Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-vs-javalin-jdbi.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-vs-javalin-jdbi.html</guid>
+      <description>A database-backed service on a 512 MiB VM: comparing optimized Spring Boot with Javalin and Jdbi on HotSpot 27 and Oracle Native Image 25.</description>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-vs-javalin-jdbi/og-preview.png" />
+    </item>
+    <item>
+      <title>How Lightweight Can Spring Boot Become? HotSpot 27 and Native Image</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-hotspot-native-image.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-hotspot-native-image.html</guid>
+      <description>On a 512 MiB VM, the same Spring Boot service used 212 MiB as a JAR, 187 MiB with HotSpot 27 AOT, and 107 MiB as Oracle Native Image on JDK 25.</description>
+      <pubDate>Wed, 28 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-hotspot-native-image/og-preview.png" />
+    </item>
+    <item>
+      <title>How Far Can You Optimize Spring Boot Without Overengineering It?</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-jdk27-optimizations.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-jdk27-optimizations.html</guid>
+      <description>Spring Boot on a 512 MiB VM: extracted layout, Spring AOT and a JDK cache cut startup and RSS. MyBatis and H2 follow-ups show where the trade-offs change.</description>
+      <pubDate>Tue, 27 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-jdk27-optimizations/og-preview.png" />
+    </item>
+    <item>
+      <title>Telegram health alerts for small VPS apps, without a monitoring stack</title>
+      <link>https://pvrlabs.xyz/articles/telegram-health-alerts-statlite.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/telegram-health-alerts-statlite.html</guid>
+      <description>Use StatLite's external API and a scheduled shell script to send Telegram alerts and recovery messages when application health changes.</description>
+      <pubDate>Mon, 26 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/telegram-health-alerts/og-preview.png" />
+    </item>
+    <item>
+      <title>Monitoring applications behind Caddy with StatLite</title>
+      <link>https://pvrlabs.xyz/articles/monitoring-applications-behind-caddy.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/monitoring-applications-behind-caddy.html</guid>
+      <description>Monitor HTTP requests, errors and response latency for applications behind Caddy using per-host metrics and StatLite, without changing application code.</description>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/monitoring-applications-behind-caddy/cover.png" />
+    </item>
+    <item>
+      <title>Rewriting batched inserts made PostgreSQL CSV import 1.7× faster</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/postgresql-batch-rewrite.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/postgresql-batch-rewrite.html</guid>
+      <description>Enabling reWriteBatchedInserts made a million-row Scriptella import 1.70× faster on PostgreSQL, from 15.995 to 9.409 seconds. Handwritten JDBC was 1.55× faster.</description>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/postgresql-batch-rewrite-og.jpg" />
+    </item>
+    <item>
+      <title>LeanBar: Same Scripts, Less Memory</title>
+      <link>https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/leanbar-menu-bar-control-panel.html</guid>
+      <description>A lightweight Swift and AppKit app that reuses existing SwiftBar scripts, with one local physical-footprint comparison against SwiftBar.</description>
+      <pubDate>Tue, 20 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/leanbar-og-v2.jpg" />
+    </item>
+    <item>
+      <title>Java SQL Persistence: Jdbi vs MyBatis vs jOOQ on 512 MiB</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-512mb.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-512mb.html</guid>
+      <description>Java SQL persistence comparison: Jdbi, MyBatis and jOOQ in a 512 MiB Javalin application. Two runs each, comparing JVM memory, HTTP latency and code.</description>
+      <pubDate>Mon, 19 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/mybatis-jooq-jdbi-512mb-og.jpg" />
+    </item>
+    <item>
+      <title>MyBatis vs. jOOQ vs. Jdbi: Java Persistence on 256 MB RAM</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-256mb.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/mybatis-jooq-jdbi-256mb.html</guid>
+      <description>Three Javalin persistence implementations on a 256 MiB Alpine VM: startup, RSS, paging, package size, and application code from one run each.</description>
+      <pubDate>Wed, 14 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/mybatis-jooq-jdbi-256mb-og.jpg" />
+    </item>
+    <item>
+      <title>Importing a million CSV rows: Scriptella, JDBC, csvsql, and PostgreSQL COPY</title>
+      <link>https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/importing-a-million-csv-rows.html</guid>
+      <description>Batched Scriptella loaded a million typed CSV rows in about 15 seconds on PostgreSQL and 10 on MariaDB. JDBC was a few seconds faster, which may be worth a declarative ETL file.</description>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/importing-a-million-csv-rows/cover.jpg" />
+    </item>
+    <item>
+      <title>Javalin vs. Spring Boot on 256 MB RAM: A Practical Java Experiment</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/javalin-vs-spring-boot-256mb.html</guid>
+      <description>Javalin and Spring Boot with JDBC, H2, and monitoring on a 256 MiB Alpine VM: startup, resident memory, latency, and paging from one run each.</description>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/javalin-vs-spring-boot-256mb-og.jpg" />
+    </item>
+    <item>
+      <title>Reducing PostgreSQL Memory Use by Shrinking Idle Connection Pools</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-jdbc-pool-reclaim.html</guid>
+      <description>Two Spring Boot pools released 18 idle connections. PostgreSQL cgroup memory was approximately 29 MiB lower, with a measured cost when traffic returned.</description>
+      <pubDate>Fri, 09 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-jdbc-pool-reclaim/cover.jpg?v=20261017" />
+    </item>
+    <item>
+      <title>Can StatLite monitor a Pyronaut Python app?</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/pyronaut-statlite.html</guid>
+      <description>A Pyronaut app exposed the Micronaut and Micrometer Prometheus metrics understood by StatLite's existing Micronaut integration.</description>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/pyronaut-statlite-dashboard.webp" />
+    </item>
+    <item>
+      <title>Spring Boot, Quarkus, and Micronaut: JDBC on a 1 GiB VM</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-quarkus-micronaut-jdbc.html</guid>
+      <description>Equivalent JDBC apps on Java 25: startup, process RSS, and CPU for Spring Boot, Quarkus, and Micronaut on a 1 GiB Linux VM.</description>
+      <pubDate>Mon, 05 Oct 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-quarkus-micronaut-jdbc/spring-boot-quarkus-micronaut-jdbc-og.png" />
+    </item>
+    <item>
+      <title>My API Is Up, but Slow. Is It My Code or the Server?</title>
+      <link>https://pvrlabs.xyz/articles/api-slow-cpu-contention.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/api-slow-cpu-contention.html</guid>
+      <description>Use application and host metrics on one timeline to investigate a slow API on a small server.</description>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/api-contention-512/api-slow-cpu-contention-og.png" />
+    </item>
+    <item>
+      <title>Spring Boot JPA vs JDBC</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/spring-boot-jpa-vs-jdbc.html</guid>
+      <description>On one Mac, a small Spring Boot app used about 90 MiB less RSS with JdbcTemplate than with Spring Data JPA and Hibernate.</description>
+      <pubDate>Sat, 26 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-jpa-vs-jdbc-og.jpg" />
+    </item>
+    <item>
+      <title>Monitoring a FastAPI App on a Small VPS</title>
+      <link>https://pvrlabs.xyz/articles/monitoring-fastapi-app-small-vps.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/monitoring-fastapi-app-small-vps.html</guid>
+      <description>Try practical FastAPI monitoring locally, then run the same small StatLite and SQLite setup alongside an application on a VPS.</description>
+      <pubDate>Tue, 22 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/fastapi-monitoring-og.png" />
+    </item>
+    <item>
+      <title>Lightweight Express.js Monitoring Without Prometheus and Grafana</title>
+      <link>https://pvrlabs.xyz/articles/lightweight-express-monitoring.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/lightweight-express-monitoring.html</guid>
+      <description>Chart Express traffic, errors, latency, and Node.js memory with a small /statlite/metrics helper and StatLite, without operating Prometheus and Grafana.</description>
+      <pubDate>Mon, 21 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/express-monitoring-og.jpg" />
+    </item>
+    <item>
+      <title>Spring Boot Extracted Layout vs Jib Exploded Layout</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/spring-boot-jib-layout.html</guid>
+      <description>A short comparison of two filesystem layouts for the same Spring Boot application.</description>
+      <pubDate>Mon, 21 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+    </item>
+    <item>
+      <title>Spring Boot vs Quarkus at 1 GiB with Swap Disabled</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-1gib.html</guid>
+      <description>A short no-swap follow-up to the 768 MiB Spring Boot vs Quarkus memory experiment.</description>
+      <pubDate>Mon, 21 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-vs-quarkus-768-og.jpg" />
+    </item>
+    <item>
+      <title>Spring Boot vs Quarkus on a 768 MiB VM</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/spring-boot-vs-quarkus-768.html</guid>
+      <description>A short comparison of Spring Boot and Quarkus memory behavior on a 768 MiB VM with identical JVM limits and a bounded workload.</description>
+      <pubDate>Fri, 18 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/spring-boot-vs-quarkus-768-og.jpg" />
+    </item>
+    <item>
+      <title>Spring Boot Fat JAR vs Extracted Layout vs Gradle Application Distribution</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/gradle-application-vs-spring-boot.html</guid>
+      <description>A quick exploratory comparison of three Spring Boot packaging and launch layouts.</description>
+      <pubDate>Thu, 17 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Experiment</category>
+    </item>
+    <item>
+      <title>Spring Boot Fat JAR vs Extracted Layout</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-extracted-layout.html</guid>
+      <description>Six paired runs of the same Spring Boot 4.1.1 app on a 256 MiB Alpine VM. The official extracted layout cut median startup 23.3% and first-request latency 34.1%. Settled RSS showed no material difference.</description>
+      <pubDate>Fri, 11 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-extracted-layout-og.jpg" />
+    </item>
+    <item>
+      <title>Spring Boot vs Quarkus on a 512 MB VPS</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-vs-quarkus-512mb.html</guid>
+      <description>Spring Boot and Quarkus ran the same Star Pulse workload on a 512 MB VPS with JDK 25. Quarkus started larger, then had a smaller resident set, while RSS hid swap.</description>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-vs-quarkus-512mb-og.jpg" />
+    </item>
+    <item>
+      <title>Your Coding Agent Doesn’t Need 1,476 Lines of Test Output</title>
+      <link>https://pvrlabs.xyz/articles/coding-agent-test-output.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/coding-agent-test-output.html</guid>
+      <description>A successful test run produced 1,476 lines. The coding agent needed roughly one.</description>
+      <pubDate>Sun, 30 Aug 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/coding-agent-test-output.webp" />
+    </item>
+    <item>
+      <title>Your coding-agent quota is at 99%. Now what?</title>
+      <link>https://pvrlabs.xyz/articles/coding-agent-session-handoff.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/coding-agent-session-handoff.html</guid>
+      <description>Continue a local Codex or Claude Code session in ChatGPT or another browser AI chat. AI Badger imports the transcript and current repository context.</description>
+      <pubDate>Fri, 28 Aug 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/coding-agent-session-handoff.webp" />
+    </item>
+    <item>
+      <title>Spring Boot on 256 MB: JDK 25 Compact Headers Tested</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-256mb-jdk25.html</guid>
+      <description>Spring Boot on a 256 MiB VPS with JDK 25 compact object headers, an 80 MiB heap, and swap. Includes a JDK 27 update: compact headers are now enabled by default.</description>
+      <pubDate>Tue, 25 Aug 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-256mb-jdk25-og.jpg" />
+    </item>
+    <item>
+      <title>Spring Boot on a 512 MB VPS: How Lightweight Monitoring Still Fits</title>
+      <link>https://pvrlabs.xyz/articles/spring-boot-512mb-vps.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/spring-boot-512mb-vps.html</guid>
+      <description>A Spring Boot 3.5 app with JPA, H2, Tomcat, and Actuator ran on 512 MB RAM plus a small swapfile. StatLite stayed around 12 MiB and kept polling.</description>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/spring-boot-512mb-vps-og.jpg" />
+    </item>
+    <item>
+      <title>Reviewing agent-generated code with an independent second model in VS Code</title>
+      <link>https://pvrlabs.xyz/articles/reviewing-ai-generated-code-vscode-aibadger.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/reviewing-ai-generated-code-vscode-aibadger.html</guid>
+      <description>Review agent-generated code in VS Code using an independent second model, from complete Git changes to focused, repository-aware follow-up context.</description>
+      <pubDate>Fri, 14 Aug 2026 00:00:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/reviewing-ai-generated-code-vscode-aibadger/cover.webp" />
+    </item>
+    <item>
+      <title>I Taught Maven to Be an Introvert</title>
+      <link>https://pvrlabs.xyz/articles/introverted-maven.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/introverted-maven.html</guid>
+      <description>A small Bash wrapper cut successful Maven output by more than 99.7% while preserving useful diagnostics for coding agents.</description>
+      <pubDate>Thu, 30 Jul 2026 15:45:00 -0700</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/mvnlite_cover.webp" />
+    </item>
+  </channel>
+</rss>

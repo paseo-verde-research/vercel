@@ -6,6 +6,7 @@
     <title>Articles - PVR Labs Engineering Insights</title>
     <meta name="description" content="Practical engineering articles, release announcements, and project updates from PVR Labs, including AI Badger, StatLite, and Scriptella.">
     <link rel="canonical" href="https://pvrlabs.xyz/articles/">
+    <link rel="alternate" type="application/rss+xml" title="PVR Labs" href="/rss.xml">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -35,6 +36,28 @@
             padding: calc(var(--header-height) + 20px) 0 40px;
             text-align: center;
         }
+        .articles-heading-row {
+            display: flex;
+            align-items: center;
+            gap: 4px 16px;
+            max-width: 860px;
+            margin-inline: auto;
+        }
+        .articles-heading-row::before,
+        .articles-heading-actions {
+            flex: 1 0 9rem;
+        }
+        .articles-heading-row::before {
+            content: "";
+        }
+        .articles-heading-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .articles-heading-row h1 {
+            flex-shrink: 0;
+            max-width: 100%;
+        }
         .articles-hero h1 {
             font-family: var(--font-logo);
             font-size: 2.8rem;
@@ -56,6 +79,36 @@
             flex-wrap: wrap;
             gap: 0 24px;
             border-bottom: 1px solid var(--border-color);
+        }
+        .articles-rss-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            padding-inline: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-decoration: underline;
+            text-underline-offset: 0.2em;
+        }
+        .articles-rss-link:hover,
+        .articles-rss-link:focus-visible {
+            color: var(--primary-green);
+        }
+        .articles-rss-link:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 2px;
+        }
+        @media (max-width: 900px) {
+            .articles-heading-row {
+                flex-direction: column;
+            }
+            .articles-heading-row::before {
+                display: none;
+            }
+            .articles-heading-actions {
+                flex: none;
+            }
         }
         .article-filter {
             min-height: 44px;
@@ -170,7 +223,21 @@
 <main>
     <section class="articles-hero">
         <div class="container">
-            <h1>Engineering <span class="highlight">Insights</span></h1>
+            <div class="articles-heading-row">
+                <h1>Engineering <span class="highlight">Insights</span></h1>
+                <div class="articles-heading-actions">
+                    <a class="articles-rss-link" href="/rss.xml"
+                       aria-label="Subscribe to PVR Labs publications via RSS"
+                       title="PVR Labs RSS — articles and experiments">
+                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <circle cx="5" cy="19" r="2" fill="currentColor"/>
+                            <path d="M3 11a10 10 0 0 1 10 10M3 4a17 17 0 0 1 17 17"
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        RSS
+                    </a>
+                </div>
+            </div>
             <p>Practical notes, release announcements, and engineering deep-dives from the projects built at PVR Labs.</p>
         </div>
     </section>

@@ -7,6 +7,7 @@
     <title>Java Performance Experiments | PVR Labs</title>
     <meta name="description" content="Small, reproducible Java and JVM experiments on Spring Boot startup, memory, packaging, and deployment. Each test starts with one question and publishes what happened.">
     <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/">
+    <link rel="alternate" type="application/rss+xml" title="PVR Labs" href="/rss.xml">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/">
     <meta property="og:title" content="Java Performance Experiments | PVR Labs">
@@ -175,6 +176,38 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/java-performance/style.css?v=20261014a">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        .experiments-heading-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 16px;
+        }
+        .experiments-heading-row h1 {
+            flex-shrink: 0;
+            max-width: 100%;
+        }
+        .experiments-rss-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            margin-inline-start: auto;
+            padding-inline: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-decoration: underline;
+            text-underline-offset: 0.2em;
+        }
+        .experiments-rss-link:hover,
+        .experiments-rss-link:focus-visible {
+            color: var(--primary-green);
+        }
+        .experiments-rss-link:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 2px;
+        }
+    </style>
 </head>
 <body>
 <header id="header">
@@ -200,7 +233,19 @@
     <section class="lab-hero lab-hero--experiments">
         <div class="container">
             <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / Experiments</p>
-            <h1>Java and JVM experiments</h1>
+            <div class="experiments-heading-row">
+                <h1>Java and JVM experiments</h1>
+                <a class="experiments-rss-link" href="/rss.xml"
+                   aria-label="Subscribe to PVR Labs publications via RSS"
+                   title="PVR Labs RSS — articles and experiments">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <circle cx="5" cy="19" r="2" fill="currentColor"/>
+                        <path d="M3 11a10 10 0 0 1 10 10M3 4a17 17 0 0 1 17 17"
+                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    RSS
+                </a>
+            </div>
             <p class="lab-lead">Small tests around Spring Boot, packaging, startup, memory, and deployment. One concrete question, the smallest useful run, and a public record of what happened. Experiments focus on reproducible measurements and technical comparisons. Articles explore broader engineering problems and practical lessons.</p>
             <p class="lab-community-note">Discuss results and suggest future experiments in the Java Experiments squad on <a class="lab-community-link" href="https://daily.dev/squads/javaexperiments" aria-label="Java Experiments squad on daily.dev"><span class="lab-community-icon" aria-hidden="true"></span>daily.dev <span aria-hidden="true">&#8599;</span></a>.</p>
         </div>
