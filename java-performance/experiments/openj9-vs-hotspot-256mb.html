@@ -75,9 +75,12 @@
 <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase-vps-256mb">earlier Alpine experiment</a> used the same packaged apps with HotSpot, a different guest and a longer method.</p>
 <h2>Takeaway</h2>
 <p>OpenJ9 showed lower settled idle RSS in this capture, while the under-load difference depended on the application and swap. Cold startup was slower; one warm CoilBase run matched HotSpot’s observed readiness. A single RSS sample can be misleading, especially early in a run.</p>
+<p><strong>Can an already lightweight Java stack get leaner?</strong> OpenJ9 reduced settled idle RSS even for CoilBase, a lightweight alternative to Spring Boot developed by PVR Labs. The improvement under load was much smaller than with Spring, and cold startup was slower. Still, these results suggest that combining a lightweight application stack with OpenJ9 is worth exploring for memory-constrained deployments. See <a href="https://github.com/PVRLabs/coilbase">CoilBase on GitHub</a>.</p>
 <h2>Sources</h2>
 <p>The public experiment record includes the method and recorded measurements.</p>
-<p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase-debian-256" target="_blank" rel="noopener noreferrer">Experiment record</a><a href="https://github.com/PVRLabs/experiments/blob/main/java/coilbase-debian-256/capture.txt" target="_blank" rel="noopener noreferrer">Recorded data</a></p></div></article></main>
+<p class="experiment-links"><a href="https://github.com/PVRLabs/experiments/tree/main/java/coilbase-debian-256" target="_blank" rel="noopener noreferrer">Experiment record</a><a href="https://github.com/PVRLabs/experiments/blob/main/java/coilbase-debian-256/capture.txt" target="_blank" rel="noopener noreferrer">Recorded data</a></p>
+<div class="article-discussion"><a class="article-discussion__link" href="https://daily.dev/posts/openj9-vs-hotspot-on-a-256-mib-vm-with-java-25-compared-startup-rss-and-swap-using-spring-boot-an-ma7xy5udg"><span class="article-discussion__icon" aria-hidden="true"></span>Discuss on daily.dev</a></div>
+</div></article></main>
 <footer id="footer">
 <div class="container">
 <p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p>
