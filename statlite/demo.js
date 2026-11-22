@@ -130,6 +130,44 @@ function diskChart(id) {
   });
 }
 
+function timeAxis() {
+  return {
+    type: "linear",
+    ticks: { color: palette.ticks, maxRotation: 0, maxTicksLimit: 8, callback: formatTick },
+    afterBuildTicks: (scale) => {
+      scale.ticks = localTimeTicks(scale.min, scale.max).map((value) => ({ value }));
+    },
+    grid: { display: false }
+  };
+}
+
+function localTimeTicks(min, max) {
+  const ticks = [];
+  if (state.range === "1h") {
+    // Walking real minutes also covers the repeated hour when clocks go back.
+    const minute = 60_000;
+    for (let value = Math.ceil(min / minute) * minute; value <= max; value += minute) {
+      if (new Date(value).getMinutes() % 10 === 0) ticks.push(value);
+    }
+    return ticks;
+  }
+
+  const day = new Date(min);
+  day.setHours(0, 0, 0, 0);
+  const daily = state.range !== "24h";
+  if (daily && +day < min) day.setDate(day.getDate() + 1);
+  const step = state.range === "30d" ? 5 : 1;
+  while (+day <= max) {
+    for (let hour = 0; hour < (daily ? 1 : 24); hour += 3) {
+      const tick = new Date(day);
+      tick.setHours(hour, 0, 0, 0);
+      if (tick.getHours() === hour && +tick >= min && +tick <= max) ticks.push(+tick);
+    }
+    day.setDate(day.getDate() + step);
+  }
+  return ticks;
+}
+
 function chartOptions() {
   return {
     responsive: true,
@@ -138,10 +176,13 @@ function chartOptions() {
     interaction: { mode: "index", intersect: false },
     plugins: {
       legend: { display: true, labels: { boxWidth: 32, boxHeight: 8, usePointStyle: true, pointStyle: "line", color: palette.text } },
-      tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ": " + formatValue(ctx.parsed.y, ctx.dataset.unit) } }
+      tooltip: { callbacks: {
+        title: ([item]) => formatDateTime(item?.parsed.x),
+        label: (ctx) => ctx.dataset.label + ": " + formatValue(ctx.parsed.y, ctx.dataset.unit)
+      } }
     },
     scales: {
-      x: { ticks: { color: palette.ticks, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }, grid: { display: false } },
+      x: timeAxis(),
       y: { beginAtZero: true, ticks: { color: palette.ticks, precision: 0 }, grid: { color: palette.grid } }
     }
   };
@@ -150,7 +191,7 @@ function chartOptions() {
 function latencyOptions() {
   const options = chartOptions();
   options.scales = {
-    x: { ticks: { color: palette.ticks, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }, grid: { display: false } },
+    x: timeAxis(),
     y: { beginAtZero: true, title: { display: true, text: "ms", color: palette.ticks }, ticks: { color: palette.ticks }, grid: { color: palette.grid } }
   };
   return options;
@@ -159,7 +200,7 @@ function latencyOptions() {
 function runtimeOptions() {
   const options = chartOptions();
   options.scales = {
-    x: { ticks: { color: palette.ticks, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }, grid: { display: false } },
+    x: timeAxis(),
     y: { beginAtZero: true, position: "left", title: { display: true, text: "MB", color: palette.ticks }, ticks: { color: palette.ticks }, grid: { color: palette.grid } },
     y1: { beginAtZero: true, position: "right", title: { display: true, text: "%", color: palette.ticks }, ticks: { color: palette.ticks }, grid: { drawOnChartArea: false } }
   };
@@ -169,7 +210,7 @@ function runtimeOptions() {
 function resourceOptions() {
   const options = chartOptions();
   options.scales = {
-    x: { ticks: { color: palette.ticks, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }, grid: { display: false } },
+    x: timeAxis(),
     y: { beginAtZero: true, position: "left", title: { display: true, text: "GB", color: palette.ticks }, ticks: { color: palette.ticks }, grid: { color: palette.grid } },
     y1: { beginAtZero: true, max: 100, position: "right", title: { display: true, text: "%", color: palette.ticks }, ticks: { color: palette.ticks }, grid: { drawOnChartArea: false } }
   };
@@ -179,7 +220,7 @@ function resourceOptions() {
 function diskOptions() {
   const options = chartOptions();
   options.scales = {
-    x: { ticks: { color: palette.ticks, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }, grid: { display: false } },
+    x: timeAxis(),
     y: { beginAtZero: true, position: "left", title: { display: true, text: "GB", color: palette.ticks }, ticks: { color: palette.ticks }, grid: { color: palette.grid } }
   };
   return options;
@@ -417,24 +458,24 @@ function renderTargetContext(targets, selected) {
 
 function renderSeries(series) {
   const points = series.points || [];
-  const labels = points.map((point) => formatTick(point.timestamp));
-  updateChart(state.charts.requests, labels, [points.map((point) => point.requests)]);
-  updateChart(state.charts.errors, labels, [
+  const timestamps = points.map((point) => Date.parse(point.timestamp));
+  updateChart(state.charts.requests, timestamps, [points.map((point) => point.requests)]);
+  updateChart(state.charts.errors, timestamps, [
     points.map((point) => point.http_404),
     points.map((point) => point.http_4xx),
     points.map((point) => point.http_5xx)
   ]);
-  updateChart(state.charts.latency, labels, [points.map((point) => point.average_latency_seconds == null ? null : point.average_latency_seconds * 1000)]);
-  updateChart(state.charts.runtime, labels, [
+  updateChart(state.charts.latency, timestamps, [points.map((point) => point.average_latency_seconds == null ? null : point.average_latency_seconds * 1000)]);
+  updateChart(state.charts.runtime, timestamps, [
     points.map((point) => point.heap_used_bytes == null ? null : point.heap_used_bytes / 1024 / 1024),
     points.map((point) => point.process_cpu_usage == null ? null : point.process_cpu_usage * 100)
   ]);
-  updateChart(state.charts.hostRuntime, labels, [
+  updateChart(state.charts.hostRuntime, timestamps, [
     points.map((point) => bytesToGB(point.host_memory_used_bytes)),
     points.map((point) => bytesToGB(point.host_memory_total_bytes)),
     points.map((point) => point.host_cpu_usage == null ? null : point.host_cpu_usage * 100)
   ]);
-  updateChart(state.charts.hostDisk, labels, [
+  updateChart(state.charts.hostDisk, timestamps, [
     points.map((point) => bytesToGB(point.host_disk_used_bytes)),
     points.map((point) => bytesToGB(point.host_disk_total_bytes))
   ]);
@@ -487,11 +528,12 @@ function bytesToGB(value) {
   return value == null ? null : value / 1024 / 1024 / 1024;
 }
 
-function updateChart(chart, labels, values) {
-  chart.data.labels = labels;
+function updateChart(chart, timestamps, values) {
+  chart.options.scales.x.min = timestamps[0];
+  chart.options.scales.x.max = timestamps.at(-1);
   values.forEach((datasetValues, index) => {
     const dataset = chart.data.datasets[index];
-    dataset.data = datasetValues;
+    dataset.data = datasetValues.map((value, pointIndex) => ({ x: timestamps[pointIndex], y: value ?? null }));
     const isolated = datasetValues.map((value, pointIndex) =>
       Number.isFinite(value) &&
       !Number.isFinite(datasetValues[pointIndex - 1]) &&
@@ -589,7 +631,7 @@ function formatTick(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   if (state.range === "30d" || state.range === "7d") {
-    return date.toLocaleString([], { month: "short", day: "2-digit", hour: "2-digit" });
+    return date.toLocaleString([], { month: "short", day: "2-digit" });
   }
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
@@ -631,9 +673,9 @@ function initializeFromURL() {
 
 function initDashboard() {
   state.sessionNow = new Date();
-  state.fixtures = Object.fromEntries(Object.entries(window.STATLITE_DEMO_FIXTURES).map(([key, fixture]) => [
+  state.fixtures = Object.fromEntries(Object.entries(window.STATLITE_DEMO_TARGETS).map(([key, config]) => [
     key,
-    window.STATLITE_DEMO.rebaseFixture(fixture, state.sessionNow)
+    window.STATLITE_DEMO.fixture(config, state.sessionNow)
   ]));
   attachInteractions();
   initializeFromURL();

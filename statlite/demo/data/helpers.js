@@ -1,260 +1,210 @@
-// Small fixture helpers. The rows below stay deliberately close to the
-// dashboard's series vocabulary while keeping each example easy to edit.
 (function () {
-  const MB = 1024 * 1024;
-  const GB = 1024 * MB;
-  const FIXTURE_REFERENCE_TIME = Date.parse("2026-09-02T18:30:00Z");
-  const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
-  const RANGE_MILLISECONDS = {
-    "1h": 60 * 60 * 1000,
-    "24h": 24 * 60 * 60 * 1000,
-    "7d": 7 * 24 * 60 * 60 * 1000,
-    "30d": 30 * 24 * 60 * 60 * 1000
+  const MIB = 1024 ** 2;
+  const GIB = 1024 ** 3;
+  const MINUTE = 60_000;
+  const HOUR = 60 * MINUTE;
+  const DAY = 24 * HOUR;
+  const POLL = 30_000;
+  const RANGES = {
+    "1h": { duration: HOUR },
+    "24h": { duration: DAY, bucket: 5 * MINUTE },
+    "7d": { duration: 7 * DAY, bucket: 30 * MINUTE },
+    "30d": { duration: 30 * DAY, bucket: 2 * HOUR }
   };
 
-  function points(rows, includeHost) {
-    return rows.map((row) => {
-      const point = {
-        timestamp: row[0],
-        requests: row[1],
-        http_404: row[2],
-        http_4xx: row[3],
-        http_5xx: row[4],
-        average_latency_seconds: row[5],
-        heap_used_bytes: row[6] == null ? null : row[6] * MB,
-        process_cpu_usage: row[7] == null ? null : row[7]
-      };
-      if (includeHost) {
-        point.host_cpu_usage = row[8];
-        point.host_memory_used_bytes = row[9] * GB;
-        point.host_memory_total_bytes = 16 * GB;
-        point.host_disk_used_bytes = row[10] * GB;
-        point.host_disk_total_bytes = 160 * GB;
-        point.host_disk_usage = row[10] / 160;
-      }
-      return point;
-    });
-  }
-
-  function series(pointsForRange) {
-    const last = pointsForRange[pointsForRange.length - 1];
-    return {
-      points: pointsForRange,
-      current_host_disk: last && last.host_disk_usage != null
-        ? {
-            used_bytes: last.host_disk_used_bytes,
-            total_bytes: last.host_disk_total_bytes,
-            usage: last.host_disk_usage
-          }
-        : null
+  function mulberry32(seed) {
+    return () => {
+      let value = seed = (seed + 0x6D2B79F5) | 0;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
     };
   }
 
-  function wobble(seed, span) {
-    return (seed * 17 + 11) % (span * 2 + 1) - span;
+  function localLoad(time, peakHour) {
+    const hour = time.getHours() + time.getMinutes() / 60;
+    const cycle = (1 + Math.cos((hour - peakHour) * Math.PI / 12)) / 2;
+    const weekend = time.getDay() === 0 || time.getDay() === 6;
+    return cycle ** 2 * (weekend ? 0.48 : 1);
   }
 
-  function interpolatedRange(pointsForDay) {
-    const source = pointsForDay.slice(-3);
-    const expanded = [];
-    const startTimestamp = FIXTURE_REFERENCE_TIME - RANGE_MILLISECONDS["1h"];
-    for (let index = 0; index <= 12; index++) {
-      const position = index / 6;
-      const leftIndex = Math.min(Math.floor(position), source.length - 2);
-      const fraction = position - leftIndex;
-      const left = source[leftIndex];
-      const right = source[leftIndex + 1];
-      const point = {};
-      Object.keys(left).forEach((key) => {
-        if (key === "timestamp") return;
-        const leftValue = left[key];
-        const rightValue = right[key];
-        if (typeof leftValue !== "number" || typeof rightValue !== "number") {
-          point[key] = leftValue;
-          return;
+  const COUNTS = ["requests", "http_404", "http_4xx", "http_5xx"];
+  const GAUGES = [
+    "heap_used_bytes", "process_cpu_usage", "host_cpu_usage", "host_memory_used_bytes",
+    "host_memory_total_bytes", "host_disk_used_bytes", "host_disk_total_bytes", "host_disk_usage"
+  ];
+
+  function bucketSeries(start, width, host) {
+    const gauges = host ? GAUGES : GAUGES.slice(0, 2);
+    const fields = COUNTS.concat(gauges);
+    const sums = new Float64Array(fields.length);
+    const counts = new Uint16Array(fields.length);
+    const points = [];
+    let bucket;
+    let weightedLatency = 0;
+    let latencyRequests = 0;
+
+    function flush() {
+      if (bucket === undefined) return;
+      const point = { timestamp: new Date(bucket).toISOString() };
+      fields.forEach((key, index) => {
+        if (counts[index]) {
+          point[key] = index < COUNTS.length ? sums[index] : sums[index] / counts[index];
         }
-        const value = leftValue + (rightValue - leftValue) * fraction;
-        point[key] = key === "requests" || key.startsWith("http_") ? Math.round(value) : value;
       });
-      point.timestamp = new Date(startTimestamp + index * 5 * 60 * 1000).toISOString();
-      expanded.push(point);
+      point.average_latency_seconds = latencyRequests ? weightedLatency / latencyRequests : null;
+      points.push(point);
+      bucket = undefined;
+      sums.fill(0);
+      counts.fill(0);
+      weightedLatency = 0;
+      latencyRequests = 0;
     }
-    return expanded;
-  }
 
-  function oneHourRange(pointsForDay) {
-    return interpolatedRange(pointsForDay).map((point, index) => {
-      const next = Object.assign({}, point);
-      const drift = wobble(index, 2);
-      if (typeof next.requests === "number") {
-        next.requests = Math.max(0, next.requests + drift);
-      }
-      if (typeof next.process_cpu_usage === "number") {
-        next.process_cpu_usage = Math.max(0, next.process_cpu_usage + drift * 0.002);
-      }
-      if (typeof next.average_latency_seconds === "number") {
-        next.average_latency_seconds = Math.max(0.001, next.average_latency_seconds + drift * 0.0005);
-      }
-      if (typeof next.heap_used_bytes === "number") {
-        next.heap_used_bytes *= 1 + (index % 4) * 0.012;
-      }
-      if (typeof next.host_cpu_usage === "number") {
-        next.host_cpu_usage = Math.max(0, next.host_cpu_usage + drift * 0.003);
-      }
-      next.http_404 = (index === 2 || index === 3) ? 1 : 0;
-      next.http_4xx = index === 4 ? 1 : 0;
-      next.http_5xx = index === 6 ? 1 : 0;
-      return next;
-    });
-  }
-
-  // Fixture-calendar day variation. After rebase this is not necessarily
-  // the weekday shown on the chart.
-  function dayScale(timestamp) {
-    const day = new Date(timestamp).getUTCDay();
-    if (day === 0) return 0.4;
-    if (day === 6) return 0.52;
-    if (day === 5) return 1.08;
-    if (day === 1) return 0.9;
-    return 1;
-  }
-
-  function scaleTraffic(point, scale, options) {
-    const next = Object.assign({}, point);
-    if (typeof next.requests === "number") {
-      next.requests = Math.max(0, Math.round(next.requests * scale) + wobble(options.seed, 2));
-    }
-    if (typeof next.average_latency_seconds === "number") {
-      next.average_latency_seconds *= 0.97 + 0.07 * Math.min(scale, 1.2);
-    }
-    if (typeof next.process_cpu_usage === "number") {
-      next.process_cpu_usage = Math.max(0.01, next.process_cpu_usage * Math.max(0.45, scale));
-    }
-    if (typeof next.heap_used_bytes === "number") {
-      next.heap_used_bytes *= 0.96 + 0.06 * Math.min(scale, 1.15);
-    }
-    if (typeof next.host_cpu_usage === "number") {
-      next.host_cpu_usage = Math.max(0.03, next.host_cpu_usage * Math.max(0.5, scale));
-    }
-    if (typeof next.host_memory_used_bytes === "number") {
-      next.host_memory_used_bytes *= 0.98 + 0.03 * Math.min(scale, 1.1);
-    }
-    if (options.clearErrors) {
-      next.http_5xx = 0;
-      next.http_4xx = 0;
-      next.http_404 = options.stray404 ? 1 : 0;
-    } else {
-      ["http_404", "http_4xx", "http_5xx"].forEach((key) => {
-        if (typeof next[key] === "number") next[key] = Math.round(next[key] * Math.max(scale, 0.5));
-      });
-      if (options.incidentSpike) {
-        next.http_5xx = Math.max(next.http_5xx || 0, 1);
-        next.http_4xx = Math.max(next.http_4xx || 0, 1);
-      }
-    }
-    if (options.diskUsed != null && Number.isFinite(next.host_disk_total_bytes)) {
-      next.host_disk_used_bytes = options.diskUsed;
-      next.host_disk_usage = next.host_disk_used_bytes / next.host_disk_total_bytes;
-    }
-    return next;
-  }
-
-  // Longer views reuse the daily shape, with day-to-day variation, one
-  // incident day, and disk that grows toward the current sample instead of repeating.
-  function expandedRange(pointsForDay, days, pointsPerDay) {
-    const expanded = [];
-    const sampleIndexes = [0, 7, 13, 20, 27, 34, 40, 47];
-    const span = days * DAY_MILLISECONDS;
-    const total = days * pointsPerDay;
-    const incidentDay = days <= 7 ? days - 2 : Math.round(days * 0.62);
-    const lastDisk = pointsForDay[pointsForDay.length - 1].host_disk_used_bytes;
-    const diskStart = Number.isFinite(lastDisk)
-      ? lastDisk - (days >= 30 ? 8 * GB : 2 * GB)
-      : null;
-    for (let index = 0; index < total; index++) {
-      const dayIndex = Math.floor(index / pointsPerDay);
-      const withinDay = index % pointsPerDay;
-      const baseIndex = sampleIndexes[withinDay] == null
-        ? Math.round(withinDay * (pointsForDay.length - 1) / (pointsPerDay - 1))
-        : Math.min(sampleIndexes[withinDay], pointsForDay.length - 1);
-      const progress = index / (total - 1);
-      const timestamp = FIXTURE_REFERENCE_TIME - span + progress * span;
-      let scale = dayScale(timestamp) * (0.94 + (dayIndex * 13 + 7) % 13 / 100);
-      if (days >= 30) scale *= 0.88 + 0.24 * (dayIndex / Math.max(days - 1, 1));
-      const point = scaleTraffic(Object.assign({}, pointsForDay[baseIndex], {
-        timestamp: new Date(timestamp).toISOString()
-      }), scale, {
-        seed: index + days,
-        clearErrors: dayIndex !== incidentDay,
-        stray404: dayIndex !== incidentDay && scale > 0.85 && withinDay === 3 && dayIndex % 3 === 0,
-        incidentSpike: dayIndex === incidentDay && withinDay === 2,
-        diskUsed: diskStart == null ? null : diskStart + (lastDisk - diskStart) * progress
-      });
-      expanded.push(point);
-    }
-    return expanded;
-  }
-
-  function ranges(pointsForDay) {
     return {
-      "1h": series(oneHourRange(pointsForDay)),
-      "24h": series(pointsForDay),
-      "7d": series(expandedRange(pointsForDay, 7, 8)),
-      "30d": series(expandedRange(pointsForDay, 30, 8))
+      add(time, metrics) {
+        if (time < start) return;
+        const aligned = Math.max(start, Math.floor(time / width) * width);
+        if (bucket !== aligned) {
+          flush();
+          bucket = aligned;
+        }
+        for (let index = 0; index < fields.length; index++) {
+          const value = metrics[fields[index]];
+          if (value != null) {
+            sums[index] += value;
+            counts[index]++;
+          }
+        }
+        if (metrics.average_latency_seconds != null && metrics.requests > 0) {
+          weightedLatency += metrics.average_latency_seconds * metrics.requests;
+          latencyRequests += metrics.requests;
+        }
+      },
+      finish() {
+        flush();
+        return points;
+      }
     };
   }
 
-  function shiftTimestamp(value, offset) {
-    if (!value) return value;
-    const timestamp = Date.parse(value);
-    return Number.isNaN(timestamp) ? value : new Date(timestamp + offset).toISOString();
+  function timeline(config, now) {
+    const random = mulberry32(config.seed);
+    const noise = () => (random() + random() + random() - 1.5) * 2;
+    const phase = config.pollSecond * 1000;
+    const end = Math.floor((now.getTime() - phase) / POLL) * POLL + phase;
+    const start = end - RANGES["30d"].duration;
+    const restartPoll = end - config.restartHoursAgo * HOUR;
+    const processStart = Number.isFinite(restartPoll) ? restartPoll - 13_000 : start - 6 * DAY;
+    const incident = end - config.incidentHoursAgo * HOUR;
+    const slowStarts = (config.slowHoursAgo || []).map((hours) =>
+      end - Math.round(hours * HOUR / POLL) * POLL
+    );
+    const idleHeap = config.heapMiB;
+    let heap = idleHeap;
+    let heapFloor = idleHeap;
+    let gcThreshold = config.gcMiB;
+    let cpuLoad = 0;
+    const nativePoints = [];
+    const nativeStart = end - RANGES["1h"].duration;
+    let restart = null;
+    const rollups = Object.fromEntries(Object.entries(RANGES)
+      .filter(([, settings]) => settings.bucket)
+      .map(([range, { duration, bucket }]) =>
+        [range, bucketSeries(end - duration, bucket, config.host)]));
+    const buckets = Object.values(rollups);
+    const metrics = {};
+    const localTime = new Date(start);
+    let load = 0;
+    let loadUntil = start;
+
+    for (let time = start; time <= end; time += POLL) {
+      const age = time - restartPoll;
+      // Failed polls have no metric sample to add to the dashboard series.
+      if (age === -2 * POLL || age === -POLL) continue;
+
+      const warming = age >= 0 && age < 18 * MINUTE ? Math.exp(-age / (5 * MINUTE)) : 0;
+      if (config.peakHour != null && time >= loadUntil) {
+        localTime.setTime(time);
+        load = localLoad(localTime, config.peakHour);
+        loadUntil = Math.floor(time / MINUTE) * MINUTE + MINUTE;
+      }
+      const expected = (config.baseRequests + config.peakRequests * load) *
+        (1 + 0.10 * noise()) * (1 - 0.75 * warming);
+      const requests = Math.max(0, Math.round(expected + Math.sqrt(expected) * noise()));
+      cpuLoad += (requests / (config.baseRequests + config.peakRequests) - cpuLoad) * 0.23;
+
+      let gc = false;
+      if (config.gcMiB) {
+        if (age === 0) {
+          heap = idleHeap * 0.49;
+          heapFloor = heap;
+        } else {
+          heapFloor = Math.min(idleHeap + 16, heapFloor + (heapFloor < idleHeap ? 0.65 : 0.0004));
+          heap = Math.max(heapFloor, heap) + config.allocationMiB * (0.65 + 1.35 * load + 0.16 * noise());
+          if (heap >= heapFloor + gcThreshold) {
+            heap = heapFloor + 4 * random();
+            gcThreshold = config.gcMiB * (0.8 + 0.4 * random());
+            gc = true;
+          }
+        }
+      } else {
+        heap = idleHeap + 0.18 * noise();
+      }
+
+      const inIncident = time >= incident && time < incident + 5 * MINUTE;
+      const http404 = requests > 0 && random() < config.probeChance ? 1 : 0;
+      const http5xx = Math.min(requests - http404,
+        inIncident ? 1 + Math.floor(random() * 3) : 0);
+      const http4xx = requests > http404 + http5xx && random() < config.probeChance / 4 ? 1 : 0;
+
+      const slow = slowStarts.some((start) => time >= start && time < start + 3 * MINUTE);
+      metrics.requests = requests;
+      metrics.http_404 = http404;
+      metrics.http_4xx = http4xx;
+      metrics.http_5xx = http5xx;
+      metrics.average_latency_seconds = requests > 0 ? Math.max(1, config.latencyMs +
+        5 * load + (3 + 14 / Math.sqrt(requests)) * noise() +
+        37 * slow + 24 * inIncident + 55 * warming) / 1000 : null;
+      metrics.heap_used_bytes = Math.round(heap * MIB);
+      metrics.process_cpu_usage = Math.max(0.004, config.baseCPU + config.loadCPU * cpuLoad +
+        0.013 * noise() + 0.032 * gc + 0.21 * warming);
+      if (config.host) {
+        const days = (time - start) / DAY;
+        const disk = 38.52 + 0.068 * days - 0.08 * Math.floor(days / 4);
+        metrics.host_cpu_usage = 0.086 + 0.013 * noise();
+        metrics.host_memory_used_bytes = Math.round((0.9 + 0.00875 * noise()) * GIB);
+        metrics.host_memory_total_bytes = 2 * GIB;
+        metrics.host_disk_used_bytes = Math.round(disk * GIB);
+        metrics.host_disk_total_bytes = 80 * GIB;
+        metrics.host_disk_usage = metrics.host_disk_used_bytes / metrics.host_disk_total_bytes;
+      }
+      for (const bucket of buckets) bucket.add(time, metrics);
+
+      if (age === 0) restart = new Date(time).toISOString();
+      if (time >= nativeStart) {
+        nativePoints.push({ timestamp: new Date(time).toISOString(), ...metrics });
+      }
+    }
+    return { nativePoints, rollups, processStart, restart };
   }
 
-  function shiftSeries(seriesValue, offset) {
-    if (!seriesValue) return seriesValue;
-    seriesValue.points.forEach((point) => {
-      point.timestamp = shiftTimestamp(point.timestamp, offset);
-    });
-    return seriesValue;
-  }
-
-  function shiftLatest(latest, offset) {
-    if (!latest) return latest;
-    latest.timestamp = shiftTimestamp(latest.timestamp, offset);
-    if (latest.result) latest.result.process_start_time = shiftTimestamp(latest.result.process_start_time, offset);
-    return latest;
-  }
-
-  function shiftMonitorStatus(status, offset) {
-    if (!status) return status;
-    status.last_successful_poll_at = shiftTimestamp(status.last_successful_poll_at, offset);
-    status.last_poll_at = shiftTimestamp(status.last_poll_at, offset);
-    return status;
-  }
-
-  function rebaseFixture(source, sessionNow) {
-    const fixture = JSON.parse(JSON.stringify(source));
-    const offset = sessionNow.getTime() - FIXTURE_REFERENCE_TIME;
-    shiftSeries(fixture.series, offset);
-    Object.values(fixture.ranges).forEach((rangeSeries) => shiftSeries(rangeSeries, offset));
-    fixture.events.forEach((event) => {
-      event.timestamp = shiftTimestamp(event.timestamp, offset);
-    });
-    fixture.summary.latest = shiftLatest(fixture.summary.latest, offset);
-    fixture.summary.latest_restart = shiftTimestamp(fixture.summary.latest_restart, offset);
-    shiftMonitorStatus(fixture.summary.monitor, offset);
-    fixture.summary.targets.forEach((target) => {
-      target.latest = shiftLatest(target.latest, offset);
-      target.status = shiftMonitorStatus(target.status, offset);
-    });
-    return fixture;
+  function series(points, last) {
+    return {
+      points,
+      current_host_disk: last.host_disk_usage == null ? null : {
+        used_bytes: last.host_disk_used_bytes,
+        total_bytes: last.host_disk_total_bytes,
+        usage: last.host_disk_usage
+      }
+    };
   }
 
   function isInRange(timestamp, range, sessionNow) {
     const value = Date.parse(timestamp);
     const end = sessionNow.getTime();
-    const duration = RANGE_MILLISECONDS[range] || RANGE_MILLISECONDS["24h"];
-    return !Number.isNaN(value) && value >= end - duration && value <= end;
+    const { duration } = RANGES[range] || RANGES["24h"];
+    return value >= end - duration && value <= end;
   }
 
   function eventsInRange(events, range, sessionNow) {
@@ -266,23 +216,27 @@
     return isInRange(summary.latest_restart, range, sessionNow) ? summary.latest_restart : null;
   }
 
-  function fixture(config) {
-    const last = config.points[config.points.length - 1];
-    const metrics = Object.assign({}, last);
-    delete metrics.timestamp;
+  function fixture(config, now) {
+    const { nativePoints, rollups, processStart, restart } = timeline(config, now);
+    const last = nativePoints.at(-1);
+    const ranges = Object.fromEntries(Object.keys(RANGES).map((range) =>
+      [range, series(rollups[range]?.finish() ?? nativePoints, last)]
+    ));
+    const { timestamp, ...metrics } = last;
     const latest = {
-      timestamp: last.timestamp,
+      timestamp,
       status: "ok",
-      result: Object.assign({}, metrics, config.current)
+      result: {
+        ...metrics,
+        health_status: "UP",
+        db_health_status: "UP",
+        process_start_time: new Date(processStart).toISOString()
+      }
     };
-    const metadata = {
-      name: config.name,
-      type: config.type,
-      endpoint: config.endpoint
-    };
+    const metadata = { name: config.name, type: config.type, endpoint: config.endpoint };
     const monitor = {
-      last_successful_poll_at: last.timestamp,
-      last_poll_at: last.timestamp,
+      last_successful_poll_at: timestamp,
+      last_poll_at: timestamp,
       consecutive_poll_failures: 0,
       last_poll_error_summary: ""
     };
@@ -291,16 +245,22 @@
         selected_target: metadata,
         targets: [{ metadata, status: monitor, latest }],
         latest,
-        latest_restart_status: config.latestRestart ? "found" : "none",
-        latest_restart: config.latestRestart || null,
+        latest_restart_status: restart ? "found" : "none",
+        latest_restart: restart,
         monitor
       },
-      series: series(config.points),
-      ranges: ranges(config.points),
-      events: config.events
+      series: ranges["24h"],
+      ranges,
+      events: restart ? [{
+        timestamp: restart,
+        severity: "warning",
+        type: "restart_detected",
+        metric_key: "",
+        message: "process.start.time changed"
+      }] : []
     };
   }
 
-  window.STATLITE_DEMO = { eventsInRange, fixture, isInRange, points, rebaseFixture, restartInRange };
-  window.STATLITE_DEMO_FIXTURES = window.STATLITE_DEMO_FIXTURES || {};
+  window.STATLITE_DEMO = { eventsInRange, fixture, restartInRange };
+  window.STATLITE_DEMO_TARGETS = {};
 }());
