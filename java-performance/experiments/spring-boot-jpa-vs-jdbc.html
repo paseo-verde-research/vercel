@@ -89,7 +89,8 @@
         <div class="container experiment-note">
             <p class="breadcrumb"><a href="/java-performance/">Java Performance</a> / <a href="/java-performance/experiments/">Experiments</a></p>
             <h1>Spring Boot JPA vs JDBC: How Much Can a Small App Save?</h1>
-            <p class="lab-lead">A small Spring Boot app that tracks GitHub stars used about 90 MiB less RSS with <code>JdbcTemplate</code> than with Spring Data JPA and Hibernate, and reached its dashboard in about half the time.</p>
+            <p class="lab-lead">In this Spring Boot JPA vs JDBC experiment, the JPA/Hibernate version used about 237 MiB RSS and took 8.1-8.8 seconds to reach its first successful dashboard response. The JDBC (<code>JdbcTemplate</code>) version used about 146 MiB and took 3.9-4.2 seconds.</p>
+            <p class="lab-lead">That's roughly 90 MiB (38%) less memory and about half the startup time for this application.</p>
         </div>
     </section>
 
