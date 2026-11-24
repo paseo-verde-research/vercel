@@ -31,7 +31,7 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600&amp;family=Inter:wght@400;500;600&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/java-performance/style.css?v=20260917d">
-    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="stylesheet" href="/articles/article.css?v=20261124b">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         .experiment-table-scroll { max-width: 100%; margin-bottom: 1rem; overflow-x: auto; }
@@ -286,8 +286,28 @@
 </section>
 <section><h2>Evidence</h2>
 <p>The <a href="https://github.com/PVRLabs/experiments/tree/main/statlite/spring-vs-quarkus-768">public experiment package</a> contains the <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/spring-vs-quarkus-768/METHOD.md">method</a>, <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/spring-vs-quarkus-768/results/checkpoints.csv">checkpoint data</a>, <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/spring-vs-quarkus-768/results/workload.txt">workload record</a>, and <a href="https://github.com/PVRLabs/experiments/blob/main/statlite/spring-vs-quarkus-768/results/polling-final.csv">final-checkpoint polling summary</a>. Monitoring was provided by <a href="/statlite/">StatLite</a>.</p>
-<p>The results here use the recorded RSS and process swap. The CSV's legacy <code>spring_heap_bytes</code> and <code>quarkus_heap_bytes</code> fields contain generation-specific values from the capture parser, rather than total JVM heap use, and are not used for this comparison. The package also includes a separate 1 GiB follow-up; the table above uses only the original 768 MiB run.</p><p class="experiment-links"><a href="/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">1 GiB no-swap follow-up</a><a href="https://github.com/PVRLabs/experiments/discussions">Questions and comments</a><a href="https://github.com/PVRLabs/statlite" target="_blank" rel="noopener noreferrer">StatLite on GitHub</a></p>
+<p>The results here use the recorded RSS and process swap. The CSV's legacy <code>spring_heap_bytes</code> and <code>quarkus_heap_bytes</code> fields contain generation-specific values from the capture parser, rather than total JVM heap use, and are not used for this comparison. The package also includes a separate 1 GiB follow-up; the table above uses only the original 768 MiB run.</p><p class="experiment-links"><a href="/java-performance/experiments/spring-boot-vs-quarkus-1gib.html">1 GiB no-swap follow-up</a><a href="https://github.com/PVRLabs/statlite" target="_blank" rel="noopener noreferrer">StatLite on GitHub</a></p>
 </section>
+            <section class="article-comments" aria-labelledby="discussion-heading">
+                <h2 id="discussion-heading">Discussion</h2>
+                <p>Questions, feedback, or suggestions? Join the discussion using your GitHub account.</p>
+                <script src="https://giscus.app/client.js"
+                        data-repo="PVRLabs/experiments"
+                        data-repo-id="R_kgDOT9zNzA"
+                        data-category="Article Comments"
+                        data-category-id="DIC_kwDOT9zNzM4DL41t"
+                        data-mapping="pathname"
+                        data-strict="1"
+                        data-reactions-enabled="1"
+                        data-emit-metadata="0"
+                        data-input-position="bottom"
+                        data-theme="dark"
+                        data-lang="en"
+                        data-loading="lazy"
+                        crossorigin="anonymous"
+                        async>
+                </script>
+            </section>
         </div>
     </section>
 </main>
