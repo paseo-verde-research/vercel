@@ -619,3 +619,13 @@
         justify-content: center;
     }
 }
+
+.article-comments {
+    margin-block-start: 2rem;
+    padding-block-start: 1rem;
+    border-block-start: 1px solid var(--border-color);
+}
+
+.article-body .article-comments h2 {
+    margin-block-start: 0;
+}
