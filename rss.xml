@@ -5,6 +5,15 @@
     <link>https://pvrlabs.xyz/</link>
     <description>Java performance experiments, engineering articles, and developer tools from PVR Labs.</description>
     <item>
+      <title>Benchmarking Java Frameworks on a 512 MiB Server</title>
+      <link>https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html</guid>
+      <description>Four Java stacks share a 512 MiB Debian VM with PostgreSQL. See how readiness, memory and sustained tail latency compare in Framework Benchmarks v1.</description>
+      <pubDate>Mon, 23 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Experiment</category>
+      <media:thumbnail url="https://pvrlabs.xyz/java-performance/experiments/img/benchmarking-java-frameworks-512mib/og-preview.jpg" />
+    </item>
+    <item>
       <title>What Prometheus and Grafana Actually Do for Your Web App</title>
       <link>https://pvrlabs.xyz/articles/prometheus-grafana-explained.html</link>
       <guid isPermaLink="true">https://pvrlabs.xyz/articles/prometheus-grafana-explained.html</guid>

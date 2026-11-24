@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmarking Java Frameworks on a 512 MiB Server | PVR Labs</title>
+    <meta name="description" content="Four Java stacks share a 512 MiB Debian VM with PostgreSQL. See how readiness, memory and sustained tail latency compare in Framework Benchmarks v1.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html">
+    <link rel="alternate" type="application/rss+xml" title="PVR Labs" href="/rss.xml">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html">
+    <meta property="og:title" content="Benchmarking Java Frameworks on a 512 MiB Server">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Four Java stacks share a 512 MiB Debian VM with PostgreSQL. See how readiness, memory and sustained tail latency compare in Framework Benchmarks v1.">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="JVM">
+    <meta property="article:tag" content="PostgreSQL">
+    <meta property="article:tag" content="Performance">
+    <meta property="article:published_time" content="2026-11-23T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Benchmarking Java Frameworks on a 512 MiB Server">
+    <meta name="twitter:description" content="Four Java stacks share a 512 MiB Debian VM with PostgreSQL. See how readiness, memory and sustained tail latency compare in Framework Benchmarks v1.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261109">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <meta property="og:image" content="https://pvrlabs.xyz/java-performance/experiments/img/benchmarking-java-frameworks-512mib/og-preview.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Four Java stacks on a 512 MiB Debian VM with PostgreSQL. All eight runs sustained 40 requests per second without workload errors.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/java-performance/experiments/img/benchmarking-java-frameworks-512mib/og-preview.jpg">
+    <meta name="twitter:image:alt" content="Four Java stacks on a 512 MiB Debian VM with PostgreSQL. All eight runs sustained 40 requests per second without workload errors.">
+    <style>
+.experiment-links { display: flex; flex-wrap: wrap; gap: .25rem 1.15rem; margin: 1rem 0 0; }
+.experiment-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+@media (max-width: 480px) { .experiment-links { flex-direction: column; } }
+    </style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Benchmarking Java Frameworks on a 512 MiB Server", "description": "Four Java stacks share a 512 MiB Debian VM with PostgreSQL. See how readiness, memory and sustained tail latency compare in Framework Benchmarks v1.", "datePublished": "2026-11-23T00:00:00-08:00", "author": {"@type": "Person", "name": "Ted Kupolov", "url": "https://github.com/ejboy"}, "mainEntityOfPage": "https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html", "image": "https://pvrlabs.xyz/java-performance/experiments/img/benchmarking-java-frameworks-512mib/og-preview.jpg", "isPartOf": {"@type": "CollectionPage", "name": "Java Performance Experiments", "url": "https://pvrlabs.xyz/java-performance/experiments/"}}</script>
+</head>
+<body>
+<header id="header">
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/java-performance/" class="nav-link active">Consulting</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/articles/" class="nav-link">Articles</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+<main><article class="article-page">
+<nav class="article-product-nav" aria-label="Article navigation"><a href="/java-performance/experiments/" class="article-product-nav__link">&larr; Back to Experiments</a><a href="/java-performance/" class="article-product-nav__link">Java Performance</a></nav>
+<h1>Benchmarking Java Frameworks on a 512 MiB Server</h1>
+<div class="article-meta">by <a href="https://github.com/ejboy">Ted Kupolov</a> · <time datetime="2026-11-23">November 23, 2026</time></div>
+<div class="article-body" data-gallery data-lightbox-scope>
+<p>In my <a href="/articles/five-java-stacks-512mb-vps.html">five-stack comparison on a 512 MiB VPS</a>, I measured what it took to run the same business logic with different Java stacks and a local MariaDB instance. This time I wanted to see what happens under sustained load. How much memory does each stack leave available when it shares the server with PostgreSQL, and how long do the slowest requests take?</p>
+<h2>From one comparison to an ongoing benchmark</h2>
+<p>I started <a href="https://github.com/PVRLabs/framework-benchmarks">Framework Benchmarks</a> so I could repeat the comparison as the stacks change and so others could run it themselves. Each implementation has to pass the same correctness checks before it sees the same stream of requests. The runner records what happens under load and builds the report from those measurements.</p>
+<h2>What the application does</h2>
+<p>Market Replay Portfolio models an investment portfolio service. HTTP requests read and update portfolios and retrieve valuations. Database transactions persist changes, and a background job periodically ingests replayed market prices. Each implementation uses the same PostgreSQL schema and public synthetic price fixture. <a href="https://github.com/PVRLabs/framework-benchmarks/tree/e81b2bc03449024e3d24c661521654b9dc2743d5/market-replay-portfolio">Reference application</a></p>
+<p>The comparison covers Jex + Jdbi, Quarkus + Jdbi, Spring Boot + JDBC and Micronaut Data JDBC. I also created <a href="https://github.com/PVRLabs/coilbase">CoilBase</a>, which both Jdbi implementations use. The Jex implementation uses CoilBase Core and its Jex adapter. The Quarkus implementation uses CoilBase Core for Jdbi-based database access and explicit transaction management, alongside Quarkus REST and Agroal. CoilBase's contribution to resource use was not measured separately.</p>
+<h2>How I ran the benchmark</h2>
+<p>I ran the same PostgreSQL correctness checks against each implementation before measuring. The frozen protocol defines workload phases, runtime settings, sampling and acceptance criteria. I ran each stack twice on a Debian 13 QEMU/KVM guest with one vCPU, 512 MiB RAM and no swap. The Linux host used an AMD Ryzen 7 4700U. Each application shared the guest with PostgreSQL 18.7. <a href="https://github.com/PVRLabs/framework-benchmarks/blob/e81b2bc03449024e3d24c661521654b9dc2743d5/framework-benchmarks/protocol-v1.md">Frozen v1 protocol</a></p>
+<p>I use GitHub Actions to build all four applications, check their behavior against PostgreSQL, and test the workload and benchmark runner on pushes and pull requests. CI also rebuilds the report from the recorded measurements and checks that it matches the accepted HTML byte for byte. I ran the performance measurements separately on the dedicated Debian VM. <a href="https://github.com/PVRLabs/framework-benchmarks/blob/e81b2bc03449024e3d24c661521654b9dc2743d5/.github/workflows/ci.yml">CI workflow</a></p>
+<h3>What the workload sends</h3>
+<p>I started each run with a fresh database seeded with 1,000 users. I used the same seeded request mix for every stack, with weights of 40% portfolio reads, 25% portfolio edits, 25% valuations, 8% latest quotes and 2% quote history. Meanwhile, the application polls for replayed prices every 60 seconds.</p>
+<p>After readiness and a brief stabilization period, I sampled the guest for 30 seconds with quote polling active and no HTTP workload. The driver runs outside the VM and opens a fresh HTTP connection per request through an SSH tunnel. It offers 5 requests per second for 30 seconds, then warms up the application at 40 requests per second for 125 seconds. The measured phase keeps that rate for another 185 seconds, scheduling 7,400 requests per run. Edits and warmed caches carry forward from the earlier phases.</p>
+<h3>JVM settings and tested versions</h3>
+<p>I ran all four stacks on OpenJDK HotSpot 27 (build <code>27+35-2325</code>) with G1, a 16 MiB initial heap, an 80 MiB maximum heap and UTC.</p>
+<pre><code>-Xms16m -Xmx80m -XX:+UseG1GC -Duser.timezone=UTC</code></pre>
+<ul>
+    <li><strong>Jex + Jdbi</strong> used Avaje Jex 3.6, Avaje HTTP 3.12.1, Jdbi 3.55.0, CoilBase Core and Jex adapter 0.1.0-preview5, and HikariCP 7.0.2.</li>
+    <li><strong>Quarkus + Jdbi</strong> used Quarkus REST 3.40.1, Jdbi 3.55.0, CoilBase Core 0.1.0-preview5, and Agroal 3.2.1.</li>
+    <li><strong>Spring Boot + JDBC</strong> used Spring Boot 4.1.1, Spring JDBC 7.0.9, Tomcat 11.0.24, and HikariCP 7.0.2.</li>
+    <li><strong>Micronaut Data JDBC</strong> used Micronaut HTTP Server Netty 5.2.11, Micronaut Data JDBC 5.2.0, Micronaut JDBC Hikari 7.2.0, and HikariCP 7.1.0.</li>
+</ul>
+<h2>Results</h2>
+<figure><a class="screenshot-link" href="/java-performance/experiments/img/benchmarking-java-frameworks-512mib/featured.svg" aria-label="Open the benchmark chart at full size"><img src="/java-performance/experiments/img/benchmarking-java-frameworks-512mib/featured.svg" width="1200" height="760" alt="Two rounds for four stacks. Jex + Jdbi had the shortest readiness time, lowest peak app RSS and most available guest memory in both rounds. Sustained p99 was 11.02 to 11.51 ms across all runs." decoding="async"></a><figcaption>The generated chart shows both rounds separately. Readiness ends at the first successful database-backed readiness check. App RSS and guest MemAvailable are sampled sustained-phase extrema. Client-observed p99 includes scheduling and SSH transport.</figcaption></figure>
+<p>All eight runs sustained 40 requests per second with zero workload errors, timeouts, unsent requests or OOM kills. Sustained p99 stayed between 11.02 and 11.51 ms across the suite. <a href="https://htmlpreview.github.io/?https://github.com/PVRLabs/framework-benchmarks/blob/e81b2bc03449024e3d24c661521654b9dc2743d5/framework-benchmarks/evidence/debian-v1/report.html">Detailed HTML report</a> · <a href="https://github.com/PVRLabs/framework-benchmarks/tree/e81b2bc03449024e3d24c661521654b9dc2743d5/framework-benchmarks/evidence/debian-v1">Recorded evidence</a></p>
+<h2>Where the stacks differed</h2>
+<p>Jex + Jdbi reached readiness in 4.64–4.87 seconds and had sampled peak app RSS of 148.16–149.96 MiB. Spring Boot + JDBC took 10.64–10.82 seconds and peaked at 221.73–233.29 MiB. Quarkus + Jdbi and Micronaut Data JDBC fell between those stacks on both measures in each round, with Micronaut closer to Spring Boot on peak RSS in the second round.</p>
+<p>The guest memory samples show what that footprint means for the whole VM. The lowest MemAvailable sample in each Jex run was 196.95–202.43 MiB across the two rounds, compared with 119.36–126.95 MiB for Spring Boot. MemAvailable estimates how much memory Linux can make available without swapping or reclaiming heavily used pages. It reflects the guest as a whole, including PostgreSQL and the OS. With similar tail latency at the tested load, the clearest differences were how quickly each stack became ready and how much memory remained available during the run.</p>
+<h2>What this comparison covers</h2>
+<p>The fixed offered load answers how these stacks behaved at 40 requests per second. Finding maximum throughput would require a separate load sweep. The measurements include the HTTP server, persistence code, connection pool and JVM, so the differences cannot be attributed to framework overhead alone. The results apply to this fixture, request mix, JVM configuration, PostgreSQL settings and guest. Two rounds show how the observations repeated in this setup.</p>
+<h2>What comes next</h2>
+<p>I plan to use the project to compare more frameworks and persistence approaches, and to see how the results change with different JVM settings, memory budgets and workloads.</p>
+<h2>Reproduce and contribute</h2>
+<p>The repository has the implementation, setup instructions, correctness checks, run commands and report generator. Try the Debian suite on your own Linux host and share your environment and results. If you propose another stack or workload, tell us what decision the comparison would inform and how the existing correctness contract would apply.</p>
+<footer class="experiment-links" aria-label="Benchmark resources">
+    <a href="https://github.com/PVRLabs/framework-benchmarks/blob/e81b2bc03449024e3d24c661521654b9dc2743d5/framework-benchmarks/suite-v1.md">Reproduce v1 suite</a>
+    <a href="https://github.com/PVRLabs/framework-benchmarks">Framework Benchmarks on GitHub</a>
+</footer>
+<dialog class="screenshot-lightbox" aria-label="Expanded chart" data-screenshot-lightbox>
+    <button type="button" class="screenshot-lightbox__close" aria-label="Close expanded chart" data-lightbox-close>&times;</button>
+    <figure class="screenshot-lightbox__content">
+        <img class="screenshot-lightbox__image" data-lightbox-image alt="">
+        <figcaption class="screenshot-lightbox__caption" data-lightbox-caption></figcaption>
+    </figure>
+</dialog>
+</div></article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/screenshot-gallery.js?v=20261005b"></script>
+<script src="/script.js?v=20261109"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body></html>
