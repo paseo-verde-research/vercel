@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Container Memory Footprint and Deployment Density | PVR Labs</title>
+    <meta name="description" content="Measured Java memory footprints show how frameworks, persistence libraries and connection pools affect application density and infrastructure resource requirements.">
+    <meta name="author" content="Ted Kupolov">
+    <link rel="canonical" href="https://pvrlabs.xyz/articles/java-container-memory-footprint.html">
+    <link rel="alternate" type="application/rss+xml" title="PVR Labs" href="/rss.xml">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pvrlabs.xyz/articles/java-container-memory-footprint.html">
+    <meta property="og:title" content="Java Container Memory Footprint: Running More Applications on the Same Hardware">
+    <meta property="og:site_name" content="PVR Labs">
+    <meta property="og:description" content="Measured Java memory footprints show how frameworks, persistence libraries and connection pools affect application density and infrastructure resource requirements.">
+    <meta property="article:published_time" content="2026-11-25T00:00:00-08:00">
+    <meta property="article:author" content="Ted Kupolov">
+    <meta property="og:image" content="https://pvrlabs.xyz/articles/img/java-container-memory-footprint/og-preview.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Illustrative comparison of two hosts with the same memory budget, showing more compact app blocks fitting on the second host.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Java Container Memory Footprint: Running More Applications on the Same Hardware">
+    <meta name="twitter:description" content="Measured Java memory footprints show how frameworks, persistence libraries and connection pools affect application density and infrastructure resource requirements.">
+    <meta name="twitter:image" content="https://pvrlabs.xyz/articles/img/java-container-memory-footprint/og-preview.jpg">
+    <meta name="twitter:image:alt" content="Illustrative comparison of two hosts with the same memory budget, showing more compact app blocks fitting on the second host.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Sora:wght@600&family=Inter:wght@400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/articles/article.css?v=20261124b">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Java Container Memory Footprint: Running More Applications on the Same Hardware", "description": "Measured Java memory footprints show how frameworks, persistence libraries and connection pools affect application density and infrastructure resource requirements.", "datePublished": "2026-11-25T00:00:00-08:00", "author": {"@type": "Person", "name": "Ted Kupolov"}, "mainEntityOfPage": "https://pvrlabs.xyz/articles/java-container-memory-footprint.html", "image": "https://pvrlabs.xyz/articles/img/java-container-memory-footprint/og-preview.jpg"}</script>
+    <style>
+        .article-page h1 { font-size: clamp(1.45rem, 4.4vw, 2.2rem); }
+        .article-body .screenshot-link { display: block; min-height: 44px; }
+    </style>
+</head>
+<body>
+<header id="header"><nav class="navbar"><div class="container">
+    <a href="/" class="logo"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a>
+    <ul class="nav-menu" id="primary-navigation"><li><a href="/" class="nav-link">Home</a></li><li><a href="/articles/" class="nav-link active">Articles</a></li><li><a href="/statlite/" class="nav-link">StatLite</a></li><li><a href="/aibadger/" class="nav-link">AI Badger</a></li></ul>
+    <button class="hamburger" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+</div></nav></header>
+<main><article class="article-page">
+    <nav class="article-product-nav" aria-label="Article navigation">
+        <a href="/articles/" class="article-product-nav__link">&larr; Back to Articles</a>
+    </nav>
+    <h1>Java Container Memory Footprint: Running More Applications on the Same Hardware</h1>
+    <div class="article-meta">by <a href="https://github.com/ejboy" target="_blank" rel="noopener noreferrer">Ted Kupolov</a> · <time datetime="2026-11-25">November 25, 2026</time></div>
+    <div class="article-body">
+<p>How much memory does a Java application need to do its job? The answer affects how many services you can colocate on a server, how many replicas fit on a node, and how much capacity you need for the database they share.</p>
+<p>In our four-stack benchmark, every implementation sustained the same 40 requests per second on a 512 MiB Linux VM with similar tail latency. Sampled peak application RSS ranged from about 148 to 233 MiB, even though every JVM had an 80 MiB maximum heap. Could the smaller footprint make room for another service or replica? The VM measurements show where to look. The placement decision needs measurements from your deployment.</p>
+
+<h2>Same workload, different Java memory footprints</h2>
+<p>We ran each stack separately with PostgreSQL on the same Debian guest. Across two rounds, sampled peak application RSS was about 148 to 150 MiB for Jex + Jdbi, 200 to 205 MiB for Quarkus + Jdbi, 210 to 219 MiB for Micronaut Data JDBC, and 222 to 233 MiB for Spring Boot + JDBC. All eight runs completed without workload errors or timeouts. Client-observed p99 ranged from 11.02 to 11.51 ms at 40 RPS.</p>
+<figure>
+    <a class="screenshot-link" href="/java-performance/experiments/img/benchmarking-java-frameworks-512mib/featured.svg" aria-label="Open the four-stack benchmark chart at full size"><img src="/java-performance/experiments/img/benchmarking-java-frameworks-512mib/featured.svg" width="1200" height="760" alt="Two rounds per stack. Jex had the lowest sampled peak application RSS and the most guest memory available. Sustained p99 was similar across all four stacks." decoding="async"></a>
+    <figcaption>Framework Benchmarks v1 on a 512 MiB Debian VM. RSS peaks and guest MemAvailable minima come from sustained-phase samples. Client p99 includes scheduling and SSH transport.</figcaption>
+</figure>
+<p>In matched rounds, Jex + Jdbi used roughly 72 to 85 MiB less sampled peak application RSS than Spring Boot + JDBC. The lowest guest <code>MemAvailable</code> sample in each round was about 197 to 202 MiB with Jex and 119 to 127 MiB with Spring Boot. That metric estimates memory available to the whole guest, including the effects of the OS and PostgreSQL. It gives a broader view of headroom than the application process alone.</p>
+<p>These are complete stacks, including the HTTP server, persistence code, connection pool and JVM. The fixed workload tells us how they behaved at the tested rate. Finding a saturation point would require a load sweep. PVR Labs develops CoilBase, which provided application structure and persistence integration for the Jex and Quarkus variants. The <a href="/java-performance/experiments/benchmarking-java-frameworks-512mib.html">full benchmark write-up</a> documents the fixture and recorded results. Repository CI checks correctness and report regeneration. Reproducing the performance measurements requires running the suite.</p>
+
+<h2>Persistence overhead adds up across replicas</h2>
+<p>In a separate experiment on a 512 MiB Linux VM, we compared Jdbi with direct Hibernate while keeping the CoilBase, Jex and JTE application infrastructure substantially the same. Across the two accepted runs per variant, median application RSS during the mixed-workload phase was <strong>95 to 96 MiB with Jdbi</strong> and <strong>152 to 154 MiB with Hibernate</strong>. The observed difference was about 55 to 58 MiB. Process RSS included embedded H2, and one accepted Hibernate rerun used different guest background timer settings. See the <a href="/java-performance/experiments/jpa-memory-experiment-revisited.html">revisited persistence experiment</a>.</p>
+<p>SQL-first persistence can be sufficient when queries are explicit and the application mainly maps rows to objects. Managed entities, relationship mapping and change tracking can justify ORM overhead when the application relies on those capabilities. Any difference in private memory matters more when each replica pays it. Size each candidate as a complete deployment. The persistence and framework experiments used different workloads and reported different RSS statistics, so each delta applies to its own comparison.</p>
+
+<h2>How many Java applications can fit on a single server?</h2>
+<p>Start with the capacity available to workloads after reserving memory for the operating system, node services, existing workloads and operational headroom. On a shared server, check what colocated services consume at the same time. In Kubernetes, the scheduler fits pods against node allocatable capacity using resource requests. A memory limit sets a runtime ceiling, and exceeding it can lead to an OOM kill. Use the effective request for the whole pod, accounting for sidecars, init containers and pod overhead where applicable. See <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/">Kubernetes resource management</a>.</p>
+<ul>
+    <li><strong>Heap maximum</strong> caps the Java heap. The JVM also uses memory for thread stacks, class metadata, compiled code and native allocations.</li>
+    <li><strong>RSS</strong> counts the resident pages mapped by a process, including shared pages in full. <strong>PSS</strong> divides shared resident pages among their users. Measure sharing with replicas running together if your capacity estimate depends on it.</li>
+    <li><strong>Cgroup memory</strong> accounts for a group of processes and charges such as page cache and kernel memory. In cgroup v2, <code>memory.current</code> gives the current charge and <code>memory.peak</code> records a high-water mark. Working-set metrics can discount some file cache, so check them alongside the full charge, swap and OOM events. See the <a href="https://docs.kernel.org/admin-guide/cgroup-v2.html#memory">Linux cgroup v2 memory documentation</a> and the <a href="https://quarkus.io/guides/performance-measure/">Quarkus measurement guide</a>.</li>
+</ul>
+<p>Say a node has a <strong>hypothetical 3 GiB request budget</strong> after reservations. By memory alone, 3,072 MiB fits <strong>six pods at 512 MiB</strong> each or <strong>eight pods at 384 MiB</strong> each, provided both effective requests have been validated under load. CPU, the node’s pod limit, placement constraints and rollout capacity can lower the usable count. Check what happens if replicas start together or several see the same traffic spike. Lower requests change infrastructure costs when you can consolidate nodes, use smaller instances or avoid adding capacity.</p>
+
+<h2>Database connections multiply with application replicas</h2>
+<p>In our <a href="/articles/spring-boot-jdbc-pool-reclaim.html">Spring Boot and HikariCP experiment</a>, two replicas kept 20 PostgreSQL connections after a burst with fixed-size pools. With idle retirement enabled, each pool settled at one connection, leaving two in total and about 29 MiB less PostgreSQL cgroup memory in the quiet window. Lowering <code>minimumIdle</code> alone in the no-reclaim control left all 20 burst connections open.</p>
+<p>When traffic returned, median connection acquisition took about 194 to 207 ms with retirement, versus under 3 ms with connections retained. Measure that cost against the latency budget for the first requests after a quiet period. The memory difference belongs to this database workload and includes cache effects. <a href="https://aws.amazon.com/blogs/database/resources-consumed-by-idle-postgresql-connections/">AWS’s idle-session measurements</a> show how prior session activity can affect memory use. Database settings also matter. Our <a href="/java-performance/experiments/postgresql-low-memory.html">low-memory PostgreSQL experiment</a> illustrates that with a database-only read workload.</p>
+<p>For a shared database, multiply each app’s pool maximum by its highest concurrent replica count, including old and new replicas during rollouts. Add the ceilings for other services and leave space for jobs and administrative clients. Idle retirement reduces the quiet-period footprint. The database still needs a connection budget for overlapping bursts.</p>
+
+<h2>How to measure your own deployment</h2>
+<ol>
+    <li>Pin the application build, dataset, request mix, JDK build and flags, CPU quota, memory limit and swap policy. When choosing a runtime, compare deployable defaults for an operational decision or align settings to investigate a runtime difference.</li>
+    <li>Repeat startup, warmup, sustained load, bursts and recovery. Identify whether each metric covers a process, container, pod or host. Record RSS or PSS, cgroup charge and peak, working set, swap and OOM events alongside CPU, p99 and errors. In our <a href="/java-performance/experiments/openj9-vs-hotspot-256mb.html">exploratory OpenJ9 and HotSpot comparison</a>, swap made RSS alone a poor basis for sizing.</li>
+    <li>Run concurrent replicas with sidecars and realistic database demand. Include overlapping startups and bursts. Change requests only after the deployment meets its latency and error targets with enough headroom at the proposed density.</li>
+</ol>
+
+<h2>Size the application and database together</h2>
+<p>Constrained VMs make differences in the JVM, application stack and database visible. Remeasure those layers together where you deploy, then check whether the footprint change makes room for another service or reduces the capacity you need. To repeat the four-stack test, start with the <a href="https://github.com/PVRLabs/framework-benchmarks">benchmark repository</a>. For help investigating a deployment, see <a href="/java-performance/">PVR Labs Java performance consulting</a>.</p>
+</div>
+<section class="article-comments" aria-labelledby="discussion-heading">
+    <h2 id="discussion-heading">Discussion</h2>
+    <p>Questions, feedback, or suggestions? Join the discussion using your GitHub account.</p>
+    <script src="https://giscus.app/client.js"
+            data-repo="PVRLabs/experiments"
+            data-repo-id="R_kgDOT9zNzA"
+            data-category="Article Comments"
+            data-category-id="DIC_kwDOT9zNzM4DL41t"
+            data-mapping="pathname"
+            data-strict="1"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-theme="dark"
+            data-lang="en"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async>
+    </script>
+</section>
+</article></main>
+<footer id="footer"><div class="container"><p>Built at <a href="/" class="footer-brand"><span class="logo-accent">PVR</span><span class="logo-labs">Labs</span></a> · <span id="currentYear"></span></p><p>Articles on AI coding workflows, local-first development, and high-performance Java systems.</p></div></footer>
+<script src="/script.js?v=20261109"></script>
+<script>var sc_project = 13137699; var sc_invisible = 1; var sc_security = "28f9c550";</script>
+<script src="https://www.statcounter.com/counter/counter.js" async></script>
+</body>
+</html>

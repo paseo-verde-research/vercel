@@ -145,6 +145,7 @@
 <h2>Limits and takeaway</h2>
 <p>In both repetitions, releasing 18 idle connections was associated with about 29 MiB lower PostgreSQL cgroup memory. When traffic returned, the pools grew back to 20 connections, and the database memory footprint returned with them, at the cost of slower connection acquisition.</p>
 <p>These measurements describe idle PostgreSQL backends in one small-server setup, rather than a general memory cost per connection. Cgroup accounting includes cache as well as connection-private memory; sessions doing more substantial database work can have a different footprint.</p>
+<p>For sizing application replicas and their shared database together, see <a href="/articles/java-container-memory-footprint.html">Java container memory footprint and deployment density</a>.</p>
 <h2>Sources</h2>
 <p>The public experiment record includes the application source, pool settings, environment details, and measurements from all six scenarios. The analysis script checks the recorded connection counts, memory readings, and request timings against the summary.</p>
 <p><small>Updated October 17, 2026: revised the title, introduction, and presentation. Experiment results are unchanged.</small></p>

@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A0A0A">
     <title>Java Performance Consulting &amp; JVM Engineering | PVR Labs</title>
-    <meta name="description" content="PVR Labs provides Java performance consulting for latency, CPU, memory, GC, database, JDBC, transaction, and concurrency problems in production Java systems.">
+    <meta name="description" content="Java performance consulting for smaller application and database footprints, lower infrastructure costs, and production JVM diagnostics.">
     <link rel="canonical" href="https://pvrlabs.xyz/java-performance/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pvrlabs.xyz/java-performance/">
     <meta property="og:title" content="Java Performance Consulting &amp; JVM Engineering | PVR Labs">
     <meta property="og:site_name" content="PVR Labs">
-    <meta property="og:description" content="Cross-layer diagnosis for difficult production Java performance problems.">
+    <meta property="og:description" content="Java performance consulting for smaller application and database footprints, lower infrastructure costs, and production JVM diagnostics.">
     <meta property="og:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Java Performance Consulting &amp; JVM Engineering | PVR Labs">
-    <meta name="twitter:description" content="Cross-layer diagnosis for difficult production Java performance problems.">
+    <meta name="twitter:description" content="Java performance consulting for smaller application and database footprints, lower infrastructure costs, and production JVM diagnostics.">
     <meta name="twitter:image" content="https://pvrlabs.xyz/img/pvrlabs-java-performance-og.jpg">
     <script type="application/ld+json">
     {
@@ -23,7 +23,7 @@
       "@type": "WebPage",
       "name": "Java Performance Consulting & JVM Engineering",
       "url": "https://pvrlabs.xyz/java-performance/",
-      "description": "Cross-layer diagnosis for difficult production Java performance problems.",
+      "description": "Java performance consulting for smaller application and database footprints, lower infrastructure costs, and production JVM diagnostics.",
       "isPartOf": {
         "@type": "WebSite",
         "name": "PVR Labs",
@@ -63,7 +63,7 @@
     <section class="lab-hero">
         <div class="container">
             <h1>Java performance engineering</h1>
-            <p class="lab-lead">We diagnose difficult production problems across Java, the JVM, JDBC, transactions, and databases. The work starts with evidence and ends with a root cause your team can verify.</p>
+            <p class="lab-lead">We help teams reduce Java application and database resource use on shared servers and in containerized environments. We measure where memory and CPU go, then verify changes against production latency and throughput requirements.</p>
             <div class="lab-actions">
                 <a href="/java-performance/experiments/" class="btn btn-primary">Browse experiments</a>
                 <a href="/java-performance/persistence/" class="btn btn-secondary">Compare persistence frameworks</a>
@@ -77,6 +77,7 @@
             <h2>Problems we diagnose</h2>
             <ul class="diagnostic-list">
                 <li>Slow or unpredictable requests</li>
+                <li>High memory use per deployment</li>
                 <li>High CPU and infrastructure cost</li>
                 <li>Memory growth, leaks, and excessive GC</li>
                 <li>JDBC, transaction, and database bottlenecks</li>
@@ -107,8 +108,14 @@
         <div class="container">
             <h2>Featured experiments</h2>
             <p class="lab-section-intro">Measurements of Java memory, frameworks, connection pools, and persistence. Each write-up explains the workload, results, and limitations, with links to the experiment record.</p>
+            <p class="lab-context-note">Planning capacity for shared servers or Kubernetes? <a href="/articles/java-container-memory-footprint.html">See how Java memory footprint affects deployment density</a>.</p>
             <h3 class="lab-index-heading">Frameworks and runtime</h3>
             <div class="lab-index">
+                <article class="lab-entry">
+                    <h4><a href="/java-performance/experiments/benchmarking-java-frameworks-512mib.html">Benchmarking Java Frameworks on a 512 MiB Server</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-11-23">November 23, 2026</time></p>
+                    <p>Four stacks sustained 40 requests per second with similar tail latency. Sampled peak application RSS ranged from 148 to 233 MiB.</p>
+                </article>
                 <article class="lab-entry">
                     <h4><a href="/articles/spring-boot-vs-javalin-jdbi.html">Beyond Optimized Spring Boot: Javalin, Jdbi and a Smaller Java Application</a></h4>
                     <p class="lab-entry-meta"><time datetime="2026-11-02">November 2, 2026</time></p>
@@ -138,6 +145,16 @@
             <h3 class="lab-index-heading">Database and persistence</h3>
             <p class="lab-section-intro">Start with the <a href="/java-performance/persistence/">Java persistence frameworks guide</a> for a neutral map of JDBC, SQL-centric libraries, ORM, and framework integrations.</p>
             <div class="lab-index">
+                <article class="lab-entry">
+                    <h4><a href="/java-performance/experiments/jpa-memory-experiment-revisited.html">JPA Memory Experiment Revisited: Hibernate Without Spring Data JPA</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-11-14">November 14, 2026</time></p>
+                    <p>Jdbi used about 55 to 58 MiB less application RSS than direct Hibernate with substantially the same application infrastructure.</p>
+                </article>
+                <article class="lab-entry">
+                    <h4><a href="/java-performance/experiments/postgresql-low-memory.html">PostgreSQL 18 on a Small VPS: Two Low-Memory Tuning Strategies</a></h4>
+                    <p class="lab-entry-meta"><time datetime="2026-11-10">November 10, 2026</time></p>
+                    <p>On a 512 MiB VM running a database-only read workload, a small-cache configuration peaked at 50.4 MiB PostgreSQL PSS versus 180.1 MiB with defaults.</p>
+                </article>
                 <article class="lab-entry">
                     <h4><a href="/java-performance/experiments/scriptella-1-7-csv-import-benchmark.html">Importing 1 Million CSV Rows: Scriptella 1.7 vs Pandas, JDBC, and Native Loaders</a></h4>
                     <p class="lab-entry-meta"><time datetime="2026-11-03">November 3, 2026</time></p>

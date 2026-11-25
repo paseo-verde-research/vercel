@@ -91,6 +91,7 @@
 <p>This experiment does not suggest that existing Spring Boot applications should generally be migrated, or that Hibernate is an unreasonable default. The earlier comparison established a difference between <strong>application implementations</strong>. This follow-up supports a narrower conclusion: <strong>with substantially the same lightweight HTTP and application code, the direct Hibernate implementation used materially more memory than the Jdbi implementation for this demo app under these conditions</strong>.</p>
 <p>For a memory-constrained Java service, that difference can matter. For a larger application, the benefits of Hibernate and Spring Data JPA may justify their costs.</p>
 
+<p>For the implications of per-replica persistence overhead, see <a href="/articles/java-container-memory-footprint.html">Java container memory footprint and deployment density</a>.</p>
 <p class="experiment-links">
     <a href="https://github.com/PVRLabs/experiments/tree/main/java/jdbi-hibernate-comparison">Experiment record</a>
     <a href="/java-performance/experiments/spring-boot-jpa-vs-jdbc.html">Original JPA vs JDBC experiment</a>

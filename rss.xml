@@ -5,6 +5,15 @@
     <link>https://pvrlabs.xyz/</link>
     <description>Java performance experiments, engineering articles, and developer tools from PVR Labs.</description>
     <item>
+      <title>Java Container Memory Footprint: Running More Applications on the Same Hardware</title>
+      <link>https://pvrlabs.xyz/articles/java-container-memory-footprint.html</link>
+      <guid isPermaLink="true">https://pvrlabs.xyz/articles/java-container-memory-footprint.html</guid>
+      <description>Measured Java memory footprints show how frameworks, persistence libraries and connection pools affect application density and infrastructure resource requirements.</description>
+      <pubDate>Wed, 25 Nov 2026 00:00:00 -0800</pubDate>
+      <category>Article</category>
+      <media:thumbnail url="https://pvrlabs.xyz/articles/img/java-container-memory-footprint/og-preview.jpg" />
+    </item>
+    <item>
       <title>Benchmarking Java Frameworks on a 512 MiB Server</title>
       <link>https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html</link>
       <guid isPermaLink="true">https://pvrlabs.xyz/java-performance/experiments/benchmarking-java-frameworks-512mib.html</guid>

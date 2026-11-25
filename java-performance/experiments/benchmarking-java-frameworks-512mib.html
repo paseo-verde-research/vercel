@@ -97,6 +97,7 @@
 <p>The guest memory samples show what that footprint means for the whole VM. The lowest MemAvailable sample in each Jex run was 196.95–202.43 MiB across the two rounds, compared with 119.36–126.95 MiB for Spring Boot. MemAvailable estimates how much memory Linux can make available without swapping or reclaiming heavily used pages. It reflects the guest as a whole, including PostgreSQL and the OS. With similar tail latency at the tested load, the clearest differences were how quickly each stack became ready and how much memory remained available during the run.</p>
 <h2>What this comparison covers</h2>
 <p>The fixed offered load answers how these stacks behaved at 40 requests per second. Finding maximum throughput would require a separate load sweep. The measurements include the HTTP server, persistence code, connection pool and JVM, so the differences cannot be attributed to framework overhead alone. The results apply to this fixture, request mix, JVM configuration, PostgreSQL settings and guest. Two rounds show how the observations repeated in this setup.</p>
+<p>To turn a measured footprint difference into a placement decision, see <a href="/articles/java-container-memory-footprint.html">Java container memory footprint and deployment density</a>.</p>
 <h2>What comes next</h2>
 <p>I plan to use the project to compare more frameworks and persistence approaches, and to see how the results change with different JVM settings, memory budgets and workloads.</p>
 <h2>Reproduce and contribute</h2>
