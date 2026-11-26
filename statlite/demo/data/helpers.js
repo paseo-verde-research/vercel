@@ -5,6 +5,7 @@
   const HOUR = 60 * MINUTE;
   const DAY = 24 * HOUR;
   const POLL = 30_000;
+  const ATTENTION_WINDOW = 10 * MINUTE;
   const RANGES = {
     "1h": { duration: HOUR },
     "24h": { duration: DAY, bucket: 5 * MINUTE },
@@ -97,6 +98,9 @@
     const restartPoll = end - config.restartHoursAgo * HOUR;
     const processStart = Number.isFinite(restartPoll) ? restartPoll - 13_000 : start - 6 * DAY;
     const incident = end - config.incidentHoursAgo * HOUR;
+    const attentionStart = end - ATTENTION_WINDOW;
+    let recentRequests = 0;
+    let recentErrors = 0;
     const slowStarts = (config.slowHoursAgo || []).map((hours) =>
       end - Math.round(hours * HOUR / POLL) * POLL
     );
@@ -131,7 +135,12 @@
       }
       const expected = (config.baseRequests + config.peakRequests * load) *
         (1 + 0.10 * noise()) * (1 - 0.75 * warming);
-      const requests = Math.max(0, Math.round(expected + Math.sqrt(expected) * noise()));
+      const inAttentionWindow = config.recentErrorRate != null && time > attentionStart;
+      let requests = Math.max(inAttentionWindow ? 5 : 0, Math.round(expected + Math.sqrt(expected) * noise()));
+      if (inAttentionWindow && time === end) {
+        // Complete the last group of five requests so the window has exactly 20% 5xx.
+        requests += (5 - (recentRequests + requests) % 5) % 5;
+      }
       cpuLoad += (requests / (config.baseRequests + config.peakRequests) - cpuLoad) * 0.23;
 
       let gc = false;
@@ -154,8 +163,13 @@
 
       const inIncident = time >= incident && time < incident + 5 * MINUTE;
       const http404 = requests > 0 && random() < config.probeChance ? 1 : 0;
-      const http5xx = Math.min(requests - http404,
+      let http5xx = Math.min(requests - http404,
         inIncident ? 1 + Math.floor(random() * 3) : 0);
+      if (inAttentionWindow) {
+        recentRequests += requests;
+        http5xx = Math.round(recentRequests * config.recentErrorRate) - recentErrors;
+        recentErrors += http5xx;
+      }
       const http4xx = requests > http404 + http5xx && random() < config.probeChance / 4 ? 1 : 0;
 
       const slow = slowStarts.some((start) => time >= start && time < start + 3 * MINUTE);
@@ -186,7 +200,25 @@
         nativePoints.push({ timestamp: new Date(time).toISOString(), ...metrics });
       }
     }
-    return { nativePoints, rollups, processStart, restart };
+    const attention = inWindowAttention();
+    return { nativePoints, rollups, processStart, restart, attention };
+
+    function inWindowAttention() {
+      if (config.recentErrorRate == null) return null;
+      return {
+        target: config.type,
+        conditions: [{
+          check: "http_5xx_rate",
+          start: new Date(attentionStart).toISOString(),
+          end: new Date(end).toISOString(),
+          rate: recentErrors / recentRequests,
+          threshold: 0.10,
+          requests: recentRequests,
+          errors: recentErrors,
+          covered_seconds: ATTENTION_WINDOW / 1000
+        }]
+      };
+    }
   }
 
   function series(points, last) {
@@ -217,7 +249,7 @@
   }
 
   function fixture(config, now) {
-    const { nativePoints, rollups, processStart, restart } = timeline(config, now);
+    const { nativePoints, rollups, processStart, restart, attention } = timeline(config, now);
     const last = nativePoints.at(-1);
     const ranges = Object.fromEntries(Object.keys(RANGES).map((range) =>
       [range, series(rollups[range]?.finish() ?? nativePoints, last)]
@@ -251,6 +283,7 @@
       },
       series: ranges["24h"],
       ranges,
+      attention,
       events: restart ? [{
         timestamp: restart,
         severity: "warning",

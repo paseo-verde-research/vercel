@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Sora:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
     <link rel="stylesheet" href="/statlite/style.css?v=20261009">
-    <link rel="stylesheet" href="/statlite/demo.css?v=20260904d">
+    <link rel="stylesheet" href="/statlite/demo.css?v=20261126">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
@@ -98,6 +98,18 @@
                 <div class="metric"><div class="label">Last poll success</div><div id="last-success" class="value small">...</div></div>
                 <div class="metric"><div class="label">Poll failures</div><div id="failures" class="value">0</div></div>
                 <div class="metric poll-status"><div class="label">Last poll</div><div id="last-poll" class="value small"><span id="poll-status-state" class="poll-status-state">...</span><span id="poll-status-time"></span></div><div id="poll-error" class="poll-status-error" hidden></div></div>
+            </section>
+
+            <section id="attention-strip" class="attention-strip" aria-label="Attention" hidden>
+              <div class="attention-row">
+                <button id="attention-message" type="button" aria-expanded="false" aria-controls="attention-details">
+                  <span class="attention-icon" aria-hidden="true">⚠</span>
+                  <span id="attention-summary"><strong id="attention-title">Elevated server errors</strong> · <strong id="attention-rate"></strong><span id="attention-counts"></span></span>
+                  <span class="attention-chevron" aria-hidden="true"></span>
+                </button>
+                <button id="attention-dismiss" type="button" aria-label="Dismiss Attention warning">×</button>
+              </div>
+              <p id="attention-details" hidden></p>
             </section>
 
             <section id="application-section" class="capability-section" aria-labelledby="application-heading">
@@ -168,11 +180,11 @@
 
 <script src="/script.js?v=20261109"></script>
 <script src="/statlite/demo/vendor/chart.4.4.8.min.js"></script>
-<script src="/statlite/demo/data/helpers.js?v=20261122-9"></script>
+<script src="/statlite/demo/data/helpers.js?v=20261126"></script>
 <script src="/statlite/demo/data/spring.js?v=20261122"></script>
-<script src="/statlite/demo/data/quarkus.js?v=20261122"></script>
+<script src="/statlite/demo/data/quarkus.js?v=20261126"></script>
 <script src="/statlite/demo/data/statlite.js?v=20261122"></script>
-<script src="/statlite/demo.js?v=20261122-10" defer></script>
+<script src="/statlite/demo.js?v=20261126" defer></script>
 <script>
     var sc_project = 13137699;
     var sc_invisible = 1;

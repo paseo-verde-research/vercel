@@ -14,5 +14,6 @@ window.STATLITE_DEMO_TARGETS.quarkus = {
   baseCPU: 0.014,
   loadCPU: 0.065,
   probeChance: 0.013,
+  recentErrorRate: 0.20,
   slowHoursAgo: [4.65]
 };

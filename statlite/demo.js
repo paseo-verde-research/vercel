@@ -5,6 +5,9 @@ const state = {
   target: "spring",
   charts: {},
   fixtures: {},
+  attentionCheck: null,
+  attentionTarget: null,
+  dismissedAttention: new Map(),
   sessionNow: null
 };
 
@@ -29,6 +32,13 @@ const lineStyle = {
 };
 
 function attachInteractions() {
+  document.getElementById("attention-message").addEventListener("click", () => {
+    const details = document.getElementById("attention-details");
+    details.hidden = !details.hidden;
+    document.getElementById("attention-message").setAttribute("aria-expanded", String(!details.hidden));
+  });
+  document.getElementById("attention-dismiss").addEventListener("click", dismissAttention);
+
   document.querySelectorAll("[data-range]").forEach((button) => {
     button.addEventListener("click", () => {
       state.range = button.dataset.range;
@@ -248,10 +258,67 @@ function renderFixture() {
     latest: item.summary.latest
   }));
   const summary = Object.assign({}, fixture.summary, { targets });
+  if (state.attentionTarget !== state.target) hideAttention();
+  state.attentionTarget = state.target;
+  renderAttention(state.target, fixture.attention);
   renderSummary(summary);
   renderSeries(fixture.ranges[state.range] || fixture.series);
   renderEvents(window.STATLITE_DEMO.eventsInRange(fixture.events, state.range, state.sessionNow));
   document.getElementById("latest-json").textContent = JSON.stringify(fixture.summary.latest || {}, null, 2);
+}
+
+// Attention presentation and dismissal copied from the StatLite dashboard.
+function hideAttention() {
+  state.attentionCheck = null;
+  document.getElementById("attention-strip").hidden = true;
+  document.getElementById("attention-details").hidden = true;
+  document.getElementById("attention-message").setAttribute("aria-expanded", "false");
+}
+
+function dismissAttention() {
+  if (!state.attentionCheck) return;
+  const dismissed = state.dismissedAttention.get(state.attentionTarget) || new Set();
+  dismissed.add(state.attentionCheck);
+  state.dismissedAttention.set(state.attentionTarget, dismissed);
+  hideAttention();
+}
+
+function renderAttention(target, result) {
+  if (!result || !Array.isArray(result.conditions) ||
+      (result.target != null && result.target !== target) ||
+      (result.target == null && (result.conditions.length || result.cleared_checks != null)) ||
+      (result.cleared_checks != null && !Array.isArray(result.cleared_checks))) {
+    hideAttention();
+    return;
+  }
+  const dismissed = state.dismissedAttention.get(target);
+  for (const check of result.cleared_checks || []) dismissed?.delete(check);
+  const condition = result.conditions.find((item) => item?.check === "http_5xx_rate");
+  if (!condition || dismissed?.has(condition.check)) {
+    hideAttention();
+    return;
+  }
+
+  const start = new Date(condition.start);
+  const end = new Date(condition.end);
+  const minutes = (end - start) / 60000;
+  if (![condition.rate, condition.requests, condition.errors, condition.threshold,
+    condition.covered_seconds, minutes].every(Number.isFinite) || minutes <= 0) {
+    hideAttention();
+    return;
+  }
+
+  if (state.attentionCheck !== condition.check) hideAttention();
+  state.attentionCheck = condition.check;
+  const number = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+  const percent = new Intl.NumberFormat(undefined, { style: "percent", maximumFractionDigits: 2 });
+  const rate = `${percent.format(condition.rate)} 5xx`;
+  const counts = ` (${number.format(condition.errors)} of ${number.format(condition.requests)} requests) over ${number.format(minutes)} min`;
+  setText("attention-rate", rate);
+  setText("attention-counts", counts);
+  const coverage = `${number.format(condition.covered_seconds / 60)}/${number.format(minutes)} min`;
+  setText("attention-details", `Threshold: ${percent.format(condition.threshold)} · Coverage: ${coverage} · Window ending: ${formatDateTime(condition.end)}`);
+  document.getElementById("attention-strip").hidden = false;
 }
 
 function renderSummary(summary) {
